@@ -1,6 +1,6 @@
 # OCD Brilliance MVP Scope Presentation
 
-A nine-slide, widescreen HTML presentation of the proposed internal operations platform MVP.
+A twelve-slide, widescreen HTML presentation of the proposed OCD Brilliance operations platform MVP. It covers the agreed first-release workflows, including public booking, the client portal, AI-assisted review, agreement generation and e-signing, scheduling, visit records, and route and fee calculations.
 
 **Live presentation:** https://rovicsom.github.io/ocd-brilliance-mvp-scope/
 
