@@ -1,0 +1,103 @@
+// Fictional records for the browser-only client demonstration.
+window.OCD_DEMO_SEED = {
+  enquiries: [
+    {
+      id: "ENQ-1042", name: "Ava Bennett", email: "ava.bennett@example.com", phone: "0400 000 142",
+      source: "Website intake", service: "Domestic assistance", suburb: "Joondalup",
+      preferredContact: "Email", owner: "Mia Roberts", status: "In progress",
+      received: "2026-10-01", nextAction: "2026-10-05",
+      intake: { submitted: "2026-10-01", support: "Weekly help with household cleaning and laundry.", preference: "Tuesday mornings; prefers a consistent worker.", funding: "Plan managed", consent: true },
+      aiReview: null, emailDraft: null, emailStatus: "Not drafted"
+    },
+    {
+      id: "ENQ-1043", name: "Owen Brooks", email: "owen.brooks@example.com", phone: "0400 000 143",
+      source: "Phone", service: "Support work", suburb: "Wanneroo",
+      preferredContact: "Phone", owner: "Mia Roberts", status: "Waiting on participant",
+      received: "2026-10-02", nextAction: "2026-10-02",
+      intake: { submitted: "2026-10-02", support: "Help with weekly community access.", preference: "Afternoon appointments.", funding: "Self managed", consent: true },
+      aiReview: { summary: "Owen asked about weekly community access support in Wanneroo, preferably in the afternoon.", missing: "Confirm preferred day and support goals.", match: "Support work — staff to verify suitability.", reviewed: false },
+      emailDraft: "Hi Owen,\n\nThank you for speaking with OCD Brilliance. Could you let us know which afternoon would work best for a discovery call? We can then discuss the support you are looking for.\n\nKind regards,\nOCD Brilliance", emailStatus: "Needs approval"
+    },
+    {
+      id: "ENQ-1044", name: "Grace Miller", email: "grace.miller@example.com", phone: "0400 000 144",
+      source: "Referral", service: "Domestic assistance", suburb: "Duncraig",
+      preferredContact: "Email", owner: "Mia Roberts", status: "New",
+      received: "2026-10-03", nextAction: "2026-10-05",
+      intake: null, aiReview: null, emailDraft: null, emailStatus: "Not drafted"
+    }
+  ],
+  slots: [
+    { id: "SLOT-01", date: "2026-10-05", time: "10:00", duration: 30 },
+    { id: "SLOT-02", date: "2026-10-05", time: "14:00", duration: 30 },
+    { id: "SLOT-03", date: "2026-10-06", time: "10:00", duration: 30 },
+    { id: "SLOT-04", date: "2026-10-06", time: "11:30", duration: 30 },
+    { id: "SLOT-05", date: "2026-10-07", time: "09:30", duration: 30 },
+    { id: "SLOT-06", date: "2026-10-07", time: "14:00", duration: 30 },
+    { id: "SLOT-07", date: "2026-10-08", time: "10:00", duration: 30 }
+  ],
+  calls: [
+    { id: "CALL-201", slotId: "SLOT-03", name: "Ava Bennett", email: "ava.bennett@example.com", phone: "0400 000 142", enquiryId: "ENQ-1042", status: "Booked" }
+  ],
+  participants: [
+    {
+      id: "PAR-101", name: "Olivia Hart", email: "olivia.hart@example.com", phone: "0400 000 201",
+      suburb: "Woodvale", address: "Woodvale, WA", service: "Domestic assistance", funding: "Plan managed",
+      preferredWorker: "WRK-01", schedulePreference: "Monday mornings", representative: "None recorded",
+      emergencyContact: "Recorded in restricted profile", status: "Active",
+      intakeUpdate: "Prefers a consistent worker and morning visits.",
+      sharedDocs: [{ id: "DOC-01", name: "Service information", date: "2026-09-15" }]
+    },
+    {
+      id: "PAR-102", name: "Daniel Wu", email: "daniel.wu@example.com", phone: "0400 000 202",
+      suburb: "Kingsley", address: "Kingsley, WA", service: "Domestic assistance", funding: "Self managed",
+      preferredWorker: "WRK-02", schedulePreference: "Monday afternoons", representative: "None recorded",
+      emergencyContact: "Recorded in restricted profile", status: "Active",
+      intakeUpdate: "Afternoon services preferred.", sharedDocs: []
+    },
+    {
+      id: "PAR-103", name: "Farah Ali", email: "farah.ali@example.com", phone: "0400 000 203",
+      suburb: "Ellenbrook", address: "Ellenbrook, WA", service: "Support work", funding: "Plan managed",
+      preferredWorker: "", schedulePreference: "To be confirmed", representative: "Samira Ali — authority to confirm",
+      emergencyContact: "Recorded in restricted profile", status: "Onboarding",
+      intakeUpdate: "Awaiting agreement signature.", sharedDocs: []
+    }
+  ],
+  agreements: [
+    { id: "AGR-301", participantId: "PAR-101", service: "Domestic assistance", schedule: "Weekly, Monday morning", template: "Demo template v1", status: "Signed", generated: "2026-09-12", sent: "2026-09-13", signed: "2026-09-15", pricing: "Per approved service agreement", cancellation: "Per approved service agreement" },
+    { id: "AGR-302", participantId: "PAR-102", service: "Domestic assistance", schedule: "Weekly, Monday afternoon", template: "Demo template v1", status: "Signed", generated: "2026-09-14", sent: "2026-09-15", signed: "2026-09-18", pricing: "Per approved service agreement", cancellation: "Per approved service agreement" },
+    { id: "AGR-303", participantId: "PAR-103", service: "Support work", schedule: "To be confirmed", template: "Demo template v1", status: "Awaiting signature", generated: "2026-10-02", sent: "2026-10-02", signed: "", pricing: "To be confirmed in approved template", cancellation: "To be confirmed in approved template" }
+  ],
+  workers: [
+    { id: "WRK-01", name: "Elena Cruz", initials: "EC", services: ["Domestic assistance", "Support work"], approved: true, review: "2027-03-01", days: [1, 2, 3, 4] },
+    { id: "WRK-02", name: "Sam Walker", initials: "SW", services: ["Domestic assistance"], approved: true, review: "2027-01-20", days: [1, 2, 3, 4, 5] },
+    { id: "WRK-03", name: "Priya Shah", initials: "PS", services: ["Domestic assistance", "Support work"], approved: true, review: "2027-04-14", days: [1, 2, 4, 5] },
+    { id: "WRK-04", name: "Alex Kim", initials: "AK", services: ["Domestic assistance"], approved: false, review: "Pending", days: [1, 2, 3, 4, 5] }
+  ],
+  bookings: [
+    { id: "BKG-498", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-01", start: "13:00", end: "15:00", recurrence: "One-off", status: "Completed", participantAgreed: true },
+    { id: "BKG-499", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-02", start: "09:00", end: "11:00", recurrence: "One-off", status: "Completed", participantAgreed: true },
+    { id: "BKG-501", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-05", start: "09:00", end: "11:00", recurrence: "Weekly", status: "Confirmed", participantAgreed: true },
+    { id: "BKG-502", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-05", start: "13:00", end: "15:00", recurrence: "Weekly", status: "Needs cover", participantAgreed: true },
+    { id: "BKG-503", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-06", start: "10:00", end: "12:00", recurrence: "One-off", status: "Confirmed", participantAgreed: true },
+    { id: "BKG-504", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-07", start: "13:00", end: "15:00", recurrence: "Weekly", status: "Confirmed", participantAgreed: true },
+    { id: "BKG-505", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-08", start: "09:00", end: "11:00", recurrence: "One-off", status: "Confirmed", participantAgreed: true },
+    { id: "BKG-506", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-09", start: "13:00", end: "15:00", recurrence: "One-off", status: "Cancelled", participantAgreed: true, cancellation: { cause: "Participant", notice: "2026-10-05T10:00", note: "Participant called the office to cancel." } }
+  ],
+  visits: [
+    { id: "VIS-701", bookingId: "BKG-499", clockIn: "09:04", clockOut: "11:02", note: "Domestic assistance completed as planned. Laundry and kitchen tasks completed.", status: "Ready for review", corrections: [] },
+    { id: "VIS-702", bookingId: "BKG-498", clockIn: "13:02", clockOut: "15:01", note: "", status: "Missing note", corrections: [] }
+  ],
+  requests: [
+    { id: "REQ-401", participantId: "PAR-101", bookingId: "BKG-505", type: "Booking change", message: "Could this visit start after 10 am?", status: "Pending", created: "2026-10-03" }
+  ],
+  routeEstimates: [
+    { id: "RTE-601", bookingId: "BKG-499", origin: "Joondalup office", destination: "Woodvale, WA", distance: 11.4, duration: 18, created: "2026-10-02", source: "Illustrative map response" }
+  ],
+  feeProposals: [],
+  activity: [
+    { id: "ACT-01", text: "Olivia Hart requested a booking change", detail: "Client portal · awaiting office review", date: "2026-10-03" },
+    { id: "ACT-02", text: "Farah Ali's agreement was sent for signing", detail: "Agreement AGR-303", date: "2026-10-02" },
+    { id: "ACT-03", text: "Sam Walker reported unavailability", detail: "Booking BKG-502 needs cover", date: "2026-10-02" },
+    { id: "ACT-04", text: "Ava Bennett submitted an intake", detail: "Enquiry ENQ-1042", date: "2026-10-01" }
+  ]
+};

@@ -1,7 +1,10 @@
-# OCD Brilliance MVP Scope Presentation
+# OCD Brilliance MVP Scope
 
-A twelve-slide, widescreen HTML presentation of the proposed OCD Brilliance operations platform MVP. It covers the agreed first-release workflows, including public booking, the client portal, AI-assisted review, agreement generation and e-signing, scheduling, visit records, and route and fee calculations.
+Client-facing presentation and interactive frontend prototype for the proposed OCD Brilliance operations platform MVP.
 
-**Live presentation:** https://rovicsom.github.io/ocd-brilliance-mvp-scope/
+- [Scope presentation](https://rovicsom.github.io/ocd-brilliance-mvp-scope/) — twelve-slide widescreen deck.
+- [Interactive prototype](https://rovicsom.github.io/ocd-brilliance-mvp-scope/prototype/) — office, worker, client and public views.
 
-Open `index.html` locally or use the live link. Navigate with the on-screen arrows, keyboard arrow keys, Page Up/Down, Home, or End. The browser's Print command produces a landscape PDF.
+The presentation is in `index.html`. Navigate with the on-screen arrows, keyboard arrow keys, Page Up/Down, Home, or End. The browser's Print command produces a landscape PDF.
+
+The prototype is in `prototype/`. It uses fictional sample records and stores demo actions in the browser. See [prototype/README.md](prototype/README.md) for a suggested walkthrough and implementation limits.
