@@ -6,7 +6,7 @@
   const toastNode = document.getElementById("toast");
   const demoWeek = ["2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09"];
   const serviceTypes = ["Domestic assistance", "Support work", "Cleaning", "Transport", "Support coordination", "Nursing"];
-  const ui = { enquiryQuery: "", enquiryStatus: "All statuses", participantQuery: "", participantTab: "Overview", callTab: "Bookings", publicTab: "Book", selectedSlot: "", publicConfirmation: null, scheduleWeekStart: "2026-10-05", feeTab: "Routes", feePreview: null, routeBooking: "BKG-499", cancellationBooking: "BKG-506", workerId: "WRK-01", clientId: "PAR-101" };
+  const ui = { enquiryQuery: "", enquiryStatus: "All statuses", participantQuery: "", participantTab: "Overview", callTab: "Bookings", publicTab: "Book", selectedSlot: "", publicConfirmation: null, scheduleWeekStart: "2026-10-05", officeCalendarMonth: "2026-10-01", officeCalendarDate: "2026-10-05", workerCalendarMonth: "2026-10-01", workerCalendarDate: "2026-10-05", feeTab: "Routes", feePreview: null, routeBooking: "BKG-499", cancellationBooking: "BKG-506", workerId: "WRK-01", clientId: "PAR-101" };
   let state = load();
   let toastTimer;
 
@@ -18,7 +18,7 @@
     return structuredClone(window.OCD_DEMO_SEED);
   }
   function save() { localStorage.setItem(STORE, JSON.stringify(state)); }
-  function reset() { state = structuredClone(window.OCD_DEMO_SEED); localStorage.removeItem(STORE); ui.publicConfirmation = null; ui.feePreview = null; ui.scheduleWeekStart = "2026-10-05"; ui.cancellationBooking = "BKG-506"; ui.clientId = "PAR-101"; render(); toast("Demo data restored."); }
+  function reset() { state = structuredClone(window.OCD_DEMO_SEED); localStorage.removeItem(STORE); ui.publicConfirmation = null; ui.feePreview = null; ui.scheduleWeekStart = "2026-10-05"; ui.officeCalendarMonth = "2026-10-01"; ui.officeCalendarDate = "2026-10-05"; ui.workerCalendarMonth = "2026-10-01"; ui.workerCalendarDate = "2026-10-05"; ui.cancellationBooking = "BKG-506"; ui.clientId = "PAR-101"; render(); toast("Demo data restored."); }
   function esc(value) { return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]); }
   function attr(value) { return esc(value); }
   function val(form, name) { return String(new FormData(form).get(name) ?? "").trim(); }
@@ -82,14 +82,14 @@
   function viewSelect(current) { return `<label class="view-select"><span>Explore as</span><select id="view-switch" aria-label="Explore a demo view">${[["office", "Office"], ["worker", "Worker"], ["client", "Client"], ["public", "Public"]].map(([value, label]) => `<option value="${value}" ${current === value ? "selected" : ""}>${label}</option>`).join("")}</select></label>`; }
 
   const nav = {
-    office: [["overview", "Overview", "overview"], ["enquiries", "Enquiries", "inbox"], ["calls", "Discovery calls", "calendar"], ["participants", "Participants", "people"], ["agreements", "Agreements", "file"], ["schedule", "Schedule", "calendar"], ["visits", "Visit records", "clock"], ["fees", "Routes & fees", "route"]],
-    worker: [["today", "My visits", "calendar"], ["availability", "Availability", "clock"]],
+    office: [["overview", "Overview", "overview"], ["enquiries", "Enquiries", "inbox"], ["calls", "Discovery calls", "calendar"], ["participants", "Participants", "people"], ["agreements", "Agreements", "file"], ["calendar", "Calendar", "calendar"], ["schedule", "Schedule", "calendar"], ["visits", "Visit records", "clock"], ["fees", "Routes & fees", "route"]],
+    worker: [["today", "My visits", "calendar"], ["calendar", "My calendar", "calendar"], ["availability", "Availability", "clock"]],
     client: [["home", "Home", "home"], ["bookings", "My bookings", "calendar"], ["documents", "Documents", "file"], ["intake", "My details", "people"]]
   };
   function shell(area, section, content) {
     const title = nav[area]?.find(x => x[0] === section)?.[1] || "Workspace";
     const counts = { enquiries: state.enquiries.filter(e => e.status === "New").length, schedule: state.bookings.filter(b => b.status === "Needs cover").length };
-    const primaryMobile = ["overview", "enquiries", "schedule", "visits"];
+    const primaryMobile = ["overview", "enquiries", "calendar", "schedule"];
     const links = nav[area].map(([path, label, glyph]) => `<a class="nav-link ${section === path ? "active" : ""} ${area === "office" && !primaryMobile.includes(path) ? "mobile-extra" : ""}" ${section === path ? 'aria-current="page"' : ""} href="#/${area}/${path}">${icon(glyph)}<span>${esc(label)}</span>${counts[path] ? `<span class="nav-count">${counts[path]}</span>` : ""}</a>`).join("");
     const more = area === "office" ? `<button class="nav-link mobile-more ${primaryMobile.includes(section) ? "" : "active"}" data-action="mobile-menu" type="button">${icon("overview")}<span>More</span></button>` : "";
     const representative = area === "client" && ui.clientId === "PAR-103";
@@ -104,8 +104,8 @@
   function render() {
     const [area, section, detail] = routeParts();
     const pages = {
-      office: { overview: officeOverview, enquiries: () => detail ? enquiryDetail(detail) : enquiriesPage(), calls: callsPage, participants: () => detail ? participantDetail(detail) : participantsPage(), agreements: () => detail ? agreementDetail(detail) : agreementsPage(), schedule: () => detail ? bookingDetail(detail) : schedulePage(), visits: () => detail ? visitDetail(detail) : visitsPage(), fees: feesPage },
-      worker: { today: () => detail ? workerVisit(detail) : workerToday(), availability: workerAvailability },
+      office: { overview: officeOverview, enquiries: () => detail ? enquiryDetail(detail) : enquiriesPage(), calls: callsPage, participants: () => detail ? participantDetail(detail) : participantsPage(), agreements: () => detail ? agreementDetail(detail) : agreementsPage(), calendar: () => calendarPage("office"), schedule: () => detail ? bookingDetail(detail) : schedulePage(), visits: () => detail ? visitDetail(detail) : visitsPage(), fees: feesPage },
+      worker: { today: () => detail ? workerVisit(detail) : workerToday(), calendar: () => calendarPage("worker"), availability: workerAvailability },
       client: { home: clientHome, bookings: clientBookings, documents: clientDocuments, intake: clientIntake },
       public: { book: publicBook, intake: publicIntake }
     };
@@ -201,6 +201,65 @@
     const a = find(state.agreements, agreementId);
     if (!a) return `${pageHeader("Agreements", "Agreement not found")}<a class="btn" href="#/office/agreements">Back to agreements</a>`;
     return `${crumb(a.id, "office/agreements", "Agreements")}${pageHeader("Agreement / " + a.id, `${participant(a.participantId)?.name} · ${a.service}`, `Generated ${dateLabel(a.generated)} from ${a.template}`, pill(a.status))}<div class="grid-detail"><section class="panel print-target">${documentPreview(a)}</section><aside class="stack agreement-actions"><section class="panel"><h2>Approval & signing</h2><div class="spacer"></div>${pair("Status", a.status)}${pair("Sent", a.sent ? dateLabel(a.sent) : "Not sent")}${pair("Signed", a.signed ? dateLabel(a.signed) : "Not yet")}${a.status === "Draft" ? `<div class="notice warning">${icon("alert")} Confirm the template and terms before sending.</div><div class="spacer"></div><button class="btn primary" data-action="send-agreement" data-id="${attr(a.id)}" type="button">Approve &amp; send for signing (demo)</button>` : a.status === "Awaiting signature" ? `<div class="spacer"></div><button class="btn primary" data-action="record-signature" data-id="${attr(a.id)}" type="button">Record signed outcome (demo)</button>` : `<div class="notice">${icon("check")} Signed copy is represented in this prototype. Real e-signing requires the approved provider.</div>`}<div class="spacer"></div><button class="btn" data-action="print-agreement" type="button">${icon("download")} Print / save PDF</button></section><div class="side-note">The prototype demonstrates document preparation and status. It does not send a document to a real e-signature service.</div></aside></div>`;
+  }
+
+  function calendarEvents(area) {
+    const services = state.bookings
+      .filter(b => area === "office" ? b.status !== "Cancelled" : b.workerId === ui.workerId && ["Confirmed", "Completed"].includes(b.status))
+      .map(b => ({
+        date: b.date, time: b.start, type: "service",
+        tone: b.status === "Needs cover" ? "cover" : b.status === "Proposed" ? "proposed" : "service",
+        short: `${b.start} ${participant(b.participantId)?.name || "Service"}`,
+        title: participant(b.participantId)?.name || "Service visit",
+        detail: `${b.service} · ${area === "office" ? worker(b.workerId)?.name || "Unassigned" : participant(b.participantId)?.suburb || "Service area"}`,
+        timeLabel: `${b.start}–${b.end}`, status: b.status,
+        href: `#/${area === "office" ? "office/schedule" : "worker/today"}/${b.id}`
+      }));
+    const calls = area === "office" ? state.calls
+      .filter(c => ["Booked", "Change requested"].includes(c.status))
+      .map(c => { const slot = find(state.slots, c.slotId); return slot ? {
+        date: slot.date, time: slot.time, type: "call", tone: "call",
+        short: `${slot.time} Call · ${c.name}`, title: `Discovery call · ${c.name}`,
+        detail: `${slot.duration} min · ${c.id}`, timeLabel: slot.time,
+        status: c.status, href: "#/office/calls"
+      } : null; })
+      .filter(Boolean) : [];
+    return [...services, ...calls].sort((a, b) => `${a.date}${a.time}${a.title}`.localeCompare(`${b.date}${b.time}${b.title}`));
+  }
+
+  function calendarPage(area) {
+    const office = area === "office";
+    const month = ui[office ? "officeCalendarMonth" : "workerCalendarMonth"];
+    const selected = ui[office ? "officeCalendarDate" : "workerCalendarDate"];
+    const events = calendarEvents(area);
+    const monthEvents = events.filter(e => e.date.slice(0, 7) === month.slice(0, 7));
+    const occupiedDays = new Set(monthEvents.filter(e => e.tone !== "proposed").map(e => e.date)).size;
+    const serviceCount = monthEvents.filter(e => e.type === "service" && e.tone !== "proposed").length;
+    const callCount = monthEvents.filter(e => e.type === "call").length;
+    const proposedCount = monthEvents.filter(e => e.tone === "proposed").length;
+    const firstOffset = (weekday(month) + 6) % 7;
+    const daysInMonth = new Date(Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0)).getUTCDate();
+    const cellCount = Math.ceil((firstOffset + daysInMonth) / 7) * 7;
+    const gridStart = addDays(month, -firstOffset);
+    const fullDate = date => dateLabel(date, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    const cells = Array.from({ length: cellCount }, (_, index) => {
+      const date = addDays(gridStart, index);
+      const dayEvents = events.filter(e => e.date === date);
+      const outside = date.slice(0, 7) !== month.slice(0, 7);
+      const busy = dayEvents.some(e => e.tone !== "proposed");
+      const calls = dayEvents.filter(e => e.type === "call").length;
+      const services = dayEvents.length - calls;
+      const description = dayEvents.length ? office ? `${services} service${services === 1 ? "" : "s"}, ${calls} discovery call${calls === 1 ? "" : "s"}` : `${services} assigned visit${services === 1 ? "" : "s"}` : office ? "No booked visits or calls" : "No assigned visits";
+      return `<button class="calendar-day ${outside ? "outside" : ""} ${busy ? "occupied" : ""} ${date === selected ? "selected" : ""} ${date === todayPerth() ? "today" : ""}" data-action="calendar-day" data-date="${date}" type="button" aria-label="${attr(fullDate(date))}: ${attr(description)}" aria-pressed="${date === selected}"><span class="calendar-day-number">${dateObj(date).getUTCDate()}</span><span class="calendar-cell-events">${dayEvents.slice(0, 2).map(e => `<span class="calendar-event ${e.tone}">${esc(e.short)}</span>`).join("")}${dayEvents.length > 2 ? `<span class="calendar-more">+${dayEvents.length - 2} more</span>` : ""}</span><span class="calendar-dots" aria-hidden="true">${dayEvents.slice(0, 3).map(e => `<i class="${e.tone}"></i>`).join("")}</span></button>`;
+    }).join("");
+    const selectedEvents = events.filter(e => e.date === selected);
+    const openSlots = office ? availableSlots().filter(s => s.date === selected) : [];
+    const eventRows = selectedEvents.map(e => `<a class="calendar-agenda-item" href="${e.href}"><span class="calendar-agenda-time">${esc(e.timeLabel)}</span><span class="calendar-agenda-copy"><strong>${esc(e.title)}</strong><small>${esc(e.detail)}</small></span>${pill(e.status)}</a>`).join("");
+    const action = office ? `<a class="btn" href="#/office/calls">Manage calls</a><a class="btn primary" href="#/office/schedule">Open schedule ${icon("arrow")}</a>` : `<a class="btn primary" href="#/worker/today">My visits ${icon("arrow")}</a>`;
+    return `${pageHeader(office ? "Office / Calendar" : "Worker / Calendar", office ? "Calendar" : "My calendar", office ? "See service bookings and booked discovery calls across the month." : "See your confirmed and completed service visits across the month.", action)}
+      <div class="calendar-summary"><span><strong>${occupiedDays}</strong> occupied day${occupiedDays === 1 ? "" : "s"}</span><span><strong>${serviceCount}</strong> service visit${serviceCount === 1 ? "" : "s"}</span>${office ? `<span><strong>${callCount}</strong> booked call${callCount === 1 ? "" : "s"}</span>${proposedCount ? `<span><strong>${proposedCount}</strong> proposed</span>` : ""}` : ""}<span class="calendar-timezone">Australia/Perth time</span></div>
+      <div class="calendar-layout"><section class="panel calendar-panel" aria-label="Month calendar"><div class="calendar-toolbar"><h2>${dateLabel(month, { month: "long", year: "numeric" })}</h2><div class="calendar-nav"><button class="btn small" data-action="calendar-prev" type="button" aria-label="Previous month">←</button><button class="btn small" data-action="calendar-demo" type="button">Demo month</button><button class="btn small" data-action="calendar-next" type="button" aria-label="Next month">→</button></div></div><div class="calendar-legend"><span><i class="service"></i> Service visit</span>${office ? `<span><i class="call"></i> Discovery call</span><span><i class="cover"></i> Needs cover</span><span><i class="proposed"></i> Proposed</span>` : ""}</div><div class="calendar-weekdays" aria-hidden="true">${["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => `<span>${day}</span>`).join("")}</div><div class="calendar-grid">${cells}</div></section>
+      <aside class="panel calendar-agenda" tabindex="-1" aria-label="Selected day details"><span class="eyebrow">Selected day</span><h2>${fullDate(selected)}</h2><p class="muted tiny">${selectedEvents.length ? `${selectedEvents.length} calendar item${selectedEvents.length === 1 ? "" : "s"}` : office ? "No service visits or booked calls" : "No assigned visits"}</p><div class="calendar-agenda-list">${eventRows || `<p class="calendar-agenda-empty">${office ? "No service visits or booked calls on this day." : "No confirmed or completed visits on this day."}</p>`}</div>${office ? `<div class="calendar-open-slots"><h3>Published call times still open</h3>${openSlots.length ? `<p>${openSlots.map(s => `${esc(s.time)} · ${s.duration} min`).join("<br>")}</p>` : `<p>None for this day.</p>`}<button class="btn small" data-action="add-slot" type="button">Add call slot</button></div>` : `<div class="calendar-open-slots"><p>Regular working days are managed separately from assigned visits.</p><a class="btn small" href="#/worker/availability">View availability</a></div>`}</aside></div>`;
   }
 
   function schedulePage() {
@@ -400,7 +459,7 @@
     if (action === "draft-email") { const e = find(state.enquiries, itemId); e.emailDraft = `Hi ${e.name.split(" ")[0]},\n\nThank you for contacting OCD Brilliance about ${e.service.toLowerCase()}. We have received your enquiry and will be in touch to discuss the details and next steps.\n\nKind regards,\nOCD Brilliance`; e.emailStatus = "Needs approval"; save(); render(); toast("Draft prepared. Review it before sending."); return; }
     if (action === "discard-email") { const e = find(state.enquiries, itemId); e.emailDraft = null; e.emailStatus = "Not drafted"; save(); render(); toast("Draft discarded."); return; }
     if (action === "call-tab") { ui.callTab = value; render(); return; }
-    if (action === "add-slot") return openModal("Add a public call slot", "Only these available times appear on the public booking page.", `<form data-form="add-slot"><div class="form-grid"><label>Date<input name="date" type="date" required value="2026-10-08"></label><label>Start time<input name="time" type="time" required value="14:00"></label><label>Duration<select name="duration">${[30, 45, 60].map(x => option(String(x))).join("")}</select></label></div><div class="form-actions"><button class="btn primary" type="submit">Publish slot</button></div></form>`);
+    if (action === "add-slot") { const date = routeParts().slice(0, 2).join("/") === "office/calendar" ? ui.officeCalendarDate : "2026-10-08"; return openModal("Add a public call slot", "Only these available times appear on the public booking page.", `<form data-form="add-slot"><div class="form-grid"><label>Date<input name="date" type="date" required value="${attr(date)}"></label><label>Start time<input name="time" type="time" required value="14:00"></label><label>Duration<select name="duration">${[30, 45, 60].map(x => option(String(x))).join("")}</select></label></div><div class="form-actions"><button class="btn primary" type="submit">Publish slot</button></div></form>`); }
     if (action === "resolve-call") { const c = find(state.calls, itemId), slots = availableSlots(); if (!slots.length) return toast("Publish another open slot before rescheduling."); return openModal("Resolve call change", "Choose a published time and record the office response.", `<form data-form="resolve-call" data-id="${attr(c.id)}"><p class="muted">${esc(c.name)} · ${esc(c.id)}</p><label>New call time<select name="slotId">${slots.map(s => `<option value="${attr(s.id)}">${dateLabel(s.date)} · ${esc(s.time)}</option>`).join("")}</select></label><div class="spacer" style="height:12px"></div><label>Participant communication<textarea name="response" required placeholder="Record the new time and how it was confirmed."></textarea></label><div class="form-actions"><button class="btn primary" type="submit">Confirm new time</button></div></form>`); }
     if (action === "remove-slot") { const slot = find(state.slots, itemId); if (state.calls.some(c => c.slotId === itemId && c.status === "Booked")) return toast("A booked slot cannot be removed."); state.slots = state.slots.filter(s => s.id !== itemId); activity("Public call slot removed", `${dateLabel(slot.date)} · ${slot.time}`); save(); render(); toast("Slot removed."); return; }
     if (action === "participant-tab") { ui.participantTab = value; render(); return; }
@@ -414,6 +473,18 @@
     if (action === "schedule-prev") { ui.scheduleWeekStart = addDays(ui.scheduleWeekStart, -7); render(); return; }
     if (action === "schedule-next") { ui.scheduleWeekStart = addDays(ui.scheduleWeekStart, 7); render(); return; }
     if (action === "schedule-demo-week") { ui.scheduleWeekStart = "2026-10-05"; render(); return; }
+    if (["calendar-prev", "calendar-next", "calendar-demo", "calendar-day"].includes(action)) {
+      const area = routeParts()[0] === "worker" ? "worker" : "office";
+      const monthKey = area === "office" ? "officeCalendarMonth" : "workerCalendarMonth";
+      const dateKey = area === "office" ? "officeCalendarDate" : "workerCalendarDate";
+      if (action === "calendar-day") { ui[dateKey] = button.dataset.date; ui[monthKey] = `${button.dataset.date.slice(0, 7)}-01`; }
+      else if (action === "calendar-demo") { ui[monthKey] = "2026-10-01"; ui[dateKey] = "2026-10-05"; }
+      else { const next = dateObj(ui[monthKey]); next.setUTCMonth(next.getUTCMonth() + (action === "calendar-next" ? 1 : -1)); ui[monthKey] = next.toISOString().slice(0, 10); ui[dateKey] = calendarEvents(area).find(e => e.date.slice(0, 7) === ui[monthKey].slice(0, 7))?.date || ui[monthKey]; }
+      render();
+      if (action === "calendar-day" && window.innerWidth <= 760) { const agenda = document.querySelector(".calendar-agenda"); agenda?.focus({ preventScroll: true }); agenda?.scrollIntoView({ block: "start" }); }
+      else document.querySelector(action === "calendar-day" ? ".calendar-day.selected" : `[data-action="${action}"]`)?.focus({ preventScroll: true });
+      return;
+    }
     if (action === "mark-cover") { const b = booking(itemId); if (b.status !== "Confirmed") return; b.status = "Needs cover"; activity(`Cover needed for ${participant(b.participantId)?.name}`, `${b.id} · office to resolve`); save(); render(); toast("Booking marked Needs cover."); return; }
     if (action === "cancel-booking") { const b = booking(itemId); return openModal("Record cancellation", "A cancellation does not create a charge automatically.", `<form data-form="cancel-booking" data-id="${attr(b.id)}"><div class="form-grid"><label>Cancelled by<select name="cause">${option("Participant")}${option("Provider / worker")}</select></label><label>Notice received<input name="notice" type="datetime-local" required value="2026-10-05T10:00"></label><label class="full">Office note<textarea name="note" required placeholder="Record the notice and communication."></textarea></label></div><div class="form-actions"><button class="btn danger" type="submit">Record cancellation</button></div></form>`); }
     if (action === "correct-visit") { const v = find(state.visits, itemId); return openModal("Correct visit time", "The original value and reason stay in the history.", `<form data-form="correct-visit" data-id="${attr(v.id)}"><div class="form-grid"><label>Field<select name="field">${option("Clock in")}${option("Clock out")}</select></label><label>Corrected time<input name="time" type="time" required></label><label class="full">Reason<textarea name="reason" required placeholder="Why is this correction needed?"></textarea></label></div><div class="form-actions"><button class="btn primary" type="submit">Save correction</button></div></form>`); }
