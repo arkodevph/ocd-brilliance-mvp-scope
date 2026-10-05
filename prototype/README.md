@@ -1,6 +1,6 @@
 # OCD Brilliance operations prototype
 
-A navigable frontend demonstration of the first-release scope in the internal MVP PRD (version 1.2). Open [the live demo](https://rovicsom.github.io/ocd-brilliance-mvp-scope/prototype/) or serve this repository locally:
+A navigable frontend demonstration of the first-release scope in the internal MVP PRD (version 1.2). Open [the live demo](https://ocd-demo-system.vercel.app/prototype/) or serve this repository locally:
 
 ```bash
 python3 -m http.server 8000

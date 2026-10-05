@@ -2,8 +2,8 @@
 
 Client-facing presentation and interactive frontend prototype for the proposed OCD Brilliance operations platform MVP.
 
-- [Scope presentation](https://rovicsom.github.io/ocd-brilliance-mvp-scope/) — twelve-slide widescreen deck.
-- [Interactive prototype](https://rovicsom.github.io/ocd-brilliance-mvp-scope/prototype/) — office, worker, client and public views.
+- [Scope presentation](https://ocd-demo-system.vercel.app/) — twelve-slide widescreen deck.
+- [Interactive prototype](https://ocd-demo-system.vercel.app/prototype/) — office, worker, client and public views.
 
 The presentation is in `index.html`. Navigate with the on-screen arrows, keyboard arrow keys, Page Up/Down, Home, or End. The browser's Print command produces a landscape PDF.
 
