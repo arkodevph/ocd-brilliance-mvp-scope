@@ -3,1165 +3,366 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#004d30">
-  <meta name="description" content="OCD Brilliance internal operations platform — MVP project scope presentation.">
-  <title>OCD Brilliance — MVP Project Scope</title>
+  <meta name="theme-color" content="#073f31">
+  <meta name="description" content="OCD Brilliance MVP scope: a visual, client-facing presentation of the proposed operations platform and pilot.">
+  <title>OCD Brilliance — MVP scope</title>
+  <link rel="icon" href="prototype/assets/ocd-brilliance-logo.png">
   <style>
-    :root {
-      --forest: #006f45;
-      --deep: #003e2c;
-      --deepest: #002e1c;
-      --lime: #8dc63f;
-      --mint: #eaf4e8;
-      --paper: #f8faf6;
-      --white: #ffffff;
-      --ink: #14241b;
-      --muted: #526458;
-      --line: #d9e6d9;
-      --font: Inter, "Helvetica Neue", Arial, sans-serif;
-    }
+    :root { --deep:#073f31; --forest:#087b55; --lime:#a9dc5e; --ink:#18352b; --muted:#526b5e; --paper:#f6f8f2; --line:#dbe7dc; --white:#fff; --gold:#f2b84b; font-family:Inter,Arial,Helvetica,sans-serif; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; min-height:100%; }
+    body { background:#dce6dc; display:grid; place-items:center; overflow:hidden; color:var(--ink); -webkit-font-smoothing:antialiased; }
+    button,a { font:inherit; }
+    button:focus-visible,a:focus-visible { outline:.28cqw solid var(--gold); outline-offset:.25cqw; }
+    #deck { width:min(100vw,177.7778vh); aspect-ratio:16/9; position:relative; overflow:hidden; container-type:inline-size; background:var(--paper); box-shadow:0 1.5cqw 6cqw #173d2f28; }
+    .slide { display:none; position:absolute; inset:0; overflow:hidden; padding:4.3cqw 5.3cqw 5.2cqw; background:var(--paper); }
+    .slide.active { display:flex; flex-direction:column; }
+    .slide.dark { background:var(--deep); color:var(--white); }
+    .slide.accent { background:#e9f3e8; }
+    .eyebrow { margin:0; font-size:1.03cqw; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--forest); }
+    .dark .eyebrow { color:var(--lime); }
+    h1,h2,h3,p { margin-top:0; }
+    h1,h2 { letter-spacing:-.055em; }
+    h1 { font-size:5.1cqw; line-height:1.03; font-weight:700; }
+    h2 { font-size:3.9cqw; line-height:1.07; font-weight:700; margin:.9cqw 0 0; max-width:82cqw; }
+    h3 { font-size:1.55cqw; line-height:1.2; margin:0 0 .5cqw; }
+    .lede { font-size:1.33cqw; line-height:1.42; color:var(--muted); margin:1.1cqw 0 0; max-width:70cqw; }
+    .dark .lede { color:#d3e7da; }
+    .slide-foot { position:absolute; left:5.3cqw; right:5.3cqw; bottom:2.15cqw; border-top:1px solid var(--line); padding-top:.8cqw; display:flex; justify-content:space-between; gap:2cqw; font-size:.88cqw; line-height:1.2; color:#60786a; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .dark .slide-foot { border-color:#ffffff38; color:#b9d3c3; }
+    .screenshot { display:block; width:100%; height:100%; object-fit:cover; object-position:top left; }
+    .window { overflow:hidden; border:.1cqw solid #d8e3db; border-radius:1.25cqw; background:white; box-shadow:0 2cqw 5cqw #103b2c28; }
+    .window-bar { height:2.15cqw; background:#fff; display:flex; align-items:center; gap:.42cqw; padding:0 1cqw; border-bottom:1px solid #e3ece5; }
+    .window-bar i { width:.5cqw; height:.5cqw; border-radius:50%; background:#bfd3c4; }
+    .window-bar span { margin-left:auto; color:#8aa094; font-size:.72cqw; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+    .screen { overflow:hidden; height:calc(100% - 2.15cqw); }
+    .screen img { width:100%; height:auto; display:block; }
+    .tag { display:inline-flex; align-items:center; gap:.5cqw; border-radius:999px; padding:.55cqw .85cqw; font-size:.95cqw; line-height:1.1; font-weight:800; letter-spacing:.03em; text-transform:uppercase; }
+    .tag.green { background:#e1f0df; color:#116440; }
+    .tag.white { background:#ffffff; color:var(--deep); }
+    .tag.gold { background:#fff1d4; color:#8a5100; }
+    .dot { width:.5cqw; height:.5cqw; border-radius:50%; background:currentColor; }
+    .mini-label { font-size:.93cqw; letter-spacing:.15em; font-weight:800; text-transform:uppercase; color:var(--forest); }
+    .dark .mini-label { color:var(--lime); }
+    .callout { border-left:.36cqw solid var(--lime); padding:.2cqw 0 .2cqw 1cqw; }
+    .callout strong { display:block; font-size:1.5cqw; line-height:1.18; letter-spacing:-.025em; }
+    .callout p { margin:.45cqw 0 0; font-size:1.08cqw; line-height:1.33; color:var(--muted); }
+    .dark .callout p { color:#d3e7da; }
+    .rail { display:flex; flex-direction:column; gap:2.35cqw; }
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
-    body {
-      background: #dfe8df;
-      color: var(--ink);
-      font-family: var(--font);
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-    button { font: inherit; }
-    #deck {
-      width: min(100vw, 177.7778vh);
-      aspect-ratio: 16 / 9;
-      position: relative;
-      overflow: hidden;
-      container-type: inline-size;
-      background: var(--paper);
-      box-shadow: 0 1.8cqw 5cqw rgba(20, 45, 28, .16);
-    }
-    .slide {
-      display: none;
-      position: absolute;
-      inset: 0;
-      padding: 4.5cqw 5.5cqw 5.2cqw;
-      background: var(--paper);
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .slide.active { display: flex; }
-    .slide::before {
-      content: "";
-      position: absolute;
-      width: .35cqw;
-      height: 3.2cqw;
-      background: var(--lime);
-      left: 0;
-      top: 4.6cqw;
-    }
-    .kicker {
-      margin: 0;
-      color: var(--forest);
-      font-size: 1.02cqw;
-      font-weight: 700;
-      letter-spacing: .17em;
-      line-height: 1.3;
-      text-transform: uppercase;
-    }
-    .section-title {
-      margin: 1.18cqw 0 0;
-      max-width: 81cqw;
-      color: var(--ink);
-      font-size: 3.58cqw;
-      font-weight: 600;
-      letter-spacing: -.055em;
-      line-height: 1.07;
-    }
-    .section-lead {
-      margin: 1.05cqw 0 0;
-      max-width: 73cqw;
-      color: var(--muted);
-      font-size: 1.32cqw;
-      line-height: 1.43;
-      letter-spacing: -.015em;
-    }
-    .slide-footer {
-      position: absolute;
-      left: 5.5cqw;
-      right: 5.5cqw;
-      bottom: 2.25cqw;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: .9cqw;
-      border-top: 1px solid var(--line);
-      color: #718176;
-      font-size: .86cqw;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-    .slide-footer .print-number { display: none; }
-    .emphasis { color: var(--forest); }
+    .cover { padding:0; }
+    .cover::before { content:""; position:absolute; right:-9cqw; top:-25cqw; width:75cqw; height:75cqw; border:1px solid #ffffff24; border-radius:50%; }
+    .cover::after { content:""; position:absolute; right:5cqw; top:-13cqw; width:53cqw; height:53cqw; border:1px solid #ffffff20; border-radius:50%; }
+    .cover-copy { position:relative; z-index:2; width:49%; padding:4.1cqw 0 4.9cqw 5.3cqw; display:flex; flex-direction:column; align-items:flex-start; }
+    .cover-logo { width:15.5cqw; height:auto; background:#fff; padding:.65cqw .9cqw; border-radius:.8cqw; }
+    .cover-copy .eyebrow { margin:auto 0 1cqw; }
+    .cover h1 { max-width:43cqw; margin:0; }
+    .cover .lede { max-width:39cqw; margin:1.7cqw 0 0; }
+    .cover-meta { margin-top:auto; display:flex; gap:2cqw; align-items:center; color:#bcd7c4; font-size:.98cqw; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
+    .cover-art { position:absolute; z-index:1; left:50.5%; right:-12cqw; top:7.3cqw; bottom:8.2cqw; transform:rotate(-4deg); }
+    .cover-art .window { height:100%; box-shadow:0 3cqw 8cqw #001d1690; }
+    .cover-art .screen img { width:135%; }
+    .cover-ticket { position:absolute; z-index:2; left:51%; bottom:7.1cqw; width:23cqw; padding:1.15cqw 1.4cqw; background:var(--lime); color:var(--deep); border-radius:1cqw; box-shadow:0 1cqw 3cqw #001d1660; transform:rotate(3deg); }
+    .cover-ticket span { display:block; font-size:.82cqw; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .cover-ticket strong { display:block; margin-top:.35cqw; font-size:1.5cqw; line-height:1.15; letter-spacing:-.03em; }
 
-    /* Cover */
-    .slide.cover {
-      padding: 0;
-      background: #f7faf5;
-      display: none;
-      flex-direction: row;
-    }
-    .slide.cover.active { display: flex; }
-    .slide.cover::before { display: none; }
-    .cover-left {
-      position: relative;
-      width: 61%;
-      height: 100%;
-      padding: 4.4cqw 5.5cqw 5.2cqw;
-      display: flex;
-      flex-direction: column;
-    }
-    .brand-logo {
-      width: 17.4cqw;
-      height: auto;
-      display: block;
-    }
-    .cover-copy { margin: auto 0 4.1cqw; }
-    .cover h1 {
-      max-width: 53cqw;
-      margin: 1.15cqw 0 0;
-      font-size: 4.68cqw;
-      line-height: 1.04;
-      letter-spacing: -.067em;
-      font-weight: 600;
-    }
-    .cover .subtitle {
-      max-width: 47cqw;
-      margin: 1.65cqw 0 0;
-      color: var(--muted);
-      font-size: 1.4cqw;
-      line-height: 1.48;
-    }
-    .cover-meta {
-      border-top: 1px solid var(--line);
-      padding-top: 1.15cqw;
-      display: flex;
-      gap: 3cqw;
-      color: #617166;
-      font-size: .93cqw;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-    .cover-right {
-      position: relative;
-      width: 39%;
-      height: 100%;
-      background: var(--deep);
-      color: var(--white);
-      padding: 5.45cqw 4.5cqw 5.1cqw;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-    .cover-right::before,
-    .cover-right::after {
-      content: "";
-      position: absolute;
-      border: 1px solid rgba(194, 225, 194, .19);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .cover-right::before { width: 49cqw; height: 49cqw; top: -27cqw; right: -18cqw; }
-    .cover-right::after { width: 33cqw; height: 33cqw; top: -19cqw; right: -10cqw; }
-    .cover-side-label {
-      position: absolute;
-      top: 5.3cqw;
-      left: 4.5cqw;
-      color: #b9dcba;
-      font-size: 1cqw;
-      font-weight: 700;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-    }
-    .cover-flow {
-      position: relative;
-      display: grid;
-      gap: 1.65cqw;
-      margin-bottom: 1cqw;
-    }
-    .cover-flow-item { display: flex; align-items: baseline; gap: 1.25cqw; }
-    .cover-flow-item span {
-      color: var(--lime);
-      font-size: 1.02cqw;
-      font-weight: 700;
-      letter-spacing: .08em;
-    }
-    .cover-flow-item strong {
-      color: #f3f8f2;
-      font-size: 2cqw;
-      font-weight: 500;
-      letter-spacing: -.04em;
-    }
-    .cover-flow-line { width: 100%; height: 1px; background: rgba(220, 244, 218, .23); }
+    .journey .journey-stage { position:relative; margin-top:3.9cqw; display:grid; grid-template-columns:repeat(5,1fr); gap:1cqw; }
+    .journey-stage::before { content:""; position:absolute; left:5cqw; right:5cqw; top:3cqw; border-top:.23cqw dashed #9dc6a5; }
+    .journey-step { position:relative; z-index:1; }
+    .journey-icon { width:6cqw; height:6cqw; display:grid; place-items:center; background:white; border:.12cqw solid #cde2d1; border-radius:50%; box-shadow:0 .8cqw 2cqw #173d2f14; font-size:2.5cqw; color:var(--forest); }
+    .journey-step:nth-child(3) .journey-icon { background:var(--deep); color:var(--lime); border-color:var(--deep); }
+    .journey-step b { display:block; margin-top:1.35cqw; font-size:1.5cqw; line-height:1.1; letter-spacing:-.03em; }
+    .journey-step p { margin:.7cqw 0 0; color:var(--muted); font-size:1.04cqw; line-height:1.35; max-width:15cqw; }
+    .journey-note { margin-top:auto; margin-bottom:3.5cqw; display:flex; align-items:center; gap:1cqw; padding:1.3cqw 1.6cqw; border-radius:1cqw; background:#e1efdf; color:#16543a; font-size:1.2cqw; font-weight:650; }
+    .journey-note strong { font-size:1.4cqw; }
 
-    /* Scope summary */
-    .scope-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: .88cqw;
-      margin-top: 2.05cqw;
-    }
-    .scope-card {
-      min-height: 12.95cqw;
-      padding: 1.22cqw 1.3cqw;
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: .45cqw;
-      display: flex;
-      flex-direction: column;
-    }
-    .scope-card .number {
-      color: var(--forest);
-      font-size: .9cqw;
-      font-weight: 700;
-      letter-spacing: .1em;
-    }
-    .scope-card h3 {
-      margin: auto 0 .5cqw;
-      font-size: 1.52cqw;
-      line-height: 1.13;
-      letter-spacing: -.045em;
-      font-weight: 600;
-    }
-    .scope-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.02cqw;
-      line-height: 1.44;
-    }
-    .scope-note {
-      display: flex;
-      align-items: center;
-      gap: 1.2cqw;
-      margin-top: 1.05cqw;
-      padding: 1.2cqw 1.55cqw;
-      border-left: .25cqw solid var(--lime);
-      background: #eaf4e8;
-      color: #284e34;
-      font-size: 1.18cqw;
-      line-height: 1.35;
-    }
-    .scope-note strong { font-weight: 700; }
+    .split-layout { display:grid; grid-template-columns:32cqw 1fr; gap:3cqw; align-items:center; flex:1; min-height:0; margin-top:1.2cqw; }
+    .split-layout.reverse { grid-template-columns:1fr 31cqw; }
+    .split-layout .window { height:36cqw; }
+    .split-layout .window .screen img { width:112%; }
+    .split-layout .rail { align-self:center; }
+    .feature-top { max-width:75cqw; }
+    .feature-top h2 { max-width:72cqw; }
+    .feature-top .lede { max-width:70cqw; }
 
-    /* Journey */
-    .journey-grid {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: .85cqw;
-      margin-top: 3.4cqw;
-    }
-    .journey-step {
-      position: relative;
-      min-height: 22.9cqw;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-top: .25cqw solid var(--forest);
-      padding: 1.5cqw 1.15cqw 1.25cqw;
-      display: flex;
-      flex-direction: column;
-    }
-    .journey-step .step-number {
-      color: var(--forest);
-      font-size: 1.04cqw;
-      font-weight: 700;
-      letter-spacing: .13em;
-    }
-    .journey-step h3 {
-      margin: 5.9cqw 0 .75cqw;
-      font-size: 1.5cqw;
-      line-height: 1.1;
-      letter-spacing: -.04em;
-      font-weight: 650;
-    }
-    .journey-step p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.06cqw;
-      line-height: 1.42;
-    }
-    .journey-notes {
-      display: flex;
-      gap: 2.1cqw;
-      align-items: center;
-      margin-top: 1.7cqw;
-      color: #315842;
-      font-size: 1.08cqw;
-    }
-    .journey-notes span::before {
-      content: "";
-      display: inline-block;
-      width: .45cqw;
-      height: .45cqw;
-      border-radius: 50%;
-      margin: 0 .7cqw .1cqw 0;
-      background: var(--lime);
-    }
+    .front-door .front-visual { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:2.4cqw; margin:2.3cqw 0 1.2cqw; }
+    .visual-pair { min-height:0; display:flex; flex-direction:column; gap:1cqw; }
+    .visual-pair .window { flex:1; min-height:0; }
+    .visual-pair .screen img { width:114%; }
+    .visual-caption { display:flex; justify-content:space-between; align-items:center; gap:1cqw; font-size:1.12cqw; font-weight:750; }
+    .visual-caption span:last-child { font-size:.95cqw; color:var(--muted); font-weight:600; }
 
-    /* Office */
-    .office-layout {
-      display: grid;
-      grid-template-columns: 1.18fr .82fr;
-      gap: 4.2cqw;
-      margin-top: 2.65cqw;
-      align-items: stretch;
-      flex: 1;
-      min-height: 0;
-      padding-bottom: 2.25cqw;
-    }
-    .feature-list { display: flex; flex-direction: column; justify-content: space-between; }
-    .feature-row {
-      display: grid;
-      grid-template-columns: 2.4cqw 1fr;
-      column-gap: 1cqw;
-      padding: 1.2cqw 0;
-      border-top: 1px solid var(--line);
-    }
-    .feature-row:last-child { border-bottom: 1px solid var(--line); }
-    .feature-index {
-      color: var(--forest);
-      font-size: .98cqw;
-      font-weight: 750;
-      letter-spacing: .1em;
-    }
-    .feature-row h3 {
-      margin: 0 0 .36cqw;
-      font-size: 1.46cqw;
-      font-weight: 600;
-      letter-spacing: -.035em;
-    }
-    .feature-row p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.08cqw;
-      line-height: 1.39;
-    }
-    .dashboard-card {
-      background: #eaf3e9;
-      border: 1px solid #d2e4d3;
-      border-radius: .6cqw;
-      padding: 1.8cqw;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 1cqw 3cqw rgba(0, 74, 45, .055);
-    }
-    .dashboard-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.2cqw;
-    }
-    .dashboard-card-header strong {
-      font-size: 1.2cqw;
-      letter-spacing: -.02em;
-    }
-    .dashboard-card-header span {
-      color: var(--forest);
-      font-size: .78cqw;
-      font-weight: 700;
-      letter-spacing: .11em;
-      text-transform: uppercase;
-    }
-    .dashboard-row {
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.14cqw 1.15cqw;
-      border-bottom: 1px solid #e3ece3;
-      font-size: 1.07cqw;
-      font-weight: 550;
-    }
-    .dashboard-row:first-of-type { border-radius: .35cqw .35cqw 0 0; }
-    .dashboard-row:last-of-type { border-radius: 0 0 .35cqw .35cqw; border-bottom: 0; }
-    .dashboard-row i {
-      width: .55cqw;
-      height: .55cqw;
-      border-radius: 50%;
-      background: var(--forest);
-      flex: none;
-    }
-    .dashboard-caption {
-      margin-top: auto;
-      padding-top: 1.2cqw;
-      color: #53695a;
-      font-size: .95cqw;
-      line-height: 1.35;
-    }
+    .office-visual { position:relative; flex:1; min-height:0; display:grid; grid-template-columns:62cqw 1fr; gap:2.2cqw; margin:2cqw 0 1.1cqw; }
+    .office-visual .window { height:100%; }
+    .office-visual .screen img { width:113%; }
+    .office-visual .rail { justify-content:center; }
 
-    /* Public entry points and assisted workflows */
-    .two-up {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.4cqw;
-      margin-top: 2.7cqw;
-      flex: 1;
-      min-height: 0;
-      padding-bottom: 2.25cqw;
-    }
-    .two-up-card {
-      display: flex;
-      flex-direction: column;
-      padding: 1.8cqw 2cqw;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: .5cqw;
-    }
-    .two-up-card.tint { background: var(--mint); }
-    .two-up-card.dark { background: var(--deep); color: #fff; border-color: var(--deep); }
-    .two-up-card .card-label {
-      color: var(--forest);
-      font-size: .92cqw;
-      font-weight: 750;
-      letter-spacing: .13em;
-      text-transform: uppercase;
-    }
-    .two-up-card.dark .card-label { color: #b9dbb8; }
-    .two-up-card h3 {
-      margin: .7cqw 0 .6cqw;
-      font-size: 2.02cqw;
-      letter-spacing: -.045em;
-      line-height: 1.12;
-      font-weight: 600;
-    }
-    .two-up-card .intro {
-      margin: 0 0 1.1cqw;
-      color: var(--muted);
-      font-size: 1.08cqw;
-      line-height: 1.4;
-    }
-    .two-up-card.dark .intro { color: #d5e7d7; }
-    .two-up-card ul { list-style: none; margin: auto 0 0; padding: 0; }
-    .two-up-card li {
-      display: grid;
-      grid-template-columns: 1.5cqw 1fr;
-      gap: .75cqw;
-      align-items: baseline;
-      padding: .72cqw 0;
-      border-top: 1px solid var(--line);
-      font-size: 1.13cqw;
-      line-height: 1.35;
-    }
-    .two-up-card.dark li { border-color: rgba(255,255,255,.2); }
-    .two-up-card li::before { content: "•"; color: var(--forest); font-size: 1.3cqw; }
-    .two-up-card.dark li::before { color: var(--lime); }
-    .two-up-note {
-      position: absolute;
-      bottom: 5.75cqw;
-      left: 5.5cqw;
-      color: #45614a;
-      font-size: 1cqw;
-    }
+    .approval-flow { flex:1; min-height:0; display:grid; grid-template-columns:repeat(3,1fr); gap:1.5cqw; align-items:stretch; margin:2.4cqw 0 1.5cqw; }
+    .approval-card { background:#fff; border:1px solid var(--line); border-radius:1.25cqw; padding:2cqw; display:flex; flex-direction:column; box-shadow:0 1cqw 2.8cqw #15382b12; }
+    .approval-card.highlight { background:var(--deep); color:white; border-color:var(--deep); }
+    .approval-card .card-no { font-size:.95cqw; font-weight:800; letter-spacing:.16em; color:var(--forest); }
+    .approval-card.highlight .card-no { color:var(--lime); }
+    .approval-card .card-symbol { font-size:3.8cqw; color:var(--forest); margin:1.5cqw 0; line-height:1; }
+    .approval-card.highlight .card-symbol { color:var(--lime); }
+    .approval-card h3 { font-size:2.1cqw; letter-spacing:-.05em; }
+    .approval-card p { font-size:1.15cqw; line-height:1.4; color:var(--muted); margin:.4cqw 0 0; }
+    .approval-card.highlight p { color:#d4eadc; }
+    .approval-card .card-foot { margin-top:auto; padding-top:1.5cqw; border-top:1px solid var(--line); font-size:1cqw; font-weight:750; color:var(--forest); }
+    .approval-card.highlight .card-foot { border-color:#ffffff42; color:var(--lime); }
+    .approval-rule { margin:0 0 2cqw; padding:1cqw 1.4cqw; border-radius:.9cqw; background:#dff0dc; color:#18543a; font-size:1.13cqw; font-weight:700; }
 
-    /* Route and fee calculations */
-    .fee-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1.18cqw;
-      margin-top: 3cqw;
-    }
-    .fee-card {
-      min-height: 20.1cqw;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-top: .28cqw solid var(--forest);
-      padding: 1.6cqw;
-      display: flex;
-      flex-direction: column;
-    }
-    .fee-card span {
-      color: var(--forest);
-      font-size: .97cqw;
-      font-weight: 750;
-      letter-spacing: .12em;
-    }
-    .fee-card h3 {
-      margin: auto 0 .65cqw;
-      font-size: 1.78cqw;
-      font-weight: 600;
-      letter-spacing: -.04em;
-    }
-    .fee-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.08cqw;
-      line-height: 1.42;
-    }
-    .fee-note {
-      display: flex;
-      gap: 1.3cqw;
-      align-items: center;
-      margin-top: 1.25cqw;
-      padding: 1.15cqw 1.35cqw;
-      border-left: .24cqw solid var(--lime);
-      background: var(--mint);
-      color: #315740;
-      font-size: 1.08cqw;
-      line-height: 1.4;
-    }
+    .schedule .split-layout { grid-template-columns:61cqw 1fr; }
+    .schedule .screen img { width:111%; }
+    .cover-alert { padding:1.2cqw 1.3cqw; background:#fff0d1; border-radius:.9cqw; color:#825000; font-size:1.08cqw; line-height:1.35; font-weight:700; }
 
-    /* Scheduling */
-    .schedule-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2.3cqw;
-      margin-top: 3cqw;
-      flex: 1;
-      min-height: 0;
-      padding-bottom: 1.9cqw;
-    }
-    .schedule-rules {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1.12cqw;
-    }
-    .schedule-rule {
-      display: flex;
-      gap: 1.35cqw;
-      align-items: flex-start;
-      padding: 1.1cqw 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .schedule-rule .rule-mark {
-      width: 2.35cqw;
-      height: 2.35cqw;
-      flex: none;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--mint);
-      color: var(--forest);
-      font-size: 1.12cqw;
-      font-weight: 700;
-    }
-    .schedule-rule h3 { margin: 0 0 .35cqw; font-size: 1.37cqw; letter-spacing: -.03em; }
-    .schedule-rule p { margin: 0; color: var(--muted); font-size: 1.09cqw; line-height: 1.42; }
-    .cover-panel {
-      background: var(--deep);
-      color: #fff;
-      border-radius: .55cqw;
-      padding: 2.2cqw 2.45cqw;
-      display: flex;
-      flex-direction: column;
-    }
-    .cover-panel .panel-label {
-      color: #b8d8ba;
-      font-size: .89cqw;
-      letter-spacing: .14em;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .cover-panel h3 {
-      margin: .9cqw 0 1.65cqw;
-      font-size: 2.02cqw;
-      letter-spacing: -.045em;
-      font-weight: 550;
-      line-height: 1.17;
-    }
-    .cover-sequence {
-      display: grid;
-      grid-template-columns: 2.25cqw 1fr;
-      column-gap: 1cqw;
-      row-gap: 1.1cqw;
-      align-items: start;
-      margin-bottom: auto;
-    }
-    .cover-sequence span {
-      color: var(--lime);
-      font-size: 1cqw;
-      font-weight: 700;
-    }
-    .cover-sequence p {
-      margin: 0;
-      padding-bottom: 1cqw;
-      border-bottom: 1px solid rgba(255,255,255,.19);
-      font-size: 1.21cqw;
-      line-height: 1.35;
-    }
-    .cover-panel .panel-foot {
-      border-top: 1px solid rgba(255,255,255,.26);
-      padding-top: 1cqw;
-      color: #d8e9d6;
-      font-size: 1cqw;
-      line-height: 1.4;
-    }
+    .visit-layout { display:grid; grid-template-columns:29cqw 1fr; gap:5cqw; flex:1; min-height:0; align-items:center; margin-top:1.2cqw; }
+    .phone { height:30.5cqw; width:15.6cqw; padding:.5cqw; border-radius:1.8cqw; background:#173e31; box-shadow:1.2cqw 1.8cqw 4cqw #173e3133; transform:rotate(-3deg); margin-left:9cqw; }
+    .phone-screen { width:100%; height:100%; overflow:hidden; border-radius:1.65cqw; background:#fff; }
+    .phone-screen img { width:100%; height:auto; display:block; }
+    .visit-side { display:grid; gap:1.6cqw; }
+    .visit-chain { display:flex; align-items:stretch; gap:.8cqw; }
+    .visit-chain div { flex:1; border-top:.35cqw solid var(--forest); padding-top:1cqw; font-size:1.17cqw; font-weight:750; line-height:1.25; }
+    .visit-chain div:last-child { border-color:var(--lime); }
+    .visit-chain small { display:block; margin-top:.5cqw; font-size:.94cqw; color:var(--muted); font-weight:500; }
+    .visit-side .callout { max-width:53cqw; }
 
-    /* Visit */
-    .visit-track {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.15cqw;
-      margin-top: 3.5cqw;
-    }
-    .visit-item {
-      min-height: 19.8cqw;
-      padding: 1.6cqw;
-      border: 1px solid var(--line);
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-    }
-    .visit-item .visit-symbol {
-      width: 3.2cqw;
-      height: 3.2cqw;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--mint);
-      color: var(--forest);
-      font-size: 1.28cqw;
-      font-weight: 700;
-    }
-    .visit-item h3 {
-      margin: auto 0 .6cqw;
-      font-size: 1.75cqw;
-      font-weight: 600;
-      letter-spacing: -.04em;
-    }
-    .visit-item p { margin: 0; color: var(--muted); font-size: 1.09cqw; line-height: 1.42; }
-    .visit-notes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.15cqw;
-      margin-top: 1.3cqw;
-    }
-    .visit-note {
-      border-left: .22cqw solid var(--lime);
-      background: var(--mint);
-      padding: 1.12cqw 1.3cqw;
-      color: #315540;
-      font-size: 1.08cqw;
-      line-height: 1.38;
-    }
+    .fee-layout { flex:1; min-height:0; display:grid; grid-template-columns:59cqw 1fr; align-items:center; gap:2.8cqw; margin-top:1.6cqw; }
+    .fee-layout .window { height:34.5cqw; }
+    .fee-layout .screen img { width:112%; }
+    .fee-side { display:flex; flex-direction:column; gap:1.2cqw; }
+    .formula { padding:1.2cqw 1.4cqw; background:#e3f0dd; border-radius:1cqw; font-size:1.1cqw; line-height:1.4; font-weight:750; color:#135c3d; }
+    .formula span { display:block; color:var(--forest); font-size:.86cqw; text-transform:uppercase; letter-spacing:.13em; margin-bottom:.3cqw; }
 
-    /* Scope boundary */
-    .boundary-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5cqw;
-      margin-top: 2.55cqw;
-      flex: 1;
-      min-height: 0;
-      padding-bottom: 2.7cqw;
-    }
-    .boundary-box {
-      padding: 1.55cqw 1.8cqw;
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: .45cqw;
-    }
-    .boundary-box.later { background: #f0f5ef; }
-    .boundary-box h3 {
-      display: flex;
-      align-items: center;
-      gap: .75cqw;
-      margin: 0 0 1cqw;
-      font-size: 1.56cqw;
-      font-weight: 650;
-      letter-spacing: -.035em;
-    }
-    .boundary-box h3::before {
-      content: "";
-      width: .6cqw;
-      height: .6cqw;
-      border-radius: 50%;
-      background: var(--forest);
-    }
-    .boundary-box.later h3::before { background: #9db19d; }
-    .boundary-box ul { list-style: none; margin: 0; padding: 0; }
-    .boundary-box li {
-      display: flex;
-      align-items: baseline;
-      gap: .7cqw;
-      padding: .63cqw 0;
-      border-top: 1px solid #e5eee5;
-      color: #324739;
-      font-size: 1.1cqw;
-      line-height: 1.3;
-    }
-    .boundary-box li::before { content: "—"; color: var(--forest); font-weight: 700; }
-    .boundary-note {
-      position: absolute;
-      left: 5.5cqw;
-      bottom: 5.7cqw;
-      color: #47604b;
-      font-size: .98cqw;
-      line-height: 1.3;
-    }
+    .boundary-layout { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:2cqw; margin:2.4cqw 0 1.3cqw; }
+    .boundary-block { padding:2cqw; border-radius:1.3cqw; background:#fff; border:1px solid var(--line); }
+    .boundary-block.out { background:#e6ece5; }
+    .boundary-block h3 { font-size:1.7cqw; margin-bottom:1.4cqw; }
+    .boundary-list { display:grid; gap:.8cqw; }
+    .boundary-item { display:flex; align-items:flex-start; gap:.8cqw; font-size:1.12cqw; line-height:1.3; }
+    .boundary-item b { flex:0 0 1.1cqw; color:var(--forest); }
+    .out .boundary-item b { color:#718679; }
+    .boundary-foot { font-size:1.03cqw; color:#566e5e; margin:0 0 1.5cqw; }
 
-    /* Cutover */
-    .slide.cutover { background: var(--deepest); color: #fff; }
-    .slide.cutover::before { background: var(--lime); }
-    .slide.cutover .kicker { color: #bde0bd; }
-    .slide.cutover .section-title { color: #fff; max-width: 81cqw; }
-    .slide.cutover .section-lead { color: #d0e3d1; }
-    .cutover-steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.4cqw;
-      margin-top: 3.3cqw;
-    }
-    .cutover-step {
-      border-top: 1px solid rgba(219, 243, 216, .43);
-      padding-top: 1.3cqw;
-      min-height: 17.4cqw;
-    }
-    .cutover-step span {
-      display: block;
-      color: var(--lime);
-      font-size: 1.01cqw;
-      letter-spacing: .12em;
-      font-weight: 700;
-    }
-    .cutover-step h3 {
-      margin: 1.15cqw 0 .75cqw;
-      color: #fff;
-      font-size: 2.02cqw;
-      letter-spacing: -.045em;
-      font-weight: 550;
-    }
-    .cutover-step p {
-      margin: 0;
-      max-width: 23cqw;
-      color: #d7e7d8;
-      font-size: 1.15cqw;
-      line-height: 1.45;
-    }
-    .cutover-gate {
-      margin-top: 1.5cqw;
-      padding: 1.28cqw 1.55cqw;
-      background: rgba(142, 198, 63, .11);
-      border: 1px solid rgba(180, 222, 151, .3);
-      color: #e5f3e1;
-      font-size: 1.06cqw;
-      line-height: 1.42;
-    }
-    .cutover-gate strong { color: #fff; }
-    .slide.cutover .slide-footer { border-color: rgba(255,255,255,.22); color: #b3ccba; }
+    .pilot-path { display:grid; grid-template-columns:repeat(3,1fr); gap:1.6cqw; margin:3.2cqw 0 2.7cqw; }
+    .pilot-step { position:relative; min-height:17cqw; background:#fff; color:var(--ink); padding:1.5cqw; border-radius:1.2cqw; }
+    .pilot-step::before { content:""; position:absolute; top:-.3cqw; left:1.5cqw; right:1.5cqw; height:.35cqw; background:var(--lime); }
+    .pilot-step span { display:block; font-size:1cqw; font-weight:800; letter-spacing:.15em; color:var(--forest); }
+    .pilot-step strong { display:block; font-size:2.25cqw; line-height:1.05; letter-spacing:-.05em; margin:2.5cqw 0 .7cqw; }
+    .pilot-step p { font-size:1.06cqw; line-height:1.35; color:var(--muted); margin:0; }
+    .pilot-gate { padding:1.5cqw 1.7cqw; border:1px solid #ffffff56; border-radius:.9cqw; font-size:1.3cqw; line-height:1.35; color:#d7ebdf; }
+    .pilot-gate strong { color:var(--lime); }
 
-    /* Closing */
-    .slide.closing { padding: 0; flex-direction: row; }
-    .slide.closing::before { display: none; }
-    .closing-left {
-      width: 42%;
-      height: 100%;
-      padding: 5.2cqw 4.7cqw 5.3cqw 5.5cqw;
-      background: var(--deep);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-    }
-    .closing-left .kicker { color: #b9dcb6; }
-    .closing-left h2 {
-      margin: auto 0 2.2cqw;
-      font-size: 4.05cqw;
-      line-height: 1.07;
-      letter-spacing: -.06em;
-      font-weight: 580;
-    }
-    .closing-left p:last-child {
-      max-width: 28cqw;
-      margin: 0;
-      color: #d4e5d5;
-      font-size: 1.3cqw;
-      line-height: 1.43;
-    }
-    .closing-right {
-      width: 58%;
-      padding: 5.2cqw 5.5cqw 5cqw 4.6cqw;
-      display: flex;
-      flex-direction: column;
-    }
-    .closing-right .right-label {
-      color: var(--forest);
-      font-size: 1.02cqw;
-      font-weight: 700;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-    .decision-list { margin-top: 2.2cqw; }
-    .decision {
-      display: grid;
-      grid-template-columns: 2.4cqw 1fr;
-      gap: 1.1cqw;
-      align-items: baseline;
-      padding: 1.55cqw 0;
-      border-top: 1px solid var(--line);
-    }
-    .decision:last-child { border-bottom: 1px solid var(--line); }
-    .decision span { color: var(--forest); font-size: 1.05cqw; font-weight: 700; }
-    .decision strong { font-size: 1.5cqw; font-weight: 580; letter-spacing: -.035em; }
-    .closing-policy {
-      margin-top: auto;
-      color: #53695a;
-      font-size: 1.07cqw;
-      line-height: 1.42;
-    }
-    .closing-policy strong { color: var(--deep); }
-    .closing-footer {
-      position: absolute;
-      left: 5.5cqw;
-      bottom: 2.25cqw;
-      color: #bbd5bd;
-      font-size: .86cqw;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
+    .decision-layout { display:grid; grid-template-columns:29cqw 1fr; gap:4cqw; flex:1; min-height:0; align-items:center; margin-top:1cqw; }
+    .decision-lead { font-size:2.7cqw; line-height:1.1; letter-spacing:-.05em; font-weight:700; }
+    .decision-lead span { color:var(--lime); }
+    .decision-stack { display:grid; gap:.6cqw; }
+    .decision-row { display:flex; align-items:center; gap:1.4cqw; border-bottom:1px solid #ffffff3d; padding:1.05cqw 0; font-size:1.28cqw; font-weight:650; line-height:1.25; }
+    .decision-row span { color:var(--lime); font-size:1.06cqw; font-weight:800; }
+    .decision-action { margin-top:1.4cqw; display:flex; align-items:center; gap:1.2cqw; }
+    .demo-link { display:inline-block; padding:.8cqw 1.2cqw; border-radius:.65cqw; background:var(--lime); color:var(--deep); text-decoration:none; font-size:1.05cqw; font-weight:800; }
+    .decision-action small { color:#c7dfce; font-size:.98cqw; }
 
-    /* Controls */
-    .controls {
-      position: absolute;
-      z-index: 20;
-      right: 5.3cqw;
-      bottom: 1.8cqw;
-      display: flex;
-      align-items: center;
-      gap: .55cqw;
-      color: var(--muted);
+    .controls { position:absolute; z-index:20; right:5.3cqw; bottom:1.35cqw; display:flex; align-items:center; gap:.65cqw; }
+    .nav-button { width:2.6cqw; height:2.6cqw; border-radius:50%; border:1px solid #b9d2bf; background:#fff; color:var(--deep); cursor:pointer; font-size:1.4cqw; line-height:1; display:grid; place-items:center; }
+    .nav-button:hover:not(:disabled) { background:var(--lime); }
+    .nav-button:disabled { opacity:.35; cursor:default; }
+    .count { min-width:4.7cqw; text-align:center; font-size:.94cqw; font-weight:800; color:var(--forest); }
+    .controls.on-dark .count { color:var(--white); }
+    .progress { position:absolute; z-index:20; height:.34cqw; left:0; right:0; bottom:0; background:#d6e5d6; }
+    .progress span { display:block; height:100%; width:0; background:var(--lime); transition:width .25s ease; }
+    @media (prefers-reduced-motion:reduce) { .progress span { transition:none; } }
+    @media (max-aspect-ratio:4/3) {
+      body { display:block; overflow:auto; }
+      #deck { width:100%; min-height:100svh; aspect-ratio:auto; overflow:visible; box-shadow:none; }
+      .slide,.slide.active { position:relative; inset:auto; min-height:100svh; padding:24px 20px 90px; overflow:visible; }
+      .slide:not(.active) { display:none; }
+      .slide-foot { left:20px; right:20px; bottom:54px; font-size:10px; padding-top:10px; }
+      .eyebrow,.mini-label { font-size:11px; }
+      h1 { font-size:clamp(38px,12vw,58px); }
+      h2 { font-size:clamp(32px,9vw,44px); margin-top:14px; }
+      h3 { font-size:20px; }
+      .lede { font-size:16px; margin-top:16px; }
+      .tag { padding:7px 10px; font-size:10px; }
+      .tag .dot { width:6px; height:6px; }
+      .cover.active { display:flex; flex-direction:column; padding:24px 20px 90px; }
+      .cover-copy { width:100%; padding:0; display:block; }
+      .cover-logo { width:145px; padding:7px; }
+      .cover-copy .eyebrow { margin:42px 0 12px; }
+      .cover h1,.cover .lede { max-width:none; }
+      .cover-meta { margin-top:20px; font-size:11px; }
+      .cover-art { position:relative; inset:auto; left:auto; right:auto; top:auto; bottom:auto; margin-top:28px; height:230px; transform:none; }
+      .cover-art .screen img { width:135%; }
+      .cover-ticket { left:auto; right:0; bottom:95px; width:185px; padding:10px 12px; }
+      .cover-ticket span { font-size:9px; }
+      .cover-ticket strong { font-size:15px; }
+      .window { border-radius:12px; }
+      .window-bar { height:20px; gap:4px; padding:0 9px; }
+      .window-bar i { width:5px; height:5px; }
+      .window-bar span { font-size:8px; }
+      .screen { height:calc(100% - 20px); }
+      .journey .journey-stage { grid-template-columns:1fr; gap:0; margin-top:26px; }
+      .journey-stage::before { left:24px; right:auto; top:20px; bottom:20px; border-top:0; border-left:2px dashed #9dc6a5; }
+      .journey-step { display:grid; grid-template-columns:50px 1fr; grid-template-rows:auto auto; column-gap:16px; padding:0 0 18px; }
+      .journey-icon { grid-row:span 2; width:48px; height:48px; font-size:23px; }
+      .journey-step b { margin:3px 0 0; font-size:20px; }
+      .journey-step p { margin:3px 0 0; font-size:14px; max-width:none; }
+      .journey-note { margin:12px 0 0; padding:12px; font-size:13px; }
+      .journey-note strong { font-size:14px; }
+      .front-door .front-visual,.office-visual,.split-layout,.split-layout.reverse,.schedule .split-layout,.visit-layout,.fee-layout,.boundary-layout,.decision-layout { display:flex; flex-direction:column; gap:20px; margin-top:26px; }
+      .front-door .front-visual { gap:24px; }
+      .visual-pair { gap:8px; }
+      .visual-pair .window,.office-visual .window,.split-layout .window,.fee-layout .window { height:215px; flex:none; }
+      .visual-caption { font-size:13px; }
+      .visual-caption span:last-child { font-size:11px; }
+      .callout { border-left-width:4px; padding:2px 0 2px 12px; }
+      .callout strong { font-size:20px; }
+      .callout p { font-size:14px; margin-top:5px; }
+      .rail { gap:18px; }
+      .approval-flow { display:flex; flex-direction:column; gap:12px; margin:28px 0 15px; }
+      .approval-card { padding:18px; border-radius:12px; }
+      .approval-card .card-no,.approval-card .card-foot { font-size:11px; }
+      .approval-card .card-symbol { font-size:30px; margin:8px 0; }
+      .approval-card h3 { font-size:23px; }
+      .approval-card p { font-size:14px; }
+      .approval-card .card-foot { padding-top:8px; margin-top:10px; }
+      .approval-rule { font-size:13px; padding:10px 12px; }
+      .cover-alert,.formula { padding:12px; font-size:13px; }
+      .visit-layout { align-items:stretch; }
+      .phone { width:200px; height:390px; padding:6px; border-radius:25px; margin:0 auto; }
+      .phone-screen { border-radius:19px; }
+      .visit-chain div { font-size:13px; border-top-width:3px; padding-top:8px; }
+      .visit-chain small { font-size:11px; }
+      .boundary-block { padding:18px; border-radius:12px; }
+      .boundary-block h3 { font-size:21px; margin-bottom:12px; }
+      .boundary-list { gap:9px; }
+      .boundary-item { font-size:14px; gap:8px; }
+      .boundary-item b { flex-basis:14px; }
+      .boundary-foot { font-size:13px; }
+      .pilot-path { display:flex; flex-direction:column; gap:12px; margin:28px 0; }
+      .pilot-step { min-height:0; padding:18px; border-radius:12px; }
+      .pilot-step span { font-size:11px; }
+      .pilot-step strong { font-size:25px; margin:8px 0 4px; }
+      .pilot-step p { font-size:13px; }
+      .pilot-gate { padding:12px; font-size:13px; }
+      .decision-lead { font-size:28px; }
+      .decision-stack { gap:4px; }
+      .decision-row { padding:11px 0; font-size:15px; gap:13px; }
+      .decision-row span { font-size:12px; }
+      .decision-action { margin-top:15px; flex-wrap:wrap; }
+      .demo-link { padding:10px 14px; font-size:13px; }
+      .decision-action small { font-size:12px; }
+      .controls { position:fixed; right:18px; bottom:11px; gap:8px; background:#ffffffdd; padding:5px; border-radius:999px; box-shadow:0 2px 15px #123b2930; }
+      .nav-button { width:38px; height:38px; font-size:20px; }
+      .count,.controls.on-dark .count { min-width:52px; font-size:12px; color:var(--deep); }
+      .progress { position:fixed; height:4px; }
     }
-    .controls.dark { color: #e0ebe0; }
-    .controls .count {
-      min-width: 4.9cqw;
-      text-align: center;
-      font-size: .86cqw;
-      font-weight: 700;
-      letter-spacing: .1em;
-      font-variant-numeric: tabular-nums;
-    }
-    .nav-button {
-      width: 2.28cqw;
-      height: 2.28cqw;
-      border: 1px solid rgba(74, 99, 80, .28);
-      border-radius: 50%;
-      background: rgba(255,255,255,.7);
-      color: var(--deep);
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      padding: 0;
-      font-size: 1.13cqw;
-      line-height: 1;
-    }
-    .controls.dark .nav-button { border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.1); color: #fff; }
-    .nav-button:hover { background: #fff; border-color: var(--forest); }
-    .controls.dark .nav-button:hover { background: rgba(255,255,255,.2); }
-    .nav-button:disabled { opacity: .38; cursor: default; }
-    .nav-button:focus-visible { outline: .18cqw solid var(--lime); outline-offset: .2cqw; }
-    .progress {
-      position: absolute;
-      z-index: 20;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: .2cqw;
-      background: transparent;
-    }
-    .progress span { display: block; height: 100%; width: 0; background: var(--lime); transition: width .15s ease; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
-    @media (prefers-reduced-motion: reduce) { .progress span { transition: none; } }
+    @page { size:16in 9in; margin:0; }
     @media print {
-      @page { size: 16in 9in; margin: 0; }
-      html, body { width: 16in; height: auto; overflow: visible; display: block; background: #fff; }
-      body, .slide, .cover-right, .closing-left { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      #deck { width: 16in; height: auto; aspect-ratio: auto; overflow: visible; box-shadow: none; }
-      .slide, .slide.cover, .slide.closing {
-        position: relative;
-        display: flex !important;
-        width: 16in;
-        height: 9in;
-        break-after: page;
-        page-break-after: always;
-      }
-      .slide:last-of-type { break-after: auto; page-break-after: auto; }
-      .controls, .progress { display: none !important; }
-      .slide-footer .print-number { display: inline; }
+      html,body { width:100%; height:auto; background:white; overflow:visible; display:block; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      #deck { width:100%; min-height:0; aspect-ratio:auto; overflow:visible; box-shadow:none; container-type:inline-size; }
+      .slide,.slide:not(.active) { display:flex !important; flex-direction:column; position:relative; width:100%; height:56.25vw; min-height:0; padding:4.3cqw 5.3cqw 5.2cqw; overflow:hidden; break-after:page; page-break-after:always; }
+      .slide.cover { flex-direction:row; padding:0; }
+      .cover-copy { width:49%; padding:4.1cqw 0 4.9cqw 5.3cqw; display:flex; }
+      .cover-art { position:absolute; left:50.5%; right:-12cqw; top:7.3cqw; bottom:8.2cqw; height:auto; margin:0; transform:rotate(-4deg); }
+      .cover-ticket { position:absolute; left:51%; right:auto; bottom:7.1cqw; width:23cqw; padding:1.15cqw 1.4cqw; }
+      .controls,.progress { display:none; }
     }
   </style>
 </head>
 <body>
-  <main id="deck" aria-label="OCD Brilliance MVP project scope presentation">
-    <section class="slide cover active" aria-label="Slide 1 of 12: Title" data-title="MVP project scope">
-      <div class="cover-left">
-        <img class="brand-logo" src="data:image/png;base64,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" alt="OCD Brilliance" width="878" height="296">
-        <div class="cover-copy">
-          <p class="kicker">Internal operations platform · MVP scope</p>
-          <h1>A clearer way to run the work behind each visit<span class="emphasis">.</span></h1>
-          <p class="subtitle">One connected first release for OCD Brilliance, with a staged path to replacing the current operations system.</p>
-        </div>
-        <div class="cover-meta"><span>Scope presentation</span><span>September 2026</span></div>
+  <main id="deck" aria-label="OCD Brilliance MVP scope presentation">
+    <section class="slide dark cover active" data-title="A clearer way to run every visit" aria-label="Slide 1 of 11: Title">
+      <div class="cover-copy">
+        <img class="cover-logo" src="prototype/assets/ocd-brilliance-logo.png" alt="OCD Brilliance">
+        <p class="eyebrow">Operations platform · first release</p>
+        <h1>One clear path from first contact to every visit.</h1>
+        <p class="lede">A connected workspace for clients, workers and the office, introduced through a controlled pilot.</p>
+        <div class="cover-meta"><span>MVP project scope</span><span>October 2026</span></div>
       </div>
-      <div class="cover-right" aria-hidden="true">
-        <span class="cover-side-label">The operating journey</span>
-        <div class="cover-flow">
-          <div class="cover-flow-item"><span>01</span><strong>Connect</strong></div>
-          <div class="cover-flow-line"></div>
-          <div class="cover-flow-item"><span>02</span><strong>Agree &amp; book</strong></div>
-          <div class="cover-flow-line"></div>
-          <div class="cover-flow-item"><span>03</span><strong>Review</strong></div>
-        </div>
-      </div>
+      <div class="cover-art" aria-hidden="true"><div class="window"><div class="window-bar"><i></i><i></i><i></i><span>Office overview · prototype</span></div><div class="screen"><img src="assets/overview.webp" alt=""></div></div></div>
+      <div class="cover-ticket" aria-hidden="true"><span>What changes</span><strong>The next action is visible to the right person.</strong></div>
     </section>
 
-    <section class="slide" aria-label="Slide 2 of 12: Scope at a glance" data-title="Scope at a glance">
-      <p class="kicker">01 / Scope at a glance</p>
-      <h2 class="section-title">The first release, at a glance.</h2>
-      <p class="section-lead">One connected workflow from first contact through service delivery and office review.</p>
-      <div class="scope-grid">
-        <article class="scope-card"><span class="number">01</span><h3>Enquiries &amp;<br>public calls</h3><p>Intake and discovery-call booking.</p></article>
-        <article class="scope-card"><span class="number">02</span><h3>AI<br>assistance</h3><p>Reviewed intake summaries and email drafts.</p></article>
-        <article class="scope-card"><span class="number">03</span><h3>Client<br>portal</h3><p>Own bookings, documents and requests.</p></article>
-        <article class="scope-card"><span class="number">04</span><h3>Agreements</h3><p>Template generation and electronic signing.</p></article>
-        <article class="scope-card"><span class="number">05</span><h3>Staff<br>&amp; visits</h3><p>Scheduling, clock times and notes.</p></article>
-        <article class="scope-card"><span class="number">06</span><h3>Routes<br>&amp; fees</h3><p>Route estimates and reviewed fee proposals.</p></article>
+    <section class="slide journey" data-title="The connected service journey" aria-label="Slide 2 of 11: The connected service journey">
+      <p class="eyebrow">01 / The operating journey</p>
+      <h2>One journey. Clear ownership at each handoff.</h2>
+      <p class="lede">The first release joins the moments that currently need coordination across people and tools.</p>
+      <div class="journey-stage" role="list">
+        <div class="journey-step" role="listitem"><div class="journey-icon" aria-hidden="true">✳</div><b>Connect</b><p>Public call or intake starts a case.</p></div>
+        <div class="journey-step" role="listitem"><div class="journey-icon" aria-hidden="true">◎</div><b>Review</b><p>Office checks the source and decides next steps.</p></div>
+        <div class="journey-step" role="listitem"><div class="journey-icon" aria-hidden="true">✓</div><b>Agree</b><p>Approved terms go out for signing.</p></div>
+        <div class="journey-step" role="listitem"><div class="journey-icon" aria-hidden="true">▦</div><b>Deliver</b><p>Eligible workers complete booked visits.</p></div>
+        <div class="journey-step" role="listitem"><div class="journey-icon" aria-hidden="true">↗</div><b>Reconcile</b><p>Office reviews records and proposed fees.</p></div>
       </div>
-      <div class="scope-note"><strong>First release</strong><span>All six workstreams are included; the pilot starts with one NDIS service line.</span></div>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">02 / 12</span></div>
+      <div class="journey-note"><strong>One case from the start.</strong><span>A discovery call and an intake form can arrive in either order.</span></div>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>02 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 3 of 12: Workflow" data-title="Workflow">
-      <p class="kicker">02 / Workflow</p>
-      <h2 class="section-title">From first contact to office review.</h2>
-      <p class="section-lead">The platform connects public access, office decisions, service delivery and charge review.</p>
-      <div class="journey-grid">
-        <article class="journey-step"><span class="step-number">01</span><h3>Connect</h3><p>Book a public call or submit an enquiry and intake.</p></article>
-        <article class="journey-step"><span class="step-number">02</span><h3>Review</h3><p>AI summarises intake; staff check the source.</p></article>
-        <article class="journey-step"><span class="step-number">03</span><h3>Respond</h3><p>Staff approve an AI-assisted email draft.</p></article>
-        <article class="journey-step"><span class="step-number">04</span><h3>Agree</h3><p>Generate an agreement and obtain e-signatures.</p></article>
-        <article class="journey-step"><span class="step-number">05</span><h3>Serve</h3><p>Book an eligible worker; record the visit.</p></article>
-        <article class="journey-step"><span class="step-number">06</span><h3>Reconcile</h3><p>Review route and fee proposals before billing.</p></article>
+    <section class="slide front-door" data-title="An easier start for clients" aria-label="Slide 3 of 11: Public booking and client portal">
+      <div class="feature-top"><p class="eyebrow">02 / First contact and client access</p><h2>An easier start. A clear place to return.</h2><p class="lede">People can book a discovery call without an account. Accepted participants and representatives get a secure view of their own services.</p></div>
+      <div class="front-visual">
+        <div class="visual-pair"><div class="visual-caption"><span>Before service</span><span>Office-approved slots only</span></div><div class="window"><div class="window-bar"><i></i><i></i><i></i><span>Public booking · prototype</span></div><div class="screen"><img src="assets/public.webp" alt="Prototype public booking page showing available discovery call times and a simple contact form"></div></div></div>
+        <div class="visual-pair"><div class="visual-caption"><span>During service</span><span>Own bookings and documents</span></div><div class="window"><div class="window-bar"><i></i><i></i><i></i><span>Client portal · prototype</span></div><div class="screen"><img src="assets/client.webp" alt="Prototype client portal showing upcoming bookings, an agreement and a booking change request"></div></div></div>
       </div>
-      <div class="journey-notes"><span>Discovery call and intake may happen in either order.</span><span>Staff own service, message, roster and charge decisions.</span></div>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">03 / 12</span></div>
+      <div class="slide-foot"><span>Requests reach the office; confirmed bookings change only after staff review.</span><span>03 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 4 of 12: Office workspace" data-title="Office workspace">
-      <p class="kicker">03 / Office workspace</p>
-      <h2 class="section-title">The office sees what needs attention.</h2>
-      <p class="section-lead">One place to follow each case, its next action and the changes made along the way.</p>
-      <div class="office-layout">
-        <div class="feature-list">
-          <div class="feature-row"><span class="feature-index">01</span><div><h3>Enquiry follow-up</h3><p>Owner, status, next action and a warning for possible duplicate contacts.</p></div></div>
-          <div class="feature-row"><span class="feature-index">02</span><div><h3>Intake &amp; call review</h3><p>Responses, booked calls, AI suggestions and staff decisions.</p></div></div>
-          <div class="feature-row"><span class="feature-index">03</span><div><h3>Participant &amp; agreement</h3><p>Key contacts, service preferences, document and signing status.</p></div></div>
-          <div class="feature-row"><span class="feature-index">04</span><div><h3>Activity history</h3><p>Who changed a record, what changed and when it happened.</p></div></div>
-        </div>
-        <aside class="dashboard-card" aria-label="Conceptual list of dashboard priorities">
-          <div class="dashboard-card-header"><strong>Office overview</strong><span>Priorities</span></div>
-          <div class="dashboard-row"><span>New enquiries</span><i></i></div>
-          <div class="dashboard-row"><span>Calls &amp; intakes to review</span><i></i></div>
-          <div class="dashboard-row"><span>AI drafts awaiting approval</span><i></i></div>
-          <div class="dashboard-row"><span>Agreements awaiting action</span><i></i></div>
-          <div class="dashboard-row"><span>Portal requests</span><i></i></div>
-          <div class="dashboard-row"><span>Bookings needing cover</span><i></i></div>
-          <div class="dashboard-row"><span>Visits &amp; fees to check</span><i></i></div>
-          <p class="dashboard-caption">Illustrative dashboard categories; no participant data shown.</p>
-        </aside>
-      </div>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">04 / 12</span></div>
+    <section class="slide office" data-title="The office can see what needs action" aria-label="Slide 4 of 11: Office workspace">
+      <p class="eyebrow">03 / Office workspace</p><h2>See what needs action, in one place.</h2><p class="lede">Each case has an owner, a next action and a history. The overview brings follow-up, cover, visits and portal requests into view.</p>
+      <div class="office-visual"><div class="window"><div class="window-bar"><i></i><i></i><i></i><span>Office overview · prototype</span></div><div class="screen"><img src="assets/overview.webp" alt="Prototype office overview with new enquiries, bookings needing cover, visit records, upcoming services and an attention queue"></div></div><div class="rail"><div class="callout"><strong>Priorities first</strong><p>New enquiries, overdue follow-up and cover appear in the same attention queue.</p></div><div class="callout"><strong>A traceable record</strong><p>Owners, statuses and activity history show what changed and who acted.</p></div><span class="tag green"><span class="dot"></span>Sample data</span></div></div>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>04 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 5 of 12: Public booking and client portal" data-title="Public booking &amp; portal">
-      <p class="kicker">04 / Public access</p>
-      <h2 class="section-title">An easier start, and a clear place to return.</h2>
-      <p class="section-lead">Simple public entry points lead into a secure view for accepted participants.</p>
-      <div class="two-up">
-        <article class="two-up-card">
-          <span class="card-label">Before service</span>
-          <h3>Public discovery calls</h3>
-          <p class="intro">A visitor chooses from office-approved slots without seeing private calendar details.</p>
-          <ul>
-            <li>Book without a portal account</li>
-            <li>Prevent double booking and send confirmation</li>
-            <li>Show changes and cancellations to the office</li>
-          </ul>
-        </article>
-        <article class="two-up-card tint">
-          <span class="card-label">During service</span>
-          <h3>Secure client portal</h3>
-          <p class="intro">Participants or authorised representatives see only their permitted records.</p>
-          <ul>
-            <li>View own bookings and shared documents</li>
-            <li>See agreement status and update intake details</li>
-            <li>Send booking requests or feedback</li>
-          </ul>
-        </article>
+    <section class="slide accent" data-title="Faster preparation with named approval" aria-label="Slide 5 of 11: Assisted review and agreements">
+      <p class="eyebrow">04 / Assisted decisions</p><h2>Preparation gets faster. Approval stays named.</h2><p class="lede">The platform helps staff prepare a response and agreement, then records the decision before either goes out.</p>
+      <div class="approval-flow">
+        <div class="approval-card"><span class="card-no">01 / SOURCE</span><span class="card-symbol" aria-hidden="true">≡</span><h3>Read the intake</h3><p>Responses and booked calls stay beside the case. Missing details are flagged for review.</p><div class="card-foot">Source remains available</div></div>
+        <div class="approval-card highlight"><span class="card-no">02 / REVIEW</span><span class="card-symbol" aria-hidden="true">✦</span><h3>Check the draft</h3><p>AI proposes a summary and follow-up email. Staff edit and approve the message.</p><div class="card-foot">No autonomous send</div></div>
+        <div class="approval-card"><span class="card-no">03 / AGREEMENT</span><span class="card-symbol" aria-hidden="true">✓</span><h3>Approve and sign</h3><p>Approved templates become a reviewed PDF, sent through an e-signing provider.</p><div class="card-foot">Signed status returns to the record</div></div>
       </div>
-      <p class="two-up-note">Portal requests go to the office; confirmed booking changes stay staff-controlled.</p>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">05 / 12</span></div>
+      <p class="approval-rule">The office owns the final service, message and agreement decisions.</p>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>05 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 6 of 12: Assisted review and agreements" data-title="Assisted review &amp; agreements">
-      <p class="kicker">05 / Assisted workflows</p>
-      <h2 class="section-title">Faster preparation, with named approval.</h2>
-      <p class="section-lead">AI and document tools prepare work for staff to check and send.</p>
-      <div class="two-up">
-        <article class="two-up-card tint">
-          <span class="card-label">AI assistance</span>
-          <h3>Intake review &amp; email</h3>
-          <p class="intro">Drafts help the office review an enquiry and reply using approved wording.</p>
-          <ul>
-            <li>Summarise intake and flag missing details</li>
-            <li>Draft a relevant follow-up email</li>
-            <li>Keep the source beside the suggestion</li>
-          </ul>
-        </article>
-        <article class="two-up-card dark">
-          <span class="card-label">Agreements</span>
-          <h3>Generate &amp; sign</h3>
-          <p class="intro">Approved templates become reviewed agreements, then go through an e-signing service.</p>
-          <ul>
-            <li>Fill terms from the reviewed record</li>
-            <li>Approve the PDF before sending</li>
-            <li>Track status and store the signed copy</li>
-          </ul>
-        </article>
-      </div>
-      <p class="two-up-note">Staff approve messages and agreements before either is sent.</p>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">06 / 12</span></div>
+    <section class="slide schedule" data-title="Scheduling stays under office control" aria-label="Slide 6 of 11: Scheduling and cover">
+      <p class="eyebrow">05 / Scheduling and cover</p><h2>A weekly picture of who is going where.</h2><p class="lede">The office books one-off or recurring visits after checking availability, service approval and participant preference.</p>
+      <div class="split-layout"><div class="window"><div class="window-bar"><i></i><i></i><i></i><span>Weekly schedule · prototype</span></div><div class="screen"><img src="assets/schedule.webp" alt="Prototype weekly schedule showing confirmed visits and a booking marked as needing cover"></div></div><div class="rail"><div class="callout"><strong>Conflicts surface early</strong><p>Overlaps and eligibility checks support the person building the roster.</p></div><div class="callout"><strong>Cover has an owner</strong><p>A worker reports unavailability; the office confirms a replacement or reschedule and contacts the participant.</p></div><div class="cover-alert">No automatic reassignment or participant charge after worker absence.</div></div></div>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>06 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 7 of 12: Scheduling and staff" data-title="Scheduling and staff">
-      <p class="kicker">06 / Scheduling &amp; staff</p>
-      <h2 class="section-title">Scheduling stays under office control.</h2>
-      <p class="section-lead">Simple recurring bookings, clear worker eligibility and a visible path for service changes.</p>
-      <div class="schedule-layout">
-        <div class="schedule-rules">
-          <div class="schedule-rule"><span class="rule-mark">1</span><div><h3>Plan the booking</h3><p>Create one-off, weekly or fortnightly services.</p></div></div>
-          <div class="schedule-rule"><span class="rule-mark">2</span><div><h3>Check the match</h3><p>See availability, service approval and the participant's worker preference.</p></div></div>
-          <div class="schedule-rule"><span class="rule-mark">3</span><div><h3>Confirm the schedule</h3><p>Receive overlap warnings and keep a record of changes.</p></div></div>
-        </div>
-        <aside class="cover-panel">
-          <span class="panel-label">When a worker cannot attend</span>
-          <h3>A visible cover request, owned by the office.</h3>
-          <div class="cover-sequence">
-            <span>01</span><p>Worker reports unavailability.</p>
-            <span>02</span><p>Booking becomes <strong>Needs cover</strong>.</p>
-            <span>03</span><p>Office confirms a replacement or reschedule and contacts the participant.</p>
-          </div>
-          <div class="panel-foot">No automatic reassignment or participant charge after worker absence.</div>
-        </aside>
-      </div>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">07 / 12</span></div>
+    <section class="slide visit accent" data-title="A reliable record of the visit" aria-label="Slide 7 of 11: Worker visit records">
+      <p class="eyebrow">06 / Service delivery</p><h2>The visit record is ready when the office needs it.</h2><p class="lede">Workers see only their assigned services in a mobile-friendly view and record the visit as it happens.</p>
+      <div class="visit-layout"><div class="phone"><div class="phone-screen"><img src="assets/worker-visit.webp" alt="Prototype worker mobile visit view showing service details, clock times and progress note"></div></div><div class="visit-side"><span class="tag white"><span class="dot"></span>Worker view · prototype</span><div class="visit-chain"><div>Clock in<small>Assigned visit</small></div><div>Clock out<small>Recorded time</small></div><div>Progress note<small>Service context</small></div><div>Office review<small>Missing items flagged</small></div></div><div class="callout"><strong>Corrections are accountable</strong><p>If a time needs fixing, the record keeps the original value, administrator and reason.</p></div></div></div>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>07 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 8 of 12: Visit records" data-title="Visit records">
-      <p class="kicker">07 / Visit records</p>
-      <h2 class="section-title">A reliable record of each pilot visit.</h2>
-      <p class="section-lead">Workers use a mobile-friendly web view; the office can see and resolve incomplete records.</p>
-      <div class="visit-track">
-        <article class="visit-item"><span class="visit-symbol">01</span><h3>Clock in</h3><p>Record the start of the assigned visit.</p></article>
-        <article class="visit-item"><span class="visit-symbol">02</span><h3>Clock out</h3><p>Record the end of the visit.</p></article>
-        <article class="visit-item"><span class="visit-symbol">03</span><h3>Add a note</h3><p>Complete the progress note for that service.</p></article>
-        <article class="visit-item"><span class="visit-symbol">04</span><h3>Office review</h3><p>Flag missing times or notes for follow-up.</p></article>
-      </div>
-      <div class="visit-notes">
-        <div class="visit-note">Time corrections retain the original value, administrator and reason.</div>
-        <div class="visit-note">Route estimates do not replace verified actual kilometres; billing remains in the current system during the pilot.</div>
-      </div>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">08 / 12</span></div>
+    <section class="slide fee" data-title="Proposed charges remain reviewable" aria-label="Slide 8 of 11: Routes and fees">
+      <p class="eyebrow">07 / Routes and fees</p><h2>Proposed charges show their working.</h2><p class="lede">Route estimates and fee proposals retain the inputs and rule used, so the office can check each amount before billing.</p>
+      <div class="fee-layout"><div class="window"><div class="window-bar"><i></i><i></i><i></i><span>Routes and fees · prototype</span></div><div class="screen"><img src="assets/fees.webp" alt="Prototype routes and fees screen showing an illustrative route estimate, map response and proposed fee area"></div></div><div class="fee-side"><div class="formula"><span>Route estimate</span>Planned map distance is labelled as an estimate.</div><div class="formula"><span>Transport proposal</span>Approved rate + verified actual kilometres where required.</div><div class="formula"><span>Cancellation proposal</span>Approved notice and business-day rule + recorded cancellation time.</div><div class="callout"><strong>Office approval before billing</strong><p>Final invoices and NDIS claims stay in the current system during the pilot.</p></div></div></div>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>08 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 9 of 12: Routes and fees" data-title="Routes &amp; fees">
-      <p class="kicker">08 / Routes &amp; fees</p>
-      <h2 class="section-title">Clear calculations for office review.</h2>
-      <p class="section-lead">The platform prepares estimates and proposed charges using approved, dated rules.</p>
-      <div class="fee-grid">
-        <article class="fee-card"><span>01 / PLAN</span><h3>Route estimate</h3><p>Store the planned route and map distance. Label it as an estimate, separate from actual kilometres travelled.</p></article>
-        <article class="fee-card"><span>02 / CALCULATE</span><h3>Transport proposal</h3><p>Use the approved rate and verified actual distance where required; show the inputs and rule version.</p></article>
-        <article class="fee-card"><span>03 / CHECK</span><h3>Cancellation proposal</h3><p>Apply the approved notice and business-day policy to the recorded cancellation time.</p></article>
-      </div>
-      <div class="fee-note"><strong>Approval gate</strong><span>The office reviews each proposed charge before billing; final invoicing stays in the current system during the pilot.</span></div>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">09 / 12</span></div>
+    <section class="slide boundary" data-title="A contained first release" aria-label="Slide 9 of 11: First release boundaries">
+      <p class="eyebrow">08 / Release boundary</p><h2>Complete workflow. Contained first release.</h2><p class="lede">The platform covers the full journey shown here, with clear limits on adjacent services and automation.</p>
+      <div class="boundary-layout"><div class="boundary-block"><h3>In the first release</h3><div class="boundary-list"><div class="boundary-item"><b>✓</b><span>Public calls, enquiries and intake</span></div><div class="boundary-item"><b>✓</b><span>Reviewed AI drafts, agreements and e-signing</span></div><div class="boundary-item"><b>✓</b><span>Client portal, scheduling and worker records</span></div><div class="boundary-item"><b>✓</b><span>Route estimates and reviewed fee proposals</span></div><div class="boundary-item"><b>✓</b><span>Office dashboards, activity history and export</span></div></div></div><div class="boundary-block out"><h3>Later, after separate approval</h3><div class="boundary-list"><div class="boundary-item"><b>→</b><span>Native app, live chat and autonomous AI sending</span></div><div class="boundary-item"><b>→</b><span>Live navigation and route optimisation</span></div><div class="boundary-item"><b>→</b><span>Automatic invoicing, claims, payroll and accounting</span></div><div class="boundary-item"><b>→</b><span>DVA and aged care funding workflows</span></div><div class="boundary-item"><b>→</b><span>High intensity and clinical services, once care and escalation processes are approved</span></div></div></div></div>
+      <p class="boundary-foot">Electronic signing uses an approved provider; the first release does not build its own signing engine.</p>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>09 / 11</span></div>
     </section>
 
-    <section class="slide" aria-label="Slide 10 of 12: MVP boundaries" data-title="MVP boundaries">
-      <p class="kicker">09 / MVP boundaries</p>
-      <h2 class="section-title">A deliberate first-release boundary.</h2>
-      <p class="section-lead">All agreed workflows are included, with clear limits on autonomous actions and billing.</p>
-      <div class="boundary-layout">
-        <div class="boundary-box">
-          <h3>Included in the first release</h3>
-          <ul>
-            <li>Public calls, enquiries and intake</li>
-            <li>AI review and approved email drafts</li>
-            <li>Secure client portal and office requests</li>
-            <li>Agreement generation and electronic signing</li>
-            <li>Scheduling, worker view and visit records</li>
-            <li>Route estimates and reviewed fee proposals</li>
-            <li>Dashboards, history and export</li>
-          </ul>
-        </div>
-        <div class="boundary-box later">
-          <h3>Outside the first release</h3>
-          <ul>
-            <li>Native mobile app and live chat</li>
-            <li>Autonomous AI decisions or email sending</li>
-            <li>A custom electronic-signing engine</li>
-            <li>Live navigation or multi-worker route optimisation</li>
-            <li>Automatic invoices, NDIS claims, payroll or accounting</li>
-            <li>DVA and aged care funding workflows</li>
-          </ul>
-        </div>
-      </div>
-      <p class="boundary-note">High intensity and clinical services start only after OCD Brilliance approves the relevant care, worker and escalation processes.</p>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">10 / 12</span></div>
+    <section class="slide dark pilot" data-title="A staged replacement" aria-label="Slide 10 of 11: Staged replacement">
+      <p class="eyebrow">09 / Staged replacement</p><h2>Start small. Compare. Switch only when ready.</h2><p class="lede">The existing system keeps running each function until OCD Brilliance verifies its replacement.</p>
+      <div class="pilot-path"><div class="pilot-step"><span>01 / PILOT</span><strong>One service line</strong><p>Use all first-release journeys with a defined participant group.</p></div><div class="pilot-step"><span>02 / RECONCILE</span><strong>Compare records</strong><p>Check bookings, visit records and fee proposals against current work.</p></div><div class="pilot-step"><span>03 / CUTOVER</span><strong>Retire by function</strong><p>Move only after operational, data and recovery checks pass.</p></div></div>
+      <div class="pilot-gate"><strong>Before retirement:</strong> confirm open bookings, actual kilometres, itemised invoices, documents, history, permissions and backup recovery.</div>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>10 / 11</span></div>
     </section>
 
-    <section class="slide cutover" aria-label="Slide 11 of 12: Staged replacement" data-title="Staged replacement">
-      <p class="kicker">10 / Staged replacement</p>
-      <h2 class="section-title">Replace the current system after the checks pass.</h2>
-      <p class="section-lead">The current system continues to run functions that the new platform has not yet taken over.</p>
-      <div class="cutover-steps">
-        <div class="cutover-step"><span>01 / PILOT</span><h3>Start small</h3><p>Use all first-release journeys with one chosen service line and a defined group.</p></div>
-        <div class="cutover-step"><span>02 / RECONCILE</span><h3>Compare records</h3><p>Check bookings, visits and fee proposals against the current process.</p></div>
-        <div class="cutover-step"><span>03 / CUTOVER</span><h3>Switch only when ready</h3><p>Retire each remaining function after OCD Brilliance verifies its replacement.</p></div>
-      </div>
-      <div class="cutover-gate"><strong>Before retirement:</strong> confirm open bookings, actual kilometres, itemised invoices, document access, historical records, permissions and backup recovery. These are cutover checks, not extra first-release features.</div>
-      <div class="slide-footer"><span>OCD Brilliance · MVP project scope</span><span class="print-number">11 / 12</span></div>
+    <section class="slide dark closing" data-title="Decisions before build" aria-label="Slide 11 of 11: Decisions before build">
+      <p class="eyebrow">10 / Before build</p><h2>Five choices to shape the pilot.</h2><p class="lede">Agree the operating details, then build against a clear first release.</p>
+      <div class="decision-layout"><div class="decision-lead">The decisions that make this <span>real.</span></div><div><div class="decision-stack"><div class="decision-row"><span>01</span>Pilot service line and participants</div><div class="decision-row"><span>02</span>Current software and intake transition</div><div class="decision-row"><span>03</span>Calendar, email, AI, signing and map services</div><div class="decision-row"><span>04</span>Templates, rates and one cancellation rule</div><div class="decision-row"><span>05</span>Approval roles and portal access</div></div><div class="decision-action"><a class="demo-link" href="prototype/" target="_blank" rel="noopener">Open interactive prototype ↗</a><small>Fictional sample records · browser-only demo</small></div></div></div>
+      <div class="slide-foot"><span>OCD Brilliance · MVP project scope</span><span>11 / 11</span></div>
     </section>
 
-    <section class="slide closing" aria-label="Slide 12 of 12: Decisions for the pilot" data-title="Decisions for the pilot">
-      <div class="closing-left">
-        <p class="kicker">11 / Before build</p>
-        <h2>Five choices to shape the pilot.</h2>
-        <p>Agree the operating details, then build against a clear and contained first release.</p>
-      </div>
-      <div class="closing-right">
-        <span class="right-label">Confirm with OCD Brilliance</span>
-        <div class="decision-list">
-          <div class="decision"><span>01</span><strong>Pilot service line and participants</strong></div>
-          <div class="decision"><span>02</span><strong>Current software and intake transition</strong></div>
-          <div class="decision"><span>03</span><strong>Calendar, email, AI, signing and map services</strong></div>
-          <div class="decision"><span>04</span><strong>Templates, rates and cancellation policy</strong></div>
-          <div class="decision"><span>05</span><strong>Approval roles and portal access</strong></div>
-        </div>
-        <p class="closing-policy"><strong>Policy item:</strong> approve one cancellation rule before automatic fee calculations go live.</p>
-      </div>
-      <div class="closing-footer">OCD Brilliance · MVP project scope</div>
-    </section>
-
-    <div class="controls" aria-label="Presentation controls">
-      <button class="nav-button" id="previous" type="button" aria-label="Previous slide">&#8592;</button>
-      <span class="count" id="slide-count" aria-live="polite">01 / 12</span>
-      <button class="nav-button" id="next" type="button" aria-label="Next slide">&#8594;</button>
-    </div>
+    <div class="controls" aria-label="Presentation controls"><button class="nav-button" id="previous" type="button" aria-label="Previous slide">←</button><span class="count" id="slide-count" aria-live="polite">01 / 11</span><button class="nav-button" id="next" type="button" aria-label="Next slide">→</button></div>
     <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
   </main>
   <script>
@@ -1177,28 +378,28 @@
         return match ? Math.max(0, Math.min(slides.length - 1, Number(match[1]) - 1)) : 0;
       };
       let current = fromHash();
-
       function show(index, writeHash = true) {
         current = Math.max(0, Math.min(slides.length - 1, index));
         slides.forEach((slide, position) => {
           const active = position === current;
           slide.classList.toggle('active', active);
           slide.setAttribute('aria-hidden', String(!active));
+          slide.inert = !active;
         });
-        const number = String(current + 1).padStart(2, '0');
-        count.textContent = `${number} / ${String(slides.length).padStart(2, '0')}`;
+        count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
         progress.style.width = `${((current + 1) / slides.length) * 100}%`;
         previous.disabled = current === 0;
         next.disabled = current === slides.length - 1;
-        controls.classList.toggle('dark', slides[current].classList.contains('cover') || slides[current].classList.contains('cutover'));
-        document.title = `${slides[current].dataset.title} — OCD Brilliance MVP Scope`;
+        controls.classList.toggle('on-dark', slides[current].classList.contains('dark'));
+        document.title = `${slides[current].dataset.title} — OCD Brilliance MVP scope`;
         if (writeHash) history.replaceState(null, '', `#slide-${current + 1}`);
+        window.scrollTo(0, 0);
       }
-
       previous.addEventListener('click', () => show(current - 1));
       next.addEventListener('click', () => show(current + 1));
       window.addEventListener('hashchange', () => show(fromHash(), false));
-      window.addEventListener('keydown', (event) => {
+      window.addEventListener('keydown', event => {
+        if (event.altKey || event.ctrlKey || event.metaKey || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(document.activeElement?.tagName || '')) return;
         if (['ArrowRight', 'PageDown', ' '].includes(event.key)) { event.preventDefault(); show(current + 1); }
         if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); show(current - 1); }
         if (event.key === 'Home') { event.preventDefault(); show(0); }
