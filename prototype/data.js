@@ -42,6 +42,7 @@ window.OCD_DEMO_SEED = {
     {
       id: "PAR-101", name: "Olivia Hart", email: "olivia.hart@example.com", phone: "0400 000 201",
       suburb: "Woodvale", address: "Woodvale, WA", service: "Domestic assistance", funding: "Plan managed",
+      location: { coordinates: [115.7963, -31.7912], label: "Woodvale · approximate demo location" },
       preferredWorker: "WRK-01", schedulePreference: "Monday mornings", representative: "None recorded",
       emergencyContact: "Recorded in restricted profile", status: "Active",
       intakeUpdate: "Prefers a consistent worker and morning visits.",
@@ -50,6 +51,7 @@ window.OCD_DEMO_SEED = {
     {
       id: "PAR-102", name: "Daniel Wu", email: "daniel.wu@example.com", phone: "0400 000 202",
       suburb: "Kingsley", address: "Kingsley, WA", service: "Domestic assistance", funding: "Self managed",
+      location: { coordinates: [115.7894, -31.8093], label: "Kingsley · approximate demo location" },
       preferredWorker: "WRK-02", schedulePreference: "Monday afternoons", representative: "None recorded",
       emergencyContact: "Recorded in restricted profile", status: "Active",
       intakeUpdate: "Afternoon services preferred.", sharedDocs: []
@@ -57,6 +59,7 @@ window.OCD_DEMO_SEED = {
     {
       id: "PAR-103", name: "Farah Ali", email: "farah.ali@example.com", phone: "0400 000 203",
       suburb: "Ellenbrook", address: "Ellenbrook, WA", service: "Support work", funding: "Plan managed",
+      location: { coordinates: [115.9692, -31.7826], label: "Ellenbrook · approximate demo location" },
       preferredWorker: "", schedulePreference: "To be confirmed", representative: "Samira Ali — authority to confirm",
       emergencyContact: "Recorded in restricted profile", status: "Onboarding",
       intakeUpdate: "Awaiting agreement signature.", sharedDocs: []
@@ -83,6 +86,10 @@ window.OCD_DEMO_SEED = {
     { id: "BKG-505", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-08", start: "09:00", end: "11:00", recurrence: "One-off", status: "Confirmed", participantAgreed: true },
     { id: "BKG-506", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-09", start: "13:00", end: "15:00", recurrence: "One-off", status: "Cancelled", participantAgreed: true, cancellation: { cause: "Participant", notice: "2026-10-05T10:00", note: "Participant called the office to cancel." } }
   ],
+  mapOffice: { name: "Joondalup office", coordinates: [115.7733, -31.7444] },
+  journeys: {
+    "BKG-501": { workerId: "WRK-01", date: "2026-10-05", start: "09:00", phase: "en-route", progress: 0.42, durationSeconds: 960, arrivalTime: "08:58", running: false }
+  },
   visits: [
     { id: "VIS-701", bookingId: "BKG-499", clockIn: "09:04", clockOut: "11:02", note: "Domestic assistance completed as planned. Laundry and kitchen tasks completed.", status: "Ready for review", corrections: [] },
     { id: "VIS-702", bookingId: "BKG-498", clockIn: "13:02", clockOut: "15:01", note: "", status: "Missing note", corrections: [] }
