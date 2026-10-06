@@ -1,0 +1,15 @@
+{
+  "id": "/",
+  "name": "OCD Brilliance Operations",
+  "short_name": "OCD Brilliance",
+  "description": "Operations workspace for office, worker and client journeys.",
+  "start_url": "/#/office/overview",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f8f5",
+  "theme_color": "#08734c",
+  "icons": [
+    { "src": "/assets/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/assets/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -123,7 +123,7 @@
     if (!b) return "";
     const snap = snapshot(state, b);
     const worker = state.workers.find(w => w.id === b.workerId);
-    return `<a class="arrival-preview" href="#/client/map/${esc(b.id)}" data-arrival-preview="${esc(b.id)}"><span class="arrival-preview-icon">${icon("car")}</span><span><small>YOUR NEXT SERVICE · ${dateLabel(b.date)}</small><strong data-arrival-title>${phaseLabel(b, snap)}</strong><span>${b.status === "Needs cover" ? "Office arranging cover" : esc(worker?.name || "Your worker")} · <span data-arrival-time>${snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${esc(b.start)}`}</span></span><small>Simulated arrival · open booking map</small></span>${icon("arrow")}</a>`;
+    return `<a class="arrival-preview" href="#/client/map/${esc(b.id)}" data-arrival-preview="${esc(b.id)}"><span class="arrival-preview-icon">${icon("car")}</span><span><small>YOUR NEXT SERVICE · ${dateLabel(b.date)}</small><strong data-arrival-title>${phaseLabel(b, snap)}</strong><span>${b.status === "Needs cover" ? "Office arranging cover" : esc(worker?.name || "Your worker")} · <span data-arrival-time>${snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${esc(b.start)}`}</span></span><small>Simulated arrival · view status and ETA</small></span>${icon("arrow")}</a>`;
   }
 
   function ensureSdk() {
@@ -203,7 +203,7 @@
       this.query("[data-map-stats]").innerHTML = `<div><span>Services on this day</span><strong>${rows.length}</strong></div><div><span>Workers on the way</span><strong>${rows.filter(b => snapshot(this.ctx.state, b).phase === "en-route").length}</strong></div><div><span>${this.ctx.area === "client" ? "Participant" : this.ctx.area === "worker" ? "Assigned worker" : "Cover needed"}</span><strong class="map-stat-name">${this.ctx.area === "client" ? esc(this.ctx.state.participants.find(p => p.id === this.ctx.clientId)?.name) : this.ctx.area === "worker" ? esc(this.ctx.state.workers.find(w => w.id === this.ctx.workerId)?.name) : rows.filter(b => b.status === "Needs cover").length}</strong></div>`;
       this.query("[data-map-list]").innerHTML = rows.length ? rows.map((b, index) => {
         const p = locationFor(this.ctx, b), w = workerFor(this.ctx, b), snap = snapshot(this.ctx.state, b);
-        return `<button class="map-booking-card ${this.pref.selected === b.id ? "selected" : ""}" type="button" data-map-booking="${esc(b.id)}" aria-pressed="${this.pref.selected === b.id}"><span class="map-booking-number ${b.status === "Needs cover" ? "cover" : b.status === "Cancelled" ? "inactive" : ""}">${index + 1}</span><span class="map-booking-copy"><strong>${this.ctx.area === "client" ? esc(b.service) : esc(p?.name || "Participant")}</strong><span>${esc(b.start)}–${esc(b.end)} · ${esc(p?.suburb || "Location pending")}</span><small>${b.status === "Needs cover" ? "Office arranging cover" : esc(w?.name || "Worker pending")}</small><span class="map-booking-phase" data-booking-phase="${esc(b.id)}">${phaseLabel(b, snap)}</span></span><span class="map-card-chevron">›</span></button>`;
+        return `<button class="map-booking-card ${this.pref.selected === b.id ? "selected" : ""}" type="button" data-map-booking="${esc(b.id)}" aria-pressed="${this.pref.selected === b.id}"><span class="map-booking-number">${index + 1}</span><span class="map-booking-copy"><strong>${this.ctx.area === "client" ? esc(b.service) : esc(p?.name || "Participant")}</strong><span>${esc(b.start)}–${esc(b.end)} · ${esc(p?.suburb || "Location pending")}</span><small>${b.status === "Needs cover" ? "Office arranging cover" : esc(w?.name || "Worker pending")}</small><span class="map-booking-phase" data-booking-phase="${esc(b.id)}">${phaseLabel(b, snap)}</span></span><span class="map-card-chevron">›</span></button>`;
       }).join("") : '<div class="map-no-bookings"><strong>No bookings for this day</strong><p>Choose another service date to see bookings on the map.</p></div>';
       this.renderDetails();
       const selectedLabel = this.query("[data-map-selected-label]");
@@ -535,5 +535,5 @@
       active = { destroy: () => clearInterval(timer) };
     }
   }
-  window.OCD_MAPS = { page, mount, unmount, summary, reconcileJourneys, resetViews: () => preferences.clear() };
+  window.OCD_MAPS = { page, mount, unmount, summary, snapshot, reconcileJourneys, resetViews: () => preferences.clear() };
 })();

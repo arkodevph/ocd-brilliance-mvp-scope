@@ -1,0 +1,13 @@
+{
+  "name": "ocd-brilliance-mvp-scope",
+  "private": true,
+  "scripts": {
+    "start": "node server.cjs",
+    "build": "node scripts/build-vercel.cjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.35.6",
+    "web-push": "^3.6.7"
+  }
+}

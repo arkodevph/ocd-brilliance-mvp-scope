@@ -1,3 +1,5 @@
 .vercel
 .env*
 dist/
+.local/
+node_modules/

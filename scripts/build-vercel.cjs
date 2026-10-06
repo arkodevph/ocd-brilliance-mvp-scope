@@ -1,31 +1,26 @@
-/* Build the static demo and inject only the browser's public Mapbox configuration. */
+/* Publish the operations workspace. The presentation remains at /presentation.html. */
 const fs = require("node:fs/promises");
 const path = require("node:path");
 
 async function build() {
-  const accessToken = process.env.MAPBOX_PUBLIC_TOKEN?.trim() || "";
-  if (!/^pk\.[A-Za-z0-9._-]+$/.test(accessToken) || accessToken.length < 30) {
-    throw new Error("Set MAPBOX_PUBLIC_TOKEN to a Mapbox public pk. token before building.");
-  }
   const root = path.resolve(__dirname, "..");
   const output = path.join(root, "dist");
-  const publicFiles = [
-    "index.html",
-    "prototype/index.html",
-    "prototype/app.js",
-    "prototype/data.js",
-    "prototype/styles.css",
-    "prototype/maps.js",
-    "prototype/maps.css"
-  ];
   await fs.rm(output, { recursive: true, force: true });
-  await fs.mkdir(path.join(output, "prototype"), { recursive: true });
-  for (const file of publicFiles) await fs.copyFile(path.join(root, file), path.join(output, file));
+  await fs.mkdir(path.join(output, "workspace"), { recursive: true });
+  await fs.copyFile(path.join(root, "workspace/index.html"), path.join(output, "index.html"));
+  await fs.copyFile(path.join(root, "index.html"), path.join(output, "presentation.html"));
+  await fs.copyFile(path.join(root, "workspace/app.js"), path.join(output, "workspace/app.js"));
+  await fs.copyFile(path.join(root, "workspace/data.js"), path.join(output, "workspace/data.js"));
+  await fs.copyFile(path.join(root, "workspace/map-config.js"), path.join(output, "workspace/map-config.js"));
+  await fs.copyFile(path.join(root, "workspace/maps.js"), path.join(output, "workspace/maps.js"));
+  await fs.copyFile(path.join(root, "workspace/maps.css"), path.join(output, "workspace/maps.css"));
+  await fs.copyFile(path.join(root, "workspace/pwa.js"), path.join(output, "workspace/pwa.js"));
+  await fs.copyFile(path.join(root, "workspace/pwa.css"), path.join(output, "workspace/pwa.css"));
+  await fs.copyFile(path.join(root, "workspace/styles.css"), path.join(output, "workspace/styles.css"));
+  await fs.copyFile(path.join(root, "workspace/manifest.webmanifest"), path.join(output, "workspace/manifest.webmanifest"));
+  await fs.copyFile(path.join(root, "workspace/sw.js"), path.join(output, "sw.js"));
   await fs.cp(path.join(root, "assets"), path.join(output, "assets"), { recursive: true });
-  await fs.cp(path.join(root, "prototype/assets"), path.join(output, "prototype/assets"), { recursive: true });
-  const config = { accessToken, style: "mapbox://styles/mapbox/standard" };
-  await fs.writeFile(path.join(output, "prototype/map-config.js"), `// Generated from the deployment environment; do not commit.\nwindow.OCD_MAPBOX_CONFIG = ${JSON.stringify(config, null, 2)};\n`);
-  console.log("Built the static demo in dist with its public Mapbox configuration.");
+  console.log("Built the operations workspace in dist.");
 }
 
 build().catch(error => { console.error(error.message); process.exitCode = 1; });

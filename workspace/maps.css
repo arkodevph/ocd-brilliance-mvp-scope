@@ -48,10 +48,8 @@
 .map-booking-list { display: grid; gap: 8px; max-height: 292px; overflow-y: auto; }
 .map-booking-card { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 10px; }
 .map-booking-card:hover { background: #f8fbf6; border-color: #b7d1b7; }
-.map-booking-card.selected { border-color: #79aa81; background: #f3f9ef; box-shadow: inset 3px 0 var(--green); }
-.map-booking-number { flex: none; display: grid; place-items: center; width: 25px; height: 25px; margin-top: 2px; border-radius: 7px; background: #e1efde; color: var(--green-dark); font-size: 10px; font-weight: 750; }
-.map-booking-number.cover { background: var(--amber-pale); color: var(--amber); }
-.map-booking-number.inactive { background: #eff1ec; color: var(--muted); }
+.map-booking-card.selected { border-color: #819187; box-shadow: 0 0 0 1px #819187; }
+.map-booking-number { flex: none; display: grid; place-items: center; width: 25px; height: 25px; margin-top: 2px; border-radius: 7px; background: #eff1ee; color: var(--ink); font-size: 10px; font-weight: 750; }
 .map-booking-copy { flex: 1; min-width: 0; }
 .map-booking-copy strong { display: block; font-size: 12px; }
 .map-booking-copy > span:not(.map-booking-phase), .map-booking-copy small { display: block; color: var(--muted); font-size: 10px; margin-top: 3px; }

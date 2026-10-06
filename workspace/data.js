@@ -79,6 +79,7 @@ window.OCD_DEMO_SEED = {
   bookings: [
     { id: "BKG-498", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-01", start: "13:00", end: "15:00", recurrence: "One-off", status: "Completed", participantAgreed: true },
     { id: "BKG-499", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-02", start: "09:00", end: "11:00", recurrence: "One-off", status: "Completed", participantAgreed: true },
+    { id: "BKG-500", participantId: "PAR-102", workerId: "WRK-03", service: "Domestic assistance", date: "2026-10-05", start: "08:00", end: "09:00", recurrence: "One-off", status: "Completed", participantAgreed: true },
     { id: "BKG-501", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-05", start: "09:00", end: "11:00", recurrence: "Weekly", status: "Confirmed", participantAgreed: true },
     { id: "BKG-502", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-05", start: "13:00", end: "15:00", recurrence: "Weekly", status: "Needs cover", participantAgreed: true },
     { id: "BKG-503", participantId: "PAR-101", workerId: "WRK-01", service: "Domestic assistance", date: "2026-10-06", start: "10:00", end: "12:00", recurrence: "One-off", status: "Confirmed", participantAgreed: true },
@@ -92,10 +93,25 @@ window.OCD_DEMO_SEED = {
   },
   visits: [
     { id: "VIS-701", bookingId: "BKG-499", clockIn: "09:04", clockOut: "11:02", note: "Domestic assistance completed as planned. Laundry and kitchen tasks completed.", status: "Ready for review", corrections: [] },
-    { id: "VIS-702", bookingId: "BKG-498", clockIn: "13:02", clockOut: "15:01", note: "", status: "Missing note", corrections: [] }
+    { id: "VIS-702", bookingId: "BKG-498", clockIn: "13:02", clockOut: "15:01", note: "", status: "Missing note", corrections: [] },
+    { id: "VIS-703", bookingId: "BKG-500", clockIn: "08:03", clockOut: "09:02", note: "Domestic assistance completed as planned.", status: "Reviewed", corrections: [] }
   ],
   requests: [
     { id: "REQ-401", participantId: "PAR-101", bookingId: "BKG-505", type: "Booking change", message: "Could this visit start after 10 am?", status: "Pending", created: "2026-10-03" }
+  ],
+  updates: [
+    { id: "UPD-01", to: "client:PAR-101", title: "Upcoming service", detail: "Your domestic assistance visit is scheduled for Monday at 09:00. Please contact the office if you need a change.", href: "client/bookings", date: "2026-10-02", read: false },
+    { id: "UPD-02", to: "worker:WRK-01", title: "Assigned visit", detail: "Your Monday service with Olivia Hart is confirmed for 09:00.", href: "worker/today/BKG-501", date: "2026-10-02", read: false },
+    { id: "UPD-03", to: "office", title: "Cover needs attention", detail: "Daniel Wu's Monday service needs a replacement worker.", href: "office/work", date: "2026-10-02", read: false }
+  ],
+  workerDocs: [
+    { id: "WDC-01", workerId: "WRK-01", name: "First aid", expires: "2026-10-10", status: "Due soon" },
+    { id: "WDC-02", workerId: "WRK-02", name: "Worker screening", expires: "2026-10-07", status: "Due soon" },
+    { id: "WDC-03", workerId: "WRK-04", name: "Approval evidence", expires: "", status: "Missing" }
+  ],
+  inbound: [
+    { id: "EML-01", from: "coordinator@example.com", name: "New referral", subject: "Domestic assistance in Kingsley", body: "Could you advise whether a Tuesday service is possible?", service: "Domestic assistance", suburb: "Kingsley", status: "New", urgent: false },
+    { id: "EML-02", from: "manager@example.com", name: "Plan manager", subject: "Question about an invoice", body: "Please check the hours on the latest invoice before we process it.", service: "", suburb: "", status: "New", urgent: true }
   ],
   routeEstimates: [
     { id: "RTE-601", bookingId: "BKG-499", origin: "Joondalup office", destination: "Woodvale, WA", distance: 11.4, duration: 18, created: "2026-10-02", source: "Illustrative map response" }
