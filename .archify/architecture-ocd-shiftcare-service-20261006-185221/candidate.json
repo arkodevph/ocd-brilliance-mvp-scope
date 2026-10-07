@@ -1,0 +1,471 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "OCD + ShiftCare \u2014 confirmations, cancellation and cover",
+    "locale": "en",
+    "output": ".archify/architecture-ocd-shiftcare-service-20261006-185221/ocd-shiftcare-service.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "reminder",
+      "type": "cloud",
+      "label": "Three-day reminder",
+      "sublabel": "Existing ShiftCare",
+      "tag": "Existing triggers",
+      "pos": [
+        35,
+        70
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "reply",
+      "type": "external",
+      "label": "Participant reply",
+      "sublabel": "Email / shift event",
+      "tag": "Existing triggers",
+      "pos": [
+        365,
+        70
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "absence",
+      "type": "external",
+      "label": "Staff unavailable",
+      "sublabel": "Native alert / office",
+      "tag": "Existing triggers",
+      "pos": [
+        695,
+        70
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "match",
+      "type": "backend",
+      "label": "Match one visit",
+      "sublabel": "Message ID / reason",
+      "tag": "OCD preparation",
+      "pos": [
+        365,
+        270
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "keep",
+      "type": "frontend",
+      "label": "Keep service",
+      "sublabel": "Yes; keep service",
+      "tag": "Office decision",
+      "pos": [
+        35,
+        470
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "decision",
+      "type": "security",
+      "label": "Review reply",
+      "sublabel": "Yes / cancel / change",
+      "tag": "Office decision",
+      "pos": [
+        365,
+        470
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cancel",
+      "type": "security",
+      "label": "Approve cancel",
+      "sublabel": "Reason / charge / scope",
+      "tag": "Office decision",
+      "pos": [
+        365,
+        670
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cover",
+      "type": "security",
+      "label": "Change or cover",
+      "sublabel": "No free-slot promise",
+      "tag": "Office cover checks",
+      "pos": [
+        695,
+        470
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cancel_write",
+      "type": "security",
+      "label": "UI / Admin MCP",
+      "sublabel": "Exact action approved",
+      "tag": "ShiftCare action",
+      "pos": [
+        365,
+        870
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "offer",
+      "type": "frontend",
+      "label": "Roster / Job Board",
+      "sublabel": "Require confirmation",
+      "tag": "ShiftCare action",
+      "pos": [
+        695,
+        670
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "worker",
+      "type": "security",
+      "label": "Worker accepts",
+      "sublabel": "In ShiftCare app",
+      "tag": "ShiftCare action",
+      "pos": [
+        695,
+        870
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cancel_verify",
+      "type": "database",
+      "label": "Verify cancellation",
+      "sublabel": "Remote status / billing",
+      "tag": "Verified result",
+      "pos": [
+        365,
+        1070
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cancel_outcome",
+      "type": "frontend",
+      "label": "Record and inform",
+      "sublabel": "Only verified outcome",
+      "tag": "Verified result",
+      "pos": [
+        35,
+        1070
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cover_verify",
+      "type": "database",
+      "label": "Verify assignment",
+      "sublabel": "Current + accepted",
+      "tag": "Verified result",
+      "pos": [
+        695,
+        1070
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cover_outcome",
+      "type": "frontend",
+      "label": "Inform participant",
+      "sublabel": "Approved delivery path",
+      "tag": "Verified result",
+      "pos": [
+        695,
+        1270
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "uncertain",
+      "type": "security",
+      "label": "Clarify request",
+      "sublabel": "No guessed action",
+      "tag": "Human follow-up",
+      "pos": [
+        35,
+        270
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "cancel_failed",
+      "type": "security",
+      "label": "Office / bookkeeper",
+      "sublabel": "Reconcile / UI action",
+      "tag": "Human follow-up",
+      "pos": [
+        365,
+        1270
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "no_cover",
+      "type": "security",
+      "label": "Office alternative",
+      "sublabel": "Contact participant",
+      "tag": "Human follow-up",
+      "pos": [
+        1005,
+        870
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "yes_audit",
+      "type": "database",
+      "label": "Record yes reply",
+      "sublabel": "OCD response audit",
+      "tag": "Office decision",
+      "pos": [
+        35,
+        670
+      ],
+      "size": [
+        180,
+        86
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "send-reminder",
+      "from": "reminder",
+      "to": "reply"
+    },
+    {
+      "id": "reply-match",
+      "from": "reply",
+      "to": "match"
+    },
+    {
+      "id": "match-review",
+      "from": "match",
+      "to": "decision"
+    },
+    {
+      "id": "yes",
+      "from": "decision",
+      "to": "keep",
+      "label": "yes"
+    },
+    {
+      "id": "cancel-request",
+      "from": "decision",
+      "to": "cancel",
+      "label": "cancel"
+    },
+    {
+      "id": "change-request",
+      "from": "decision",
+      "to": "cover",
+      "label": "change"
+    },
+    {
+      "id": "absence-cover",
+      "from": "absence",
+      "to": "cover",
+      "label": "cover needed"
+    },
+    {
+      "id": "approve-write",
+      "from": "cancel",
+      "to": "cancel_write",
+      "label": "approved",
+      "variant": "security"
+    },
+    {
+      "id": "write-verify",
+      "from": "cancel_write",
+      "to": "cancel_verify",
+      "label": "read back"
+    },
+    {
+      "id": "cancel-result",
+      "from": "cancel_verify",
+      "to": "cancel_outcome",
+      "label": "confirmed"
+    },
+    {
+      "id": "cover-offer",
+      "from": "cover",
+      "to": "offer",
+      "label": "reviewed"
+    },
+    {
+      "id": "native-worker",
+      "from": "offer",
+      "to": "worker",
+      "label": "native offer"
+    },
+    {
+      "id": "accept-verify",
+      "from": "worker",
+      "to": "cover_verify",
+      "label": "accepted"
+    },
+    {
+      "id": "cover-result",
+      "from": "cover_verify",
+      "to": "cover_outcome",
+      "label": "confirmed",
+      "variant": "dashed"
+    },
+    {
+      "id": "unclear-reply",
+      "from": "match",
+      "to": "uncertain",
+      "label": "ambiguous",
+      "variant": "security"
+    },
+    {
+      "id": "cancel-problem",
+      "from": "cancel_verify",
+      "to": "cancel_failed",
+      "label": "unknown / blocked",
+      "variant": "security"
+    },
+    {
+      "id": "cover-problem",
+      "from": "cover_verify",
+      "to": "no_cover",
+      "label": "stale / changed",
+      "variant": "security"
+    },
+    {
+      "id": "worker-declines",
+      "from": "worker",
+      "to": "no_cover",
+      "label": "decline / timeout",
+      "variant": "security"
+    },
+    {
+      "id": "no-candidate",
+      "from": "cover",
+      "to": "no_cover",
+      "label": "no candidate",
+      "variant": "security"
+    },
+    {
+      "id": "yes-recorded",
+      "from": "keep",
+      "to": "yes_audit"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Current workflow and trigger",
+      "items": [
+        "ShiftCare already sends the three-day SMS; replies reach admin email and shift event history. OCD prepares an owned response task.",
+        "Office currently checks yes/no/cancellations daily. Transcript: 536\u2013540 and 644; late sickness 426; availability constraints 611\u2013626.",
+        "Reply payload/thread matching and native feature settings still need validation in the real account."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Cancellation is a financial decision",
+      "items": [
+        "Current with-charge MCP marks every client on the shift absent and retains billing; it accepts an NDIS reason code, not free text.",
+        "Group cancellation, locked/invoiced records, client no-charge treatment or unclear policy go to native UI/office review.",
+        "MCP requires specific confirmation. No unattended cancellation is approved here; any future REST operation has its own contract gate."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Worker acceptance and coverage",
+      "items": [
+        "Re-use native Smart Match/Job Board; office checks qualifications, leave, hours, clashes and actual availability.",
+        "Current MCP has no availability-schedule reader or Confirmation Required setter. notify:true is not worker acceptance.",
+        "Set the native confirmation requirement; confirm the worker's actual response before telling a participant cover is booked.",
+        "Preserve all assignments and distinguish a single occurrence from a reviewed series change."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Recovery and outcome",
+      "items": [
+        "Unclear reply: ask/resolve, then return to review. No reply is never a cancellation.",
+        "Failed/uncertain write: read native state before retry; office/bookkeeper resolves and verifies the outcome.",
+        "No cover: office contacts the participant about alternate time/service and records an explicit outcome.",
+        "Use a validated native channel initially. App push and full chat-history synchronization are not established."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Design and layout evidence",
+      "items": [
+        "Proposed process: docs/OCD_ShiftCare_Integration_and_Automation_Design.md, sections 3\u20139. Node tags identify responsibility/stage.",
+        "This fixed-position Archify process chart preserves the steps and relationships of the lane-based specification; that draft is retained alongside its diagnostics.",
+        "Rendering checks do not prove live integration. Native feature access, every future REST operation and the production account still require validation."
+      ]
+    }
+  ]
+}

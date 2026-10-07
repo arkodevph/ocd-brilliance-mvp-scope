@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-07",
+  "status": "pass",
+  "sourceMode": "Authenticated MCP capture; isolated local review server",
+  "checks": [
+    {
+      "name": "Office evidence access",
+      "status": "pass",
+      "detail": "Unsigned API reads were rejected and the private capture was inaccessible as a static file."
+    },
+    {
+      "name": "Real capture and honest connection status",
+      "status": "pass",
+      "detail": "Dashboard identifies the authenticated capture, account, timestamp and time zone; website REST reads remain disabled without a separate key."
+    },
+    {
+      "name": "Automation over native records",
+      "status": "pass",
+      "detail": "3 real captured shifts produced 6 owned findings with native source IDs; actual attendance was not inferred from scheduled or payroll data."
+    },
+    {
+      "name": "Replay prevention",
+      "status": "pass",
+      "detail": "Repeating the same capture reused the persisted run ID and findings."
+    },
+    {
+      "name": "Traceability into ShiftCare",
+      "status": "pass",
+      "detail": "Native links match the returned URLs, staff and assignment IDs stay separate, and actual call counts/scopes/timestamps are visible."
+    },
+    {
+      "name": "Native proof and data boundaries",
+      "status": "pass",
+      "detail": "Native action 11221 is independently matched and all five stages are recorded. Copy now produces a get_action_item request rather than a duplicate create; no unsupervised write control or native browser persistence exists."
+    },
+    {
+      "name": "Persisted review and responsive runtime",
+      "status": "pass",
+      "detail": "The authenticated review survived reload, desktop/mobile captures had no horizontal page overflow, and the browser made no ShiftCare mutation or uncaught exception."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-overview-desktop.png",
+      "sha256": "8f46ab08550b2c3212a0d7bcc7fa64e544a63add7ed4b9cb7a77aefec4eed1c3",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-findings-desktop.png",
+      "sha256": "68c2d8ff1d382b69aae14c020aab8088e7c29e21a6921b377cae7d60e74bdb93",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-native-records-desktop.png",
+      "sha256": "52a80ff418397791a511d431a6657611850526c7304c606ae8f0028400ae5329",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-call-receipts-desktop.png",
+      "sha256": "35e7d8ca3b9df12e9629fb873bc85a4939187f77ab24487bb16aa22625b7e60a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-native-result-desktop.png",
+      "sha256": "26da8aa4c28afaa082770f043dcc4d1427a9ca0b1d7f72e2619635d1845d2427",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-verified"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-native-result-mobile.png",
+      "sha256": "07af094270193e8707670f2fc39667a94bbd7f64d0eedc6cd31f81e9aee00e85",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".proof-verified"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-native-handoff-mobile.png",
+      "sha256": "81c12b4796293523ec1f85ec939ca19351f1c020e23ac629836543472836dfc4",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".proof-handoff"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-overview-mobile.png",
+      "sha256": "adc0e52a9831a6eb35fafd9f0d74b193f04043f590b420d954cf7b28112042ff",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-07/proof-findings-mobile.png",
+      "sha256": "f85f1c1247abb51f477484161d2b68c60b98627f62f2b64b2e05b285e17e5ee9",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": {
+    "status": "pass",
+    "reviewedDate": "2026-10-07",
+    "reviewedCaptures": [
+      "docs/shiftcare-proof-review-2026-10-07/proof-overview-desktop.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-findings-desktop.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-native-records-desktop.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-call-receipts-desktop.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-native-result-desktop.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-native-result-mobile.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-native-handoff-mobile.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-overview-mobile.png",
+      "docs/shiftcare-proof-review-2026-10-07/proof-findings-mobile.png"
+    ],
+    "findings": "All nine current screenshots were inspected. The authenticated source, six owned findings, native links, call scope, all five stages and action 11221 read-back are clear. Desktop/mobile layouts have no page overflow or text overlap; wide tables scroll within their container."
+  },
+  "mapbox": "Not exercised in this review.",
+  "productionLimit": "Captured MCP reads and local rules are demonstrated. Website-owned OAuth, live REST credentials, hosted job storage and unattended native writes are not certified.",
+  "nativeProof": {
+    "actionId": "11221",
+    "status": "verified creation",
+    "nativeStatus": "open",
+    "verifiedBy": "Separate get_action_item; seven exact field checks",
+    "readbackAt": "2026-10-07T06:30:20.537Z"
+  }
+}

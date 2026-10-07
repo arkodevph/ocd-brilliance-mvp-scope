@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "f21fda9c-b6ec-4b40-b779-9aeee2243acc",
+  "status": "failed",
+  "command": "deliver",
+  "stage": "render",
+  "input": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-finance-20261006-185221/candidate.json",
+  "output": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-finance-20261006-185221/ocd-shiftcare-finance.html",
+  "artifact": {
+    "sha256": "9f5c03b592710f375b7e5e0e7f99d6d0bb3aaa389d0e52c6259032ba19265ba2",
+    "bytes": 772339
+  },
+  "error": "Workflow edge \"export-error\" cannot satisfy route preset \"straight\" under readable-v2 constraints (minimum 8px endpoint stubs, 16px interior turns, and 28px direct clearance)."
+}

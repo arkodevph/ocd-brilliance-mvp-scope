@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "command": "deliver",
+  "status": "pending",
+  "receiptId": "b66e407f-4d63-4b94-9b37-8caf0073969c",
+  "input": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/candidate.json",
+  "output": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html"
+}

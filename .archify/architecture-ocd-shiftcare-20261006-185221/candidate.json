@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "OCD + ShiftCare — proposed integration",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": ".archify/architecture-ocd-shiftcare-20261006-185221/ocd-shiftcare.html"
+  },
+  "components": [
+    {
+      "id": "email",
+      "type": "external",
+      "label": "Emails and scans",
+      "sublabel": "Existing M365 workflow",
+      "pos": [
+        35,
+        65
+      ],
+      "size": [
+        170,
+        82
+      ]
+    },
+    {
+      "id": "intake",
+      "type": "backend",
+      "label": "Intake ownership",
+      "sublabel": "OCD queue / routing",
+      "pos": [
+        325,
+        65
+      ],
+      "size": [
+        170,
+        82
+      ]
+    },
+    {
+      "id": "approval",
+      "type": "security",
+      "label": "Office approval",
+      "sublabel": "Identity / fields / impact",
+      "pos": [
+        615,
+        65
+      ],
+      "size": [
+        180,
+        82
+      ]
+    },
+    {
+      "id": "native_intake",
+      "type": "cloud",
+      "label": "Native intake",
+      "sublabel": "Signals / referral review",
+      "pos": [
+        945,
+        65
+      ],
+      "size": [
+        185,
+        82
+      ],
+      "tag": "Check feature access"
+    },
+    {
+      "id": "users",
+      "type": "frontend",
+      "label": "OCD workspaces",
+      "sublabel": "Office / Worker / Client",
+      "pos": [
+        35,
+        295
+      ],
+      "size": [
+        170,
+        82
+      ]
+    },
+    {
+      "id": "server",
+      "type": "backend",
+      "label": "OCD app server",
+      "sublabel": "Role scope / proposed jobs",
+      "pos": [
+        325,
+        295
+      ],
+      "size": [
+        170,
+        82
+      ]
+    },
+    {
+      "id": "connector",
+      "type": "backend",
+      "label": "ShiftCare adapter",
+      "sublabel": "REST after contract test",
+      "pos": [
+        615,
+        295
+      ],
+      "size": [
+        180,
+        82
+      ],
+      "tag": "API key + entitlement"
+    },
+    {
+      "id": "shiftcare",
+      "type": "database",
+      "label": "ShiftCare records",
+      "sublabel": "Main source of truth",
+      "pos": [
+        945,
+        295
+      ],
+      "size": [
+        185,
+        82
+      ]
+    },
+    {
+      "id": "journey",
+      "type": "backend",
+      "label": "Journey service",
+      "sublabel": "Separate consented feed",
+      "pos": [
+        35,
+        525
+      ],
+      "size": [
+        170,
+        82
+      ],
+      "tag": "Proposed; not SC GPS"
+    },
+    {
+      "id": "store",
+      "type": "database",
+      "label": "OCD state store",
+      "sublabel": "Requests / audit / cache",
+      "pos": [
+        325,
+        525
+      ],
+      "size": [
+        170,
+        82
+      ]
+    },
+    {
+      "id": "jobs",
+      "type": "messagebus",
+      "label": "Jobs and polling",
+      "sublabel": "Bounded reads / reconcile",
+      "pos": [
+        615,
+        525
+      ],
+      "size": [
+        180,
+        82
+      ],
+      "tag": "Proposed scheduler"
+    },
+    {
+      "id": "native_ops",
+      "type": "frontend",
+      "label": "Native operations",
+      "sublabel": "Accept / care / approve",
+      "pos": [
+        945,
+        525
+      ],
+      "size": [
+        185,
+        82
+      ]
+    },
+    {
+      "id": "mapbox",
+      "type": "cloud",
+      "label": "Mapbox",
+      "sublabel": "Route duration / 3D maps",
+      "pos": [
+        35,
+        755
+      ],
+      "size": [
+        170,
+        82
+      ]
+    },
+    {
+      "id": "exceptions",
+      "type": "security",
+      "label": "Exception owner",
+      "sublabel": "Resolve / retry / audit",
+      "pos": [
+        325,
+        755
+      ],
+      "size": [
+        170,
+        82
+      ]
+    },
+    {
+      "id": "manual",
+      "type": "security",
+      "label": "Supervised fallback",
+      "sublabel": "ShiftCare UI / Admin MCP",
+      "pos": [
+        615,
+        755
+      ],
+      "size": [
+        180,
+        82
+      ],
+      "tag": "Exact write approval"
+    },
+    {
+      "id": "accounting",
+      "type": "external",
+      "label": "Xero / payroll",
+      "sublabel": "Existing financial path",
+      "pos": [
+        945,
+        755
+      ],
+      "size": [
+        185,
+        82
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "email-intake",
+      "from": "email",
+      "to": "intake",
+      "label": "owned task"
+    },
+    {
+      "id": "draft-review",
+      "from": "intake",
+      "to": "approval",
+      "label": "proposal"
+    },
+    {
+      "id": "native-entry",
+      "from": "approval",
+      "to": "native_intake",
+      "label": "native review"
+    },
+    {
+      "id": "native-record",
+      "from": "native_intake",
+      "to": "shiftcare",
+      "label": "accept / file",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "users-server",
+      "from": "users",
+      "to": "server",
+      "label": "HTTPS"
+    },
+    {
+      "id": "server-intake",
+      "from": "server",
+      "to": "intake",
+      "label": "enquiries",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "server-adapter",
+      "from": "server",
+      "to": "connector",
+      "label": "read / job",
+      "variant": "dashed"
+    },
+    {
+      "id": "approved-adapter",
+      "from": "approval",
+      "to": "connector",
+      "label": "approved write",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "adapter-request",
+      "from": "connector",
+      "to": "shiftcare",
+      "label": "REST + key gate",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "records-return",
+      "from": "shiftcare",
+      "to": "connector",
+      "label": "records / read-back",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "id": "state",
+      "from": "server",
+      "to": "store",
+      "label": "job / audit I/O",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "poll",
+      "from": "jobs",
+      "to": "connector",
+      "label": "paged polls",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "native-actions",
+      "from": "native_ops",
+      "to": "shiftcare",
+      "label": "native updates",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "native-export",
+      "from": "native_ops",
+      "to": "accounting",
+      "label": "approved exports",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "journey-request",
+      "from": "server",
+      "to": "journey",
+      "label": "consented trip",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "directions",
+      "from": "journey",
+      "to": "mapbox",
+      "label": "route request",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "failed-job",
+      "from": "jobs",
+      "to": "manual",
+      "label": "unverified / failed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "security"
+    },
+    {
+      "id": "resolved",
+      "from": "manual",
+      "to": "exceptions",
+      "label": "office outcome"
+    },
+    {
+      "id": "audit-resolution",
+      "from": "exceptions",
+      "to": "store",
+      "label": "record resolution",
+      "fromSide": "top",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "ShiftCare stays authoritative",
+      "items": [
+        "Clients, staff, roster, assignments, care records, documents and service billing stay in ShiftCare.",
+        "Workers keep native acceptance, clock-in/out and notes. The bookkeeper approves finance through the existing process.",
+        "Native Inbox Signals/referrals require feature access and staff review; they are not proven enabled in OCD's production account."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Gated production paths",
+      "items": [
+        "Dashed connector/journey paths are proposed. REST needs eligible API access, a key and a verified contract for each action.",
+        "Bounded polling is the default proposal. No customer ShiftCare webhook subscription has been verified.",
+        "The authenticated Codex MCP is a separate supervised session; it is not the website's credential or an unattended job runner."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Data and visibility",
+      "items": [
+        "REST replies/read-back refresh the OCD projection. Proposed changes stay pending until remote state is verified.",
+        "Real participant/worker identity filtering is required. Private notes, home addresses and other participants' data stay restricted.",
+        "Journey input comes from a consented worker device or manual ETA; Mapbox returns routes, not worker location."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Exceptions and finance",
+      "items": [
+        "Unknown write result: reconcile before retry. Unsupported upload, group cancellation or missing availability: native office handling.",
+        "The state store owns requests, approvals, job outcomes and OCD message evidence; it does not replace ShiftCare.",
+        "Preserve ShiftCare → Excel/export → Xero and the confirmed payroll platform. No second invoice/pay run."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Evidence and scope",
+      "items": [
+        "Research: docs/OCD_ShiftCare_Integration_and_Automation_Design.md, sections 2–10; redacted MCP capability evidence is alongside it.",
+        "Transcript: intake 351–368/855–873/1168; reminders 536–540/644; care and finance 472–486/693–726.",
+        "This is a proposed system architecture, not a claim that backend jobs, writes, live portals or ETA are implemented."
+      ]
+    }
+  ]
+}

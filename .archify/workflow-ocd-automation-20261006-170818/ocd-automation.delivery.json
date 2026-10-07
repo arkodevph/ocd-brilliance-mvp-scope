@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "1cb5b483-b679-4ab6-a840-68d968d355d6",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-automation-20261006-170818/candidate.json",
+  "output": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-automation-20261006-170818/ocd-automation.html",
+  "specification": {
+    "sha256": "0440e15e89a9538b4cfd19bb9cc50fbfdf4407888bb0fc9f2595b69640f04cd7",
+    "bytes": 16981
+  },
+  "artifact": {
+    "sha256": "e6075b8149716713eb46fb382be2cb3e7ff806a825cb5bc7f06d92dd76a6e79a",
+    "bytes": 818041
+  }
+}

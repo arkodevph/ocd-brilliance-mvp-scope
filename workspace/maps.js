@@ -70,7 +70,8 @@
 
   function snapshot(state, b, now = Date.now()) {
     const journey = state.journeys?.[b?.id];
-    if (!trackingAllowed(b) || !journey || journey.workerId !== b.workerId || journey.date !== b.date || journey.start !== b.start) return { phase: "not-started", progress: 0, running: false, remainingMinutes: null };
+    if (!trackingAllowed(b) || !journey || journey.consent !== true || journey.workerId !== b.workerId || journey.date !== b.date || journey.start !== b.start) return { phase: "not-started", progress: 0, running: false, remainingMinutes: null };
+    if (journey.phase === "en-route" && (!Number.isFinite(journey.updatedAt) || now - journey.updatedAt > 120000)) return { phase: "stale", progress: 0, running: false, remainingMinutes: null };
     let progress = clamp(journey.progress);
     if (journey.running && Number.isFinite(journey.startedAt) && Number.isFinite(journey.playbackMs) && journey.playbackMs > 0) {
       progress = clamp(progress + (1 - progress) * Math.max(0, now - journey.startedAt) / journey.playbackMs);
@@ -94,12 +95,13 @@
     if (b.status === "Cancelled") return "Booking cancelled";
     if (b.status === "Completed") return "Visit completed";
     if (!trackingAllowed(b)) return b.status;
+    if (snap.phase === "stale") return "Arrival update unavailable";
     return snap.phase === "en-route" ? "Worker on the way" : snap.phase === "arrived" ? "Worker has arrived" : "Journey not started";
   }
 
   function page(ctx) {
     const pref = prepare(ctx);
-    const titles = { office: ["Office / Booking map", "Booking map", "See service locations, assignments and worker arrivals in one place."], worker: ["Worker / Visit map", "My visit map", "Check your bookings and share a demo journey with the office and participant."], client: ["Client portal / Worker arrival", "Track my worker", "See your service bookings and follow your worker’s arrival."] };
+    const titles = { office: ["Office / Booking map", "Booking map", "See service locations, assignments and worker arrivals in one place."], worker: ["Worker / Visit map", "My visit map", "Check your bookings and share a demo journey with the office and participant."], client: ["Client portal / Worker arrival", "My booking & arrival", "See your own service location and an arrival estimate, without a worker route or exact location."] };
     const [eyebrow, title, subtitle] = titles[ctx.area];
     return `<header class="page-header"><div><span class="eyebrow">${eyebrow}</span><h1>${title}</h1><p>${subtitle}</p></div><span class="map-demo-badge">${icon("car")} Simulated journey</span></header>
       <section id="booking-map-workspace" data-map-area="${ctx.area}" aria-label="${title}">
@@ -112,9 +114,9 @@
           <div class="map-view-controls"><div class="map-view-toggle" role="group" aria-label="Map perspective"><button type="button" data-map-action="3d" aria-pressed="${pref.threeD}">3D</button><button type="button" data-map-action="2d" aria-pressed="${!pref.threeD}">2D</button></div><button class="btn" type="button" data-map-action="fit">${icon("fit")} <span>Show all</span></button></div>
           <div class="map-fallback" data-map-fallback><span class="map-fallback-symbol">${icon("map")}</span><h2>Preparing your booking map</h2><p>Loading service locations.</p></div>
           <div class="map-selected-label" data-map-selected-label hidden></div>
-        </div><footer class="map-footer"><span class="map-connection-state" data-map-connection>Mapbox · 3D service locations</span><div class="map-legend"><span><i></i>Service location</span><span><i class="worker"></i>Demo worker</span><span><i class="cover"></i>Needs cover</span></div>${ctx.area === "office" ? '<button class="link-button" type="button" data-map-action="connection">Map connection</button>' : ""}</footer></section>
+        </div><footer class="map-footer"><span class="map-connection-state" data-map-connection>Mapbox · 3D service locations</span><div class="map-legend"><span><i></i>Service location</span>${ctx.area === "client" ? "" : '<span><i class="worker"></i>Demo worker</span>'}<span><i class="cover"></i>Needs cover</span></div>${ctx.area === "office" ? '<button class="link-button" type="button" data-map-action="connection">Map connection</button>' : ""}</footer></section>
         <aside class="map-side-panel"><section class="map-booking-section"><div class="section-heading"><h2>${ctx.area === "office" ? "Service bookings" : "Your bookings"}</h2><span class="map-booking-count" data-map-count></span></div><div class="map-booking-list" data-map-list></div></section><section class="map-arrival-section" data-map-detail></section></aside></div>
-        <div class="map-demo-note">${icon("car")}<span>Demo playback uses fictional suburb locations and a simulated worker. It does not track a real person. Start a journey in Worker, then switch to Client to follow the same demo booking.</span></div>
+        <div class="map-demo-note">${icon("car")}<span>Fictional locations and accelerated playback; no real person is tracked. Only Worker can start a consented journey. Client sees their own service map and estimate, with no worker marker or route.</span></div>
         ${ctx.area === "office" ? '<section class="panel map-connection-panel" data-map-settings hidden><h2>Connect Mapbox</h2><p class="muted">Use a public token from your <a class="map-account-link" href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer">Mapbox account</a>. This connection is saved only in this browser.</p><form data-map-form="connection"><label for="map-public-token">Public access token<input id="map-public-token" name="token" type="password" placeholder="pk.…" autocomplete="off" spellcheck="false" required></label><p class="field-error" data-map-token-error role="alert"></p><div class="button-row"><button class="btn primary" type="submit">Connect map</button><button class="btn" type="button" data-map-action="clear-token">Use configured connection</button></div></form></section>' : ""}
       </section>`;
   }
@@ -222,21 +224,22 @@
       this.lastRunning = snap.running;
       const enRoute = snap.phase === "en-route", arrived = snap.phase === "arrived", allowed = trackingAllowed(b);
       const title = phaseLabel(b, snap);
-      const eta = enRoute ? `${snap.remainingMinutes}<span> min</span>` : arrived ? "Arrived" : allowed ? esc(b.start) : "—";
-      const explanation = b.status === "Needs cover" ? "The office will confirm the replacement worker. Arrival tracking will be available once the booking is confirmed." : b.status === "Cancelled" ? "This service was cancelled. No location is shared for this booking." : b.status === "Completed" ? "This visit is complete. Worker location sharing is off." : !allowed ? "Arrival tracking is available for confirmed services." : arrived ? "Your worker is at the demo service location. The visit record is completed separately." : enRoute ? "Follow the simulated journey to your service location." : "The arrival estimate appears when your assigned worker starts their journey.";
+      const eta = snap.phase === "stale" ? "Unavailable" : enRoute ? `${snap.remainingMinutes}<span> min</span>` : arrived ? "Arrived" : allowed ? esc(b.start) : "—";
+      const explanation = snap.phase === "stale" ? "The last estimate is too old. Arrival information is withdrawn; contact the office if the service is late." : b.status === "Needs cover" ? "The office will confirm the replacement worker. Arrival tracking will be available once the booking is confirmed." : b.status === "Cancelled" ? "This service was cancelled. No location is shared for this booking." : b.status === "Completed" ? "This visit is complete. Worker location sharing is off." : !allowed ? "Arrival tracking is available for confirmed services." : arrived ? "Your worker is at the demo service location. The visit record is completed separately." : enRoute ? "A sample worker estimate for this assigned service. This is not a live traffic or device location update." : "The arrival estimate appears when your assigned worker starts their journey.";
       let playback = "";
-      if (allowed && !this.ctx.state.visits.some(v => v.bookingId === b.id && v.clockIn) && (this.ctx.area !== "client" || enRoute || arrived)) {
-        playback = `<div class="map-playback"><span class="map-playback-label">${this.ctx.area === "worker" ? "JOURNEY CONTROLS · DEMO" : "ARRIVAL PREVIEW · DEMO"}</span><div class="button-row"><button class="btn primary" type="button" data-map-action="${snap.running ? "pause" : "play"}">${icon(snap.running ? "pause" : "play")} ${snap.running ? "Pause demo" : arrived ? "Replay demo" : enRoute ? "Play journey" : this.ctx.area === "worker" ? "Start journey (demo)" : "Preview arrival"}</button>${this.ctx.area === "worker" && enRoute ? '<button class="btn" type="button" data-map-action="arrive">Mark arrived</button><button class="link-button map-stop-sharing" type="button" data-map-action="stop">Stop sharing</button>' : ""}</div><small>Playback is accelerated. Location updates are simulated.</small></div>`;
+      if (allowed && !this.ctx.state.visits.some(v => v.bookingId === b.id && v.clockIn) && this.ctx.area === "worker") {
+        playback = `<label class="journey-consent"><input type="checkbox" data-journey-consent ${this.ctx.state.journeys?.[b.id]?.consent ? "checked" : ""}><span>I agree to share an arrival estimate for this assigned service until arrival, cancellation or stop. My home origin and other participants are not shown to the client.</span></label><p class="field-error" data-journey-error hidden role="alert"></p><div class="map-playback"><span class="map-playback-label">${this.ctx.area === "worker" ? "JOURNEY CONTROLS · DEMO" : "ARRIVAL PREVIEW · DEMO"}</span><div class="button-row"><button class="btn primary" type="button" data-map-action="${snap.running ? "pause" : "play"}">${icon(snap.running ? "pause" : "play")} ${snap.running ? "Pause demo" : arrived ? "Replay demo" : enRoute ? "Play journey" : this.ctx.area === "worker" ? "Start journey (demo)" : "Preview arrival"}</button>${this.ctx.area === "worker" && (enRoute || snap.phase === "stale") ? '<button class="btn" type="button" data-map-action="arrive">Mark arrived</button><button class="link-button map-stop-sharing" type="button" data-map-action="stop">Stop sharing</button><button class="link-button" type="button" data-map-action="stale">Try stale update</button>' : ""}</div><small>Playback is accelerated. Location updates are simulated.</small></div>`;
       }
       this.query("[data-map-detail]").innerHTML = `<div class="map-worker-heading"><span class="avatar">${b.status === "Needs cover" ? "?" : esc(w?.initials || "—")}</span><span><small>${b.status === "Needs cover" ? "Assignment pending" : this.ctx.area === "client" ? "Your assigned worker" : this.ctx.area === "worker" ? "Your journey" : "Assigned worker"}</small><strong>${b.status === "Needs cover" ? "Awaiting cover" : esc(w?.name || "To be assigned")}</strong></span><span class="map-location-indicator ${enRoute ? "on" : ""}" aria-label="${enRoute ? "Simulated location available" : "Location sharing off"}"></span></div>
         <div class="map-arrival-card ${enRoute || arrived ? "active" : ""}"><span class="map-arrival-status" data-map-arrival-status aria-live="polite">${title}</span><strong class="map-eta-value" data-map-eta>${eta}</strong><span class="map-eta-caption" data-map-eta-caption>${enRoute ? `Est. arrival ${esc(snap.arrivalTime)} AWST` : arrived ? "At the service location" : allowed ? "Scheduled service start · AWST" : dateLabel(b.date)}</span>${enRoute || arrived ? `<div class="map-journey-track"><span data-map-progress style="width:${Math.round(snap.progress * 100)}%"></span></div><div class="map-journey-steps"><span>On the way</span><span>Arrived</span></div>` : ""}<p>${explanation}</p></div>
         <div class="map-booking-facts"><div><span>${icon("clock")}</span><span><small>Service booking</small><strong>${dateLabel(b.date)} · ${esc(b.start)}–${esc(b.end)}</strong></span></div><div><span>${icon("pin")}</span><span><small>Service location</small><strong>${esc(p?.address || "To be confirmed")}</strong><small>${validCoordinates(p?.location?.coordinates) ? "Approximate suburb location for this demo" : "Map coordinates have not been added"}</small></span></div></div>
         <p class="map-route-source" data-map-route-source>${this.routeDescription()}</p>
         <div class="button-row map-focus-actions">${validCoordinates(p?.location?.coordinates) ? `<button class="btn small" type="button" data-map-action="focus">${icon("pin")} Service location</button>` : ""}${this.route ? `<button class="btn small" type="button" data-map-action="route">${icon("map")} Full route</button>` : ""}<a class="btn small" href="#/${this.ctx.area}/${this.ctx.area === "office" ? "schedule/" + esc(b.id) : this.ctx.area === "worker" ? "today/" + esc(b.id) : "bookings"}">Booking details</a></div>
-        ${playback}<span class="map-update-note" data-map-update-note>${enRoute ? snap.running ? "Demo location updating" : "Sample location · playback paused" : "Location sharing is limited to this booking"}</span>`;
+        ${playback}<span class="map-update-note" data-map-update-note>${snap.phase === "stale" ? "Estimate withdrawn; no current update" : enRoute ? `Sample estimate updated ${new Date(this.ctx.state.journeys[b.id].updatedAt).toLocaleTimeString("en-AU")}; consent applies to this booking only` : "Location sharing is limited to this booking"}</span>`;
     }
 
     routeDescription() {
+      if (this.ctx.area === "client") return "Your own service location only. Worker origins, routes and other participants are hidden.";
       return this.route ? `${(this.route.distance / 1000).toFixed(1)} km · ${Math.ceil(this.route.duration / 60)} min driving estimate · Mapbox` : this.routeState === "loading" ? "Calculating the driving route…" : this.routeState === "unavailable" ? "Driving route unavailable. The arrival preview uses sample timings." : trackingAllowed(this.selected) ? "Driving route appears when Mapbox is connected." : "No worker journey is shared for this service.";
     }
 
@@ -344,7 +347,7 @@
       this.workerMarker?.remove(); this.workerMarker = null;
       this.drawRoute();
       const b = this.selected, coords = b && locationFor(this.ctx, b)?.location?.coordinates;
-      if (!trackingAllowed(b) || !validCoordinates(coords) || !token()) { this.routeState = "not-needed"; this.renderDetails(); return; }
+      if (this.ctx.area === "client" || !trackingAllowed(b) || !validCoordinates(coords) || !token()) { this.routeState = "not-needed"; this.renderDetails(); return; }
       const origin = officeFor(this.ctx).coordinates;
       const key = origin.join(",") + ";" + coords.join(",");
       if (routeCache.has(key)) { this.route = routeCache.get(key); this.routeState = "ready"; this.renderDetails(); this.drawRoute(); this.fitVisible(); return; }
@@ -379,7 +382,7 @@
     updateWorkerPosition() {
       if (!this.ready || !this.map) return;
       const b = this.selected, snap = snapshot(this.ctx.state, b);
-      if (!this.route || !b || snap.phase === "not-started") {
+      if (this.ctx.area === "client" || !this.route || !b || ["not-started", "stale"].includes(snap.phase)) {
         this.workerMarker?.remove(); this.workerMarker = null;
         this.map.getSource("booking-travelled")?.setData(lineData([]));
         return;
@@ -433,7 +436,7 @@
 
     controlJourney(action) {
       const b = this.selected;
-      if (!trackingAllowed(b)) return;
+      if (!trackingAllowed(b) || this.ctx.area !== "worker" || b.workerId !== this.ctx.workerId) return;
       if (this.ctx.state.visits.some(v => v.bookingId === b.id && v.clockIn)) return;
       const snap = snapshot(this.ctx.state, b);
       if (this.ctx.area === "client" && snap.phase === "not-started") return;
@@ -441,13 +444,19 @@
       const journey = this.ctx.state.journeys[b.id] ||= { workerId: b.workerId, date: b.date, start: b.start, progress: 0, phase: "not-started", durationSeconds: this.route?.duration || 960, arrivalTime: b.start, running: false };
       if (journey.workerId !== b.workerId || journey.date !== b.date || journey.start !== b.start) Object.assign(journey, { workerId: b.workerId, date: b.date, start: b.start, progress: 0, phase: "not-started", running: false, arrivalTime: b.start });
       if (action === "play") {
+        if (!this.query("[data-journey-consent]")?.checked) { const error = this.query("[data-journey-error]"); if (error) { error.hidden = false; error.textContent = "Check the journey consent before sharing an estimate."; } return; }
+        journey.consent = true; journey.updatedAt = Date.now();
         journey.phase = "en-route"; journey.progress = snap.phase === "arrived" ? 0 : snap.progress;
         journey.startedAt = Date.now(); journey.playbackMs = Math.max(5000, 60000 * (1 - journey.progress)); journey.running = true;
       } else if (action === "pause") {
         journey.progress = snap.progress; journey.running = false; delete journey.startedAt;
       } else if (action === "arrive") {
+        journey.updatedAt = Date.now();
         journey.progress = 1; journey.phase = "arrived"; journey.running = false; delete journey.startedAt;
+      } else if (action === "stale") {
+        journey.updatedAt = Date.now() - 300000; journey.running = false; delete journey.startedAt;
       } else if (action === "stop") {
+        journey.consent = false;
         journey.progress = 0; journey.phase = "not-started"; journey.running = false; delete journey.startedAt;
       }
       this.ctx.save(); this.refresh(); this.drawRoute();
@@ -459,7 +468,7 @@
       const button = event.target.closest("[data-map-action]");
       if (!button) return;
       const action = button.dataset.mapAction;
-      if (["play", "pause", "arrive", "stop"].includes(action)) return this.controlJourney(action);
+      if (["play", "pause", "arrive", "stop", "stale"].includes(action)) return this.controlJourney(action);
       if (["3d", "2d"].includes(action)) {
         this.pref.threeD = action === "3d";
         this.query('[data-map-action="3d"]').setAttribute("aria-pressed", String(this.pref.threeD));
@@ -488,6 +497,7 @@
     }
 
     onChange(event) {
+      if (event.target.matches("[data-journey-consent]") && !event.target.checked) { this.controlJourney("stop"); return; }
       if (event.target.id === "map-service-date") {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(event.target.value) || !Number.isFinite(Date.parse(event.target.value))) { event.target.value = this.pref.date; return; }
         this.pref.date = event.target.value;

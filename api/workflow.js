@@ -2,6 +2,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { Redis } = require('@upstash/redis');
+const { secretEqual, staffEmail, configured, staffSession: cookie, sessionCookie, originAllowed } = require('../lib/staff-auth.cjs');
 
 const file = path.join(process.env.WORKFLOW_DATA_DIR || path.join(__dirname, '..', '.local'), 'intakes.json');
 let localWrite = Promise.resolve();
@@ -44,30 +45,6 @@ function send(res, status, data, headers = {}) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...headers });
   res.end(JSON.stringify(data));
 }
-function secretEqual(a, b) {
-  const left = Buffer.from(String(a));
-  const right = Buffer.from(String(b));
-  return left.length === right.length && crypto.timingSafeEqual(left, right);
-}
-function staffEmail() { return process.env.WORKFLOW_STAFF_EMAIL?.trim().toLowerCase() || ''; }
-function configured() { return Boolean(staffEmail() && process.env.WORKFLOW_STAFF_PASSWORD && process.env.WORKFLOW_SESSION_SECRET?.length >= 32); }
-function cookie(req) {
-  const match = (req.headers.cookie || '').match(/(?:^|; )ocd_staff=([^;]+)/);
-  if (!match || !configured()) return null;
-  const [value, signature] = decodeURIComponent(match[1]).split('.');
-  if (!value || !signature) return null;
-  const expected = crypto.createHmac('sha256', process.env.WORKFLOW_SESSION_SECRET).update(value).digest('base64url');
-  if (!secretEqual(signature, expected)) return null;
-  try {
-    const session = JSON.parse(Buffer.from(value, 'base64url').toString());
-    return session.email === staffEmail() && session.expires > Date.now() ? session.email : null;
-  } catch (_) { return null; }
-}
-function sessionCookie(email, req) {
-  const value = Buffer.from(JSON.stringify({ email, expires: Date.now() + 8 * 60 * 60 * 1000 })).toString('base64url');
-  const signature = crypto.createHmac('sha256', process.env.WORKFLOW_SESSION_SECRET).update(value).digest('base64url');
-  return `ocd_staff=${value}.${signature}; HttpOnly; SameSite=Lax; Path=/; Max-Age=28800${req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''}`;
-}
 async function body(req) {
   if (req.body && typeof req.body === 'object') return req.body;
   let text = '';
@@ -87,15 +64,6 @@ function covered(postcode) {
     ? { status: 'covered', message: 'We may be able to help in this area. Availability is confirmed after review.' }
     : { status: 'outside', message: 'We are not currently taking intake requests in this postcode. Please contact the office if you need advice.' };
 }
-function originAllowed(req) {
-  const origin = req.headers.origin;
-  if (!origin) return true;
-  try {
-    const host = new URL(origin).host;
-    return host === req.headers.host || host === req.headers['x-forwarded-host'];
-  } catch (_) { return false; }
-}
-
 module.exports = async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);

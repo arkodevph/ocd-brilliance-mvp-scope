@@ -1,0 +1,1813 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "browser-check",
+  "evidenceKind": "automated-browser",
+  "status": "pass",
+  "visualReview": "not-requested",
+  "provenance": "current",
+  "deliveryReceiptId": "1cb5b483-b679-4ab6-a840-68d968d355d6",
+  "artifact": {
+    "path": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-automation-20261006-170818/ocd-automation.html",
+    "sha256": "e6075b8149716713eb46fb382be2cb3e7ff806a825cb5bc7f06d92dd76a6e79a",
+    "bytes": 818041
+  },
+  "state": {
+    "detail": "read",
+    "motion": "still"
+  },
+  "chrome": {
+    "status": "available",
+    "executable": "/usr/bin/google-chrome"
+  },
+  "diagnostics": [],
+  "containment": {
+    "status": "pass",
+    "policy": "fit-or-reader-declared-readable-vertical-scroll",
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 900,
+        "theme": "light",
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 1322,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 12,
+          "headerPx": 68,
+          "diagramChromePx": 78,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 1600,
+        "height": 1000,
+        "theme": "light",
+        "innerWidth": 1600,
+        "innerHeight": 1000,
+        "scrollWidth": 1600,
+        "scrollHeight": 1388,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 76,
+          "diagramChromePx": 84,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "theme": "light",
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1388,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 76,
+          "diagramChromePx": 84,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 2048,
+        "height": 1320,
+        "theme": "light",
+        "innerWidth": 2048,
+        "innerHeight": 1320,
+        "scrollWidth": 2048,
+        "scrollHeight": 1407,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 975,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 84,
+          "diagramChromePx": 94,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 44,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      }
+    ]
+  },
+  "themeStates": {
+    "status": "pass",
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 900,
+        "requestedTheme": "light",
+        "resolvedTheme": "light",
+        "ok": true
+      },
+      {
+        "width": 1600,
+        "height": 1000,
+        "requestedTheme": "light",
+        "resolvedTheme": "light",
+        "ok": true
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "requestedTheme": "light",
+        "resolvedTheme": "light",
+        "ok": true
+      },
+      {
+        "width": 2048,
+        "height": 1320,
+        "requestedTheme": "light",
+        "resolvedTheme": "light",
+        "ok": true
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "requestedTheme": "dark",
+        "resolvedTheme": "dark",
+        "ok": true
+      },
+      {
+        "width": 2048,
+        "height": 1320,
+        "requestedTheme": "dark",
+        "resolvedTheme": "dark",
+        "ok": true
+      }
+    ]
+  },
+  "readability": {
+    "status": "pass",
+    "minimumProjectedNodeTextPx": 6,
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 900,
+        "theme": "light",
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 1322,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 12,
+          "headerPx": 68,
+          "diagramChromePx": 78,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 1600,
+        "height": 1000,
+        "theme": "light",
+        "innerWidth": 1600,
+        "innerHeight": 1000,
+        "scrollWidth": 1600,
+        "scrollHeight": 1388,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 76,
+          "diagramChromePx": 84,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "theme": "light",
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1388,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 76,
+          "diagramChromePx": 84,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 2048,
+        "height": 1320,
+        "theme": "light",
+        "innerWidth": 2048,
+        "innerHeight": 1320,
+        "scrollWidth": 2048,
+        "scrollHeight": 1407,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 975,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 84,
+          "diagramChromePx": 94,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 44,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      }
+    ]
+  },
+  "viewerChrome": {
+    "status": "pass",
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 900,
+        "theme": "light",
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 1322,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 12,
+          "headerPx": 68,
+          "diagramChromePx": 78,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 1600,
+        "height": 1000,
+        "theme": "light",
+        "innerWidth": 1600,
+        "innerHeight": 1000,
+        "scrollWidth": 1600,
+        "scrollHeight": 1388,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 76,
+          "diagramChromePx": 84,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "theme": "light",
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1388,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 960,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 76,
+          "diagramChromePx": 84,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 54,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      },
+      {
+        "width": 2048,
+        "height": 1320,
+        "theme": "light",
+        "innerWidth": 2048,
+        "innerHeight": 1320,
+        "scrollWidth": 2048,
+        "scrollHeight": 1407,
+        "overflowX": false,
+        "overflowY": true,
+        "verticalScrollAccepted": true,
+        "overflowDisposition": "readable-vertical-scroll",
+        "readerLayout": "adaptive",
+        "readerOverflow": "authored",
+        "readerFit": "intrinsic-height",
+        "ok": true,
+        "readerWidth": 975,
+        "diagramWidth": 925,
+        "pageComposition": {
+          "bodyPaddingPx": 64,
+          "headerPx": 84,
+          "diagramChromePx": 94,
+          "svgPx": 1164,
+          "cardsPx": 0,
+          "viewBoxHeight": 1552
+        },
+        "viewBoxWidth": 1233,
+        "workflowLanes": [
+          {
+            "frameId": "lane-0",
+            "heightPx": 248,
+            "nodeCount": 7,
+            "nodeIds": [
+              "participant-enquiry",
+              "area-check",
+              "participant-intake",
+              "extract-fields",
+              "worker-forms",
+              "office-review",
+              "people-records"
+            ],
+            "nodeSpanPx": 184,
+            "spaceAboveNodesPx": 61,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-3",
+            "heightPx": 215,
+            "nodeCount": 5,
+            "nodeIds": [
+              "cancellation-record",
+              "reply-followup",
+              "urgent-note",
+              "no-cover",
+              "cover-search"
+            ],
+            "nodeSpanPx": 119,
+            "spaceAboveNodesPx": 93,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-5",
+            "heightPx": 165,
+            "nodeCount": 5,
+            "nodeIds": [
+              "invoices",
+              "worker-pay",
+              "payroll-calculation",
+              "xero-export",
+              "finance-review"
+            ],
+            "nodeSpanPx": 137,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-2",
+            "heightPx": 80,
+            "nodeCount": 6,
+            "nodeIds": [
+              "cancel-reason",
+              "participant-reply",
+              "service-reminder",
+              "confirmed-booking",
+              "worker-accepts",
+              "capacity-check"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-4",
+            "heightPx": 80,
+            "nodeCount": 5,
+            "nodeIds": [
+              "worker-journey",
+              "mapbox-arrival",
+              "visit-record",
+              "note-check",
+              "actual-service"
+            ],
+            "nodeSpanPx": 51,
+            "spaceAboveNodesPx": 26,
+            "spaceBelowNodesPx": 3
+          },
+          {
+            "frameId": "lane-1",
+            "heightPx": 78,
+            "nodeCount": 3,
+            "nodeIds": [
+              "area-exception",
+              "outside-area",
+              "clarify-fields"
+            ],
+            "nodeSpanPx": 39,
+            "spaceAboveNodesPx": 31,
+            "spaceBelowNodesPx": 8
+          }
+        ],
+        "minimumProjectedNodeTextPx": 6.001622060016221,
+        "minimumProjectedNonEdgeTextPx": 6.001622060016221,
+        "minimumProjectedEdgeTextPx": 6.001622060016221,
+        "minimumProjectedNodeText": "Web, email or referral",
+        "minimumProjectedNodeTextDetail": "context",
+        "minimumProjectedNodeTextOwner": {
+          "kind": "node",
+          "id": "participant-enquiry"
+        },
+        "minimumRequiredNodeTextPx": 6,
+        "readabilityOk": true,
+        "hasLegend": true,
+        "hasNavigationDock": true,
+        "legendDockIntersectionArea": 0,
+        "dockStageIntersectionArea": 0,
+        "dockStageGap": 10,
+        "requiredDockStageGap": 10,
+        "viewerChromeStageOk": true,
+        "viewerChromeReserve": 44,
+        "viewerChromeActive": true,
+        "viewerChromeOk": true,
+        "resolvedTheme": "light"
+      }
+    ]
+  },
+  "captures": {
+    "status": "not-requested",
+    "screenshots": [],
+    "contactSheet": null
+  },
+  "sidecars": {
+    "receipt": "ocd-automation.browser-check.json",
+    "files": []
+  }
+}

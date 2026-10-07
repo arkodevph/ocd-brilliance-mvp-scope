@@ -767,6 +767,9 @@ td a:hover { text-decoration: underline; }
   .office-shell .topbar .avatar { display: none; }
 }
 
+.shiftcare-date[hidden] { display: none; }
+.shiftcare-panel > .muted { margin-bottom: 14px; }
+
 @media print {
   body { background: #fff; padding: 0; }
   .sidebar, .topbar, .page-header, .breadcrumbs, .tabs, .header-actions, .agreement-actions, .no-print, #toast { display: none !important; }

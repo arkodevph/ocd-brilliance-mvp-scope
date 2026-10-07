@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "workflow",
+  "quality": "showcase",
+  "startedAt": "2026-10-06T11:16:16.421Z",
+  "specification": {
+    "path": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/candidate.json",
+    "sha256": "a38cffc092bdf94d3870a8c071aaea7e29d4abb0bca1d1d63403b412c351f91d",
+    "bytes": 9227
+  },
+  "artifact": {
+    "path": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html"
+  },
+  "stages": {
+    "validate": {
+      "status": "fail",
+      "exitCode": 1,
+      "durationMs": null,
+      "command": [
+        "/home/rovic/.nvm/versions/node/v24.21.0/bin/node",
+        "/home/rovic/.agents/skills/archify/bin/archify.mjs",
+        "deliver",
+        "workflow",
+        "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/candidate.json",
+        "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html",
+        "--quality",
+        "showcase",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": false,
+        "command": "deliver",
+        "receiptId": "b66e407f-4d63-4b94-9b37-8caf0073969c",
+        "stage": "render",
+        "type": "workflow",
+        "input": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/candidate.json",
+        "output": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html",
+        "error": "Workflow edge \"mapping-held\" has explicit geometry that violates explicit route-route crossing.",
+        "diagnostics": [
+          {
+            "code": "workflow/explicit-pin-conflict",
+            "severity": "error",
+            "message": "Workflow edge \"mapping-held\" has explicit geometry that violates explicit route-route crossing.",
+            "subject": {
+              "diagramType": "workflow",
+              "edge": "mapping-held",
+              "from": "fields",
+              "to": "mapping_manual"
+            },
+            "evidence": {
+              "invariant": "explicit route-route crossing",
+              "conflictingPins": [
+                {
+                  "edge": "mapping-held",
+                  "field": "fromSide",
+                  "path": "/edges/16/fromSide",
+                  "value": "right"
+                },
+                {
+                  "edge": "mapping-held",
+                  "field": "toSide",
+                  "path": "/edges/16/toSide",
+                  "value": "top"
+                }
+              ],
+              "point": [
+                889.2,
+                1131
+              ],
+              "segmentIndex": 1,
+              "otherSegmentIndex": 2,
+              "routeSegments": [
+                {
+                  "edge": "accounting-close",
+                  "from": [
+                    889.2,
+                    1049
+                  ],
+                  "to": [
+                    889.2,
+                    1147
+                  ]
+                },
+                {
+                  "edge": "mapping-held",
+                  "from": [
+                    974,
+                    1131
+                  ],
+                  "to": [
+                    617.2,
+                    1131
+                  ]
+                }
+              ],
+              "sourceRouteSegments": [
+                {
+                  "edge": "accounting-close",
+                  "from": [
+                    889.2,
+                    1049
+                  ],
+                  "to": [
+                    889.2,
+                    1147
+                  ]
+                },
+                {
+                  "edge": "mapping-held",
+                  "from": [
+                    974,
+                    1131
+                  ],
+                  "to": [
+                    617.2,
+                    1131
+                  ]
+                }
+              ]
+            },
+            "supportedFixes": []
+          }
+        ],
+        "provenance": "absent",
+        "update": {
+          "status": "unavailable",
+          "installedVersion": null,
+          "availableVersion": null,
+          "releaseNotes": null,
+          "checkedAt": null,
+          "source": null,
+          "noticeRequired": false,
+          "noticeText": null,
+          "reason": "disabled"
+        }
+      },
+      "execution": "embedded-in-deliver"
+    },
+    "deliver": {
+      "status": "not-run",
+      "execution": "blocked-by-validate"
+    }
+  },
+  "diagnostics": [
+    {
+      "code": "workflow/explicit-pin-conflict",
+      "severity": "error",
+      "message": "Workflow edge \"mapping-held\" has explicit geometry that violates explicit route-route crossing.",
+      "subject": {
+        "diagramType": "workflow",
+        "edge": "mapping-held",
+        "from": "fields",
+        "to": "mapping_manual"
+      },
+      "evidence": {
+        "invariant": "explicit route-route crossing",
+        "conflictingPins": [
+          {
+            "edge": "mapping-held",
+            "field": "fromSide",
+            "path": "/edges/16/fromSide",
+            "value": "right"
+          },
+          {
+            "edge": "mapping-held",
+            "field": "toSide",
+            "path": "/edges/16/toSide",
+            "value": "top"
+          }
+        ],
+        "point": [
+          889.2,
+          1131
+        ],
+        "segmentIndex": 1,
+        "otherSegmentIndex": 2,
+        "routeSegments": [
+          {
+            "edge": "accounting-close",
+            "from": [
+              889.2,
+              1049
+            ],
+            "to": [
+              889.2,
+              1147
+            ]
+          },
+          {
+            "edge": "mapping-held",
+            "from": [
+              974,
+              1131
+            ],
+            "to": [
+              617.2,
+              1131
+            ]
+          }
+        ],
+        "sourceRouteSegments": [
+          {
+            "edge": "accounting-close",
+            "from": [
+              889.2,
+              1049
+            ],
+            "to": [
+              889.2,
+              1147
+            ]
+          },
+          {
+            "edge": "mapping-held",
+            "from": [
+              974,
+              1131
+            ],
+            "to": [
+              617.2,
+              1131
+            ]
+          }
+        ]
+      },
+      "supportedFixes": []
+    }
+  ],
+  "evidence": {
+    "receipt": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.finalize.json",
+    "summaryReceipt": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "failedStage": "validate",
+  "finishedAt": "2026-10-06T11:16:16.892Z",
+  "durationMs": 471,
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-06T09:24:16.438Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  }
+}

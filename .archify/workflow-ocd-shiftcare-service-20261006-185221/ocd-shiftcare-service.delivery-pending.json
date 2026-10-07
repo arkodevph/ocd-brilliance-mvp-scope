@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "command": "deliver",
+  "status": "pending",
+  "receiptId": "ac003287-7168-4578-857b-299b2245939d",
+  "input": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-service-20261006-185221/candidate.json",
+  "output": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/workflow-ocd-shiftcare-service-20261006-185221/ocd-shiftcare-service.html"
+}

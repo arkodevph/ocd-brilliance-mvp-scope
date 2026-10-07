@@ -1,0 +1,166 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "OCD Brilliance · Proposed Automation Workflow",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-ocd-automation-20261006-170818/ocd-automation.html",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": { "label": "Participant or worker input" },
+        "backend": { "label": "Automation steps" },
+        "security": { "label": "Checks and decisions" },
+        "database": { "label": "Existing records" },
+        "cloud": { "label": "Existing systems" },
+        "messagebus": { "label": "Messages and follow-up" },
+        "external": { "label": "People and outcomes" }
+      }
+    }
+  },
+  "lanes": [
+    { "id": "intake", "label": "Office · enquiry and onboarding" },
+    { "id": "intake-help", "label": "Office · intake exceptions", "variant": "exception" },
+    { "id": "booking", "label": "Office + worker · booking" },
+    { "id": "service-help", "label": "Office · service exceptions", "variant": "exception" },
+    { "id": "service", "label": "Worker + participant · visit" },
+    { "id": "finance", "label": "Bookkeeper · invoices and pay" },
+    { "id": "documents", "label": "Office · document follow-up" }
+  ],
+  "mainPath": ["participant-enquiry", "area-check", "participant-intake", "extract-fields", "office-review", "people-records", "capacity-check"],
+  "semanticChecks": {
+    "allowedRoots": ["participant-enquiry", "worker-forms", "document-records"],
+    "allowedTerminals": ["outside-area", "cancellation-record", "reply-followup", "no-cover", "urgent-note", "invoices", "worker-pay", "document-correction"],
+    "requiredEdges": [
+      { "from": "office-review", "to": "people-records" },
+      { "from": "worker-accepts", "to": "confirmed-booking" },
+      { "from": "participant-reply", "to": "cancel-reason" },
+      { "from": "cancel-reason", "to": "cancellation-record" },
+      { "from": "actual-service", "to": "finance-review" }
+    ],
+    "requiredPaths": [
+      { "from": "worker-forms", "to": "people-records" },
+      { "from": "confirmed-booking", "to": "invoices" },
+      { "from": "confirmed-booking", "to": "worker-pay" }
+    ]
+  },
+  "nodes": [
+    { "id": "participant-enquiry", "lane": "intake", "col": 0, "yOffset": -65, "type": "frontend", "icon": "person", "label": "Participant enquiry", "sublabel": "Web, email or referral", "width": 128 },
+    { "id": "worker-forms", "lane": "intake", "col": 3, "yOffset": 120, "type": "frontend", "icon": "briefcase", "label": "Worker onboarding", "sublabel": "Emailed forms + scans", "width": 128 },
+    { "id": "area-check", "lane": "intake", "col": 1, "yOffset": -65, "type": "security", "label": "Area covered?", "sublabel": "Before full intake", "tag": "Capacity + exceptions", "width": 128 },
+    { "id": "participant-intake", "lane": "intake", "col": 2, "yOffset": -65, "type": "frontend", "label": "Participant intake", "sublabel": "Forms + assessments", "width": 128 },
+    { "id": "extract-fields", "lane": "intake", "col": 3, "type": "backend", "label": "Extract + match", "sublabel": "Read fields and files", "tag": "AI-assisted proposal", "width": 128 },
+    { "id": "office-review", "lane": "intake", "col": 4, "type": "security", "icon": "person", "label": "Office checks data", "sublabel": "Identity, fields, files", "tag": "Staff review", "width": 128 },
+    { "id": "people-records", "lane": "intake", "col": 5, "type": "cloud", "label": "ShiftCare + Xero", "sublabel": "Correct people records", "tag": "Writes need validation", "width": 128 },
+    { "id": "area-exception", "lane": "intake-help", "col": 1, "type": "security", "icon": "person", "label": "Office checks area", "sublabel": "Case-by-case coverage", "width": 128 },
+    { "id": "outside-area", "lane": "intake-help", "col": 2, "type": "messagebus", "label": "Explain coverage", "sublabel": "No service available", "width": 128 },
+    { "id": "clarify-fields", "lane": "intake-help", "col": 4, "type": "frontend", "label": "Clarify + correct", "sublabel": "Missing or unclear data", "width": 128 },
+    { "id": "capacity-check", "lane": "booking", "col": 5, "type": "security", "icon": "calendar", "label": "Check service slot", "sublabel": "Roster, hours, travel", "tag": "Free slot ≠ available", "width": 128 },
+    { "id": "worker-accepts", "lane": "booking", "col": 4, "type": "security", "icon": "person", "label": "Worker accepts?", "sublabel": "New or changed service", "tag": "Confirm availability", "width": 128 },
+    { "id": "confirmed-booking", "lane": "booking", "col": 3, "type": "cloud", "icon": "calendar", "label": "Confirmed booking", "sublabel": "Record in ShiftCare", "width": 128 },
+    { "id": "service-reminder", "lane": "booking", "col": 2, "type": "messagebus", "icon": "clock", "label": "3-day reminder", "sublabel": "Use agreed channel", "tag": "One communication flow", "width": 128 },
+    { "id": "participant-reply", "lane": "booking", "col": 1, "type": "security", "icon": "person", "label": "Participant reply?", "sublabel": "Yes, cancel or no reply", "width": 128 },
+    { "id": "cancel-reason", "lane": "booking", "col": 0, "type": "frontend", "label": "Capture reason", "sublabel": "Apply agreed policy", "width": 128 },
+    { "id": "cancellation-record", "lane": "service-help", "col": 0, "type": "cloud", "label": "Cancel in ShiftCare", "sublabel": "Reason + notifications", "tag": "Policy exceptions first", "width": 128 },
+    { "id": "reply-followup", "lane": "service-help", "col": 0, "yOffset": 90, "type": "messagebus", "icon": "person", "label": "Office follows up", "sublabel": "No participant response", "width": 128 },
+    { "id": "urgent-note", "lane": "service-help", "col": 3, "type": "security", "icon": "flag", "label": "Office reviews", "sublabel": "Major / private notes", "tag": "Restricted access", "width": 128 },
+    { "id": "no-cover", "lane": "service-help", "col": 4, "yOffset": 90, "type": "messagebus", "icon": "person", "label": "Contact participant", "sublabel": "No suitable cover", "tag": "Human resolution", "width": 128 },
+    { "id": "cover-search", "lane": "service-help", "col": 5, "type": "security", "icon": "person", "label": "Office finds cover", "sublabel": "Available + suitable", "tag": "Auto-offers need rules", "width": 128 },
+    { "id": "worker-journey", "lane": "service", "col": 1, "type": "frontend", "icon": "briefcase", "label": "Worker on the way", "sublabel": "Booked visit journey", "width": 128 },
+    { "id": "mapbox-arrival", "lane": "service", "col": 2, "type": "backend", "icon": "clock", "label": "Mapbox 3D + ETA", "sublabel": "Office / Worker / Client", "tag": "Agreed sharing only", "width": 128 },
+    { "id": "visit-record", "lane": "service", "col": 3, "type": "database", "label": "Delivered visit", "sublabel": "Time, tasks, outcomes", "tag": "Existing ShiftCare flow", "width": 128 },
+    { "id": "note-check", "lane": "service", "col": 4, "type": "backend", "label": "Visit note flags", "sublabel": "Extra time or issues", "width": 128 },
+    { "id": "actual-service", "lane": "service", "col": 5, "type": "backend", "label": "Actual service", "sublabel": "Hours, travel, distance", "tag": "Compare with roster", "width": 128 },
+    { "id": "finance-review", "lane": "finance", "col": 5, "type": "security", "icon": "person", "label": "Bookkeeper checks", "sublabel": "Rates, notes, exceptions", "tag": "Rules need confirmation", "width": 128 },
+    { "id": "xero-export", "lane": "finance", "col": 4, "yOffset": -65, "type": "cloud", "label": "ShiftCare → Xero", "sublabel": "Existing invoice export", "width": 128 },
+    { "id": "invoices", "lane": "finance", "col": 3, "yOffset": -65, "type": "messagebus", "label": "Tuesday invoices", "sublabel": "Funding recipient", "width": 128 },
+    { "id": "payroll-calculation", "lane": "finance", "col": 4, "yOffset": 65, "type": "backend", "label": "Payroll preparation", "sublabel": "Hours + travel payments", "width": 128 },
+    { "id": "worker-pay", "lane": "finance", "col": 3, "yOffset": 65, "type": "external", "icon": "briefcase", "label": "Fortnightly payroll", "sublabel": "Reviewed worker payment", "width": 128 },
+    { "id": "document-records", "lane": "documents", "col": 0, "type": "database", "label": "ShiftCare documents", "sublabel": "Existing staff files", "width": 128 },
+    { "id": "expiry-check", "lane": "documents", "col": 1, "type": "backend", "icon": "clock", "label": "Expiry + missing", "sublabel": "Checks and first aid", "width": 128 },
+    { "id": "document-review", "lane": "documents", "col": 2, "type": "security", "icon": "person", "label": "Office validates", "sublabel": "Expiry or false flag?", "width": 128 },
+    { "id": "document-correction", "lane": "documents", "col": 3, "type": "cloud", "label": "Chase / fix files", "sublabel": "Update correct record", "width": 128 }
+  ],
+  "edges": [
+    { "id": "enquiry-area", "from": "participant-enquiry", "to": "area-check", "fromSide": "right", "toSide": "left" },
+    { "id": "covered-intake", "from": "area-check", "to": "participant-intake", "label": "Covered", "variant": "emphasis" },
+    { "id": "area-exception-check", "from": "area-check", "to": "area-exception", "label": "No / unclear", "variant": "security", "role": "branch", "fromSide": "bottom", "toSide": "top" },
+    { "id": "area-exception-approved", "from": "area-exception", "to": "participant-intake", "label": "Exception approved", "variant": "dashed", "role": "return", "fromSide": "right", "toSide": "bottom" },
+    { "id": "area-not-served", "from": "area-exception", "to": "outside-area", "label": "Unavailable", "variant": "security", "role": "error" },
+    { "id": "intake-extraction", "from": "participant-intake", "to": "extract-fields" },
+    { "id": "worker-extraction", "from": "worker-forms", "to": "extract-fields", "label": "Worker forms", "fromSide": "top", "toSide": "bottom" },
+    { "id": "extraction-review", "from": "extract-fields", "to": "office-review" },
+    { "id": "approved-records", "from": "office-review", "to": "people-records", "label": "Reviewed", "variant": "emphasis" },
+    { "id": "unclear-records", "from": "office-review", "to": "clarify-fields", "label": "Need details", "variant": "security", "role": "branch" },
+    { "id": "corrected-records", "from": "clarify-fields", "to": "office-review", "label": "Corrected", "variant": "dashed", "role": "return" },
+    { "id": "people-to-booking", "from": "people-records", "to": "capacity-check", "label": "Service request", "fromSide": "bottom", "toSide": "top" },
+    { "id": "offer-to-worker", "from": "capacity-check", "to": "worker-accepts", "label": "Suitable slot" },
+    { "id": "capacity-needs-cover", "from": "capacity-check", "to": "cover-search", "label": "No capacity", "variant": "security", "role": "branch" },
+    { "id": "worker-confirms", "from": "worker-accepts", "to": "confirmed-booking", "label": "Accepts", "variant": "emphasis" },
+    { "id": "worker-declines", "from": "worker-accepts", "to": "cover-search", "label": "Declines / absent", "variant": "security", "role": "branch", "fromSide": "bottom", "toSide": "left" },
+    { "id": "cover-available", "from": "cover-search", "to": "capacity-check", "label": "Recheck cover", "variant": "dashed", "role": "return" },
+    { "id": "cover-unavailable", "from": "cover-search", "to": "no-cover", "label": "None", "variant": "security", "role": "error" },
+    { "id": "booking-reminder", "from": "confirmed-booking", "to": "service-reminder" },
+    { "id": "reminder-reply", "from": "service-reminder", "to": "participant-reply", "fromSide": "left", "toSide": "right" },
+    { "id": "participant-cancels", "from": "participant-reply", "to": "cancel-reason", "label": "Cancel", "variant": "security", "role": "branch" },
+    { "id": "record-cancellation", "from": "cancel-reason", "to": "cancellation-record", "label": "Policy permits", "variant": "security" },
+    { "id": "participant-no-reply", "from": "participant-reply", "to": "reply-followup", "label": "No reply", "variant": "security", "role": "branch" },
+    { "id": "participant-confirms", "from": "participant-reply", "to": "worker-journey", "label": "Yes", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "id": "journey-arrival", "from": "worker-journey", "to": "mapbox-arrival", "label": "Allowed sharing" },
+    { "id": "arrival-visit", "from": "mapbox-arrival", "to": "visit-record" },
+    { "id": "visit-notes", "from": "visit-record", "to": "note-check" },
+    { "id": "notes-office", "from": "note-check", "to": "urgent-note", "label": "Major issue", "variant": "security", "role": "branch" },
+    { "id": "notes-actuals", "from": "note-check", "to": "actual-service" },
+    { "id": "actuals-finance", "from": "actual-service", "to": "finance-review", "label": "Visit evidence" },
+    { "id": "finance-invoice", "from": "finance-review", "to": "xero-export", "label": "Reviewed billing", "variant": "emphasis" },
+    { "id": "export-invoices", "from": "xero-export", "to": "invoices" },
+    { "id": "finance-payroll", "from": "finance-review", "to": "payroll-calculation", "label": "Reviewed pay", "variant": "emphasis" },
+    { "id": "payroll-payment", "from": "payroll-calculation", "to": "worker-pay" },
+    { "id": "documents-check", "from": "document-records", "to": "expiry-check" },
+    { "id": "expiry-validate", "from": "expiry-check", "to": "document-review" },
+    { "id": "document-action", "from": "document-review", "to": "document-correction", "label": "If needed" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Scope and evidence", "items": [
+      "Proposed workflow from the 5 October 2026 meeting review; it does not describe deployed automation.",
+      "The requirements document remains the detailed source. Final scope and API/MCP operations need confirmation.",
+      "Office review and named exception paths preserve the client's conditions."
+    ]},
+    { "dot": "emerald", "title": "Intake, emails and agreements · A01–A03 / A10", "items": [
+      "Accept website, email, phone and coordinator/provider referrals. Check service area before participant intake.",
+      "Assign enquiry follow-up; link urgent invoice complaints to their invoice. Office ownership is a recommended design.",
+      "Use existing agreement templates/signing and file returned documents against the correct participant.",
+      "Evidence: CSV 358, 368, 814, 821, 855–857, 873 and 1168."
+    ]},
+    { "dot": "amber", "title": "Bookings and cover · A04–A06", "items": [
+      "Keep recurring bookings, preferred hours and personal commitments. An empty slot requires worker confirmation.",
+      "Use the agreed cancellation policy and escalate exceptions before changing the booking.",
+      "Replacement offers and automatic reassignment need agreed rules; no available cover requires human follow-up.",
+      "Evidence: CSV 540, 611, 614, 626, 631–640, 644, 662–663 and 973."
+    ]},
+    { "dot": "violet", "title": "Portals and Mapbox · P01–P03 / A12 / L01", "items": [
+      "Office: bookings, enquiries and exceptions. Worker: assignments, confirmations and next-visit travel. Client: own bookings, requests, documents and ETA.",
+      "Mapbox 3D for all three workspaces was requested later; employer uses the existing Worker workspace.",
+      "ETA sharing needs agreed visit boundaries. Keep home addresses private and avoid duplicate ShiftCare worker entry.",
+      "Evidence: CSV 520, 544, 565–574 and 651; later user instruction L01."
+    ]},
+    { "dot": "rose", "title": "Communication and access · A11", "items": [
+      "Use one routine communication flow; retain admin-accessible message history.",
+      "Protect personal phone numbers, confidential office notes and each person's records.",
+      "Evidence: CSV 395–399, 478, 560, 581–588 and 593–607."
+    ]},
+    { "dot": "orange", "title": "Visit, documents and finance · A07–A09", "items": [
+      "Office reviews major visit notes; the bookkeeper checks actual time, travel and agreed rates.",
+      "Preserve the existing ShiftCare/Xero invoice export. Tuesday invoices and fortnightly payroll are separate routines.",
+      "Fix false expiry flags as well as missing/expiring documents. Confirm travel rules; rounding fixes were lower priority.",
+      "Evidence: CSV 93, 105, 446, 478, 486, 679, 693–702, 722, 726 and 1013."
+    ]},
+    { "dot": "slate", "title": "Decisions and later scope", "items": [
+      "Agree field mappings, coverage, cancellations, financial rules, access and location sharing with Adriana/admin/bookkeeper.",
+      "HR, subcontractor growth, organic marketing and data portability are broader business wants.",
+      "Newsletters, incentives, broad AI quality checking and fewer discovery calls remain proposals. Budget and deadline were not set.",
+      "Evidence: CSV 831–846, 908–924, 1148, 1155–1158 and 1174."
+    ]}
+  ]
+}

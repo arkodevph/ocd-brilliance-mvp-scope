@@ -1,0 +1,19 @@
+{
+  "diagram_type": "workflow",
+  "scope": "Proposed OCD automation process from the meeting review and later Mapbox instruction",
+  "specification_sha256": "0440e15e89a9538b4cfd19bb9cc50fbfdf4407888bb0fc9f2595b69640f04cd7",
+  "artifact_sha256": "e6075b8149716713eb46fb382be2cb3e7ff806a825cb5bc7f06d92dd76a6e79a",
+  "validation": "9/9 showcase checks; 0 errors; 0 warnings",
+  "browser_evidence": "passed",
+  "captures": "passed",
+  "visual_review": "passed",
+  "visual_correction_rounds": 0,
+  "inspected_captures": [
+    "visual-check/ocd-automation.visual-check.2048x1320.light.png",
+    "visual-check/ocd-automation.visual-check.1440x900.dark.png"
+  ],
+  "visual_findings": "Inspected the rendered light and dark diagrams. Nodes, arrows and labels are visible; the main path and exception branches remain separate. The desktop document permits vertical scrolling for the lower content.",
+  "automated_receipt": "ocd-automation.finalize-summary.json",
+  "browser_receipt": "ocd-automation.browser-check.json",
+  "capture_receipt": "visual-check/ocd-automation.visual-check.json"
+}

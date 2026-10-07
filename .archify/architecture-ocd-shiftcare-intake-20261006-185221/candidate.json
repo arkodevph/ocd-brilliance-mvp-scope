@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "OCD + ShiftCare \u2014 intake and document workflow",
+    "locale": "en",
+    "output": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "enquiry",
+      "type": "external",
+      "label": "Participant enquiry",
+      "sublabel": "Website / email",
+      "tag": "Incoming / area",
+      "pos": [
+        35,
+        70
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "area",
+      "type": "security",
+      "label": "Check service area",
+      "sublabel": "Capacity not promised",
+      "tag": "Incoming / area",
+      "pos": [
+        365,
+        70
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "staff_form",
+      "type": "external",
+      "label": "Employee form",
+      "sublabel": "Email / onboarding",
+      "tag": "Incoming / area",
+      "pos": [
+        695,
+        70
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "area_review",
+      "type": "security",
+      "label": "Area exception",
+      "sublabel": "Office decides",
+      "tag": "Office selects path",
+      "pos": [
+        1005,
+        70
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "route",
+      "type": "backend",
+      "label": "Own and route task",
+      "sublabel": "Avoid duplicate entry",
+      "tag": "Office selects path",
+      "pos": [
+        365,
+        270
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "referral",
+      "type": "frontend",
+      "label": "Native referral",
+      "sublabel": "Mapped public form",
+      "tag": "Office selects path",
+      "pos": [
+        35,
+        470
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "forward",
+      "type": "frontend",
+      "label": "Forward documents",
+      "sublabel": "Signals if enabled",
+      "tag": "Office document routing",
+      "pos": [
+        365,
+        470
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "fields",
+      "type": "security",
+      "label": "Review mapping",
+      "sublabel": "Match / required data",
+      "tag": "Office field review",
+      "pos": [
+        695,
+        470
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "accept",
+      "type": "security",
+      "label": "Review and accept",
+      "sublabel": "Creates client natively",
+      "tag": "ShiftCare / Admin",
+      "pos": [
+        35,
+        670
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "signals",
+      "type": "security",
+      "label": "Review and file",
+      "sublabel": "Person / type / expiry",
+      "tag": "ShiftCare / Admin",
+      "pos": [
+        365,
+        670
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "write",
+      "type": "security",
+      "label": "Approved UI / MCP",
+      "sublabel": "REST still gated",
+      "tag": "ShiftCare / Admin",
+      "pos": [
+        695,
+        670
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "client_id",
+      "type": "database",
+      "label": "Confirm client ID",
+      "sublabel": "No duplicate create",
+      "tag": "Verified handoff",
+      "pos": [
+        35,
+        870
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "file_id",
+      "type": "database",
+      "label": "Confirm filed copy",
+      "sublabel": "Native profile evidence",
+      "tag": "Verified handoff",
+      "pos": [
+        365,
+        870
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "readback",
+      "type": "database",
+      "label": "Read back change",
+      "sublabel": "Verified remote ID",
+      "tag": "Verified handoff",
+      "pos": [
+        695,
+        870
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "accounting",
+      "type": "security",
+      "label": "Xero / pay check",
+      "sublabel": "Separate onboarding",
+      "tag": "Bookkeeper handoff",
+      "pos": [
+        365,
+        1070
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "unresolved",
+      "type": "security",
+      "label": "Write needs review",
+      "sublabel": "Clarify / native entry",
+      "tag": "Office intervention",
+      "pos": [
+        1005,
+        670
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "closed",
+      "type": "database",
+      "label": "Close owned task",
+      "sublabel": "All outcomes verified",
+      "tag": "Office intervention",
+      "pos": [
+        365,
+        1270
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "mapping_manual",
+      "type": "security",
+      "label": "Mapping needs help",
+      "sublabel": "Clarify / match evidence",
+      "tag": "Office intervention",
+      "pos": [
+        1005,
+        470
+      ],
+      "size": [
+        180,
+        86
+      ]
+    },
+    {
+      "id": "store_outcome",
+      "type": "database",
+      "label": "Record verified ID",
+      "sublabel": "Audit / original source",
+      "tag": "Verified handoff",
+      "pos": [
+        695,
+        1070
+      ],
+      "size": [
+        180,
+        86
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "enquiry-area",
+      "from": "enquiry",
+      "to": "area"
+    },
+    {
+      "id": "area-route",
+      "from": "area",
+      "to": "route",
+      "label": "covered"
+    },
+    {
+      "id": "area-exception",
+      "from": "area",
+      "to": "area_review",
+      "label": "uncertain"
+    },
+    {
+      "id": "route-referral",
+      "from": "route",
+      "to": "referral",
+      "label": "new web intake"
+    },
+    {
+      "id": "route-forward",
+      "from": "route",
+      "to": "forward",
+      "label": "files"
+    },
+    {
+      "id": "route-fields",
+      "from": "route",
+      "to": "fields",
+      "label": "field entry"
+    },
+    {
+      "id": "staff-fields",
+      "from": "staff_form",
+      "to": "fields"
+    },
+    {
+      "id": "referral-accept",
+      "from": "referral",
+      "to": "accept"
+    },
+    {
+      "id": "forward-signals",
+      "from": "forward",
+      "to": "signals"
+    },
+    {
+      "id": "fields-write",
+      "from": "fields",
+      "to": "write",
+      "label": "approved",
+      "variant": "security"
+    },
+    {
+      "id": "accept-id",
+      "from": "accept",
+      "to": "client_id",
+      "label": "verify"
+    },
+    {
+      "id": "signals-id",
+      "from": "signals",
+      "to": "file_id",
+      "label": "verify"
+    },
+    {
+      "id": "write-readback",
+      "from": "write",
+      "to": "readback",
+      "label": "verify"
+    },
+    {
+      "id": "client-accounting",
+      "from": "client_id",
+      "to": "accounting",
+      "label": "handoff"
+    },
+    {
+      "id": "file-accounting",
+      "from": "file_id",
+      "to": "accounting",
+      "label": "where needed"
+    },
+    {
+      "id": "readback-accounting",
+      "from": "store_outcome",
+      "to": "accounting",
+      "label": "handoff"
+    },
+    {
+      "id": "mapping-held",
+      "from": "fields",
+      "to": "mapping_manual",
+      "label": "missing / ambiguous",
+      "variant": "security"
+    },
+    {
+      "id": "write-held",
+      "from": "write",
+      "to": "unresolved",
+      "label": "failed / unsupported",
+      "variant": "security"
+    },
+    {
+      "id": "accounting-close",
+      "from": "accounting",
+      "to": "closed",
+      "label": "verified"
+    },
+    {
+      "id": "save-verified-id",
+      "from": "readback",
+      "to": "store_outcome"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Actual client need",
+      "items": [
+        "Emailed/scanned onboarding currently needs entry into ShiftCare and Xero; reduce re-keying and missed ownership.",
+        "Transcript: 351\u2013368, 814\u2013821, 855\u2013873, 1168. Employee onboarding bypasses the participant area gate."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Use native capability first",
+      "items": [
+        "Public referral submission waits for staff acceptance; acceptance creates a client. Do not create it again through OCD.",
+        "Inbox Signals suggests document filing for staff review; unknown staff need manual review. Public referral forms cannot accept attachments.",
+        "Check feature access before selecting either native route; otherwise use the reviewed UI/field-entry path."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Supported mutation boundary",
+      "items": [
+        "Broader profile fields: Admin reviews UI/MCP change; create_client needs first name and DOB, create_staff needs name and email.",
+        "MCP cannot upload a new document. Existing metadata correction is a separate approved action.",
+        "REST automation stays disabled until API entitlement/key and the exact operation contract are tested."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Verification and exceptions",
+      "items": [
+        "Missing DOB, consent, duplicate identity, wrong file type/person or unknown write outcome stays in manual review.",
+        "Hold original evidence. Resolve in the office, then re-enter the selected review path; do not blindly repeat creation.",
+        "Xero creation/linking and payroll onboarding are separate verified tasks; a ShiftCare ID does not prove they happened.",
+        "The area-exception outcome can be negotiated/deferred/declined; it does not promise service capacity."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Design and layout evidence",
+      "items": [
+        "Proposed process: docs/OCD_ShiftCare_Integration_and_Automation_Design.md, sections 3\u20139. Node tags identify responsibility/stage.",
+        "This fixed-position Archify process chart preserves the steps and relationships of the lane-based specification; that draft is retained alongside its diagnostics.",
+        "Rendering checks do not prove live integration. Native feature access, every future REST operation and the production account still require validation."
+      ]
+    }
+  ]
+}

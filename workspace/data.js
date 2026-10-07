@@ -88,9 +88,7 @@ window.OCD_DEMO_SEED = {
     { id: "BKG-506", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-09", start: "13:00", end: "15:00", recurrence: "One-off", status: "Cancelled", participantAgreed: true, cancellation: { cause: "Participant", notice: "2026-10-05T10:00", note: "Participant called the office to cancel." } }
   ],
   mapOffice: { name: "Joondalup office", coordinates: [115.7733, -31.7444] },
-  journeys: {
-    "BKG-501": { workerId: "WRK-01", date: "2026-10-05", start: "09:00", phase: "en-route", progress: 0.42, durationSeconds: 960, arrivalTime: "08:58", running: false }
-  },
+  journeys: {},
   visits: [
     { id: "VIS-701", bookingId: "BKG-499", clockIn: "09:04", clockOut: "11:02", note: "Domestic assistance completed as planned. Laundry and kitchen tasks completed.", status: "Ready for review", corrections: [] },
     { id: "VIS-702", bookingId: "BKG-498", clockIn: "13:02", clockOut: "15:01", note: "", status: "Missing note", corrections: [] },
@@ -107,7 +105,8 @@ window.OCD_DEMO_SEED = {
   workerDocs: [
     { id: "WDC-01", workerId: "WRK-01", name: "First aid", expires: "2026-10-10", status: "Due soon" },
     { id: "WDC-02", workerId: "WRK-02", name: "Worker screening", expires: "2026-10-07", status: "Due soon" },
-    { id: "WDC-03", workerId: "WRK-04", name: "Approval evidence", expires: "", status: "Missing" }
+    { id: "WDC-03", workerId: "WRK-04", name: "Approval evidence", expires: "", status: "Missing" },
+    { id: "WDC-04", workerId: "WRK-01", name: "Induction acknowledgement", expires: "2026-10-01", status: "Expired", evidence: "Fictional acknowledgement has no expiry; confirm against the original before correcting metadata." }
   ],
   inbound: [
     { id: "EML-01", from: "coordinator@example.com", name: "New referral", subject: "Domestic assistance in Kingsley", body: "Could you advise whether a Tuesday service is possible?", service: "Domestic assistance", suburb: "Kingsley", status: "New", urgent: false },

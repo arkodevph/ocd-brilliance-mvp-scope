@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/architecture-ocd-shiftcare-intake-20261006-185221/candidate.json",
+    "sha256": "9ba56cb1c1fd095ead4e0a66f8de66e390e4be92b4dd9446b98ca614321dd7ad",
+    "bytes": 10354
+  },
+  "artifact": {
+    "path": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html",
+    "sha256": "1ba8f0f3b71d97724d85ea0a65c989bccd19a8d14d375deb5e1589fd627b5101",
+    "bytes": 789231
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.finalize.json",
+    "summaryReceipt": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.finalize-summary.json",
+    "browserCheckReceipt": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-06T09:24:16.438Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1529,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedBends": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "area-exception",
+            "from": "area",
+            "to": "area_review",
+            "label": "uncertain",
+            "collectionIndex": 2,
+            "artifactIndex": 3
+          },
+          "bends": 4,
+          "stretch": 1.2,
+          "directCorridorBlockers": [
+            {
+              "id": "staff_form",
+              "label": "Employee form",
+              "box": [
+                695,
+                70,
+                180,
+                86
+              ]
+            }
+          ]
+        }
+      ],
+      "truncated": false
+    },
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-07",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Inbox routing and replay",
+      "status": "pass",
+      "detail": "Eight sources created owned cases once; repeated processing preserved ten total cases including two existing operational requests."
+    },
+    {
+      "name": "Intake, unknown outcome and accounting",
+      "status": "pass",
+      "detail": "Missing DOB prevented approval; lost response preserved the proposal; reconciliation and a separate Xero check were required before closure."
+    },
+    {
+      "name": "Employee onboarding",
+      "status": "pass",
+      "detail": "Staff profile read-back and separate payroll reference were required; screening approval was not granted."
+    },
+    {
+      "name": "Returned agreement filing",
+      "status": "pass",
+      "detail": "Signed status followed checked native filing and read-back, without an upload API."
+    },
+    {
+      "name": "Cancellation and recipient delivery",
+      "status": "pass",
+      "detail": "Single occurrence remained unchanged until verification. Failed delivery stayed separate from the write and delivered once after retry."
+    },
+    {
+      "name": "Cross-workspace replacement cover",
+      "status": "pass",
+      "detail": "Office posted and verified a native offer; selected Worker accepted; assignment changed only after office review and read-back."
+    },
+    {
+      "name": "Non-expiring document correction",
+      "status": "pass",
+      "detail": "Explicit evidence and date clearing followed the native review/read-back path."
+    },
+    {
+      "name": "Native care and bookkeeping exceptions",
+      "status": "pass",
+      "detail": "Worker tasks/goals/major flag reached the restricted office review. Missing source scope remained visible; invoice and payroll checks created no financial release."
+    },
+    {
+      "name": "Consent, privacy and stale arrival",
+      "status": "pass",
+      "detail": "Only Worker started a consented estimate. Client had no playback control/route request or other participant bookings; stale ETA was withdrawn and sharing could stop. Mapbox network fallback was used."
+    },
+    {
+      "name": "Reload persistence and responsive layout",
+      "status": "pass",
+      "detail": "Browser case state and audit persisted after reload; captured desktop/mobile viewports had no horizontal overflow."
+    },
+    {
+      "name": "Runtime and integration boundary",
+      "status": "pass",
+      "detail": "No uncaught browser exception; no live ShiftCare mutation or external financial/message operation."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/prototype-review-2026-10-07/automation-desktop.png",
+      "sha256": "d4f7b701505c5e9ffbbda42c78ddc4641c18a5ca884b55b3121755f95c0faa65",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-review-2026-10-07/intake-mapping-desktop.png",
+      "sha256": "e51535c09a93eb7dde832b186933f6cc6de7cfeaadc98514a678a14f94029eff",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".automation-next"
+    },
+    {
+      "path": "docs/prototype-review-2026-10-07/unknown-outcome-desktop.png",
+      "sha256": "b940b2843884acdfc53c46c9d3d5ad08cba9d0d51739991bce3635fcc45d51c3",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".automation-case-detail"
+    },
+    {
+      "path": "docs/prototype-review-2026-10-07/bookkeeping-desktop.png",
+      "sha256": "0ba5434eb3b1e6287367b826eaab956d4f9d752ec0a6bbdc3fe89aaafc78736a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-review-2026-10-07/participant-map-mobile.png",
+      "sha256": "d0bed6add6c4d332579c90b4d1d897cbdb9ab821d0fb796e188645b14fffa21b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-review-2026-10-07/stale-arrival-mobile.png",
+      "sha256": "c44c59f697d61020fd42b2dc29cae39e1e6b8641bfc3f60bcf1410007eab9dd4",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "[data-map-detail]"
+    },
+    {
+      "path": "docs/prototype-review-2026-10-07/automation-mobile.png",
+      "sha256": "1189401c33f070eb39e210c4e6fdd8aa3d09e7323963fd3057987315baeb0b07",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-review-2026-10-07/completed-case-mobile.png",
+      "sha256": "9f5668fa39047fd5857b016fea3d5ad3eb4389350dd40acee043c0dcca983575",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".automation-case-detail"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": {
+    "status": "pass",
+    "reviewDate": "2026-10-07",
+    "method": "Inspected all eight final PNG captures at their original dimensions",
+    "findings": [
+      "Desktop case navigation, source mapping, review checkboxes and approval action are readable.",
+      "Unknown outcome warning and reconciliation action are visible together; accounting remains a later step.",
+      "Bookkeeping incomplete-source warning, ownership and case review actions are visible.",
+      "Mobile own-service map preserves arrival preview during the deliberately blocked Mapbox connection.",
+      "Stale mobile ETA clearly reads Unavailable with an office-contact fallback and no worker origin or route.",
+      "Mobile Automation tabs/actions and completed case stages fit without horizontal overflow.",
+      "Completed case outcome and checked accounting/native references use a readable stacked layout."
+    ],
+    "limit": "Viewport inspection only; not full accessibility, real account or phone/background GPS certification."
+  },
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified.",
+  "buildVerification": {
+    "status": "pass",
+    "command": "npm run build",
+    "sourceAssetsMatchOutput": true,
+    "publicMapboxConfigurationPresent": true
+  },
+  "unitVerification": {
+    "status": "pass",
+    "command": "npm test",
+    "totalPassed": 35,
+    "automationAndArrivalPassed": 22
+  }
+}

@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "researchDate": "2026-10-07",
+  "capturedAt": "2026-10-07T06:21:29.613Z",
+  "account": {
+    "id": "817962",
+    "name": "testtph",
+    "timeZone": "Australia/Sydney",
+    "role": "admin",
+    "mcpAvailable": true,
+    "writesEnabled": true,
+    "environment": "Connected trial/test account; OCD production identity not established"
+  },
+  "sources": [
+    {
+      "title": "Managing API Keys",
+      "url": "https://help.shiftcare.com/en/articles/13906196-managing-api-keys"
+    },
+    {
+      "title": "Introduction to the ShiftCare MCP Server",
+      "url": "https://help.shiftcare.com/en/articles/14649246-introduction-to-the-shiftcare-mcp-server"
+    },
+    {
+      "title": "Integrating ShiftCare with Zapier",
+      "url": "https://help.shiftcare.com/en/articles/15357711-integrating-shiftcare-with-zapier"
+    }
+  ],
+  "skillCompatibility": [
+    {
+      "skill": "shiftcare-mcp",
+      "version": "1.1.1",
+      "status": "up_to_date",
+      "minimum_skill_version": "1.0.0",
+      "latest_skill_version": "1.1.1"
+    },
+    {
+      "skill": "shiftcare-basics",
+      "version": "1.1.1",
+      "status": "up_to_date",
+      "minimum_skill_version": "1.0.0",
+      "latest_skill_version": "1.1.1"
+    },
+    {
+      "skill": "shiftcare-action-items",
+      "version": "1.1.1",
+      "status": "up_to_date",
+      "minimum_skill_version": "1.0.0",
+      "latest_skill_version": "1.1.1"
+    }
+  ],
+  "mcp": {
+    "endpoint": "https://mcp.au.shiftcare.com/mcp",
+    "authenticatedReadsVerified": true,
+    "catalogCount": 82,
+    "catalog": [
+      "archive_client_document",
+      "cancel_shift_with_charge",
+      "cancel_shift_without_charge",
+      "check_skill_compatibility",
+      "create_action_item",
+      "create_client",
+      "create_complaint",
+      "create_invoice",
+      "create_invoice_payment",
+      "create_invoice_run",
+      "create_job_board_posting",
+      "create_leave",
+      "create_progress_note",
+      "create_qualification",
+      "create_recurring_shift",
+      "create_shift",
+      "create_staff",
+      "create_staff_qualification",
+      "get_action_item",
+      "get_allowance",
+      "get_client",
+      "get_client_document_download_link",
+      "get_client_fund_balance",
+      "get_complaint",
+      "get_form",
+      "get_invoice_run",
+      "get_leave",
+      "get_pay_item",
+      "get_progress_note",
+      "get_quote",
+      "get_shift_costing",
+      "get_shift_costing_settings",
+      "get_shift_costing_summary",
+      "get_shift_type",
+      "get_staff",
+      "list_account_locations",
+      "list_accounts",
+      "list_action_items",
+      "list_allowances",
+      "list_client_document_types",
+      "list_client_documents",
+      "list_client_funds",
+      "list_clients",
+      "list_complaints",
+      "list_facilities",
+      "list_form_responses",
+      "list_forms",
+      "list_incidents",
+      "list_invoice_payments",
+      "list_invoiceable_items",
+      "list_invoices",
+      "list_job_board_postings",
+      "list_leave_types",
+      "list_leaves",
+      "list_pay_groups",
+      "list_pay_items",
+      "list_progress_notes",
+      "list_qualifications",
+      "list_quotes",
+      "list_shift_costings",
+      "list_shift_events",
+      "list_shift_staffs",
+      "list_shift_types",
+      "list_shifts",
+      "list_staff",
+      "list_staff_files",
+      "list_staff_qualifications",
+      "list_timesheets",
+      "log_shift_event",
+      "mark_staff_unavailable",
+      "recalculate_shift_costings",
+      "restore_client_document",
+      "update_client",
+      "update_client_document",
+      "update_client_note",
+      "update_complaint_status",
+      "update_progress_note",
+      "update_shift",
+      "update_shift_costing_settings",
+      "update_shift_recurrence_details",
+      "update_shift_recurrence_pattern",
+      "whoami"
+    ],
+    "readReceipts": [
+      {
+        "tool": "list_accounts",
+        "startedAt": "2026-10-07T06:21:17.697Z",
+        "finishedAt": "2026-10-07T06:21:18.257Z",
+        "status": "passed",
+        "count": 1,
+        "total": 1,
+        "pages": 1,
+        "complete": true,
+        "scope": "Accounts visible to the authenticated person"
+      },
+      {
+        "tool": "whoami",
+        "startedAt": "2026-10-07T06:21:17.697Z",
+        "finishedAt": "2026-10-07T06:21:18.288Z",
+        "status": "passed",
+        "count": 1,
+        "total": 1,
+        "pages": 1,
+        "complete": true,
+        "scope": "Account role and MCP permission flags"
+      },
+      {
+        "tool": "list_clients",
+        "startedAt": "2026-10-07T06:21:17.697Z",
+        "finishedAt": "2026-10-07T06:21:18.440Z",
+        "status": "passed",
+        "count": 2,
+        "total": 2,
+        "pages": 1,
+        "complete": true,
+        "scope": "Permission-scoped participant profiles; all visible pages"
+      },
+      {
+        "tool": "list_staff",
+        "startedAt": "2026-10-07T06:21:17.697Z",
+        "finishedAt": "2026-10-07T06:21:18.397Z",
+        "status": "passed",
+        "count": 1,
+        "total": 1,
+        "pages": 1,
+        "complete": true,
+        "scope": "Permission-scoped staff profiles; all visible pages"
+      },
+      {
+        "tool": "list_shifts",
+        "startedAt": "2026-10-07T06:21:17.697Z",
+        "finishedAt": "2026-10-07T06:21:18.430Z",
+        "status": "passed",
+        "count": 3,
+        "total": 3,
+        "pages": 1,
+        "complete": true,
+        "scope": "1–14 October 2026, account time zone, with staff and participant assignments"
+      },
+      {
+        "tool": "list_progress_notes",
+        "startedAt": "2026-10-07T06:21:28.558Z",
+        "finishedAt": "2026-10-07T06:21:29.283Z",
+        "status": "passed",
+        "count": 4,
+        "total": 4,
+        "pages": 1,
+        "complete": true,
+        "scope": "Created since 1 October local; shifts dated 1–14 October; permission-scoped recent notes"
+      },
+      {
+        "tool": "list_timesheets",
+        "startedAt": "2026-10-07T06:21:28.558Z",
+        "finishedAt": "2026-10-07T06:21:29.440Z",
+        "status": "passed",
+        "count": 2,
+        "total": 2,
+        "pages": 1,
+        "complete": true,
+        "scope": "1–14 October 2026; timesheet rows only, not evidence of delivered hours"
+      },
+      {
+        "tool": "list_shift_events",
+        "startedAt": "2026-10-07T06:21:28.558Z",
+        "finishedAt": "2026-10-07T06:21:29.613Z",
+        "status": "passed",
+        "count": 4,
+        "total": 4,
+        "pages": 1,
+        "complete": true,
+        "scope": "Four events across the three returned shift IDs; contents are not retained"
+      },
+      {
+        "tool": "list_staff_files",
+        "startedAt": "2026-10-07T06:21:28.558Z",
+        "finishedAt": "2026-10-07T06:21:29.163Z",
+        "status": "passed",
+        "count": 0,
+        "total": 0,
+        "pages": 1,
+        "complete": true,
+        "scope": "Documents visible for staff 1119619 only; empty is not account-wide proof"
+      },
+      {
+        "tool": "list_staff_qualifications",
+        "startedAt": "2026-10-07T06:21:28.558Z",
+        "finishedAt": "2026-10-07T06:21:29.306Z",
+        "status": "passed",
+        "count": 0,
+        "total": 0,
+        "pages": 1,
+        "complete": true,
+        "scope": "Qualifications visible for staff 1119619 only"
+      },
+      {
+        "tool": "list_action_items",
+        "startedAt": "2026-10-07T06:21:17.697Z",
+        "finishedAt": "2026-10-07T06:21:18.469Z",
+        "status": "passed",
+        "count": 0,
+        "total": 0,
+        "pages": 1,
+        "complete": true,
+        "scope": "Permission-scoped action register; all visible live pages"
+      }
+    ],
+    "writePermissionEnabled": true,
+    "writeOperationsTested": [
+      "create_action_item (exact approval; called once)"
+    ],
+    "missingNeededTools": [
+      "update_staff",
+      "list_teams",
+      "list_availability_schedules",
+      "native worker accept/decline",
+      "native chat send/history",
+      "general file upload",
+      "webhook subscriptions",
+      "continuous GPS feed"
+    ]
+  },
+  "website": {
+    "mcpOAuth": "Not implemented; assistant capture only",
+    "rest": "Awaiting separate API key",
+    "privateCapture": ".local/shiftcare-evidence.json (ignored; office-authenticated access only)",
+    "rules": "Source-ID review finding generation with persistent duplicate prevention",
+    "hostedJobStorage": "Not implemented for this evidence feature",
+    "writeAdapter": false
+  },
+  "nativeWriteProof": {
+    "status": "verified",
+    "operation": "create_action_item",
+    "executed": true,
+    "nativeActionId": "11221",
+    "assigneeId": "1119619",
+    "dueDate": "2026-10-08",
+    "priority": "low",
+    "verificationMethod": "self_attestation",
+    "nativeStatus": "open",
+    "createdAt": "2026-10-07T06:30:14.441Z",
+    "readbackAt": "2026-10-07T06:30:20.537Z",
+    "readbackTool": "get_action_item",
+    "matchedFields": [
+      "id",
+      "title",
+      "description",
+      "assignee",
+      "due_date",
+      "priority",
+      "verification_method"
+    ],
+    "scope": "One standalone administrative follow-up; no roster/profile/financial change",
+    "notification": "Native notification may occur according to settings; delivery not tested"
+  },
+  "zapier": {
+    "status": "Documented beta; not connected",
+    "access": "Support invitation and API credentials; entitlement unverified in this trial",
+    "triggers": [
+      "New Timesheet"
+    ],
+    "actions": [
+      "Add Payment",
+      "Create Client",
+      "Create Staff",
+      "Reverse Payment",
+      "Update Client",
+      "Update Staff"
+    ],
+    "lookups": [
+      "Find Client",
+      "Find Invoice",
+      "Find Staff",
+      "Find Timesheets"
+    ],
+    "genericWebhooksVerified": false
+  },
+  "dataPolicy": "No names, contact details, care contents, rates, addresses or credentials are retained in this public evidence file."
+}

@@ -1,0 +1,385 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "OCD + ShiftCare \u2014 proposed intake and filing",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html"
+  },
+  "lanes": [
+    {
+      "id": "entry",
+      "label": "Incoming / area"
+    },
+    {
+      "id": "office",
+      "label": "Office selects path"
+    },
+    {
+      "id": "files",
+      "label": "Office document routing"
+    },
+    {
+      "id": "mapping",
+      "label": "Office field review"
+    },
+    {
+      "id": "native",
+      "label": "ShiftCare / Admin"
+    },
+    {
+      "id": "outcome",
+      "label": "Verified handoff"
+    },
+    {
+      "id": "accounting",
+      "label": "Bookkeeper handoff"
+    },
+    {
+      "id": "exception",
+      "label": "Office intervention",
+      "variant": "exception"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "enquiry",
+      "lane": "entry",
+      "col": 0,
+      "type": "external",
+      "label": "Participant enquiry",
+      "sublabel": "Website / email",
+      "width": 128
+    },
+    {
+      "id": "area",
+      "lane": "entry",
+      "col": 1,
+      "type": "security",
+      "label": "Check service area",
+      "sublabel": "Capacity not promised",
+      "width": 128
+    },
+    {
+      "id": "staff_form",
+      "lane": "entry",
+      "col": 4,
+      "type": "external",
+      "label": "Employee form",
+      "sublabel": "Email / onboarding",
+      "width": 128
+    },
+    {
+      "id": "area_review",
+      "lane": "office",
+      "col": 5,
+      "type": "security",
+      "label": "Area exception",
+      "sublabel": "Office decides",
+      "width": 128
+    },
+    {
+      "id": "route",
+      "lane": "office",
+      "col": 1,
+      "type": "backend",
+      "label": "Own and route task",
+      "sublabel": "Avoid duplicate entry",
+      "width": 128
+    },
+    {
+      "id": "referral",
+      "lane": "office",
+      "col": 2,
+      "type": "frontend",
+      "label": "Native referral",
+      "sublabel": "Mapped public form",
+      "width": 128
+    },
+    {
+      "id": "forward",
+      "lane": "files",
+      "col": 3,
+      "type": "frontend",
+      "label": "Forward documents",
+      "sublabel": "Signals if enabled",
+      "width": 128
+    },
+    {
+      "id": "fields",
+      "lane": "mapping",
+      "col": 4,
+      "type": "security",
+      "label": "Review mapping",
+      "sublabel": "Match / required data",
+      "width": 128
+    },
+    {
+      "id": "accept",
+      "lane": "native",
+      "col": 2,
+      "type": "security",
+      "label": "Review and accept",
+      "sublabel": "Creates client natively",
+      "width": 128
+    },
+    {
+      "id": "signals",
+      "lane": "native",
+      "col": 3,
+      "type": "security",
+      "label": "Review and file",
+      "sublabel": "Person / type / expiry",
+      "width": 128
+    },
+    {
+      "id": "write",
+      "lane": "native",
+      "col": 4,
+      "type": "security",
+      "label": "Approved UI / MCP",
+      "sublabel": "REST still gated",
+      "width": 128
+    },
+    {
+      "id": "client_id",
+      "lane": "outcome",
+      "col": 2,
+      "type": "database",
+      "label": "Confirm client ID",
+      "sublabel": "No duplicate create",
+      "width": 128
+    },
+    {
+      "id": "file_id",
+      "lane": "outcome",
+      "col": 3,
+      "type": "database",
+      "label": "Confirm filed copy",
+      "sublabel": "Native profile evidence",
+      "width": 128
+    },
+    {
+      "id": "readback",
+      "lane": "outcome",
+      "col": 4,
+      "type": "database",
+      "label": "Read back change",
+      "sublabel": "Verified remote ID",
+      "width": 128
+    },
+    {
+      "id": "accounting",
+      "lane": "accounting",
+      "col": 4,
+      "type": "security",
+      "label": "Xero / pay check",
+      "sublabel": "Separate onboarding",
+      "width": 128
+    },
+    {
+      "id": "unresolved",
+      "lane": "exception",
+      "col": 4,
+      "type": "security",
+      "label": "Write needs review",
+      "sublabel": "Clarify / native entry",
+      "width": 128
+    },
+    {
+      "id": "closed",
+      "lane": "exception",
+      "col": 5,
+      "type": "database",
+      "label": "Close owned task",
+      "sublabel": "All outcomes verified",
+      "width": 128
+    },
+    {
+      "id": "mapping_manual",
+      "lane": "exception",
+      "col": 3,
+      "type": "security",
+      "label": "Mapping needs help",
+      "sublabel": "Clarify / match evidence",
+      "width": 128
+    },
+    {
+      "id": "store_outcome",
+      "lane": "outcome",
+      "col": 4,
+      "type": "database",
+      "label": "Record verified ID",
+      "sublabel": "Audit / original source",
+      "width": 128,
+      "yOffset": 100
+    }
+  ],
+  "edges": [
+    {
+      "id": "enquiry-area",
+      "from": "enquiry",
+      "to": "area"
+    },
+    {
+      "id": "area-route",
+      "from": "area",
+      "to": "route",
+      "label": "covered"
+    },
+    {
+      "id": "area-exception",
+      "from": "area",
+      "to": "area_review",
+      "label": "uncertain"
+    },
+    {
+      "id": "route-referral",
+      "from": "route",
+      "to": "referral",
+      "label": "new web intake"
+    },
+    {
+      "id": "route-forward",
+      "from": "route",
+      "to": "forward",
+      "label": "files",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "route-fields",
+      "from": "route",
+      "to": "fields",
+      "label": "field entry",
+      "fromSide": "left",
+      "toSide": "left"
+    },
+    {
+      "id": "staff-fields",
+      "from": "staff_form",
+      "to": "fields"
+    },
+    {
+      "id": "referral-accept",
+      "from": "referral",
+      "to": "accept"
+    },
+    {
+      "id": "forward-signals",
+      "from": "forward",
+      "to": "signals"
+    },
+    {
+      "id": "fields-write",
+      "from": "fields",
+      "to": "write",
+      "label": "approved",
+      "variant": "security"
+    },
+    {
+      "id": "accept-id",
+      "from": "accept",
+      "to": "client_id",
+      "label": "verify"
+    },
+    {
+      "id": "signals-id",
+      "from": "signals",
+      "to": "file_id",
+      "label": "verify"
+    },
+    {
+      "id": "write-readback",
+      "from": "write",
+      "to": "readback",
+      "label": "verify"
+    },
+    {
+      "id": "client-accounting",
+      "from": "client_id",
+      "to": "accounting",
+      "label": "handoff"
+    },
+    {
+      "id": "file-accounting",
+      "from": "file_id",
+      "to": "accounting",
+      "label": "where needed"
+    },
+    {
+      "id": "readback-accounting",
+      "from": "store_outcome",
+      "to": "accounting",
+      "label": "handoff"
+    },
+    {
+      "id": "mapping-held",
+      "from": "fields",
+      "to": "mapping_manual",
+      "label": "missing / ambiguous",
+      "role": "error",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "write-held",
+      "from": "write",
+      "to": "unresolved",
+      "label": "failed / unsupported",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "accounting-close",
+      "from": "accounting",
+      "to": "closed",
+      "label": "verified"
+    },
+    {
+      "id": "save-verified-id",
+      "from": "readback",
+      "to": "store_outcome"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Actual client need",
+      "items": [
+        "Emailed/scanned onboarding currently needs entry into ShiftCare and Xero; reduce re-keying and missed ownership.",
+        "Transcript: 351\u2013368, 814\u2013821, 855\u2013873, 1168. Employee onboarding bypasses the participant area gate."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Use native capability first",
+      "items": [
+        "Public referral submission waits for staff acceptance; acceptance creates a client. Do not create it again through OCD.",
+        "Inbox Signals suggests document filing for staff review; unknown staff need manual review. Public referral forms cannot accept attachments.",
+        "Check feature access before selecting either native route; otherwise use the reviewed UI/field-entry path."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Supported mutation boundary",
+      "items": [
+        "Broader profile fields: Admin reviews UI/MCP change; create_client needs first name and DOB, create_staff needs name and email.",
+        "MCP cannot upload a new document. Existing metadata correction is a separate approved action.",
+        "REST automation stays disabled until API entitlement/key and the exact operation contract are tested."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Verification and exceptions",
+      "items": [
+        "Missing DOB, consent, duplicate identity, wrong file type/person or unknown write outcome stays in manual review.",
+        "Hold original evidence. Resolve in the office, then re-enter the selected review path; do not blindly repeat creation.",
+        "Xero creation/linking and payroll onboarding are separate verified tasks; a ShiftCare ID does not prove they happened.",
+        "The area-exception outcome can be negotiated/deferred/declined; it does not promise service capacity."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,291 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "OCD + ShiftCare \u2014 proposed visit and finance review",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-ocd-shiftcare-finance-20261006-185221/ocd-shiftcare-finance.html"
+  },
+  "lanes": [
+    {
+      "id": "care",
+      "label": "Native care entry"
+    },
+    {
+      "id": "app",
+      "label": "OCD review jobs"
+    },
+    {
+      "id": "office",
+      "label": "Human verification"
+    },
+    {
+      "id": "finance",
+      "label": "Existing finance path"
+    },
+    {
+      "id": "exception",
+      "label": "Resolve exceptions",
+      "variant": "exception"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "worker",
+      "lane": "care",
+      "col": 0,
+      "type": "frontend",
+      "label": "Record visit",
+      "sublabel": "Time / tasks / notes",
+      "width": 128
+    },
+    {
+      "id": "records",
+      "lane": "care",
+      "col": 1,
+      "type": "database",
+      "label": "ShiftCare record",
+      "sublabel": "Source of truth",
+      "width": 128
+    },
+    {
+      "id": "cutoff",
+      "lane": "app",
+      "col": 1,
+      "type": "backend",
+      "label": "Review cut-offs",
+      "sublabel": "Tuesday / fortnight",
+      "width": 128
+    },
+    {
+      "id": "read",
+      "lane": "app",
+      "col": 2,
+      "type": "backend",
+      "label": "Read complete scope",
+      "sublabel": "Paged / permitted",
+      "width": 128
+    },
+    {
+      "id": "checks",
+      "lane": "app",
+      "col": 3,
+      "type": "backend",
+      "label": "Prepare exceptions",
+      "sublabel": "Actual time / notes",
+      "width": 128
+    },
+    {
+      "id": "urgent",
+      "lane": "office",
+      "col": 2,
+      "type": "security",
+      "label": "Office reviews risk",
+      "sublabel": "Private / major notes",
+      "width": 128
+    },
+    {
+      "id": "bookkeeper",
+      "lane": "office",
+      "col": 3,
+      "type": "security",
+      "label": "Bookkeeper verifies",
+      "sublabel": "Rates / travel / payer",
+      "width": 128
+    },
+    {
+      "id": "approve",
+      "lane": "office",
+      "col": 4,
+      "type": "frontend",
+      "label": "Native approval",
+      "sublabel": "No app rate engine",
+      "width": 128
+    },
+    {
+      "id": "pay_review",
+      "lane": "office",
+      "col": 4,
+      "type": "security",
+      "label": "Verify pay items",
+      "sublabel": "Confirmed vendor",
+      "width": 128,
+      "yOffset": 100
+    },
+    {
+      "id": "export",
+      "lane": "finance",
+      "col": 4,
+      "type": "cloud",
+      "label": "Invoice export",
+      "sublabel": "Excel / native path",
+      "width": 128
+    },
+    {
+      "id": "xero",
+      "lane": "finance",
+      "col": 5,
+      "type": "external",
+      "label": "Xero invoices",
+      "sublabel": "Existing send / ledger",
+      "width": 128
+    },
+    {
+      "id": "payroll",
+      "lane": "finance",
+      "col": 5,
+      "type": "external",
+      "label": "Fortnightly pay run",
+      "sublabel": "Human release",
+      "width": 128,
+      "yOffset": 100
+    },
+    {
+      "id": "incomplete",
+      "lane": "exception",
+      "col": 2,
+      "type": "security",
+      "label": "Data unavailable",
+      "sublabel": "Native record review",
+      "width": 128
+    },
+    {
+      "id": "mismatch",
+      "lane": "exception",
+      "col": 4,
+      "type": "security",
+      "label": "Bookkeeper resolves",
+      "sublabel": "No duplicate export",
+      "width": 128
+    }
+  ],
+  "edges": [
+    {
+      "id": "care-save",
+      "from": "worker",
+      "to": "records",
+      "label": "native save"
+    },
+    {
+      "id": "records-read",
+      "from": "records",
+      "to": "read",
+      "label": "visit updates"
+    },
+    {
+      "id": "cutoff-read",
+      "from": "cutoff",
+      "to": "read",
+      "label": "period scope"
+    },
+    {
+      "id": "prepare",
+      "from": "read",
+      "to": "checks"
+    },
+    {
+      "id": "risk-review",
+      "from": "checks",
+      "to": "urgent",
+      "label": "major issue"
+    },
+    {
+      "id": "review-finance",
+      "from": "checks",
+      "to": "bookkeeper",
+      "label": "review"
+    },
+    {
+      "id": "verify-approval",
+      "from": "bookkeeper",
+      "to": "approve",
+      "label": "confirmed"
+    },
+    {
+      "id": "verify-pay",
+      "from": "bookkeeper",
+      "to": "pay_review",
+      "label": "pay review"
+    },
+    {
+      "id": "approve-export",
+      "from": "approve",
+      "to": "export",
+      "label": "approved"
+    },
+    {
+      "id": "export-xero",
+      "from": "export",
+      "to": "xero",
+      "label": "existing export"
+    },
+    {
+      "id": "pay-release",
+      "from": "pay_review",
+      "to": "payroll",
+      "label": "approved",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "incomplete-data",
+      "from": "read",
+      "to": "incomplete",
+      "label": "partial / missing",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "id": "export-error",
+      "from": "export",
+      "to": "mismatch",
+      "label": "mismatch",
+      "variant": "security",
+      "role": "error",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Client's actual manual work",
+      "items": [
+        "Bookkeeper opens individual shifts to compare actual time, extra-time notes, tasks and outcomes; invoices run Tuesdays.",
+        "Payroll checks hours, kilometres and travel fortnightly. The transcript's payroll vendor wording is uncertain.",
+        "Evidence: transcript 472\u2013486, 676\u2013702, 719\u2013726 and 1013. Rare export rounding is lower priority."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Keep native recording and financial authority",
+      "items": [
+        "Workers enter time/tasks/notes once in ShiftCare. OCD prepares an exception checklist, not an authoritative care or payroll record.",
+        "Bookkeeper approves actual service/billing/pay treatment. Do not turn unclear transcript travel numbers into rules.",
+        "Preserve the working ShiftCare \u2192 Excel/export \u2192 Xero flow. A native direct Xero connector is optional after the bookkeeper confirms fit."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Read limitations and privacy",
+      "items": [
+        "REST review jobs require API access and verified resource contracts; bounded MCP can assist a supervised review now.",
+        "Current MCP exposes timesheet/event/note reads, but note searches only reach notes created within 90 days.",
+        "Missing pages, inaccessible/private notes and unknown fields are shown as gaps. No clean report is claimed from partial data.",
+        "Assess native Care Signals for major-note alerts; reviewers verify flags and follow existing urgent care procedures."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Exceptions and release gates",
+      "items": [
+        "No automatic invoice/payment or pay-run release. Xero and the confirmed payroll platform retain accounting authority.",
+        "Unknown recipient/fund/rate/travel or locked records: bookkeeper resolves natively, then the case is refreshed.",
+        "Export mismatch: check existing records before any re-export; never generate a duplicate invoice.",
+        "Worker totals, if displayed, are provisional until payroll verification."
+      ]
+    }
+  ]
+}

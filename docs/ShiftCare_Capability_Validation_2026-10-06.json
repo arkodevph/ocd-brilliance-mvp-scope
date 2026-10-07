@@ -1,0 +1,227 @@
+{
+  "reviewDate": "2026-10-06",
+  "scope": "Capability research only. No account writes, messages, forwarding rules or billing actions performed.",
+  "connection": {
+    "account_id": "817962",
+    "accountLabel": "testtph",
+    "role": "admin",
+    "timeZone": "Australia/Sydney",
+    "mcpAvailable": true,
+    "mcpWritesEnabled": true,
+    "activePaidAccount": false,
+    "productionOcdAccountVerified": false,
+    "restApiKeyConfigured": false
+  },
+  "compatibility": {
+    "skill": "shiftcare-basics",
+    "version": "1.1.1",
+    "status": "up_to_date"
+  },
+  "samples": [
+    {
+      "resource": "clients",
+      "test": "one bounded sample read, not a full inventory",
+      "returnedRows": 1,
+      "totalVisibleRecordsReported": "2",
+      "paginationURL": "https://api.shiftcare.com/api/v3/clients?include_external_ids=true&include_metadata=true&include_urls=true&page=1&per_page=1&sort_by=name&sort_type=asc&time_zone=account",
+      "recordFieldNames": [
+        "id",
+        "first_name",
+        "dob",
+        "salutation",
+        "middle_name",
+        "family_name",
+        "display_name",
+        "gender",
+        "address",
+        "address_unit_no",
+        "general_information",
+        "phone_number",
+        "mobile_number",
+        "email",
+        "marital_status",
+        "nationality",
+        "languages",
+        "type",
+        "ndis_number",
+        "nhs_number",
+        "age_care_recipient_id",
+        "reference_number",
+        "purchase_order_number",
+        "custom_field_1",
+        "external_ids",
+        "contacts",
+        "notes",
+        "client_agecare_service_agreements",
+        "medicaid_id",
+        "preferred_name",
+        "person_alias",
+        "suffix",
+        "other_identifier",
+        "sex",
+        "place_of_birth",
+        "sexuality",
+        "religion",
+        "ethnicity",
+        "disability_support_needs",
+        "client_status",
+        "postal_code",
+        "other_address",
+        "other_address_unit_no",
+        "other_address_label",
+        "other_address_postal_code",
+        "secondary_email",
+        "preferred_contact_method",
+        "joined_date",
+        "next_review_date",
+        "teams",
+        "medicare_number",
+        "aboriginal_torres_strait_islander",
+        "ssn",
+        "federal_medicaid_id",
+        "national_insurance_number",
+        "health_card_number",
+        "social_insurance_number",
+        "url"
+      ]
+    },
+    {
+      "resource": "staff",
+      "test": "one bounded sample read, not a full inventory",
+      "returnedRows": 1,
+      "totalVisibleRecordsReported": "1",
+      "paginationURL": "https://api.shiftcare.com/api/v3/staff?include_external_ids=true&include_metadata=true&include_urls=true&page=1&per_page=1&sort_by=id&sort_type=desc",
+      "recordFieldNames": [
+        "id",
+        "salutation",
+        "name",
+        "first_name",
+        "family_name",
+        "role",
+        "gender",
+        "dob",
+        "address",
+        "phone_number",
+        "mobile_number",
+        "email",
+        "employment_type",
+        "job_title",
+        "languages",
+        "kin_name",
+        "kin_relationship",
+        "kin_email",
+        "kin_phone_number",
+        "invitation_accepted_at",
+        "joined_at",
+        "created_at",
+        "updated_at",
+        "payroll_email",
+        "onboarding_status",
+        "external_ids",
+        "url"
+      ]
+    },
+    {
+      "resource": "shifts",
+      "test": "one bounded sample read, not a full inventory",
+      "returnedRows": 1,
+      "totalVisibleRecordsReported": "2",
+      "paginationURL": "https://api.shiftcare.com/api/v3/shifts?from_date=2026-10-05&include_clients=true&include_metadata=true&include_staff=true&include_urls=true&page=1&per_page=1&time_zone=account&to_date=2026-10-06",
+      "recordFieldNames": [
+        "id",
+        "area_id",
+        "program_id",
+        "recurring",
+        "recurrence",
+        "start_at",
+        "end_at",
+        "description",
+        "address",
+        "suburb_address",
+        "break_time",
+        "km",
+        "shift_type",
+        "sleepover",
+        "live_in",
+        "published",
+        "pending",
+        "is_approved",
+        "approved_at",
+        "cancelled_at",
+        "cancelled_reason",
+        "account_location_id",
+        "facility_id",
+        "created_at",
+        "updated_at",
+        "clients",
+        "staff",
+        "url"
+      ]
+    }
+  ],
+  "toolCatalogCount": 82,
+  "selectedAuthoritativeToolDescriptions": [
+    {
+      "name": "mcp__shiftcare_au__cancel_shift_with_charge",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nCancel a shift as \"cancelled by the client\": the shift stays billable and\nevery client on it is marked absent. Use when the client cancelled.\n\nREQUIRED CONFIRMATION before calling: read the shift back to the user —\n\"Cancel shift #[shift ID] on [date/time] for client(s) [names] with staff [names]?\nThe client(s) will be marked absent and the shift remains billable.\"\nOnly call after the user explicitly confirms.\n\nRequired: id, absent_reason — an NDIS no-show code, one of NSDH\n(health), NSDF (family), NSDT (unavailable transport), NSDO (other).\nDo not send cancel_reason.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__cancel_shift_with_charge(args: {\n  // NDIS no-show code recorded against each client; every client is marked absent and the shift stays billable. One of: NSDH (no show due to health), NSDF (no show due to family), NSDT (no show due to unavailable transport), NSDO (other).\n  absent_reason: \"NSDH\" | \"NSDF\" | \"NSDT\" | \"NSDO\";\n  // ID of the shift to cancel.\n  id: number;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__cancel_shift_without_charge",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nCancel a shift as \"cancelled by us, without charge\": sets a cancellation\nreason and the shift is not billed. Use when the provider cancelled.\n\nREQUIRED CONFIRMATION before calling: read the shift back to the user —\n\"Cancel shift #[shift ID] on [date/time] for client(s) [names] with staff [names]?\nThis cancels the shift with no charge.\"\nOnly call after the user explicitly confirms.\n\nRequired: id, cancel_reason. Do not send absent_reason.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__cancel_shift_without_charge(args: {\n  // Reason the shift was cancelled; recorded on the shift, which is not billed.\n  cancel_reason: string;\n  // ID of the shift to cancel.\n  id: number;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__create_client",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nCreate a single client for the specified account. Requires first_name and dob.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__create_client(args: { aboriginal_torres_strait_islander?: \"No, not Aboriginal or Torres Strait Islander\" | \"Yes, Aboriginal\" | \"Yes, Torres Strait Islander\"; address?: string; address_unit_no?: string; age_care_recipient_id?: string; client_status?: \"referral\" | \"prospect\" | \"waitlist\" | \"active\" | \"inactive\" | \"lost\"; client_type?: string; custom_field_1?: string; default_pricebook_id?: number; disability_support_need_ids?: Array<number>; display_name?: string; dob: string; email?: string; ethnicity?: string; family_name?: string; federal_medicaid_id?: string; first_name: string; gender?: \"male\" | \"female\" | \"non-binary\" | \"unspecified\" | \"prefer-not-to-say\" | \"intersex\"; general_information?: string; health_card_number?: string; joined_date?: string; languages?: Array<string>; marital_status?: \"single\" | \"married\" | \"divorced\" | \"separated\" | \"widowed\" | \"de-facto\"; medicaid_id?: string; medicare_number?: string; middle_name?: string; mobile_number?: string; national_insurance_number?: string; nationality?: string; ndis_number?: string; next_review_date?: string; nhs_number?: string; notes?: string; other_address?: string; other_address_label?: string; other_address_postal_code?: string; other_address_unit_no?: string; other_identifier?: string; person_alias?: string; phone_number?: string; place_of_birth?: string; postal_code?: string; preferred_contact_method?: \"mobile\" | \"phone\" | \"email\" | \"secondary_email\"; preferred_name?: string; purchase_order_number?: string; reference_number?: string; religion?: string; salutation?: \"mr\" | \"mrs\" | \"miss\" | \"ms\" | \"mx\" | \"doctor\" | \"them\" | \"they\"; secondary_email?: string; sex?: string; sexuality?: string; social_insurance_number?: string; ssn?: string; suffix?: string; team_ids?: Array<number>; }): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__create_job_board_posting",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nPost an existing shift to the Job Board by creating one job board opening on it. The shift must already exist — create it first with create_shift (it may have no staff assigned), then pass its id here. A shift can carry multiple openings: call this tool again to add more openings to the same shift. Each opening may set its own time window (defaults to the shift's) and matching criteria (max_distance_km, team_segment_ids, qualification_matching). Creating an opening pins the shift to the board automatically. When the account requires a team on job board shifts, team_segment_ids is required. Use list_shifts to resolve a shift, and list_teams to resolve segment ids.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__create_job_board_posting(args: {\n  // Opening end as an ISO 8601 datetime. An explicit offset is required (e.g. 2026-05-10T13:00:00+10:00); an offset-less value is rejected rather than silently zoned. Defaults to the shift's end_at when omitted.\n  end_at?: string;\n  // Whether this opening runs a waitlist.\n  has_waitlist_enabled?: boolean;\n  // Maximum travel distance (km) for a carer to be considered a match. Defaults to 100 km when omitted, so omitting it restricts matching to within 100 km.\n  max_distance_km?: number;\n  // How carer qualifications gate a match: `disabled` ignores qualifications (any carer qualifies); `partial` qualifies a carer who holds at least one of the shift's required qualifications; `strict` qualifies only a carer who holds all of them. Defaults to `disabled` when omitted. Only meaningful when the account has job board qualification matching enabled.\n  qualification_matching?: \"disabled\" | \"partial\" | \"strict\";\n  // ID of the existing shift to advertise. Use list_shifts to resolve a shift.\n  shift_id: number;\n  // Opening start as an ISO 8601 datetime. An explicit offset is required (e.g. 2026-05-10T09:00:00+10:00); an offset-less value is rejected rather than silently zoned. Defaults to the shift's start_at when omitted.\n  start_at?: string;\n  // Segment (team) IDs the posting is restricted to; must belong to this account. Required when the account requires a team on job board shifts.\n  team_segment_ids?: Array<number>;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__create_staff",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nCreate a single staff member for the specified account. Requires name and email.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__create_staff(args: {\n  address?: string;\n  // Staff's date of birth, YYYY-MM-DD\n  dob?: string;\n  email: string;\n  employment_type?: \"employee\" | \"contractor\" | \"full_time\" | \"part_time\" | \"casual\" | \"others\";\n  family_name?: string;\n  first_name?: string;\n  gender?: \"male\" | \"female\" | \"non-binary\" | \"unspecified\" | \"prefer-not-to-say\";\n  kin_email?: string;\n  kin_name?: string;\n  kin_phone_number?: string;\n  kin_relationship?: string;\n  // A list of the Staff's languages in iso-639-1 format. Also supports iso-639-3 format for Arrernte (aer), Alyawarr (aly), Australian Sign Language (asf), Auslan (asp), Indigenous Sign Language (asw), Mandarin (cmn), Egyptian (Ancient) (egy), Farsi (fsr), Sign Language (ils), Krio (kri), Pitjantjatjara (pjt), Warlpiri (wbp), Warumungu (wrm), Cantonese (yue), Dari (prs), Neapolitan (nap), Ibo (ibc)\n  languages?: Array<string>;\n  mobile_number?: string;\n  name: string;\n  // Staff onboarding status\n  onboarding_status?: \"invited\" | \"pending\" | \"active\" | \"no_access\";\n  payroll_email?: string;\n  phone_number?: string;\n  role?: \"admin\" | \"coordinator\" | \"hr\" | \"support\" | \"ops\" | \"reader\" | \"staff\" | \"kiosk\";\n  salutation?: \"mr\" | \"mrs\" | \"miss\" | \"ms\" | \"mx\" | \"doctor\" | \"them\" | \"they\";\n  send_invitation?: boolean;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__list_clients",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nList clients for the current account with filtering, sorting, and pagination. Get team IDs from list_teams. To count a team's clients, call with filter_by_team_id and per_page: 1, then read _metadata.total_count instead of paging through every client.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__list_clients(args: {\n  // Filter clients by ID\n  filter_by_id?: string;\n  // Filter clients by name (partial match)\n  filter_by_name?: string;\n  // Return only clients in this team. Pass one team id from list_teams. Combines with the other filters; an unknown team id returns an empty list\n  filter_by_team_id?: string;\n  // Page number (default 1)\n  page?: number;\n  // Items per page (default 20, max 50)\n  per_page?: number;\n  // Field to sort by: 'id' or 'name' (default: 'id')\n  sort_by?: \"id\" | \"name\";\n  // Sort order: 'asc' or 'desc' (default: 'desc')\n  sort_type?: \"asc\" | \"desc\";\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__list_progress_notes",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nList progress notes for the current account. Customers commonly call these progress notes, but also shift notes, client notes, or communications — use this tool for any of those. Results are scoped to the notes the requesting user is permitted to see: with data access policies enforced, the list may be filtered (e.g. team-based visibility) or empty even when matching notes exist in the account, so an empty result does not mean there are no notes. Notes are categorised (enquiry, feedback, incident, injury, notes, mileage) and can be filtered by client, staff author, shift, category, and date range. created_from is required and bounds how far back by note creation date the search goes (it keeps queries off the full history of a large, time-partitioned table). Set it to match the span the request implies (anywhere up to 90 days); when the user gives no start date at all, default to 7 days ago. created_from must never be more than 90 days ago — a value older than 90 days is rejected. This means the tool only returns notes that were CREATED in the last 90 days. shift_date_from / shift_date_to (and shift_id) filter by the shift's date, not the note's creation date, so they narrow which recently created notes you get (and are cheaper, via the shifts(start_at) index) — but they cannot surface notes that were written more than 90 days ago. If a search returns nothing, the notes may simply have been created outside this 90-day window rather than not existing. Returns up to 20 notes per page, defaulting to most recent first (created_at desc); change ordering with sort_by / sort_type. time_zone is required: every date and timestamp in the response (created_at, updated_at, shift_date) is rendered in that one zone, so the whole response is internally consistent.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__list_progress_notes(args: {\n  // Filter by category. Pass one or more of: enquiry, feedback, incident, injury, notes, mileage.\n  category?: Array<\"enquiry\" | \"feedback\" | \"incident\" | \"injury\" | \"notes\" | \"mileage\">;\n  // Filter by client. Tagged notes match exactly; untagged notes match via shift ratios.\n  client_id?: number;\n  // Filter notes created at or after this ISO8601 UTC datetime (YYYY-MM-DDTHH:MM:SSZ). If the request sends no other filter (created_to, shift_id, staff_id, client_id, shift_date_from / shift_date_to), the API applies a default 90-day window to keep queries off the full history of a large, time-partitioned table; pass this param, or any of those filters, to reach older notes. The MCP tool requires this and rejects values older than 90 days ago. For bulk historical pulls, prefer shift_date_from / shift_date_to.\n  created_from: string;\n  // Filter notes created at or before this ISO8601 UTC datetime (YYYY-MM-DDTHH:MM:SSZ).\n  created_to?: string;\n  // Include pagination metadata in response body\n  include_metadata?: boolean;\n  // Page offset to fetch. Must be 1 or greater.\n  page?: number;\n  // Number of items to return per page. Must be 1 or greater. Maximum value: 20 (values above are silently capped).\n  per_page?: number;\n  // Filter by the shift's local calendar date (YYYY-MM-DD), interpreted in the time_zone argument, or the account time zone when none is given. Recommended for bulk historical pulls — uses shifts(start_at) index.\n  shift_date_from?: string;\n  // Filter by the shift's local calendar date (YYYY-MM-DD), interpreted in the time_zone argument, or the account time zone when none is given.\n  shift_date_to?: string;\n  // Filter progress notes by shift ID\n  shift_id?: number;\n  // Field to sort by.\n  sort_by?: \"created_at\" | \"id\";\n  // Sort order.\n  sort_type?: \"asc\" | \"desc\";\n  // Filter progress notes by author (staff user ID)\n  staff_id?: number;\n  // Time zone for timestamps in the response. Supports IANA/tz database time zones (e.g. \"Australia/Sydney\"). Set to special value \"account\" to use the account's configured time zone. Where this parameter is optional, omitting it renders timestamps in UTC.\n  time_zone: \"account\" | \"Etc/GMT+12\" | \"Pacific/Pago_Pago\" | \"Pacific/Midway\" | \"Pacific/Honolulu\" | \"America/Juneau\" | \"America/Los_Angeles\" | \"America/Tijuana\" | \"America/Phoenix\" | \"America/Mazatlan\" | \"America/Denver\" | \"America/Guatemala\" | \"America/Chicago\" | \"America/Chihuahua\" | \"America/Mexico_City\" | \"America/Monterrey\" | \"America/Regina\" | \"America/Bogota\" | \"America/New_York\" | \"America/Indiana/Indianapolis\" | \"America/Lima\" | \"America/Halifax\" | \"America/Caracas\" | \"America/Guyana\" | \"America/La_Paz\" | \"America/Puerto_Rico\" | \"America/Santiago\" | \"America/St_Johns\" | \"America/Sao_Paulo\" | \"America/Argentina/Buenos_Aires\" | \"America/Montevideo\" | \"America/Godthab\" | \"Atlantic/South_Georgia\" | \"Atlantic/Azores\" | \"Atlantic/Cape_Verde\" | \"Europe/London\" | \"Europe/Lisbon\" | \"Africa/Monrovia\" | \"Etc/UTC\" | \"Europe/Amsterdam\" | \"Europe/Belgrade\" | \"Europe/Berlin\" | \"Europe/Zurich\" | \"Europe/Bratislava\" | \"Europe/Brussels\" | \"Europe/Budapest\" | \"Africa/Casablanca\" | \"Europe/Copenhagen\" | \"Europe/Dublin\" | \"Europe/Ljubljana\" | \"Europe/Madrid\" | \"Europe/Paris\" | \"Europe/Prague\" | \"Europe/Rome\" | \"Europe/Sarajevo\" | \"Europe/Skopje\" | \"Europe/Stockholm\" | \"Europe/Vienna\" | \"Europe/Warsaw\" | \"Africa/Algiers\" | \"Europe/Zagreb\" | \"Europe/Athens\" | \"Europe/Bucharest\" | \"Africa/Cairo\" | \"Africa/Harare\" | \"Europe/Helsinki\" | \"Asia/Jerusalem\" | \"Europe/Kaliningrad\" | \"Europe/Kiev\" | \"Africa/Johannesburg\" | \"Europe/Riga\" | \"Europe/Sofia\" | \"Europe/Tallinn\" | \"Europe/Vilnius\" | \"Asia/Baghdad\" | \"Europe/Istanbul\" | \"Asia/Kuwait\" | \"Europe/Minsk\" | \"Europe/Moscow\" | \"Africa/Nairobi\" | \"Asia/Riyadh\" | \"Europe/Volgograd\" | \"Asia/Tehran\" | \"Asia/Muscat\" | \"Asia/Baku\" | \"Europe/Samara\" | \"Asia/Tbilisi\" | \"Asia/Yerevan\" | \"Asia/Kabul\" | \"Asia/Almaty\" | \"Asia/Yekaterinburg\" | \"Asia/Karachi\" | \"Asia/Tashkent\" | \"Asia/Kolkata\" | \"Asia/Colombo\" | \"Asia/Kathmandu\" | \"Asia/Dhaka\" | \"Asia/Urumqi\" | \"Asia/Rangoon\" | \"Asia/Bangkok\" | \"Asia/Jakarta\" | \"Asia/Krasnoyarsk\" | \"Asia/Novosibirsk\" | \"Asia/Shanghai\" | \"Asia/Chongqing\" | \"Asia/Hong_Kong\" | \"Asia/Irkutsk\" | \"Asia/Kuala_Lumpur\" | \"Australia/Perth\" | \"Asia/Singapore\" | \"Asia/Taipei\" | \"Asia/Ulaanbaatar\" | \"Asia/Tokyo\" | \"Asia/Seoul\" | \"Asia/Yakutsk\" | \"Australia/Adelaide\" | \"Australia/Darwin\" | \"Australia/Brisbane\" | \"Australia/Canberra\" | \"Pacific/Guam\" | \"Australia/Hobart\" | \"Australia/Melbourne\" | \"Pacific/Port_Moresby\" | \"Australia/Sydney\" | \"Asia/Vladivostok\" | \"Asia/Magadan\" | \"Pacific/Noumea\" | \"Pacific/Guadalcanal\" | \"Asia/Srednekolymsk\" | \"Pacific/Auckland\" | \"Pacific/Fiji\" | \"Asia/Kamchatka\" | \"Pacific/Majuro\" | \"Pacific/Chatham\" | \"Pacific/Tongatapu\" | \"Pacific/Apia\" | \"Pacific/Fakaofo\";\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__list_shift_events",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nList events for one or more shifts with optional date filtering and pagination\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__list_shift_events(args: {\n  // Filter events to this date (ISO 8601, e.g. YYYY-MM-DD). Interpreted in the account's time zone.\n  end_date?: string;\n  page?: number;\n  per_page?: number;\n  // The shift ID (for single shift lookup)\n  shift_id?: string;\n  // Filter by one or more shift IDs. Use this instead of shift_id for bulk fetching. Accepts a single ID or an array of IDs (max 20 when an array). Pagination params are ignored in bulk mode.\n  shift_ids?: Array<string> | string;\n  // Filter events from this date (ISO 8601, e.g. YYYY-MM-DD). Interpreted in the account's time zone.\n  start_date?: string;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__list_shifts",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nList shifts for the specified account with filters and pagination. Every query must be bounded: send from_date and to_date as a pair, or send program_id to fetch one shift series regardless of when it runs. Results are capped at 20 per page and per_page cannot be raised, so a series of more than 20 shifts spans several pages — increment page until a page returns fewer than 20, and check _metadata.total_count before reporting how many shifts a series has. One full page does not mean you have them all.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__list_shifts(args: {\n  // Filter shifts from this date/datetime based on shift's approved_at (ISO 8601)\n  approved_from_date?: string;\n  // Filter shifts to this date/datetime based on shift's approved_at (ISO 8601)\n  approved_to_date?: string;\n  // Filter billable shifts only\n  billable?: boolean;\n  // Filter by client ID(s)\n  client_id?: Array<string>;\n  // Filter shifts from this date/datetime based on shift's start_at (ISO 8601, e.g. YYYY-MM-DD). Required, together with to_date, unless program_id is given.\n  from_date?: string;\n  // Filter by shift IDs\n  ids?: Array<string>;\n  // Include client information in the response\n  include_clients?: boolean;\n  // Include each shift's assigned staff as a staff array. In each entry, id is the staff ID (the value staff_id and get_staff take) and worker_id is the shift assignment ID, alongside scheduled and clock times and verification_status. Use it for staffing or per-staff questions instead of calling list_shift_staffs once per shift. Leave it off otherwise.\n  include_staff?: boolean;\n  // Filter NDIS-enabled shifts only\n  ndis_enabled?: boolean;\n  // Page number (default 1)\n  page?: number;\n  // Items per page (default 20, max 20)\n  per_page?: number;\n  // Filter to the shifts belonging to one program (shift series), using the program_id returned on any shift. Every shift a recurring series creates shares one program_id, so this is how to fetch a whole series server-side — do not page through the range and filter yourself. A program_id from another account, or one that does not exist, returns no shifts rather than an error.\n  program_id?: number;\n  // Filter by staff ID(s)\n  staff_id?: Array<string>;\n  // Filter by attendance review. \"approved\" = the attendance of at least one assigned staff member was reviewed, whatever the result (verification_status approved, rejected or rules_based), so it does not mean the attendance was accepted. \"unapproved\" = no attendance is reviewed yet, and the shift may still have staff assigned. To find unstaffed shifts, send include_staff and look for an empty staff list.\n  status?: \"approved\" | \"unapproved\";\n  // Filter shifts to this date/datetime based on shift's start_at (ISO 8601, e.g. YYYY-MM-DD). Required, together with from_date, unless program_id is given.\n  to_date?: string;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__list_staff",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nList staff for the current account with filtering, sorting, and pagination\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__list_staff(args: {\n  // Filter staff by ID\n  filter_by_id?: string;\n  // Filter staff by name (partial match)\n  filter_by_name?: string;\n  // Page number (default 1)\n  page?: number;\n  // Items per page (default 20, max 20)\n  per_page?: number;\n  // Field to sort by: 'id' or 'name' (default: 'id')\n  sort_by?: \"id\" | \"name\";\n  // Sort order: 'asc' or 'desc' (default: 'desc')\n  sort_type?: \"asc\" | \"desc\";\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__list_timesheets",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nList timesheets for the specified account with required date range filtering\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__list_timesheets(args: {\n  // Filter by account location ID (interprets from/to as wall clock time in that location's timezone)\n  account_location_id?: string;\n  // Filter approved timesheets only\n  approved_only?: boolean;\n  // Start of date range (ISO 8601 format, e.g. YYYY-MM-DD)\n  from: string;\n  // Include minimal staff info for each timesheet\n  include_staff?: boolean;\n  // Page number (default 1)\n  page?: number;\n  // Items per page (default 20, max 20)\n  per_page?: number;\n  // End of date range (ISO 8601 format, e.g. YYYY-MM-DD)\n  to: string;\n  // Filter by specific staff user IDs\n  user_ids?: Array<string>;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__update_client_document",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nUpdate ONE existing client document's filing details — its document type, staff visibility and expiry. Returns the updated document.\n\nREQUIRED CONFIRMATION before calling: ask the user to confirm in this format:\n\"Update the document [document_type] (id [id]) on [client name] — [list each change, e.g. \"type -> Consent Form\", \"staff visibility -> visible to staff\", \"expiry -> 2027-03-01\", \"expiry -> never expires\"]? This overwrites the current values and is recorded in the document's history.\"\nOnly call this tool after the user explicitly confirms.\n\nRequired: client_id (use list_clients) and id (a document id belonging to that client — use list_client_documents).\nOptional, and every one of them is a change you are making: document_type_id, staff_visible, expires_at, no_expiration.\n\nPARTIAL UPDATE: a field you omit is left exactly as it is. Send only the fields that change — do NOT re-send the document's current values, and never send a field you are unsure about.\nTHE FILE ITSELF CANNOT BE CHANGED HERE. A corrected file is a new upload; this tool only re-files the existing one.\ndocument_type_id must be an active document type in this account (use list_client_document_types); an archived or another account's type is rejected. Send an empty string to unfile the document from its type.\nstaff_visible: true makes the document visible to staff/carers, false makes it coordinator-only. There is no third value.\nexpires_at is a calendar date, YYYY-MM-DD, in the ACCOUNT's time zone (not UTC) — no time component. Send an empty string (\"\") to clear the expiry date without marking the document as never expiring. A document with no date and no_expiration false reports expiry_status \"none\", but ShiftCare's own expiry reporting counts it as expired — set no_expiration: true instead if the document genuinely never expires.\nno_expiration: true marks the document as never expiring and CLEARS expires_at, overriding any expires_at sent in the same call — so never send both together expecting the date to stick. To give a never-expiring document a date, send no_expiration: false and expires_at together in ONE call; that works and is the only combination in which both are honoured.\nARCHIVED DOCUMENTS ARE NOT REACHABLE: an archived document returns not-found here. Restore it first, then update.\nDo not send time_zone — this tool rejects it. In the response, created_at/updated_at are UTC and expires_at is a YYYY-MM-DD date in the account's time zone.\nIdempotent: calling twice with the same fields leaves the same values.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__update_client_document(args: {\n  // Client id that owns the document. Use list_clients to find it.\n  client_id: number;\n  // Id of the DocumentType to file the document under — an ACTIVE type in this account (use list_client_document_types). An archived type or one from another account is rejected. Send an empty string to unfile the document from its type. Omit to leave the current type alone.\n  document_type_id?: string;\n  // New expiry date as YYYY-MM-DD, interpreted in the account's time zone (not UTC) because it is a calendar date. Send an empty string to clear it. Ignored when no_expiration is true in the same request. Omit to leave the current expiry alone.\n  expires_at?: string;\n  // Document id to update. Must belong to the client in client_id, and must not be archived.\n  id: number;\n  // True marks the document as never expiring and clears expires_at — it wins over an expires_at sent in the same request. Omit to leave it alone.\n  no_expiration?: true | false;\n  // True makes the document visible to staff/carers; false makes it coordinator-only (hidden from staff). This is the client profile's \"Staff Visibility\" setting. Omit to leave it alone.\n  staff_visible?: true | false;\n}): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "name": "mcp__shiftcare_au__update_shift",
+      "description": "You are operating on account testtph (account_id: 817962). This account is applied automatically, so you don't need to provide an account_id in tool calls.\n\nUpdate an existing shift by id. This edits ONE shift. If the shift is part of a recurring series (`recurring` is true on the shift) and the user means the change to apply from here on — \"move the Tuesday visit to 10am from now on\" — use `update_shift_recurrence_details` instead, which applies field values across every occurrence up to a date you give it. Changing the series' schedule itself — how often it repeats, which days it falls on, when it ends — is `update_shift_recurrence_pattern`, if that tool is in your tool list; it rebuilds the series so every shift id changes, so never reach for it to change a field value. Where it is not available to you, changing a schedule is not possible here at all: say so and direct the user to the web UI. Partial update — send `id` plus only the fields you want to change; omitted fields are left untouched. Use `list_shifts` to find the shift id. Use `client_ids` / `staff_ids` to reassign clients/staff by id (look them up via `list_clients` / `list_staff`); sending either REPLACES all existing assignments wholesale, so include every id that should remain. Price-book, fund, pay-group, and per-shift travel-billing selection are not supported via MCP; this tool leaves each client's travel billing on the shift exactly as it is, whether that is the client's own Invoice Travel setting or a per-shift override set elsewhere. Additional charges (transport, equipment, and similar extras billed to a client on the shift) are not supported via MCP either — do not attempt to add, change, or remove them with this tool; direct the user to the web UI instead. State rules: invoiced shifts cannot be updated (409); cancelled shifts cannot be edited here — use the cancel tool. Requires the v3 shift update endpoint to be enabled for the account. When changing `start_at`/`end_at` or reassigning staff via `staff_ids`, check for conflicts first: for each affected staff member call `list_shifts` over a whole-day date range (from_date/to_date as YYYY-MM-DD) covering the shift's new date(s) and the day before — not the exact start/end times, because `list_shifts` filters on each shift's start_at, so a narrow window misses earlier-starting or overnight shifts that still overlap. Compare the returned shifts' start_at/end_at (excluding the shift being edited) against the new window; if any overlap, surface the conflicting shift and ask whether to proceed anyway or choose someone else rather than updating silently. Validate the time range before calling: if `end_at` is earlier than `start_at` on the same calendar day, do not call this tool yet and do not assume an overnight shift. First ask the user to confirm whether they meant an overnight shift (in which case set `end_at` to the next day with an explicit offset) or made a typo, and wait for their answer before updating the shift.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__shiftcare_au__update_shift(args: {\n  // AccountLocation ID. Use the `list_account_locations` tool to discover valid IDs for this account.\n  account_location_id?: number;\n  // Full address\n  address?: string;\n  // IDs of allowances to attach to the shift. Use the `list_allowances` tool to discover valid IDs.\n  allowance_ids?: Array<number>;\n  // Break duration in minutes, or 0 for no break. Any nonzero value is rejected with a 400 once break tracking is enabled for the account — per-worker break times are not yet available through this API.\n  break_time?: number;\n  // Client IDs to assign to this shift. Look up IDs via the `list_clients` tool. Replaces the shift's existing client assignments wholesale — include every client id that should remain, not just new ones. Omit this field to leave clients unchanged; sending an empty array `[]` removes ALL client assignments, so only send `[]` when you explicitly intend to unassign every client. Pricing uses each client's default service area; a client with no configured area is billed at $0 for the shift. The response's `warnings` array flags each such client currently on the shift — check it before treating the update as fully successful.\n  client_ids?: Array<number>;\n  // Notes or instructions\n  description?: string;\n  // Shift end time as an ISO 8601 datetime. Include a `Z` or numeric offset (e.g. 2026-05-10T17:00:00+10:00) to pin to a specific time. Offset-less datetimes are accepted but interpreted in the account's local time zone, which is rarely what you want — always send an explicit offset.\n  end_at?: string;\n  // Facility ID. Use the `list_facilities` tool to discover valid IDs for this account.\n  facility_id?: number;\n  // ID of the shift to update. Use the `list_shifts` tool to find it; pass the id through exactly as that tool returned it (a string of digits, e.g. \"4242\"). A plain integer is accepted too.\n  id: string | number;\n  // Travel distance in km\n  km?: number;\n  // Live-in shift\n  live_in?: boolean;\n  // Send notifications to assigned staff\n  notify?: boolean;\n  // Publish to assigned staff. Sending `false` unpublishes the shift, removing it from the schedule of its assigned carers. Two separate prerequisites apply once shift publishing is activated for the account: changing `published` in **either** direction requires the publish-shifts permission, and a `false` is additionally refused outright on an account that does not have shift publishing enabled. Either shortfall is a 422 rather than a silent no-op. Only a real change is gated — sending the value the shift already holds is accepted, so echoing this field back in a full-resource update is safe.\n  published?: boolean;\n  // Identifier of the shift type to apply (e.g. `standard`, `sleepover`). Accepts any `type_string` configured for the account; use the `list_shift_types` tool to discover the values valid for this account.\n  shift_type?: string;\n  // Sleepover shift\n  sleepover?: boolean;\n  // Staff IDs to assign to this shift. Look up IDs via the `list_staff` tool. Replaces the shift's existing staff assignments wholesale — include every staff id that should remain, not just new ones. Omit this field to leave staff unchanged; sending an empty array `[]` removes ALL staff assignments, so only send `[]` when you explicitly intend to unassign every staff member. Reassigning staff may publish the shift and notify them depending on the `published` and `notify` flags.\n  staff_ids?: Array<number>;\n  // Shift start time as an ISO 8601 datetime. Include a `Z` or numeric offset (e.g. 2026-05-10T09:00:00+10:00) to pin to a specific time. Offset-less datetimes are accepted but interpreted in the account's local time zone, which is rarely what you want — always send an explicit offset.\n  start_at?: string;\n  // Suburb/city\n  suburb_address?: string;\n}): Promise<CallToolResult>; };\n```"
+    }
+  ],
+  "notExposedInCurrentCatalog": [
+    "availability schedule reads",
+    "Smart Match suggestion calls",
+    "worker accept/decline and confirmation_required writes",
+    "message/chat send or history",
+    "new document upload",
+    "webhook subscription",
+    "continuous worker GPS feed"
+  ],
+  "qualification": "Catalog absence is a current connector limitation, not proof the underlying product has no such feature. Exposed writes have not been live tested; tool-specific account flags may still reject them."
+}

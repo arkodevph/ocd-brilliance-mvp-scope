@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "4c0e35a1-f02e-4f88-97c5-8362f0a5cee7",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/architecture-ocd-shiftcare-intake-20261006-185221/candidate.json",
+  "output": "/home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/.archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html",
+  "specification": {
+    "sha256": "9ba56cb1c1fd095ead4e0a66f8de66e390e4be92b4dd9446b98ca614321dd7ad",
+    "bytes": 10354
+  },
+  "artifact": {
+    "sha256": "1ba8f0f3b71d97724d85ea0a65c989bccd19a8d14d375deb5e1589fd627b5101",
+    "bytes": 789231
+  }
+}

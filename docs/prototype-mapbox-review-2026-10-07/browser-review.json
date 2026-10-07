@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-07",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "office live Mapbox rendering",
+      "status": "pass",
+      "detail": "Real Mapbox Standard loaded in a WebGL browser using fictional service coordinates; no device GPS or ShiftCare mutation."
+    },
+    {
+      "name": "worker live Mapbox rendering",
+      "status": "pass",
+      "detail": "Real Mapbox Standard loaded in a WebGL browser using fictional service coordinates; no device GPS or ShiftCare mutation."
+    },
+    {
+      "name": "client live Mapbox rendering",
+      "status": "pass",
+      "detail": "Real Mapbox Standard loaded in a WebGL browser using fictional service coordinates; no device GPS or ShiftCare mutation."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/prototype-mapbox-review-2026-10-07/office-mapbox-3d.png",
+      "sha256": "740685fb8765dd749c7337efaf5e0e1a64530e5e3aba73a98d75e61494daea94",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-mapbox-review-2026-10-07/worker-mapbox-3d.png",
+      "sha256": "53916c622af5ac5898d0dd8fd106694e5e42fffcd6c06bf699c3bd418861af94",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-mapbox-review-2026-10-07/client-mapbox-3d.png",
+      "sha256": "3f48674352f3a3a6351e2614f6a508872c5c1ebadfc19dbdb1a18b83bc2a5cd1",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": {
+    "status": "pass",
+    "reviewDate": "2026-10-07",
+    "method": "Inspected all three actual PNG captures",
+    "findings": [
+      "Office map showed service markers, assignments and the cover exception beside a tilted basemap.",
+      "Worker map showed only assigned sample bookings and a Mapbox driving estimate.",
+      "Client mobile map showed the own service location and 3D buildings without a worker route/origin.",
+      "No horizontal overflow in the captured desktop and mobile viewports."
+    ],
+    "limit": "Fictional coordinates; software WebGL browser, not phone/background GPS certification."
+  },
+  "mapbox": "Real Mapbox Standard browser rendering; fictional coordinates only, no device GPS.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

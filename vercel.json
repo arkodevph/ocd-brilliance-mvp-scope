@@ -3,6 +3,8 @@
   "outputDirectory": "dist",
   "functions": {
     "api/workflow.js": { "maxDuration": 30 },
-    "api/push.js": { "maxDuration": 60 }
+    "api/push.js": { "maxDuration": 60 },
+    "api/shiftcare.js": { "maxDuration": 30 },
+    "api/integration-proof.js": { "maxDuration": 30 }
   }
 }

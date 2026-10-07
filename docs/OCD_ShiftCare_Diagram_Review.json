@@ -1,0 +1,911 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-06",
+  "recordedAt": "2026-10-06T11:35:44.429995+00:00",
+  "status": "pass with explicit capability and discovery limits",
+  "scope": "Transcript-based design and rendered diagrams; not a production integration certification.",
+  "researchInputs": {
+    "transcript": {
+      "path": "dialpad_transcript_20261005_0923.csv",
+      "sha256": "a3e6fcbfb92bdc50799fbca9de4a23de6def071a280c6411e46b55e30b976e54"
+    },
+    "requirementsReview": {
+      "path": "docs/OCD_Client_Needs_and_Automation_Requirements.md",
+      "sha256": "b925f847cd8e078f184e207ab3c79d5ddaa44d4de1b327bb8929476b9eb0c6b4"
+    },
+    "integrationDesign": {
+      "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+      "sha256": "82461f1a8cf1ef7c1946185e68ea6d6ec860d42592dfca3ca9f4e4d2aec16d31"
+    },
+    "redactedCapabilityEvidence": {
+      "path": "docs/ShiftCare_Capability_Validation_2026-10-06.json",
+      "sha256": "676620e8749cfe351c0e16a5bdb658cf5e511608d1b123c47e3ae639784d9dca"
+    },
+    "externalSources": "Official sources linked alongside supported claims in the integration design; no generic REST write contract inferred from MCP schemas."
+  },
+  "semanticReview": {
+    "sourceOfTruth": "ShiftCare for participant/staff identity, roster, delivered care, documents, funding configuration and service billing records; existing accounting/payroll platforms retain their responsibilities.",
+    "appRole": "Enquiry ownership, approved proposals, durable jobs, permitted read projections, audit and exception coordination; optional consented journey data.",
+    "requestedQuestions": [
+      {
+        "number": 1,
+        "topic": "Current ShiftCare use",
+        "designSections": "4",
+        "addressed": true
+      },
+      {
+        "number": 2,
+        "topic": "Manual or repetitive steps",
+        "designSections": "4,7",
+        "addressed": true
+      },
+      {
+        "number": 3,
+        "topic": "Client pain points",
+        "designSections": "4",
+        "addressed": true
+      },
+      {
+        "number": 4,
+        "topic": "Web app responsibilities",
+        "designSections": "5,7",
+        "addressed": true
+      },
+      {
+        "number": 5,
+        "topic": "Communication with ShiftCare",
+        "designSections": "2,3,6",
+        "addressed": true
+      },
+      {
+        "number": 6,
+        "topic": "Data flows",
+        "designSections": "8",
+        "addressed": true
+      },
+      {
+        "number": 7,
+        "topic": "Actions staying native",
+        "designSections": "5,7",
+        "addressed": true
+      },
+      {
+        "number": 8,
+        "topic": "Automated actions",
+        "designSections": "7",
+        "addressed": true
+      },
+      {
+        "number": 9,
+        "topic": "Triggers and outcomes",
+        "designSections": "7",
+        "addressed": true
+      },
+      {
+        "number": 10,
+        "topic": "Failure and human intervention",
+        "designSections": "7,9",
+        "addressed": true
+      }
+    ],
+    "requirementsCount": 27,
+    "requirementsCrosswalk": [
+      {
+        "requirementId": "A01",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W03",
+          "W04"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A02",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W01"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A03",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W01",
+          "W02"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A04",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W06",
+          "W07"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A05",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W08"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A06",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W08"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A07",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W12"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A08",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W09"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A09",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W10",
+          "W11"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A10",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W05"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A11",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W06",
+          "W13"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "A12",
+        "classification": "client need",
+        "automationRegisterReferences": [
+          "W14"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "P01",
+        "classification": "portal discussed",
+        "automationRegisterReferences": [
+          "W13",
+          "W14"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "P02",
+        "classification": "portal discussed",
+        "automationRegisterReferences": [
+          "W04",
+          "W08",
+          "W11",
+          "W13",
+          "W14"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "P03",
+        "classification": "portal discussed",
+        "automationRegisterReferences": [
+          "W01",
+          "W02",
+          "W03",
+          "W04",
+          "W05",
+          "W06",
+          "W07",
+          "W08",
+          "W09",
+          "W10",
+          "W11",
+          "W12",
+          "W13",
+          "W14"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "L01",
+        "classification": "later explicit Mapbox instruction",
+        "automationRegisterReferences": [
+          "W14"
+        ],
+        "coverage": "Design sections 4–9 and section 12 crosswalk."
+      },
+      {
+        "requirementId": "T01",
+        "classification": "team proposal with capability/scope qualification",
+        "automationRegisterReferences": [],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "T02",
+        "classification": "team proposal with capability/scope qualification",
+        "automationRegisterReferences": [],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "T03",
+        "classification": "team proposal with capability/scope qualification",
+        "automationRegisterReferences": [
+          "W09"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "T04",
+        "classification": "team proposal with capability/scope qualification",
+        "automationRegisterReferences": [
+          "W01"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "T05",
+        "classification": "team proposal with capability/scope qualification",
+        "automationRegisterReferences": [
+          "W08"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "T06",
+        "classification": "team proposal with capability/scope qualification",
+        "automationRegisterReferences": [
+          "W01",
+          "W02",
+          "W03",
+          "W04",
+          "W05",
+          "W06",
+          "W07",
+          "W08",
+          "W09",
+          "W10",
+          "W11",
+          "W12",
+          "W13",
+          "W14"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "B01",
+        "classification": "business context / later scope",
+        "automationRegisterReferences": [
+          "W04"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "B02",
+        "classification": "business context / later scope",
+        "automationRegisterReferences": [
+          "W04",
+          "W11"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "B03",
+        "classification": "business context / later scope",
+        "automationRegisterReferences": [
+          "W01"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "B04",
+        "classification": "business context / later scope",
+        "automationRegisterReferences": [],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      },
+      {
+        "requirementId": "B05",
+        "classification": "business context / later scope",
+        "automationRegisterReferences": [
+          "W01",
+          "W02",
+          "W03",
+          "W04",
+          "W05",
+          "W06",
+          "W07",
+          "W08",
+          "W09",
+          "W10",
+          "W11",
+          "W12",
+          "W13",
+          "W14"
+        ],
+        "coverage": "Design section 12 and original requirement entry; later proposals/business context do not establish approved first-phase modules."
+      }
+    ],
+    "automationRegisterCount": 14,
+    "importantLimits": [
+      "Successful bounded trial MCP reads do not establish access to the client production account or complete record coverage.",
+      "No ShiftCare writes, messages, billing actions or mailbox forwarding rules were executed during this review.",
+      "Website REST authentication is not tested; the local API key is blank/missing.",
+      "Each production write needs an official contract, entitlement, client policy, permission and an authorised test before unattended execution.",
+      "A public customer ShiftCare webhook contract, new-file MCP upload, worker acceptance write and continuous GPS feed were not verified; native actions, polling or explicit manual tasks are the designed paths.",
+      "Family Portal, Inbox Signals, matching and Care Signals need account-specific feature/entitlement checks.",
+      "Actual forms, current admin/bookkeeper procedures, time zone, financial/cancellation rules, payroll vendor and device/ETA behaviour remain acceptance gates.",
+      "All recorded scope items are covered or classified; this does not claim that every unrecorded business process has been discovered."
+    ]
+  },
+  "artifacts": [
+    {
+      "name": "System architecture and integration boundaries",
+      "diagramType": "architecture",
+      "role": "system-architecture",
+      "specification": {
+        "path": ".archify/architecture-ocd-shiftcare-20261006-185221/candidate.json",
+        "sha256": "703b25dc887feb53476e853c2f2a38e45c9b7e0db7a7ab2d9f211340953f3928"
+      },
+      "artifact": {
+        "path": ".archify/architecture-ocd-shiftcare-20261006-185221/ocd-shiftcare.html",
+        "sha256": "cb289b5df9cef65546844e8f476b52e054be1d29295aa559f8fb90e5e54de5f8",
+        "bytes": 784420
+      },
+      "nodeCount": 16,
+      "relationshipCount": 19,
+      "automatedValidation": {
+        "checksPassed": 9,
+        "checkCount": 9,
+        "compositionProfile": "showcase",
+        "compositionStatus": "pass",
+        "errors": 0,
+        "warnings": 0
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "compositionMetrics": {
+        "properCrossings": 0,
+        "resolvedCrossovers": 0,
+        "ambiguousCorridors": 0,
+        "arrowheadCollisions": 0,
+        "containerBorderRuns": 0,
+        "labelRouteClearanceIssues": 0,
+        "labelCanvasOverflowIssues": 0,
+        "minLabelRouteClearance": 20,
+        "desktopReadabilityIssues": 0,
+        "viewportHeightIssues": 0,
+        "minProjectedNodeTextPx": 6.358974358974359,
+        "maxBends": 2,
+        "routesOverSuggestedBends": 0,
+        "maxStretch": 1.151,
+        "routesOverSuggestedStretch": 0,
+        "minSegmentPx": 24,
+        "minInteriorSegmentPx": 223,
+        "shortSegmentCount": 0,
+        "shortEndpointSegmentCount": 0,
+        "shortInteriorSegmentCount": 0,
+        "microSegmentCount": 0
+      },
+      "receipts": {
+        "finalize": ".archify/architecture-ocd-shiftcare-20261006-185221/ocd-shiftcare.finalize.json",
+        "summary": ".archify/architecture-ocd-shiftcare-20261006-185221/ocd-shiftcare.finalize-summary.json",
+        "browser": ".archify/architecture-ocd-shiftcare-20261006-185221/ocd-shiftcare.browser-check.json",
+        "visualCapture": ".archify/architecture-ocd-shiftcare-20261006-185221/visual-check/ocd-shiftcare.visual-check.json"
+      },
+      "browser": {
+        "status": "pass",
+        "provenance": "current",
+        "containment": "pass",
+        "themeStates": "pass",
+        "viewports": [
+          {
+            "width": 1440,
+            "height": 900,
+            "overflowDisposition": "contained",
+            "readabilityOk": true
+          },
+          {
+            "width": 1600,
+            "height": 1000,
+            "overflowDisposition": "contained",
+            "readabilityOk": true
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "overflowDisposition": "contained",
+            "readabilityOk": true
+          },
+          {
+            "width": 2048,
+            "height": 1320,
+            "overflowDisposition": "contained",
+            "readabilityOk": true
+          }
+        ]
+      },
+      "visualCapture": {
+        "status": "pass",
+        "automatedReceiptVisualReview": "pending",
+        "note": "The tool captures evidence but does not perform perceptual review. Review below records the actual inspected screenshots."
+      },
+      "perceptualReview": {
+        "status": "pass",
+        "reviewer": "Codex image inspection",
+        "inspectedScreenshots": [
+          {
+            "path": ".archify/architecture-ocd-shiftcare-20261006-185221/visual-check/ocd-shiftcare.visual-check.1440x900.light.png",
+            "sha256": "ecb2a0f2e76f52e67ef68ba9e56b7535dd615dd8f4d0db1898d2f3fc96e9ed9f",
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "theme": "light"
+          },
+          {
+            "path": ".archify/architecture-ocd-shiftcare-20261006-185221/visual-check/ocd-shiftcare.visual-check.2048x1320.dark.png",
+            "sha256": "ae93513ad692ca35f25f3bd60f368476990efa4a9d67d77b9811efbbf6128b54",
+            "viewport": {
+              "width": 2048,
+              "height": 1320
+            },
+            "theme": "dark"
+          }
+        ],
+        "observations": [
+          "ShiftCare records are explicitly marked as the main source of truth. Native operations and the existing financial path are separate from the proposed REST adapter.",
+          "Dashed connector paths retain REST/key and consent gates. Failed jobs lead to supervised fallback and an exception owner.",
+          "Light and dark node contrast, route direction and viewer containment were inspected; compact text can be explored with the provided zoom controls."
+        ],
+        "readerNotes": "Zoom and node details support reading compact labels."
+      }
+    },
+    {
+      "name": "Participant and worker intake / documents",
+      "diagramType": "architecture",
+      "role": "process-flowchart rendered with fixed-position architecture layout",
+      "specification": {
+        "path": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/candidate.json",
+        "sha256": "9ba56cb1c1fd095ead4e0a66f8de66e390e4be92b4dd9446b98ca614321dd7ad"
+      },
+      "artifact": {
+        "path": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.html",
+        "sha256": "1ba8f0f3b71d97724d85ea0a65c989bccd19a8d14d375deb5e1589fd627b5101",
+        "bytes": 789231
+      },
+      "nodeCount": 19,
+      "relationshipCount": 20,
+      "automatedValidation": {
+        "checksPassed": 9,
+        "checkCount": 9,
+        "compositionProfile": "showcase",
+        "compositionStatus": "pass",
+        "errors": 0,
+        "warnings": 0
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "compositionMetrics": {
+        "properCrossings": 0,
+        "resolvedCrossovers": 0,
+        "ambiguousCorridors": 0,
+        "arrowheadCollisions": 0,
+        "containerBorderRuns": 0,
+        "labelRouteClearanceIssues": 0,
+        "labelCanvasOverflowIssues": 0,
+        "minLabelRouteClearance": 91.4,
+        "desktopReadabilityIssues": 0,
+        "viewportHeightIssues": 0,
+        "minProjectedNodeTextPx": 6.073469387755102,
+        "maxBends": 4,
+        "routesOverSuggestedBends": 1,
+        "maxStretch": 1.2,
+        "routesOverSuggestedStretch": 0,
+        "minSegmentPx": 24,
+        "minInteriorSegmentPx": 46,
+        "shortSegmentCount": 0,
+        "shortEndpointSegmentCount": 0,
+        "shortInteriorSegmentCount": 0,
+        "microSegmentCount": 0
+      },
+      "receipts": {
+        "finalize": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.finalize.json",
+        "summary": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.finalize-summary.json",
+        "browser": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/ocd-shiftcare-intake.browser-check.json",
+        "visualCapture": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/visual-check/ocd-shiftcare-intake.visual-check.json"
+      },
+      "browser": {
+        "status": "pass",
+        "provenance": "current",
+        "containment": "pass",
+        "themeStates": "pass",
+        "viewports": [
+          {
+            "width": 1440,
+            "height": 900,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 1600,
+            "height": 1000,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 2048,
+            "height": 1320,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          }
+        ]
+      },
+      "visualCapture": {
+        "status": "pass",
+        "automatedReceiptVisualReview": "pending",
+        "note": "The tool captures evidence but does not perform perceptual review. Review below records the actual inspected screenshots."
+      },
+      "perceptualReview": {
+        "status": "pass",
+        "reviewer": "Codex image inspection",
+        "inspectedScreenshots": [
+          {
+            "path": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/visual-check/ocd-shiftcare-intake.visual-check.1440x900.light.png",
+            "sha256": "b158f26ee18c890060ec9ef880019ff1edd5785214c0d74f60275ccf032b2978",
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "theme": "light"
+          },
+          {
+            "path": ".archify/architecture-ocd-shiftcare-intake-20261006-185221/visual-check/ocd-shiftcare-intake.visual-check.2048x1320.dark.png",
+            "sha256": "63e98fec52d0f63f156d21ebb7a29b1752a101b9bdf02bd34100139622895292",
+            "viewport": {
+              "width": 2048,
+              "height": 1320
+            },
+            "theme": "dark"
+          }
+        ],
+        "observations": [
+          "The participant area check and separate employee entry are retained. Native referral acceptance, document review/filing and approved UI/MCP entry remain distinct.",
+          "Verified ID/read-back and the separate Xero/payroll onboarding check precede closure; unclear mapping and unsupported writes stop for a human.",
+          "The four-bend area-exception route was traced visually around the Employee form. It does not pass through that node or create a misleading junction."
+        ],
+        "readerNotes": "Use vertical scrolling to reach lower steps at smaller viewports; zoom and node details support reading compact labels."
+      },
+      "layoutFallback": {
+        "originalSpecification": ".archify/workflow-ocd-shiftcare-intake-20261006-185221/candidate.json",
+        "sha256": "a38cffc092bdf94d3870a8c071aaea7e29d4abb0bca1d1d63403b412c351f91d",
+        "originalRenderer": "workflow lanes",
+        "deliveredRenderer": "architecture fixed positions",
+        "originalNodeIdsLabelsAndSublabelsPreserved": true,
+        "originalRelationshipIdsEndpointsAndLabelsPreserved": true,
+        "originalDraftStatus": "failed rendering gates; retained for traceability, not delivered as validated output"
+      }
+    },
+    {
+      "name": "Confirmations, cancellation and cover",
+      "diagramType": "architecture",
+      "role": "process-flowchart rendered with fixed-position architecture layout",
+      "specification": {
+        "path": ".archify/architecture-ocd-shiftcare-service-20261006-185221/candidate.json",
+        "sha256": "e78ecdc6e7131b19f35c73ccf4e5a5eb1f2f1fae19f94a2a4df8c78a341098a3"
+      },
+      "artifact": {
+        "path": ".archify/architecture-ocd-shiftcare-service-20261006-185221/ocd-shiftcare-service.html",
+        "sha256": "a7e7da78e78f0ee9b737e9ba5e2341f0180f381cc34362444ff2d16fb6a573ed",
+        "bytes": 790154
+      },
+      "nodeCount": 19,
+      "relationshipCount": 20,
+      "automatedValidation": {
+        "checksPassed": 9,
+        "checkCount": 9,
+        "compositionProfile": "showcase",
+        "compositionStatus": "pass",
+        "errors": 0,
+        "warnings": 0
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "compositionMetrics": {
+        "properCrossings": 0,
+        "resolvedCrossovers": 0,
+        "ambiguousCorridors": 0,
+        "arrowheadCollisions": 0,
+        "containerBorderRuns": 0,
+        "labelRouteClearanceIssues": 0,
+        "labelCanvasOverflowIssues": 0,
+        "minLabelRouteClearance": 20,
+        "desktopReadabilityIssues": 0,
+        "viewportHeightIssues": 0,
+        "minProjectedNodeTextPx": 6.073469387755102,
+        "maxBends": 2,
+        "routesOverSuggestedBends": 0,
+        "maxStretch": 1,
+        "routesOverSuggestedStretch": 0,
+        "minSegmentPx": 24,
+        "minInteriorSegmentPx": 193,
+        "shortSegmentCount": 0,
+        "shortEndpointSegmentCount": 0,
+        "shortInteriorSegmentCount": 0,
+        "microSegmentCount": 0
+      },
+      "receipts": {
+        "finalize": ".archify/architecture-ocd-shiftcare-service-20261006-185221/ocd-shiftcare-service.finalize.json",
+        "summary": ".archify/architecture-ocd-shiftcare-service-20261006-185221/ocd-shiftcare-service.finalize-summary.json",
+        "browser": ".archify/architecture-ocd-shiftcare-service-20261006-185221/ocd-shiftcare-service.browser-check.json",
+        "visualCapture": ".archify/architecture-ocd-shiftcare-service-20261006-185221/visual-check/ocd-shiftcare-service.visual-check.json"
+      },
+      "browser": {
+        "status": "pass",
+        "provenance": "current",
+        "containment": "pass",
+        "themeStates": "pass",
+        "viewports": [
+          {
+            "width": 1440,
+            "height": 900,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 1600,
+            "height": 1000,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 2048,
+            "height": 1320,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          }
+        ]
+      },
+      "visualCapture": {
+        "status": "pass",
+        "automatedReceiptVisualReview": "pending",
+        "note": "The tool captures evidence but does not perform perceptual review. Review below records the actual inspected screenshots."
+      },
+      "perceptualReview": {
+        "status": "pass",
+        "reviewer": "Codex image inspection",
+        "inspectedScreenshots": [
+          {
+            "path": ".archify/architecture-ocd-shiftcare-service-20261006-185221/visual-check/ocd-shiftcare-service.visual-check.1440x900.light.png",
+            "sha256": "1b72d063bf2e626bc993e2a2823ca4eb4946a84aa5385660b127b35f3b259375",
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "theme": "light"
+          },
+          {
+            "path": ".archify/architecture-ocd-shiftcare-service-20261006-185221/visual-check/ocd-shiftcare-service.visual-check.2048x1320.dark.png",
+            "sha256": "a181137fb51322bab094d2fb1527707b66322f385e69f802b7233c092d9d429d",
+            "viewport": {
+              "width": 2048,
+              "height": 1320
+            },
+            "theme": "dark"
+          }
+        ],
+        "observations": [
+          "The three-day native reminder precedes reply matching; yes, cancellation and change/cover have separate branches.",
+          "Cancellation needs reason/charge/scope approval and remote verification. Cover requires native worker acceptance and current-assignment verification.",
+          "Ambiguous replies, no candidate, decline/time-out and stale/blocked outcomes retain visible office/bookkeeper handoffs."
+        ],
+        "readerNotes": "Use vertical scrolling to reach lower steps at smaller viewports; zoom and node details support reading compact labels."
+      },
+      "layoutFallback": {
+        "originalSpecification": ".archify/workflow-ocd-shiftcare-service-20261006-185221/candidate.json",
+        "sha256": "49e0ece9967f1016b23a3dcae2496ec922f2d3a539b036568bd70590e699eb59",
+        "originalRenderer": "workflow lanes",
+        "deliveredRenderer": "architecture fixed positions",
+        "originalNodeIdsLabelsAndSublabelsPreserved": true,
+        "originalRelationshipIdsEndpointsAndLabelsPreserved": true,
+        "originalDraftStatus": "failed rendering gates; retained for traceability, not delivered as validated output"
+      }
+    },
+    {
+      "name": "Visit review, invoicing and payroll",
+      "diagramType": "architecture",
+      "role": "process-flowchart rendered with fixed-position architecture layout",
+      "specification": {
+        "path": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/candidate.json",
+        "sha256": "c73dcc8c4ae2b14083e555f140b256e4da913f8080ac5f0c2fd363a33dcfb59f"
+      },
+      "artifact": {
+        "path": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/ocd-shiftcare-finance.html",
+        "sha256": "a73621cc27ac59fd0e53e6dad1c057bb8a13c78abc1a534a2a584d040ee1e5ad",
+        "bytes": 776683
+      },
+      "nodeCount": 14,
+      "relationshipCount": 13,
+      "automatedValidation": {
+        "checksPassed": 9,
+        "checkCount": 9,
+        "compositionProfile": "showcase",
+        "compositionStatus": "pass",
+        "errors": 0,
+        "warnings": 0
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "compositionMetrics": {
+        "properCrossings": 0,
+        "resolvedCrossovers": 0,
+        "ambiguousCorridors": 0,
+        "arrowheadCollisions": 0,
+        "containerBorderRuns": 0,
+        "labelRouteClearanceIssues": 0,
+        "labelCanvasOverflowIssues": 0,
+        "minLabelRouteClearance": 17.2,
+        "desktopReadabilityIssues": 0,
+        "viewportHeightIssues": 0,
+        "minProjectedNodeTextPx": 8,
+        "maxBends": 2,
+        "routesOverSuggestedBends": 0,
+        "maxStretch": 1.074,
+        "routesOverSuggestedStretch": 0,
+        "minSegmentPx": 24,
+        "minInteriorSegmentPx": 186,
+        "shortSegmentCount": 0,
+        "shortEndpointSegmentCount": 0,
+        "shortInteriorSegmentCount": 0,
+        "microSegmentCount": 0
+      },
+      "receipts": {
+        "finalize": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/ocd-shiftcare-finance.finalize.json",
+        "summary": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/ocd-shiftcare-finance.finalize-summary.json",
+        "browser": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/ocd-shiftcare-finance.browser-check.json",
+        "visualCapture": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/visual-check/ocd-shiftcare-finance.visual-check.json"
+      },
+      "browser": {
+        "status": "pass",
+        "provenance": "current",
+        "containment": "pass",
+        "themeStates": "pass",
+        "viewports": [
+          {
+            "width": 1440,
+            "height": 900,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 1600,
+            "height": 1000,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "overflowDisposition": "readable-vertical-scroll",
+            "readabilityOk": true
+          },
+          {
+            "width": 2048,
+            "height": 1320,
+            "overflowDisposition": "contained",
+            "readabilityOk": true
+          }
+        ]
+      },
+      "visualCapture": {
+        "status": "pass",
+        "automatedReceiptVisualReview": "pending",
+        "note": "The tool captures evidence but does not perform perceptual review. Review below records the actual inspected screenshots."
+      },
+      "perceptualReview": {
+        "status": "pass",
+        "reviewer": "Codex image inspection",
+        "inspectedScreenshots": [
+          {
+            "path": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/visual-check/ocd-shiftcare-finance.visual-check.1440x900.light.png",
+            "sha256": "45a43ba6ba1f1a860b2efb6cc66a81aa643ec94a2b1974262a31e699178a51ec",
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "theme": "light"
+          },
+          {
+            "path": ".archify/architecture-ocd-shiftcare-finance-20261006-185221/visual-check/ocd-shiftcare-finance.visual-check.2048x1320.dark.png",
+            "sha256": "6dd237057a9f292492aea9c5bf9d9a56ee70e1e9b8950401904472c2241f8cce",
+            "viewport": {
+              "width": 2048,
+              "height": 1320
+            },
+            "theme": "dark"
+          }
+        ],
+        "observations": [
+          "Native visit entry flows into the authoritative ShiftCare record. Tuesday/fortnight cut-offs and complete permitted reads precede exception preparation.",
+          "Private/major issues route to the office; financial checks and approvals remain with the bookkeeper/native tools.",
+          "The current export/Xero path and human pay release remain. Partial data and export mismatch route to manual review without duplicate export."
+        ],
+        "readerNotes": "Use vertical scrolling to reach lower steps at smaller viewports; zoom and node details support reading compact labels."
+      },
+      "layoutFallback": {
+        "originalSpecification": ".archify/workflow-ocd-shiftcare-finance-20261006-185221/candidate.json",
+        "sha256": "6bd4a177f23b9368c11dbc15791d7506289d33dfb8c3bc5b2541cf041e926c87",
+        "originalRenderer": "workflow lanes",
+        "deliveredRenderer": "architecture fixed positions",
+        "originalNodeIdsLabelsAndSublabelsPreserved": true,
+        "originalRelationshipIdsEndpointsAndLabelsPreserved": true,
+        "originalDraftStatus": "failed rendering gates; retained for traceability, not delivered as validated output"
+      }
+    }
+  ],
+  "summary": {
+    "deliveredDiagrams": 4,
+    "showcaseChecksPassedPerDiagram": 9,
+    "showcaseCheckCountPerDiagram": 9,
+    "errors": 0,
+    "warnings": 0,
+    "artifactAndBrowserGates": "pass",
+    "visualCaptureGates": "pass",
+    "perceptualReview": "pass for the two recorded captures per diagram (eight images)",
+    "originalProcessGraphsPreserved": true,
+    "noApplicationOrAccountMutation": "This review changed documentation and diagram artifacts; it did not deploy app changes or mutate ShiftCare records."
+  }
+}

@@ -4,7 +4,8 @@
   "scripts": {
     "start": "node server.cjs",
     "build": "node scripts/build-vercel.cjs",
-    "test": "node --test"
+    "test": "node --test",
+    "verify:prototype": "node scripts/prototype-browser-check.mjs"
   },
   "dependencies": {
     "@upstash/redis": "^1.35.6",

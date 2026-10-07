@@ -1,5 +1,6 @@
 .vercel
 .env*
+!.env.example
 dist/
 .local/
 node_modules/
