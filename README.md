@@ -2,7 +2,7 @@
 
 The application at `/` covers the complete presentation flow across office, worker, client, and public workspaces:
 
-- office overview, automation cases and source inbox, bookkeeping review, work queue, calendar, enquiries, participants, staff, agreements, schedules, visit records, booking map, routes, and fee review;
+- office overview, automation cases and source inbox, bookkeeping review, work queue, calendar, enquiries, discovery-call transcript summaries, participants, staff, agreements, schedules, visit records, booking map, routes, and fee review;
 - selectable worker visits, calendar, availability, sample native time in/out, notes/tasks/goals, cover responses, recorded hours and document follow-up;
 - client bookings, requests, arrival status, shared documents, and permitted profile updates;
 - public service-area checking, intake requests, and discovery call booking;
@@ -44,6 +44,8 @@ Open **Office → Integration proof** (`/#/office/verification`). The connected 
 After exact user approval, one standalone administrative action (**11221**) was created in the connected trial account and independently read back with all approved fields matching. The action remains Open; the dashboard shows verified creation. No roster or financial operation was performed.
 
 The local evidence files are ignored and office-authenticated. This feature needs shared evidence/job storage before hosted runs can persist; the private capture is not uploaded in a static deployment. See the linked demonstration runbook for the actual verified scope and workflow coverage.
+
+Discovery-call transcripts and their draft summaries stay in the browser-only presentation data. The prototype uses a local extractive summary and requires a named staff review; it does not send transcript content to an external AI service.
 
 ## Run locally
 

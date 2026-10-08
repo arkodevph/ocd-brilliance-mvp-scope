@@ -21,6 +21,7 @@ async function build() {
   await fs.copyFile(path.join(root, "workspace/maps.css"), path.join(output, "workspace/maps.css"));
   await fs.copyFile(path.join(root, "workspace/pwa.js"), path.join(output, "workspace/pwa.js"));
   await fs.copyFile(path.join(root, "workspace/pwa.css"), path.join(output, "workspace/pwa.css"));
+  await fs.copyFile(path.join(root, "workspace/transcript.js"), path.join(output, "workspace/transcript.js"));
   await fs.copyFile(path.join(root, "workspace/styles.css"), path.join(output, "workspace/styles.css"));
   await fs.copyFile(path.join(root, "workspace/manifest.webmanifest"), path.join(output, "workspace/manifest.webmanifest"));
   await fs.copyFile(path.join(root, "workspace/sw.js"), path.join(output, "sw.js"));
