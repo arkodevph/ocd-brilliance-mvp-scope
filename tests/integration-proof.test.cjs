@@ -96,11 +96,46 @@ test('native proof requires a separate matching get_action_item read and authent
   assert.equal(sanitizeCapture(c).proof.status, 'awaiting_approval');
 });
 
+test('bounded evidence and mismatched receipt counts cannot certify complete source pages', () => {
+  const c = capture();
+  c.data.shifts = Array.from({ length: 201 }, (_, i) => ({ ...c.data.shifts[0], id: String(1000 + i) }));
+  c.data.notes = Array.from({ length: 201 }, (_, i) => ({ id: String(i + 1), shiftId: String(1000 + i) }));
+  for (const r of c.receipts) r.count = r.total = 201;
+  const clean = sanitizeCapture(c);
+  assert.equal(clean.data.shifts.length, 200);
+  assert.ok(clean.receipts.every(r => !r.complete));
+  assert.equal(analyse(clean).complete, false);
+  assert.ok(!analyse(clean).findings.some(f => f.code === 'NOTE_SCOPE'));
+  assert.ok(clean.gaps.some(g => /200/.test(g)));
+  assert.ok(sanitizeCapture(clean).receipts.every(r => !r.complete));
+
+  const mismatch = capture(); mismatch.receipts[1].count = mismatch.receipts[1].total = 2;
+  assert.ok(!analyse(mismatch).findings.some(f => f.code === 'NOTE_SCOPE'));
+});
+
+test('proof preserves the approved priority rather than replacing it with a default', () => {
+  const c = capture(); c.proof.proposal.args.priority = 'high'; verified(c);
+  const clean = sanitizeCapture(c);
+  assert.equal(clean.proof.proposal.args.priority, 'high');
+  assert.equal(clean.proof.status, 'verified');
+  c.proof.readback.priority = 'low';
+  assert.equal(sanitizeCapture(c).proof.status, 'awaiting_approval');
+});
+
+test('source identity includes the capture time and account time zone', () => {
+  const c = capture(), original = analyse(c).sourceHash;
+  c.account.timeZone = 'Australia/Perth'; assert.notEqual(analyse(c).sourceHash, original);
+  c.account.timeZone = 'Australia/Sydney'; c.capturedAt = '2026-10-08T06:00:00Z';
+  assert.notEqual(analyse(c).sourceHash, original);
+});
+
 test('concurrent identical runs reuse one private persisted review across reloads', async t => {
   const dir = await directory(t), env = { WORKFLOW_DATA_DIR: dir, SHIFTCARE_ACCOUNT_ID: '12345' };
   const store = createProofStore({ env, fetchImpl: () => { throw new Error('No native call expected'); } });
   const [a, b] = await Promise.all([store.run({ source: 'mcp' }), store.run({ source: 'mcp' })]);
-  assert.equal(a.run.id, b.run.id); assert.equal(a.reused, false); assert.equal(b.reused, true);
+  assert.equal(a.run.id, b.run.id);
+  // Concurrent capture reads may finish in either order; exactly one creates the run.
+  assert.deepEqual([a.reused, b.reused].sort(), [false, true]);
   const reloaded = createProofStore({ env });
   assert.equal((await reloaded.status()).runs.length, 1);
   assert.equal((await reloaded.run({ source: 'mcp' })).run.id, a.run.id);
@@ -118,9 +153,24 @@ test('later native read-back updates the original run without duplicate cases', 
   assert.equal((await store.status()).runs.length, 1);
 });
 
+test('invalidated native proof removes saved success on reload and replay', async t => {
+  const dir = await directory(t, verified(capture())), store = createProofStore({ env: { WORKFLOW_DATA_DIR: dir } });
+  const first = await store.run({ source: 'mcp' });
+  assert.equal(first.run.steps.at(-1).state, 'passed');
+  const changed = verified(capture()); changed.proof.readback.description = 'A different native task';
+  await fs.writeFile(path.join(dir, 'shiftcare-evidence.json'), JSON.stringify(changed));
+  const status = await createProofStore({ env: { WORKFLOW_DATA_DIR: dir } }).status();
+  assert.equal(status.capture.proof.status, 'awaiting_approval');
+  assert.notEqual(status.runs[0].steps.at(-1).state, 'passed');
+  const next = await store.run({ source: 'mcp' });
+  assert.equal(next.run.id, first.run.id);
+  assert.notEqual(next.run.steps.at(-1).state, 'passed');
+});
+
 test('wrong account, absent capture and unconfigured hosted storage stop a review', async t => {
   const dir = await directory(t);
   await assert.rejects(createProofStore({ env: { WORKFLOW_DATA_DIR: dir, SHIFTCARE_ACCOUNT_ID: '999' } }).run({ source: 'mcp' }), e => e.code === 'ACCOUNT_MISMATCH');
+  await assert.rejects(createProofStore({ env: { WORKFLOW_DATA_DIR: dir, SHIFTCARE_ACCOUNT_ID: '999' } }).status(), e => e.code === 'ACCOUNT_MISMATCH');
   await assert.rejects(createProofStore({ env: { WORKFLOW_DATA_DIR: dir, VERCEL: '1' } }).run({ source: 'mcp' }), e => e.code === 'PERSISTENCE_REQUIRED');
   await fs.unlink(path.join(dir, 'shiftcare-evidence.json'));
   await assert.rejects(createProofStore({ env: { WORKFLOW_DATA_DIR: dir } }).run({ source: 'mcp' }), e => e.code === 'NO_CAPTURE');
@@ -142,6 +192,36 @@ test('REST evidence is labelled separately, bounded to five pages and never writ
   assert.equal(result.capture.source.method, 'rest'); assert.equal(result.capture.proof.status, 'not_run');
   assert.ok(!JSON.stringify(result).includes('private-api-fixture'));
   assert.ok(!JSON.stringify(result).includes('Private profile name'));
+});
+
+test('REST review survives reload without replacing the separately captured MCP evidence', async t => {
+  const dir = await directory(t), calls = [];
+  const env = { WORKFLOW_DATA_DIR: dir, SHIFTCARE_ACCOUNT_ID: '12345', SHIFTCARE_API_KEY: 'private-api-fixture', SHIFTCARE_TIME_ZONE: 'Australia/Sydney', SHIFTCARE_API_REGION: 'au' };
+  const fetchImpl = async url => {
+    calls.push(url.pathname);
+    const resource = url.pathname.split('/').at(-1);
+    return new Response(JSON.stringify({ [resource]: [], _metadata: { total_count: '0' } }), { headers: { 'Content-Type': 'application/json' } });
+  };
+  const store = createProofStore({ env, fetchImpl });
+  const result = await store.run({ source: 'rest', from: '2026-10-01', to: '2026-10-14' });
+  const reloaded = await createProofStore({ env, fetchImpl }).status();
+  assert.equal(reloaded.capture.source.method, 'rest');
+  assert.equal(reloaded.captureHash, result.run.sourceHash);
+  assert.equal(reloaded.runs[0].id, result.run.id);
+  assert.equal(calls.length, 3, 'Reload must not silently contact ShiftCare.');
+  const mcp = await store.run({ source: 'mcp' });
+  assert.equal(mcp.capture.source.method, 'mcp');
+  assert.equal((await store.status()).capture.source.method, 'mcp');
+  assert.equal(JSON.parse(await fs.readFile(path.join(dir, 'shiftcare-evidence.json'), 'utf8')).source.method, 'mcp');
+});
+
+test('unverified and fixture captures cannot pass as authenticated MCP reads', async t => {
+  const c = capture(); c.source.authenticated = false;
+  const dir = await directory(t, c), store = createProofStore({ env: { WORKFLOW_DATA_DIR: dir } });
+  await assert.rejects(store.run({ source: 'mcp' }), e => e.code === 'UNAUTHENTICATED_EVIDENCE');
+  c.source.authenticated = true; c.source.method = 'fixture';
+  await fs.writeFile(path.join(dir, 'shiftcare-evidence.json'), JSON.stringify(c));
+  await assert.rejects(store.run({ source: 'mcp' }), e => e.code === 'UNAUTHENTICATED_EVIDENCE');
 });
 
 test('private evidence API requires office authentication and origin, and rejects mutations', async t => {

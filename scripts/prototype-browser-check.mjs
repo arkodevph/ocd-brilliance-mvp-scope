@@ -11,10 +11,12 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const liveMap = process.env.PROTOTYPE_MAPBOX_LIVE === '1';
 const integrationProof = process.env.PROTOTYPE_INTEGRATION === '1';
-const output = path.resolve(root, process.env.PROTOTYPE_REVIEW_DIR || (integrationProof ? 'docs/shiftcare-proof-review-2026-10-07' : 'docs/prototype-review-2026-10-07'));
+const clientPresentation = process.env.PROTOTYPE_PRESENTATION === '1';
+const reviewedAt = new Date().toISOString(), reviewDate = reviewedAt.slice(0, 10);
+const output = path.resolve(root, process.env.PROTOTYPE_REVIEW_DIR || `docs/${clientPresentation ? 'client-presentation-review' : integrationProof ? 'shiftcare-proof-review' : liveMap ? 'prototype-mapbox-review' : 'prototype-review'}-${reviewDate}`);
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'ocd-prototype-review-'));
 let nativeCapture;
-if (integrationProof) {
+if (integrationProof || clientPresentation) {
   nativeCapture = JSON.parse(await fs.readFile(path.join(root, '.local/shiftcare-evidence.json'), 'utf8'));
   await fs.mkdir(path.join(temp, 'data'), { recursive: true });
   await fs.writeFile(path.join(temp, 'data', 'shiftcare-evidence.json'), JSON.stringify(nativeCapture), { mode: 0o600 });
@@ -57,7 +59,8 @@ const wait = async (expression, timeout = 6000) => {
   throw new Error(`Expected browser state missing: ${expression}`);
 };
 const click = selector => evaluate(`(() => { const e=document.querySelector(${JSON.stringify(selector)}); if(!e) throw new Error('Missing element: '+${JSON.stringify(selector)}); e.click(); return true; })()`);
-async function route(value) { await evaluate(`location.hash=${JSON.stringify('#/' + value)}`); await wait(`location.hash===${JSON.stringify('#/' + value)} && !!document.querySelector('#main-content')`); await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))'); }
+const input = (selector, value) => evaluate(`(() => { const e=document.querySelector(${JSON.stringify(selector)}); if(!e) throw new Error('Missing input'); e.value=${JSON.stringify(String(value))}; e.dispatchEvent(new Event('input',{bubbles:true})); return true; })()`);
+async function route(value) { await evaluate(`location.hash=${JSON.stringify('#/' + value)}`); await wait(`location.hash===${JSON.stringify('#/' + value)} && !!document.querySelector(${JSON.stringify(value.startsWith('public/') ? '.public-main' : '#main-content')})`); await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))'); }
 async function submit(selector, values) {
   await evaluate(`(() => { const f=document.querySelector(${JSON.stringify(selector)}); if(!f) throw new Error('Missing form'); for(const [k,v] of Object.entries(${JSON.stringify(values)})){ const e=f.elements[k]; if(!e) throw new Error('Missing field: '+k); if(e.type==='checkbox')e.checked=!!v; else e.value=v; } f.requestSubmit(); return true; })()`);
   await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
@@ -95,9 +98,133 @@ try {
     assert.equal((await fetch(origin + '/.local/shiftcare-evidence.json')).status, 404);
     passed('Office evidence access', 'Unsigned API reads were rejected and the private capture was inaccessible as a static file.');
   }
-  await command('Page.navigate', { url: origin + (integrationProof ? '/#/office/verification' : '/#/office/automation') }); await wait("!!document.querySelector('#staff-login')");
+  await command('Page.navigate', { url: origin + (clientPresentation ? '/#/office/presentation' : integrationProof ? '/#/office/verification' : '/#/office/automation') }); await wait("!!document.querySelector('#staff-login')");
   await submit('#staff-login', { email, password }); await wait("!!document.querySelector('.sidebar')");
-  if (integrationProof) {
+  if (clientPresentation) {
+    await wait("!!document.querySelector('#client-presentation')");
+    assert.equal(await evaluate("document.querySelectorAll('.cp-tabs a').length"), 5);
+    assert.match(await evaluate("document.querySelector('.cp-counts').innerText"), /7[\s\S]*14/);
+    assert.match(await evaluate("document.querySelector('.cp-system-grid').innerText"), /Source of truth/);
+    await capture('client-overview-desktop');
+    await route('office/presentation/use-cases');
+    assert.equal(await evaluate("document.querySelectorAll('.cp-use-card').length"), 7);
+    assert.match(await evaluate("document.querySelector('[data-client-content]').innerText"), /What we handle/i);
+    assert.match(await evaluate("document.querySelector('[data-client-content]').innerText"), /How to measure it/i);
+    await capture('client-use-cases-desktop');
+    passed('Business scope and practical benefits', 'Five presentation sections show seven core areas, thirteen operational workflows plus booking/arrival W14, specific triggers, staff/native responsibilities and measures.');
+
+    await click('[data-client-scenario="onboarding"]'); await wait("!!document.querySelector('.cp-demo-stage')");
+    const beforeGuide = await evaluate("localStorage.getItem('ocd-brilliance-operations-v1')");
+    await click('[data-client-action="next"]');
+    assert.match(await evaluate("document.querySelector('.cp-step-content').innerText"), /pre-filled sample fields/);
+    assert.equal(await evaluate("localStorage.getItem('ocd-brilliance-operations-v1')"), beforeGuide);
+    await click('[data-client-action="prepare"]');
+    const prepared = await stored('s.automation.jobs.length');
+    assert.ok(prepared > 0);
+    await click('[data-client-action="prepare"]'); assert.equal(await stored('s.automation.jobs.length'), prepared);
+    const intakeId = await job('participant');
+    assert.equal(await evaluate("document.querySelector('.cp-demo-open a').getAttribute('href')"), `#/office/automation/${intakeId}`);
+    assert.match(await evaluate("document.querySelector('[data-client-preparation]').innerText"), /0 new sample cases[\s\S]*No native ShiftCare changes/);
+    await capture('client-intake-guide-desktop');
+    await click('.cp-demo-open a'); await wait("!!document.querySelector('.automation-case-detail')");
+    assert.equal(await evaluate('location.hash'), `#/office/automation/${intakeId}`);
+    assert.match(await evaluate("document.querySelector('.automation-case-detail').innerText"), /Ava/);
+    await route('office/presentation/walkthrough');
+    await click('[data-client-scenario="cover"]');
+    assert.match(await evaluate("document.querySelector('.cp-demo-stage').innerText"), /worker.*acceptance/i);
+    assert.equal(await evaluate("document.querySelector('.cp-demo-open a').getAttribute('href')"), `#/office/automation/${await job('cover')}`);
+    await route('office/presentation/overview'); await click('[data-client-scenario="onboarding"]');
+    await wait("document.querySelector('.cp-step-content')?.innerText.includes('Receive and assign')");
+    assert.equal(await evaluate("document.querySelector('.cp-demo-open a').getAttribute('href')"), `#/office/automation/${intakeId}`);
+    passed('Guided sample and working case links', 'Guide navigation changes no operational state. Preparation deduplicates fictional sources, preserves history, and links intake and cover to the actual interactive cases.');
+
+    await click('[data-client-action="presentation"]');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.sidebar')).display"), 'none');
+    await route('office/presentation/value');
+    assert.equal(await evaluate("document.body.classList.contains('client-presentation-mode')"), true);
+    await evaluate("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))");
+    assert.equal(await evaluate("document.body.classList.contains('client-presentation-mode')"), false);
+    await click('[data-client-action="presentation"]');
+    await route('office/automation');
+    assert.equal(await evaluate("document.body.classList.contains('client-presentation-mode')"), false);
+    assert.notEqual(await evaluate("getComputedStyle(document.querySelector('.sidebar')).display"), 'none');
+    await route('office/presentation/value'); await click('[data-client-action="presentation"]');
+    passed('Presentation mode and operational navigation', 'Presentation mode hides navigation, persists between its sections, exits with Escape, and always restores the operational shell on another route.');
+
+    assert.match(await evaluate("document.querySelector('[data-client-estimate]').innerText"), /Not calculated/);
+    assert.equal(await evaluate("document.querySelectorAll('.cp-score input').length"), 12);
+    assert.equal(await evaluate("[...document.querySelectorAll('.cp-score input')].every(e=>e.value==='')"), true);
+    await click('[data-client-action="illustrate"]');
+    assert.match(await evaluate("document.querySelector('[data-client-estimate]').innerText"), /8[\s\S]*staff hours[\s\S]*\$280/);
+    assert.match(await evaluate("document.querySelector('.cp-section-line .cp-tag').innerText"), /Illustrative example/);
+    await input('#client-value-form [name=assistedMinutes]', 25);
+    assert.match(await evaluate("document.querySelector('[data-client-estimate]').innerText"), /ADDITIONAL EFFORT[\s\S]*3\.33[\s\S]*-\$116\.67/);
+    assert.match(await evaluate("document.querySelector('.cp-section-line .cp-tag').innerText"), /Assumptions/);
+    await click('[data-client-action="clear-estimate"]');
+    assert.match(await evaluate("document.querySelector('[data-client-estimate]').innerText"), /Not calculated/);
+    for (const [field, value] of Object.entries({ volume: 0, manualMinutes: 20, assistedMinutes: 8 })) await input(`#client-value-form [name=${field}]`, value);
+    assert.match(await evaluate("document.querySelector('[data-client-estimate]').innerText"), /0[\s\S]*staff hours/);
+    await input('#client-value-form [name=volume]', '');
+    assert.match(await evaluate("document.querySelector('[data-client-estimate]').innerText"), /Not calculated/);
+    await click('[data-client-action="illustrate"]');
+    await input('[data-client-period=baselinePeriod]', 'Illustrative baseline: 40 cases');
+    await input('[data-client-period=pilotPeriod]', 'Illustrative pilot: 40 cases');
+    await input('[data-client-metric=intake][data-client-observation=baseline]', 20);
+    await input('[data-client-metric=intake][data-client-observation=pilot]', 8);
+    await input('[data-client-metric=cover][data-client-observation=baseline]', 50);
+    await input('[data-client-metric=cover][data-client-observation=pilot]', 80);
+    assert.match(await evaluate("document.querySelector('[data-client-change=intake]').innerText"), /-12[\s\S]*Favourable/);
+    assert.match(await evaluate("document.querySelector('[data-client-change=cover]').innerText"), /\+30[\s\S]*Favourable/);
+    await capture('client-value-desktop');
+    passed('Capacity assumptions and pilot scorecard', 'The calculator starts unknown, keeps blanks distinct from zero, labels examples, exposes additional effort, and compares effort and cover in their correct favourable directions.');
+
+    await route('office/presentation/pilot');
+    await wait("!!document.querySelector('.cp-proof-summary')");
+    assert.match(await evaluate("document.querySelector('.cp-proof-summary').innerText"), /11 read receipts[\s\S]*3 visible shifts/);
+    assert.match(await evaluate("document.querySelector('.cp-proof-summary').innerText"), /No saved run selected/);
+    assert.match(await evaluate("document.querySelector('.cp-proof-summary').innerText"), /One follow-up checked[\s\S]*11221[\s\S]*Current completion is not polled/);
+    await route('office/verification'); await wait("!!document.querySelector('[data-proof=run-mcp]') && !document.querySelector('[data-proof=run-mcp]').disabled");
+    await click('[data-proof=run-mcp]'); await wait("!!document.querySelector('.proof-findings article') && !document.querySelector('[data-proof=run-mcp]').disabled");
+    await route('office/presentation/pilot'); await wait("document.querySelector('.cp-proof-summary')?.innerText.includes('6 review signals')");
+    await capture('client-pilot-proof-desktop');
+    assert.equal(await evaluate(`JSON.stringify(localStorage).includes(${JSON.stringify(nativeCapture.data.shifts[0].id)})`), false);
+    passed('Dated native evidence and matching check run', 'The presentation shows actual saved authenticated read counts and one independently checked trial task. Only the matching local check run contributes six review signals; native IDs are not stored in browser localStorage.');
+
+    await route('office/presentation/value');
+    await evaluate("(() => { const original=URL.createObjectURL.bind(URL); URL.createObjectURL=blob=>{window.__clientReportBlob=blob;return original(blob)}; const click=HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click=function(){ if(this.download) window.__clientDownload=this.download; else click.call(this); }; })()");
+    await click('[data-client-action="report"]');
+    const report = await evaluate('window.__clientReportBlob.text()');
+    assert.match(await evaluate('window.__clientDownload'), /^OCD_Client_Automation_Report_.*\.md$/);
+    assert.match(report, /Illustrative example; not client measurements/);
+    assert.match(report, /8 staff hours per month/);
+    assert.match(report, /One approved administrative follow-up/);
+    assert.match(report, /6 review signals/);
+    for (const privateValue of [password, nativeCapture.data.shifts[0].id, nativeCapture.proof.readback.title, nativeCapture.proof.readback.description]) assert.equal(report.includes(privateValue), false);
+    assert.match(report, /Cover accepted before deadline.*50.*80.*30/);
+    await route('office/presentation/pilot'); await wait("!!document.querySelector('.cp-proof-summary')");
+    await evaluate("window.__clientOriginalFetch=window.fetch;window.fetch=(url,options)=>url==='/api/integration-proof'?Promise.resolve(new Response(JSON.stringify({capture:null,runs:[]}))):window.__clientOriginalFetch(url,options)");
+    await click('[data-client-action="refresh-proof"]'); await wait("!!document.querySelector('.cp-proof-empty')");
+    await click('[data-client-action="report"]');
+    assert.match(await evaluate('window.__clientReportBlob.text()'), /No authenticated account evidence/);
+    assert.doesNotMatch(await evaluate('window.__clientReportBlob.text()'), /One approved administrative follow-up/);
+    await evaluate('window.fetch=window.__clientOriginalFetch');
+    passed('Markdown export and missing-evidence honesty', 'The report includes labelled assumptions, entered observations and dated proof, omits record contents and credentials, and withdraws native proof when account evidence is unavailable.');
+
+    for (const section of ['overview', 'use-cases', 'walkthrough', 'value', 'pilot']) {
+      await route(`office/presentation/${section}`);
+      if (section === 'pilot') await wait("!!document.querySelector('.cp-proof-summary')");
+      await capture(`client-${section}-mobile`, 390, 900);
+    }
+    await route('office/presentation/value'); await capture('client-scorecard-mobile', 390, 900, '.cp-score-wrap');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.cp-score tr')).display"), 'grid');
+    assert.equal(await evaluate("document.querySelector('.cp-score-wrap').scrollWidth <= document.querySelector('.cp-score-wrap').clientWidth"), true);
+    assert.deepEqual(errors, []);
+    assert.equal(requests.some(r => r.host.includes('shiftcare') && !['GET', 'HEAD'].includes(r.method)), false);
+    await route('office/overview');
+    assert.equal(await evaluate("!!document.querySelector('.cp-launch')"), true);
+    assert.equal(await evaluate("!!document.querySelector('.nav-link[href=\"#/office/presentation\"]')"), true);
+    passed('Responsive presentation and runtime boundary', 'Every presentation section and the scorecard were checked at 390px without horizontal page overflow. The office launch link is present; no uncaught exception or native ShiftCare mutation occurred.');
+  } else if (integrationProof) {
     await wait("!!document.querySelector('[data-proof=run-mcp]') && !document.querySelector('[data-proof=run-mcp]').disabled");
     const dashboard = await evaluate("document.querySelector('#integration-proof-dashboard').innerText");
     assert.ok(dashboard.includes(nativeCapture.account.id));
@@ -267,15 +394,55 @@ try {
   await route('worker/map/BKG-501'); await click('[data-map-action="stale"]');
   await route('client/map/BKG-501'); assert.equal(await evaluate("document.querySelector('[data-map-eta]').innerText"), 'Unavailable');
   await capture('stale-arrival-mobile', 390, 900, '[data-map-detail]');
+  await route('client/home');
+  assert.equal(await evaluate("document.querySelector('[data-arrival-time]').textContent"), 'ETA unavailable');
+  await capture('stale-arrival-home-mobile', 390, 900, '[data-arrival-preview]');
   await route('worker/map/BKG-501'); await click('[data-map-action="stop"]');
   assert.equal(await stored("s.journeys['BKG-501'].consent"), false);
-  passed('Consent, privacy and stale arrival', 'Only Worker started a consented estimate. Client had no playback control/route request or other participant bookings; stale ETA was withdrawn and sharing could stop. Mapbox network fallback was used.');
+  passed('Consent, privacy and stale arrival', 'Only Worker started a consented estimate. Client had no playback control/route request or other participant bookings; stale ETA was withdrawn on both the map and home card and sharing could stop. Mapbox network fallback was used.');
 
   await route('office/automation'); await capture('automation-mobile', 390, 900);
   await route(`office/automation/${participant}`); await capture('completed-case-mobile', 390, 900, '.automation-case-detail');
   await command('Page.reload', { ignoreCache: true }); await wait("!!document.querySelector('.sidebar')");
   assert.equal(await jobStatus(participant), 'completed');
   passed('Reload persistence and responsive layout', 'Browser case state and audit persisted after reload; captured desktop/mobile viewports had no horizontal overflow.');
+
+  const sections = {
+    office: ['overview', 'schedule', 'work', 'calendar', 'participants', 'staff', 'enquiries', 'calls', 'agreements', 'visits', 'fees', 'shiftcare', 'automation', 'finance'],
+    worker: ['today', 'calendar', 'availability', 'review'],
+    client: ['home', 'bookings', 'documents', 'intake']
+  };
+  for (const [area, pages] of Object.entries(sections)) {
+    for (const page of pages) {
+      await route(`${area}/${page}`);
+      assert.ok((await evaluate("document.querySelector('#main-content h1')?.textContent || ''")).trim(), `${area}/${page}: expected heading`);
+      assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'), true, `${area}/${page}: mobile overflow`);
+    }
+  }
+  await route('office/overview'); await capture('office-home-mobile', 390, 900);
+  await route('worker/today'); await capture('worker-visits-mobile', 390, 900);
+  await route('client/home'); await capture('participant-home-mobile', 390, 900);
+  await route('client/bookings'); await capture('participant-bookings-mobile', 390, 900);
+  passed('Workspace navigation', 'Twenty-two office, worker and participant sections rendered headings without mobile page overflow; persona selectors remain explicitly a demo rather than separate user permissions.');
+
+  await click('[data-action="sign-out"]'); await wait("!!document.querySelector('#staff-login')");
+  await route('public/intake');
+  await submit('[data-form="area-check"]', { postcode: '6999' });
+  await wait("!!document.querySelector('.area-result.outside')");
+  assert.equal(await evaluate("!!document.querySelector('[data-form=public-intake]')"), false);
+  await submit('[data-form="area-check"]', { postcode: '6027' });
+  await wait("!!document.querySelector('[data-form=public-intake]')");
+  await capture('public-intake-mobile', 390, 900);
+  await submit('[data-form="public-intake"]', { name: 'Browser review requester', email: 'browser.review@example.test', phone: '0400000000', suburb: 'Joondalup', service: 'Domestic assistance', preferredContact: 'Email', support: 'Fictional review request for office follow-up.', consent: true });
+  await wait("document.querySelector('dialog[open]')?.innerText.includes('Your reference is')");
+  await click('[data-action="close-modal"]');
+  await command('Page.navigate', { url: origin + '/#/office/work' }); await wait("!!document.querySelector('#staff-login')");
+  await submit('#staff-login', { email, password }); await wait("!!document.querySelector('#main-content')");
+  assert.equal(await evaluate('location.hash'), '#/office/work');
+  await wait("document.querySelector('#main-content').innerText.includes('Browser review requester')");
+  await capture('server-intake-office-mobile', 390, 900);
+  passed('Public intake to office handoff', 'An unauthenticated requester was gated by postcode, submitted consented fictional details to the isolated server, and appeared in the office queue after a fresh sign-in preserving its route. Capacity and the final ShiftCare handoff remain office decisions.');
+
   assert.deepEqual(errors, []);
   assert.equal(requests.some(r => r.host.includes('shiftcare') && !['GET','HEAD'].includes(r.method)), false);
   passed('Runtime and integration boundary', 'No uncaught browser exception; no live ShiftCare mutation or external financial/message operation.');
@@ -287,7 +454,7 @@ try {
   console.error(error.stack); process.exitCode = 1;
 } finally {
   await fs.mkdir(output, { recursive: true });
-  await fs.writeFile(path.join(output, 'browser-review.json'), JSON.stringify({ schemaVersion: 1, reviewDate: '2026-10-07', status: success ? 'pass' : 'fail', sourceMode: integrationProof ? 'Authenticated MCP capture; isolated local review server' : 'fictional and isolated', checks, captures, uncaughtErrors: errors, visualReview: 'pending image inspection', mapbox: integrationProof ? 'Not exercised in this review.' : liveMap ? 'Real Mapbox Standard browser rendering; fictional coordinates only, no device GPS.' : 'External calls blocked deliberately; fallback, privacy and ETA state verified.', productionLimit: integrationProof ? 'Captured MCP reads and local rules are demonstrated. Website-owned OAuth, live REST credentials, hosted job storage and unattended native writes are not certified.' : 'No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified.' }, null, 2) + '\n');
+  await fs.writeFile(path.join(output, 'browser-review.json'), JSON.stringify({ schemaVersion: 1, reviewDate, reviewedAt, status: success ? 'pass' : 'fail', sourceMode: clientPresentation ? 'Client presentation; fictional operational cases and dated authenticated trial capture; isolated local server' : integrationProof ? 'Authenticated MCP capture; isolated local review server' : 'fictional and isolated', checks, captures, uncaughtErrors: errors, visualReview: 'pending image inspection', mapbox: integrationProof || clientPresentation ? 'Not exercised in this review.' : liveMap ? 'Real Mapbox Standard browser rendering; fictional coordinates only, no device GPS.' : 'External calls blocked deliberately; fallback, privacy and ETA state verified.', productionLimit: clientPresentation ? 'Business benefits are expected or illustrative, not measured client outcomes. Native evidence is historical and separate from sample workflow operations. No new native write, live ingestion, delivery, background automation, real identities or device GPS certified.' : integrationProof ? 'Captured MCP reads and local rules are demonstrated. Website-owned OAuth, live REST credentials, hosted job storage and unattended native writes are not certified.' : 'No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified.' }, null, 2) + '\n');
   chrome.kill(); server.kill();
   for (const waiter of pending.values()) { clearTimeout(waiter.timeout); waiter.reject(new Error('Browser review ended')); } pending.clear();
   await new Promise(resolve => setTimeout(resolve, 150)); await fs.rm(temp, { recursive: true, force: true });

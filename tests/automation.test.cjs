@@ -241,3 +241,12 @@ test('arrival snapshots require consent and current assignment, and withdraw sta
   b.workerId = 'WRK-03'; assert.equal(maps.snapshot(s, b, clock).phase, 'not-started');
   maps.reconcileJourneys(s); assert.equal(s.journeys[b.id], undefined);
 });
+
+test('participant home withdraws stale ETA instead of presenting the schedule as an arrival', () => {
+  const box = { window: {} }; vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/maps.js'), 'utf8'), box);
+  const s = seed(), b = s.bookings.find(b => b.id === 'BKG-501');
+  s.journeys[b.id] = { workerId: b.workerId, date: b.date, start: b.start, consent: true, phase: 'en-route', progress: 0.25, durationSeconds: 960, updatedAt: Date.now() - 120001 };
+  const html = box.window.OCD_MAPS.summary(s, b);
+  assert.match(html, /data-arrival-time>ETA unavailable</);
+  assert.ok(!html.includes(`Scheduled ${b.start}`));
+});

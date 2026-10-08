@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-08",
+  "reviewedAt": "2026-10-08T00:59:41.977Z",
+  "status": "pass",
+  "sourceMode": "Authenticated MCP capture; isolated local review server",
+  "checks": [
+    {
+      "name": "Office evidence access",
+      "status": "pass",
+      "detail": "Unsigned API reads were rejected and the private capture was inaccessible as a static file."
+    },
+    {
+      "name": "Real capture and honest connection status",
+      "status": "pass",
+      "detail": "Dashboard identifies the authenticated capture, account, timestamp and time zone; website REST reads remain disabled without a separate key."
+    },
+    {
+      "name": "Automation over native records",
+      "status": "pass",
+      "detail": "3 real captured shifts produced 6 owned findings with native source IDs; actual attendance was not inferred from scheduled or payroll data."
+    },
+    {
+      "name": "Replay prevention",
+      "status": "pass",
+      "detail": "Repeating the same capture reused the persisted run ID and findings."
+    },
+    {
+      "name": "Traceability into ShiftCare",
+      "status": "pass",
+      "detail": "Native links match the returned URLs, staff and assignment IDs stay separate, and actual call counts/scopes/timestamps are visible."
+    },
+    {
+      "name": "Native proof and data boundaries",
+      "status": "pass",
+      "detail": "Native action 11221 is independently matched and all five stages are recorded. Copy now produces a get_action_item request rather than a duplicate create; no unsupervised write control or native browser persistence exists."
+    },
+    {
+      "name": "Persisted review and responsive runtime",
+      "status": "pass",
+      "detail": "The authenticated review survived reload, desktop/mobile captures had no horizontal page overflow, and the browser made no ShiftCare mutation or uncaught exception."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-overview-desktop.png",
+      "sha256": "7c83803a55dd40cd151346ade98852dd2d1bbe337f927b02fcc08beb0946ecd7",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-findings-desktop.png",
+      "sha256": "6820c47465ec595bf8e874a0a32664cc34c749e9a4ff306c3ee2cc88ffe515da",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-native-records-desktop.png",
+      "sha256": "5fe856b7eabafb3613342fc83a542fdc0c14f2888eb1158a8b77a5a0687771be",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-call-receipts-desktop.png",
+      "sha256": "97492cd3824341d751a458012625c48c62fb91c9c9da94e4478adf0f12306a12",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-native-result-desktop.png",
+      "sha256": "38b506078c2cf53a6637ab1e19d755503b6b40dc40bd94c193005ca094aa2e40",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".proof-verified"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-native-result-mobile.png",
+      "sha256": "261d775934f40277b59b4c174e9e74c578a2bd2c930e48c80f96b21a4de04d0b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".proof-verified"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-native-handoff-mobile.png",
+      "sha256": "a8e4001144836c97cf26835e36291d8ba1e251ed4d4252614af7aa0d85a856ea",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".proof-handoff"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-overview-mobile.png",
+      "sha256": "4e7de75493def09e7b7485ab47827955a3f4692ab720ae1ee131dd17488abc91",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/shiftcare-proof-review-2026-10-08/proof-findings-mobile.png",
+      "sha256": "99c43b948e6a855f5b9b45d169e9d747d1c271fd68870e1e386da8600664c87b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".proof-results"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": {
+    "status": "pass",
+    "reviewedAt": "2026-10-08T01:05:29.760005+00:00",
+    "inspectedCaptures": 9,
+    "observations": [
+      "Inspected all 9 final desktop/mobile captures.",
+      "Capture age, account/time zone, native IDs, six owned findings, retained counts and native links are readable.",
+      "Native task 11221 is labelled with its historical 7 October read-back time; current completion is not polled.",
+      "Wide native tables scroll inside their panels. No horizontal page overflow was measured."
+    ],
+    "limit": "Inspection of recorded desktop/mobile viewports; not a complete device or accessibility certification."
+  },
+  "mapbox": "Not exercised in this review.",
+  "productionLimit": "Captured MCP reads and local rules are demonstrated. Website-owned OAuth, live REST credentials, hosted job storage and unattended native writes are not certified."
+}

@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-08",
+  "reviewedAt": "2026-10-08T02:27:37.397Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Inbox routing and replay",
+      "status": "pass",
+      "detail": "Eight sources created owned cases once; repeated processing preserved ten total cases including two existing operational requests."
+    },
+    {
+      "name": "Intake, unknown outcome and accounting",
+      "status": "pass",
+      "detail": "Missing DOB prevented approval; lost response preserved the proposal; reconciliation and a separate Xero check were required before closure."
+    },
+    {
+      "name": "Employee onboarding",
+      "status": "pass",
+      "detail": "Staff profile read-back and separate payroll reference were required; screening approval was not granted."
+    },
+    {
+      "name": "Returned agreement filing",
+      "status": "pass",
+      "detail": "Signed status followed checked native filing and read-back, without an upload API."
+    },
+    {
+      "name": "Cancellation and recipient delivery",
+      "status": "pass",
+      "detail": "Single occurrence remained unchanged until verification. Failed delivery stayed separate from the write and delivered once after retry."
+    },
+    {
+      "name": "Cross-workspace replacement cover",
+      "status": "pass",
+      "detail": "Office posted and verified a native offer; selected Worker accepted; assignment changed only after office review and read-back."
+    },
+    {
+      "name": "Non-expiring document correction",
+      "status": "pass",
+      "detail": "Explicit evidence and date clearing followed the native review/read-back path."
+    },
+    {
+      "name": "Native care and bookkeeping exceptions",
+      "status": "pass",
+      "detail": "Worker tasks/goals/major flag reached the restricted office review. Missing source scope remained visible; invoice and payroll checks created no financial release."
+    },
+    {
+      "name": "Consent, privacy and stale arrival",
+      "status": "pass",
+      "detail": "Only Worker started a consented estimate. Client had no playback control/route request or other participant bookings; stale ETA was withdrawn on both the map and home card and sharing could stop. Mapbox network fallback was used."
+    },
+    {
+      "name": "Reload persistence and responsive layout",
+      "status": "pass",
+      "detail": "Browser case state and audit persisted after reload; captured desktop/mobile viewports had no horizontal overflow."
+    },
+    {
+      "name": "Workspace navigation",
+      "status": "pass",
+      "detail": "Twenty-two office, worker and participant sections rendered headings without mobile page overflow; persona selectors remain explicitly a demo rather than separate user permissions."
+    },
+    {
+      "name": "Public intake to office handoff",
+      "status": "pass",
+      "detail": "An unauthenticated requester was gated by postcode, submitted consented fictional details to the isolated server, and appeared in the office queue after a fresh sign-in preserving its route. Capacity and the final ShiftCare handoff remain office decisions."
+    },
+    {
+      "name": "Runtime and integration boundary",
+      "status": "pass",
+      "detail": "No uncaught browser exception; no live ShiftCare mutation or external financial/message operation."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/automation-desktop.png",
+      "sha256": "d5cc51d617bc3ddd7f85e946f9c78f8b70a1424c034c855eb218512b82656e3e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/intake-mapping-desktop.png",
+      "sha256": "c5ceeeb198ed5508a23f86edefbe6d0f1c46d9bcdc3a05e31812fcdb9536b3ae",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".automation-next"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/unknown-outcome-desktop.png",
+      "sha256": "a69c28c8a306efb49facc27b2919efaae3231b8bc06c47faadfa9d357be767fb",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".automation-case-detail"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/bookkeeping-desktop.png",
+      "sha256": "60a83e9c62a8053f49d14f63d644a5efbea4a980f05a25ce75039a7e40dfc1d0",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/participant-map-mobile.png",
+      "sha256": "d0bed6add6c4d332579c90b4d1d897cbdb9ab821d0fb796e188645b14fffa21b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/stale-arrival-mobile.png",
+      "sha256": "c44c59f697d61020fd42b2dc29cae39e1e6b8641bfc3f60bcf1410007eab9dd4",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "[data-map-detail]"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/stale-arrival-home-mobile.png",
+      "sha256": "50da1ba0e2683ec470192a3a31921bda39bac61728d03d959ed67532ca3e2630",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "[data-arrival-preview]"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/automation-mobile.png",
+      "sha256": "1189401c33f070eb39e210c4e6fdd8aa3d09e7323963fd3057987315baeb0b07",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/completed-case-mobile.png",
+      "sha256": "1e5f8d76e8744d41c029f3c501d586820de781b44999e81a5c4828f51cd20463",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".automation-case-detail"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/office-home-mobile.png",
+      "sha256": "fb83a072bd90ab03df63e935d97aa3a3ba26e25811cb07d45695eaceb07f0665",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/worker-visits-mobile.png",
+      "sha256": "a03087eee093d69c62f3d74c34148e910048a6c5d6be4e5b2d45265d42048f8c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/participant-home-mobile.png",
+      "sha256": "ee77fcb401f8897569a806763aabd690d9e99f715ff690efa64aeaf465c21cea",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/participant-bookings-mobile.png",
+      "sha256": "92bb849153fb413354016a43add962d7092b61329972d3273f74517bec9cd7e6",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/public-intake-mobile.png",
+      "sha256": "c3b78bc8703ad496dd07c6a7f76915e775213e15ad5d6fd0fc9b7dd1afa8a299",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/client-presentation-regression-2026-10-08/server-intake-office-mobile.png",
+      "sha256": "5ee54e0bf485259ba1866578eb0681d2e7bd9c3a4cb78e8d5130b83193cd6ebb",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": {
+    "status": "pass",
+    "reviewedAt": "2026-10-08T07:55:47.554555+00:00",
+    "inspectedCaptures": 15,
+    "notes": [
+      "Operational workflow screens remain readable.",
+      "Office Home exposes the client walkthrough link.",
+      "Privacy, stale-arrival and manual handoff notices remain visible."
+    ]
+  },
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

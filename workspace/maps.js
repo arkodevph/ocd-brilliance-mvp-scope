@@ -125,7 +125,14 @@
     if (!b) return "";
     const snap = snapshot(state, b);
     const worker = state.workers.find(w => w.id === b.workerId);
-    return `<a class="arrival-preview" href="#/client/map/${esc(b.id)}" data-arrival-preview="${esc(b.id)}"><span class="arrival-preview-icon">${icon("car")}</span><span><small>YOUR NEXT SERVICE · ${dateLabel(b.date)}</small><strong data-arrival-title>${phaseLabel(b, snap)}</strong><span>${b.status === "Needs cover" ? "Office arranging cover" : esc(worker?.name || "Your worker")} · <span data-arrival-time>${snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${esc(b.start)}`}</span></span><small>Simulated arrival · view status and ETA</small></span>${icon("arrow")}</a>`;
+    return `<a class="arrival-preview" href="#/client/map/${esc(b.id)}" data-arrival-preview="${esc(b.id)}"><span class="arrival-preview-icon">${icon("car")}</span><span><small>YOUR NEXT SERVICE · ${dateLabel(b.date)}</small><strong data-arrival-title>${phaseLabel(b, snap)}</strong><span>${b.status === "Needs cover" ? "Office arranging cover" : esc(worker?.name || "Your worker")} · <span data-arrival-time>${esc(arrivalTimeLabel(b, snap))}</span></span><small>Simulated arrival · view status and ETA</small></span>${icon("arrow")}</a>`;
+  }
+
+  function arrivalTimeLabel(b, snap) {
+    if (snap.phase === "stale" || b.status === "Needs cover") return "ETA unavailable";
+    if (b.status === "Cancelled") return "Booking cancelled";
+    if (b.status === "Completed") return "Visit completed";
+    return snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${b.start}`;
   }
 
   function ensureSdk() {
@@ -540,7 +547,7 @@
         if (!b) return;
         const snap = snapshot(ctx.state, b);
         preview.querySelector("[data-arrival-title]").textContent = phaseLabel(b, snap);
-        preview.querySelector("[data-arrival-time]").textContent = snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${b.start}`;
+        preview.querySelector("[data-arrival-time]").textContent = arrivalTimeLabel(b, snap);
       }, 1000);
       active = { destroy: () => clearInterval(timer) };
     }
