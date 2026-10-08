@@ -19,9 +19,11 @@ ShiftCare remains authoritative for participant and worker records, rostering, d
 
 ## Workflow and integration documentation
 
+- [Client presentation, business benefits, practical demo script and pilot reporting guide](docs/OCD_Client_Presentation_and_Pilot_Report.md) — open Office → Client walkthrough for the five-section presentation and downloadable Markdown report
 - [Client needs and 27-item transcript review](docs/OCD_Client_Needs_and_Automation_Requirements.md)
 - [Researched ShiftCare integration and automation design](docs/OCD_ShiftCare_Integration_and_Automation_Design.md), including four interactive Archify diagrams
 - [Prototype build plan, workflow coverage, demonstration walkthrough and remaining gaps](docs/OCD_Prototype_Workflow_Plan_and_Validation.md) — 7 October implementation and validation
+- [Prototype review, corrected defects, client requirement coverage and remaining integrations](docs/OCD_Prototype_Review_2026-10-08.md) — 8 October review; 52 tests and 23 browser scenarios
 - [ShiftCare demonstration, capability research and verification runbook](docs/OCD_ShiftCare_Live_Demo_and_Verification.md) — real MCP capture, dashboard evidence and remaining integration work
 - [Current redacted MCP read receipts and 82-tool inventory](docs/ShiftCare_Demo_Capability_Evidence_2026-10-07.json)
 - [Redacted ShiftCare capability evidence](docs/ShiftCare_Capability_Validation_2026-10-06.json)
@@ -30,6 +32,8 @@ ShiftCare remains authoritative for participant and worker records, rostering, d
 The design distinguishes verified native features, supervised MCP actions, proposed backend automation, and remaining acceptance gates. It is the implementation reference; its implementation inventory records the earlier 6 October build. The prototype validation document records the subsequent interactive workflow implementation. The presentation screens do not establish working ShiftCare writes or live worker tracking.
 
 ## Demonstrate the automation workflow
+
+For a client meeting, start at **Office → Client walkthrough** (`/#/office/presentation`). Explain the business overview, seven core areas / fourteen planned workflows, and a guided intake example linked to the working cases. **Presentation view** hides office navigation; Escape restores it. **Measure value** provides an unfilled baseline/pilot scorecard and clearly labelled capacity assumptions. Download the client report as Markdown. **Pilot & proof** summarizes only the loaded dated evidence and matching saved checks; it never runs native actions. Presentation entries stay in page memory until reload. See the presentation guide above for a 15-minute script and measurement plan.
 
 After office sign-in, open **Office → Automation** (`/#/office/automation`) and **Process received mail**. Review source fields, approve an exact proposal, perform the labelled native demo step, and read back its result before closing. Participant/employee onboarding also needs a separate checked Xero/payroll reference. **Try an interruption** demonstrates unknown outcomes, bounded retries, stale edits and permission failures.
 
@@ -100,11 +104,13 @@ npm run verify:prototype
 
 The tests cover local seeded credentials, postcode-gated intake, staff authentication, ownership, verified ShiftCare handoff, device subscription, opt-out, targeted push delivery, and the ShiftCare read integration. Automation tests cover missing fields, duplicate input/person matching, approval/read-back, accounting checkpoints, worker acceptance, billing scope, stale source/worker/roster changes, unknown outcomes, retries, invalid times, delivery failure and ETA consent/freshness. API tests check credential isolation, authorization, bounded queries, pagination, daylight saving dates, and upstream failure handling. They use local fixtures and temporary data directories and do not contact ShiftCare.
 
-`verify:prototype` requires Chrome at `/usr/bin/google-chrome` or `CHROME_PATH`. It starts an isolated temporary server/browser, exercises the Office/Worker/Client workflows and writes screenshots and a JSON receipt to `docs/prototype-review-2026-10-07` (override with `PROTOTYPE_REVIEW_DIR`). Mapbox calls are deliberately blocked to verify fallback and avoid quota use; this does not test live 3D rendering or GPS. Visual review remains a separate recorded step after screenshot capture.
+`verify:prototype` requires Chrome at `/usr/bin/google-chrome` or `CHROME_PATH`. It starts an isolated temporary server/browser, exercises the Office/Worker/Client workflows and writes screenshots and a JSON receipt to `docs/prototype-review-YYYY-MM-DD` using the current UTC date (override with `PROTOTYPE_REVIEW_DIR`). Mapbox calls are deliberately blocked to verify fallback and avoid quota use; this does not test live 3D rendering or GPS. Visual review remains a separate recorded step after screenshot capture.
 
-For the separate real Mapbox rendering check with fictional coordinates, set `PROTOTYPE_MAPBOX_LIVE=1` and a separate `PROTOTYPE_REVIEW_DIR`. This requires `MAPBOX_PUBLIC_TOKEN` and contacts Mapbox using the normal map quota. The recorded 7 October run loaded Office, Worker and Client 3D views successfully; it does not establish live GPS or a live ShiftCare roster.
+For the separate real Mapbox rendering check with fictional coordinates, set `PROTOTYPE_MAPBOX_LIVE=1`. Its default output is `docs/prototype-mapbox-review-YYYY-MM-DD`; `PROTOTYPE_REVIEW_DIR` can override it. This requires `MAPBOX_PUBLIC_TOKEN` and contacts Mapbox using the normal map quota. The recorded 7 October run loaded Office, Worker and Client 3D views successfully; it does not establish live GPS or a live ShiftCare roster.
 
-For the real-record evidence dashboard check, run `PROTOTYPE_INTEGRATION=1 npm run verify:prototype`. It copies `.local/shiftcare-evidence.json` into an isolated temporary server and checks authentication, source labels, generated findings, replay, native URLs, pending/verified proof and reload persistence. The verified run saved nine screenshots and a review receipt under `docs/shiftcare-proof-review-2026-10-07`. The browser check makes no native write.
+For the real-record evidence dashboard check, run `PROTOTYPE_INTEGRATION=1 npm run verify:prototype`. It copies `.local/shiftcare-evidence.json` into an isolated temporary server and checks authentication, source labels, generated findings, replay, native URLs, pending/verified proof and reload persistence. Its default output is `docs/shiftcare-proof-review-YYYY-MM-DD`. The 8 October review saved nine screenshots using the native capture from 7 October; it did not fetch new native records. The browser check makes no native write.
+
+For the client presentation, run `PROTOTYPE_PRESENTATION=1 npm run verify:prototype` with the saved private trial capture available locally. This checks guided sample preparation, links to working cases, presentation mode, capacity assumptions, scorecard direction, historical proof, missing-evidence handling and the Markdown download. Screenshots and receipts go to `docs/client-presentation-review-YYYY-MM-DD`. It runs only local checks on the existing capture; no new ShiftCare write is made. Unit tests also cover missing/zero/negative capacity inputs, all fourteen workflow IDs and report privacy boundaries.
 
 ## ShiftCare application API
 

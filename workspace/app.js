@@ -164,7 +164,8 @@
       schedule: detail,
       visits: detail,
       today: detail,
-      map: detail
+      map: detail,
+      presentation: { overview: "Business overview", "use-cases": "Use cases", walkthrough: "Guided demo", value: "Measure value", pilot: "Pilot & proof" }[detail]
     };
     const items = [{ label: homeLabel, href: home }];
     if (section !== home.split("/")[1]) items.push({ label: sectionLabel, href: `${area}/${section}` });
@@ -197,7 +198,9 @@
   nav.office.splice(3, 0, ["automation", "Automation", "activity"]);
   nav.office.push(["finance", "Bookkeeping", "file"]);
   nav.office.push(["verification", "Integration proof", "shield"]);
+  nav.office.push(["presentation", "Client walkthrough", "overview"]);
   const officeNavGroups = [
+    ["Client demo", ["presentation"]],
     ["Daily work", ["overview", "automation", "schedule", "work", "calendar"]],
     ["People", ["participants", "staff"]],
     ["Records", ["enquiries", "calls", "agreements", "visits", "finance"]],
@@ -253,6 +256,7 @@
     window.OCD_MAPS.unmount();
     window.OCD_SHIFTCARE.unmount();
     window.OCD_INTEGRATION_PROOF.unmount();
+    window.OCD_CLIENT_PRESENTATION.unmount();
     const [area, section, detail] = routeParts();
     const pages = {
       office: { overview: officeOverview, work: officeWorkQueue, enquiries: () => detail ? inspector(enquiriesPage(), enquiryDetail(detail), "office/enquiries", "Enquiries") : enquiriesPage(), calls: callsPage, participants: () => detail ? inspector(participantsPage(), participantDetail(detail), "office/participants", "Participants") : participantsPage(), staff: staffPage, agreements: () => detail ? inspector(agreementsPage(), agreementDetail(detail), "office/agreements", "Agreements") : agreementsPage(), calendar: () => calendarPage("office"), map: () => bookingMap("office", detail), schedule: () => detail ? inspector(schedulePage(), bookingDetail(detail), "office/schedule", "Schedule") : schedulePage(), visits: () => detail ? inspector(visitsPage(), visitDetail(detail), "office/visits", "Visit records") : visitsPage(), fees: feesPage },
@@ -265,6 +269,7 @@
     pages.office.automation = () => window.OCD_AUTOMATION.page(automationContext(), detail);
     pages.office.finance = () => window.OCD_AUTOMATION.finance(automationContext());
     pages.office.verification = () => '<section id="integration-proof-dashboard" aria-live="polite"></section>';
+    pages.office.presentation = () => window.OCD_CLIENT_PRESENTATION.page(automationContext(), detail);
     const actualArea = pages[area] ? area : "office";
     const actualSection = pages[actualArea][section] ? section : (actualArea === "office" ? "overview" : actualArea === "worker" ? "today" : actualArea === "client" ? "home" : "book");
     if (actualArea !== "public" && !sessionEmail) { renderLogin(); document.title = "Sign in · OCD Brilliance"; return; }
@@ -274,6 +279,7 @@
     window.OCD_MAPS.mount(mapContext(actualArea, actualSection === "map" ? detail : ""));
     if (actualArea === "office" && actualSection === "shiftcare") window.OCD_SHIFTCARE.mount(document.getElementById("shiftcare-connection"));
     if (actualArea === "office" && actualSection === "verification") window.OCD_INTEGRATION_PROOF.mount(document.getElementById("integration-proof-dashboard"));
+    if (actualArea === "office" && actualSection === "presentation") window.OCD_CLIENT_PRESENTATION.mount(document.getElementById("client-presentation"), automationContext());
   }
 
   function officeOverview() {
@@ -315,7 +321,7 @@
       const b = booking(v.bookingId);
       return `<li><a href="#/office/visits/${attr(v.id)}"><span><strong>${esc(worker(b?.workerId)?.name || "Unassigned")}</strong><small>${esc(participant(b?.participantId)?.name || "Participant")} · ${esc(dateLabel(b?.date))}</small></span><span class="desk-record-clock">In <b>${esc(v.clockIn || "—")}</b><br>Out <b>${esc(v.clockOut || "—")}</b></span>${icon("arrow")}</a></li>`;
     }).join("");
-    return `${window.OCD_AUTOMATION.banner(automationContext())}<div class="desk-home">
+    return `${window.OCD_CLIENT_PRESENTATION.banner()}${window.OCD_AUTOMATION.banner(automationContext())}<div class="desk-home">
       <header class="desk-intro"><div class="desk-intro-copy"><span class="desk-eyebrow">OFFICE / MONDAY 5 OCTOBER 2026</span><h1>Monday's work, in one view.</h1><p>Check the next office action, then follow each service from schedule to visit record.</p></div><nav class="desk-metrics" aria-label="Office overview totals">${metrics.map(m => `<a href="#/${m.href}"><strong>${m.value}</strong><span>${esc(m.label)}</span></a>`).join("")}</nav></header>
       <div class="desk-home-grid"><section class="desk-card desk-services" aria-labelledby="desk-services-title"><header class="desk-card-head"><div><span class="desk-eyebrow">TODAY'S PLAN · AUSTRALIA/PERTH</span><h2 id="desk-services-title">Services &amp; clock times</h2><p>Open a visit to see its assignment and details.</p></div><a class="desk-circle-link" href="#/office/schedule" aria-label="Open full schedule">${icon("arrow")}</a></header><ol class="desk-visit-list">${serviceRows || `<li class="desk-empty">No services scheduled for Monday. <a href="#/office/schedule">Open schedule</a></li>`}</ol><div class="desk-card-footer"><span>Times appear after the worker records them.</span><a href="#/office/schedule">Full schedule ${icon("arrow")}</a></div></section>
       <section class="desk-card desk-actions" aria-labelledby="desk-actions-title"><header class="desk-card-head"><div><span class="desk-eyebrow">OFFICE DECISIONS</span><h2 id="desk-actions-title">Handle next</h2><p>${priorities.length} item${priorities.length === 1 ? "" : "s"} waiting across the demo.</p></div><a class="desk-circle-link" href="#/office/work" aria-label="Open work queue">${icon("arrow")}</a></header><ol class="desk-action-list">${actionRows || `<li class="desk-empty">Nothing needs an office decision right now.</li>`}</ol><div class="desk-card-footer"><span>Showing the first ${Math.min(priorities.length, 3)}</span><a href="#/office/work">All work ${icon("arrow")}</a></div></section>
@@ -602,7 +608,7 @@
   function clientBookings() {
     const p = participant(ui.clientId);
     const rows = state.bookings.filter(b => b.participantId === p.id && b.status !== "Proposed").sort((a, b) => `${b.date}${b.start}`.localeCompare(`${a.date}${a.start}`));
-    return `${pageHeader("Client portal / Bookings", ui.clientId === "PAR-103" ? "Farah's bookings" : "My bookings", "See confirmed services and send change requests to the office.", `<a class="btn" href="#/client/map">${icon("clock")} Arrival status</a>`)}<div class="notice" style="margin-bottom:17px">${icon("shield")} Sending a request does not change a confirmed booking. The office will contact you about the outcome.</div><section class="panel"><h2>Service schedule</h2><div class="spacer"></div>${rows.map(b => `<div class="visit-row"><span class="date-badge"><strong>${dateObj(b.date).getUTCDate()}</strong><small>${dateLabel(b.date, { weekday: "short" })}</small></span><span class="body"><strong>${esc(b.service)}</strong><small>${dateLabel(b.date)} · ${b.start}–${b.end} · ${esc(worker(b.workerId)?.name)}</small></span>${pill(b.status)}${b.status === "Confirmed" ? `<a class="btn small" href="#/client/map/${attr(b.id)}">View arrival status</a>` : ""}${["Confirmed", "Needs cover"].includes(b.status) ? `<button class="btn small" data-action="request-change" data-id="${attr(b.id)}" type="button">Request change</button>` : ""}</div>`).join("") || empty("No bookings", "Confirmed bookings will appear here.")}</section>`;
+    return `${pageHeader("Client portal / Bookings", ui.clientId === "PAR-103" ? "Farah's bookings" : "My bookings", "See confirmed services and send change requests to the office.", `<a class="btn" href="#/client/map">${icon("clock")} Arrival status</a>`)}<div class="notice" style="margin-bottom:17px">${icon("shield")} Sending a request does not change a confirmed booking. The office will contact you about the outcome.</div><section class="panel"><h2>Service schedule</h2><div class="spacer"></div>${rows.map(b => `<div class="visit-row client-booking-row"><span class="date-badge"><strong>${dateObj(b.date).getUTCDate()}</strong><small>${dateLabel(b.date, { weekday: "short" })}</small></span><span class="body"><strong>${esc(b.service)}</strong><small>${dateLabel(b.date)} · ${b.start}–${b.end} · ${esc(worker(b.workerId)?.name)}</small></span><span class="booking-actions">${pill(b.status)}${b.status === "Confirmed" ? `<a class="btn small" href="#/client/map/${attr(b.id)}">View arrival status</a>` : ""}${["Confirmed", "Needs cover"].includes(b.status) ? `<button class="btn small" data-action="request-change" data-id="${attr(b.id)}" type="button">Request change</button>` : ""}</span></div>`).join("") || empty("No bookings", "Confirmed bookings will appear here.")}</section>`;
   }
 
   function clientArrival(bookingId) {

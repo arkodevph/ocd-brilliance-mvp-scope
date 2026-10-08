@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-08",
+  "reviewedAt": "2026-10-08T00:59:41.973Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "office live Mapbox rendering",
+      "status": "pass",
+      "detail": "Real Mapbox Standard loaded in a WebGL browser using fictional service coordinates; no device GPS or ShiftCare mutation."
+    },
+    {
+      "name": "worker live Mapbox rendering",
+      "status": "pass",
+      "detail": "Real Mapbox Standard loaded in a WebGL browser using fictional service coordinates; no device GPS or ShiftCare mutation."
+    },
+    {
+      "name": "client live Mapbox rendering",
+      "status": "pass",
+      "detail": "Real Mapbox Standard loaded in a WebGL browser using fictional service coordinates; no device GPS or ShiftCare mutation."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/prototype-mapbox-review-2026-10-08/office-mapbox-3d.png",
+      "sha256": "d36b350f2e2879ee40e146768fb93b98a5fc03531764149e77d7ed3e2e67c538",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-mapbox-review-2026-10-08/worker-mapbox-3d.png",
+      "sha256": "18c4529b793459fbf5e51d8db0a863205626fe704139f53d96c54ec78662bfd5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/prototype-mapbox-review-2026-10-08/client-mapbox-3d.png",
+      "sha256": "a89ec428853eca2d710601a79a947673430e4cbdc3e3881a1196fc236e28401f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": {
+    "status": "pass",
+    "reviewedAt": "2026-10-08T01:05:29.762732+00:00",
+    "inspectedCaptures": 3,
+    "observations": [
+      "Inspected all 3 final Mapbox captures.",
+      "Office, Worker and Participant maps display real Mapbox Standard rendering with fictional service locations.",
+      "Participant map omits the worker origin/route and has only its own booking.",
+      "This is a rendering review; device GPS and real arrival accuracy were not exercised."
+    ],
+    "limit": "Inspection of recorded desktop/mobile viewports; not a complete device or accessibility certification."
+  },
+  "mapbox": "Real Mapbox Standard browser rendering; fictional coordinates only, no device GPS.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

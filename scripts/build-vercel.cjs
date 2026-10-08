@@ -14,7 +14,7 @@ async function build() {
   await fs.copyFile(path.join(root, "index.html"), path.join(output, "presentation.html"));
   await fs.copyFile(path.join(root, "workspace/app.js"), path.join(output, "workspace/app.js"));
   await fs.copyFile(path.join(root, "workspace/shiftcare.js"), path.join(output, "workspace/shiftcare.js"));
-  for (const file of ["automation-engine.js", "automation.js", "automation.css", "integration-proof.js", "integration-proof.css"]) await fs.copyFile(path.join(root, "workspace", file), path.join(output, "workspace", file));
+  for (const file of ["automation-engine.js", "automation.js", "automation.css", "integration-proof.js", "integration-proof.css", "client-presentation.js", "client-presentation.css"]) await fs.copyFile(path.join(root, "workspace", file), path.join(output, "workspace", file));
   await fs.copyFile(path.join(root, "workspace/data.js"), path.join(output, "workspace/data.js"));
   await fs.writeFile(path.join(output, "workspace/map-config.js"), mapboxConfig());
   await fs.copyFile(path.join(root, "workspace/maps.js"), path.join(output, "workspace/maps.js"));

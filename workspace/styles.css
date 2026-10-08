@@ -536,6 +536,7 @@ td a:hover { text-decoration: underline; }
 .visit-row .body { flex: 1; min-width: 0; }
 .visit-row .body strong { display: block; }
 .visit-row .body small { color: var(--muted); }
+.client-booking-row .booking-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .route-line { display: flex; align-items: center; gap: 14px; margin: 20px 0; }
 .route-stop { flex: 1; padding: 15px; border: 1px solid var(--line); border-radius: 7px; background: #fbfdfb; }
 .route-stop small { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .07em; font-weight: 750; }
@@ -722,6 +723,8 @@ td a:hover { text-decoration: underline; }
 
 @media (max-width: 760px) {
   body:has(.office-shell) { background: #f7f7f3; }
+  .client-booking-row { flex-wrap: wrap; gap: 12px; }
+  .client-booking-row .booking-actions { flex-basis: 100%; }
   .office-shell { width: 100%; min-height: 100vh; margin: 0; overflow: visible; border: 0; border-radius: 0; box-shadow: none; }
   .office-shell .sidebar { display: block; position: fixed; inset: auto 0 0; height: calc(61px + env(safe-area-inset-bottom)); min-height: 0; padding: 0 0 env(safe-area-inset-bottom); background: #fff; border-top: 1px solid var(--line); z-index: 7; }
   .office-shell .topbar { min-height: 62px; padding: 10px 16px; }
