@@ -37,7 +37,7 @@ Keep [[OCD Brilliance — Presentation]] on the main screen. Use this note as yo
 
 ## A clear next action — slide 3 · 1:30–2:15
 
-**Open:** [Work queue](http://127.0.0.1:8001/#/office/work) → **Changes and cover**. If that section is hidden by a filter, choose **All work** first.
+**Open:** [Work queue](http://127.0.0.1:8001/#/office/work) → **Cover & changes**. Choose **All work** to return to the complete queue.
 
 **Point to:** task title, visit information, status text and the action.
 
@@ -47,7 +47,7 @@ Keep [[OCD Brilliance — Presentation]] on the main screen. Use this note as yo
 
 ## Automatic intake checks — slide 4 · 2:15–4:15
 
-**Open:** [Intake](http://127.0.0.1:8001/#/office/intake) → **Paste the request** → **Load sample intake**.
+**Open:** [Intake](http://127.0.0.1:8001/#/office/intake) → **New intake** → **Load sample intake**.
 
 **Do:** wait for the extracted details and checks result. No Extract button is needed: checking runs automatically when the source changes.
 
@@ -61,7 +61,7 @@ Keep [[OCD Brilliance — Presentation]] on the main screen. Use this note as yo
 
 ## Saved request and handoff — slide 5 · 4:15–5:15
 
-**Open:** **Saved intakes**. For a live demo, save the sample once using the draft-saving action beneath the result, then return to Saved intakes. Use the captured slide if the live list is empty.
+**Open:** [Intake](http://127.0.0.1:8001/#/office/intake). For a live demo, save the sample once using the draft-saving action beneath the result, then use **Back to saved intakes**. Use the captured slide if the live list is empty.
 
 **Point to:** person, service, stage, owner and **Review details**.
 
@@ -71,7 +71,7 @@ Keep [[OCD Brilliance — Presentation]] on the main screen. Use this note as yo
 
 ## Staff schedule — slide 6 · 5:15–6:30
 
-**Open:** [Team schedule](http://127.0.0.1:8001/#/office/schedule) → **Roster** → **Demo week**, if necessary.
+**Open:** [Team schedule](http://127.0.0.1:8001/#/office/schedule) → **Roster** → **Week** → **Demo week**, if necessary.
 
 **Point to:** staff rows, day columns, visit status and IN/OUT entries.
 

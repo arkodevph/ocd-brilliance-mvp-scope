@@ -1,0 +1,58 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 483 >>
+stream
+BT
+/F1 14 Tf
+50 790 Td
+22 TL
+(OCD Brilliance - Fictional Intake Sample) Tj
+T*
+(DEMO ONLY - no real participant information) Tj
+T*
+() Tj
+T*
+(Full name: Jordan Sample) Tj
+T*
+(Email: jordan.sample@example.test) Tj
+T*
+(Phone: 0400 000 123) Tj
+T*
+(Service: Domestic assistance) Tj
+T*
+(Suburb: Joondalup) Tj
+T*
+(Postcode: 6027) Tj
+T*
+(Notes: Requests help with household tasks on Monday mornings.) Tj
+T*
+(Confirm availability and consent with the participant before care starts.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+844
+%%EOF

@@ -294,9 +294,9 @@
           this.query("[data-map-fallback]").hidden = true;
           this.query("[data-map-connection]").textContent = "Mapbox · 3D buildings available";
           for (const source of ["booking-route", "booking-travelled"]) this.map.addSource(source, { type: "geojson", data: lineData([]) });
-          this.map.addLayer({ id: "route-casing", type: "line", source: "booking-route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#ffffff", "line-width": 9, "line-opacity": 0.92 } });
-          this.map.addLayer({ id: "route-line", type: "line", source: "booking-route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#08734c", "line-width": 6, "line-emissive-strength": 0.7 } });
-          this.map.addLayer({ id: "travelled-line", type: "line", source: "booking-travelled", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#06492f", "line-width": 6, "line-emissive-strength": 0.7 } });
+          this.map.addLayer({ id: "route-casing", type: "line", source: "booking-route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#ffffff", "line-width": 5, "line-opacity": 0.8 } });
+          this.map.addLayer({ id: "route-line", type: "line", source: "booking-route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#e67842", "line-width": 2.5, "line-dasharray": [2, 2], "line-emissive-strength": 0.7 } });
+          this.map.addLayer({ id: "travelled-line", type: "line", source: "booking-travelled", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#c55d2e", "line-width": 2.5, "line-dasharray": [2, 2], "line-emissive-strength": 0.7 } });
           this.refreshMarkers(); this.drawRoute(); this.fitVisible();
         });
         this.map.on("error", event => {
@@ -338,10 +338,10 @@
         const el = document.createElement("button");
         el.type = "button";
         el.className = `map-service-pin ${group.some(item => item.b.id === this.pref.selected) ? "selected" : ""} ${item.b.status === "Needs cover" ? "cover" : item.b.status === "Cancelled" ? "inactive" : ""}`;
-        el.textContent = group.length > 1 ? String(group.length) : String(item.i + 1);
+        el.innerHTML = `<svg class="map-location-glyph" viewBox="0 0 36 46" aria-hidden="true"><path d="M18 44S3 29 3 18a15 15 0 1 1 30 0c0 11-15 26-15 26Z" fill="currentColor" stroke="white" stroke-width="2"/><circle cx="18" cy="18" r="5" fill="white"/></svg>${group.length > 1 ? `<span class="map-pin-count" aria-hidden="true">${group.length}</span>` : ''}`;
         el.setAttribute("aria-label", `${group.length > 1 ? group.length + " bookings at " : ""}${item.p.suburb}, ${clockLabel(item.b.start)}. Select booking.`);
         el.addEventListener("click", () => this.selectBooking(item.b.id));
-        this.markers.push(new window.mapboxgl.Marker({ element: el, anchor: "center" }).setLngLat(item.coords).addTo(this.map));
+        this.markers.push(new window.mapboxgl.Marker({ element: el, anchor: "bottom" }).setLngLat(item.coords).addTo(this.map));
       });
     }
 

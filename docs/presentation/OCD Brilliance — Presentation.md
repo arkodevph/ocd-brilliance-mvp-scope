@@ -34,7 +34,7 @@ Read the request, understand its status, then take the labelled action.
 
 ![[docs/presentation/Screenshots/02-work-queue.png|1000]]
 
-Work queue → Changes and cover
+Work queue → Cover & changes
 
 %% Slide 3. Speaking notes: [[OCD Brilliance — Presenter Guide]]. %%
 
@@ -46,7 +46,7 @@ Paste a request. Review the extracted fields alongside their source evidence.
 
 ![[docs/presentation/Screenshots/03-intake-automatic-checks.png|1000]]
 
-Intake → Paste the request → Load sample intake
+Intake → New intake → Load sample intake
 
 %% Slide 4. Speaking notes: [[OCD Brilliance — Presenter Guide]]. %%
 
@@ -58,7 +58,7 @@ Saved requests show their stage, owner and next action.
 
 ![[docs/presentation/Screenshots/04-saved-intakes.png|1000]]
 
-Intake → Saved intakes → Review details
+Intake → Review details
 
 %% Slide 5. Speaking notes: [[OCD Brilliance — Presenter Guide]]. %%
 

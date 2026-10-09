@@ -244,3 +244,14 @@
   [data-map-area="office"] .map-booking-section { border-right: 0; border-bottom: 1px solid var(--line); }
   [data-map-area="office"] .map-selected-label { bottom: 40px; }
 }
+
+/* Location tips meet the map coordinate; counts are secondary badges. */
+.map-service-pin,.map-service-pin.selected { width:36px;height:46px;border:0;border-radius:0;background:transparent;color:#25312d;padding:0;box-shadow:none;overflow:visible;cursor:pointer; }
+.map-service-pin.cover { background:transparent;color:#a76d20; }
+.map-service-pin.inactive { background:transparent;color:#7e8984; }
+.map-location-glyph { display:block;width:36px;height:46px;filter:drop-shadow(0 2px 3px #18302830);transform-origin:50% 100%;transition:transform 160ms ease-out; }
+.map-service-pin.selected .map-location-glyph,.map-service-pin:hover .map-location-glyph { transform:scale(1.12); }
+.map-service-pin:focus-visible { outline:2px solid var(--green);outline-offset:4px;border-radius:6px; }
+.map-pin-count { position:absolute;top:-3px;right:-7px;min-width:18px;height:18px;padding:0 4px;border:1px solid #d8dfdb;border-radius:5px;background:white;color:#25312d;font-size:10px;line-height:16px;font-weight:700;box-shadow:0 1px 3px #18302820; }
+.map-worker-pin { width:34px;height:34px;border-radius:9px;background:#25312d;border:2px solid white;box-shadow:0 2px 6px #18302830; }
+@media(prefers-reduced-motion:reduce) { .map-location-glyph { transition:none; } }

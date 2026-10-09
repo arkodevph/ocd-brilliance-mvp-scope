@@ -55,6 +55,25 @@
     for (const source of samples) if (!a.inbox.some(m => m.id === source.id)) { a.inbox.push({ ...clone(source), state: "received", receivedAt: now() }); count++; }
     return count;
   }
+  function pendingExamples(state) {
+    const a = ensure(state);
+    if (a.pendingExamples === 1) return;
+    const fixture = clone(state);
+    fixture.automation.inbox = [];
+    receiveSamples(fixture);
+    for (const example of fixture.automation.inbox) {
+      const source = { ...example, id: `EXAMPLE-${example.id}`, prototypeInput: true, example: true, sender: example.fields?.email || 'office@example.test', label: 'Example message', state: 'received', receivedAt: now() };
+      delete source.jobId;
+      if (!a.inbox.some(m => m.id === source.id)) a.inbox.push(source);
+      if (source.workflow !== 'W02') {
+        const job = create(state, { ...source, source });
+        source.state = 'routed'; source.jobId = job.id;
+      }
+    }
+    const doc = state.workerDocs.find(d => d.id === 'WDC-04');
+    if (doc) create(state, { kind: 'document', workflow: 'W12', title: `Review document — ${doc.name}`, owner: 'HR / admin', targetId: doc.id, source: { id: `EXAMPLE-document:${doc.id}`, label: 'Example document', body: `${doc.name}: expiry ${doc.expires || 'not recorded'}. Check the original document and decide whether renewal or a metadata correction is needed.`, fields: { expires: doc.expires || '', noExpiration: false, note: '' } } });
+    a.pendingExamples = 1;
+  }
   function create(state, input) {
     const a = ensure(state);
     const existing = a.jobs.find(j => j.source.id === input.source.id && j.kind === input.kind);
@@ -409,5 +428,5 @@
     if (!fail && !state.updates.some(u => u.messageId === m.id)) state.updates.unshift({ id: nextId("UPD", state.updates), messageId: m.id, to: m.to, title: m.title, detail: m.detail, href: "client/bookings", date: state.automation.date, read: false });
     return m;
   }
-  return { catalog, ensure, receiveSamples, create, ingest, intake, sync, request, cancellation, cover, document, signedFile, bookingProposal, run, get, approve, native, verify, accounting, workerResponse, manual, reopen, deliver, captureCare, financeIssues };
+  return { catalog, ensure, receiveSamples, pendingExamples, create, ingest, intake, sync, request, cancellation, cover, document, signedFile, bookingProposal, run, get, approve, native, verify, accounting, workerResponse, manual, reopen, deliver, captureCare, financeIssues };
 });

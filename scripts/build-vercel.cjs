@@ -19,7 +19,7 @@ async function build() {
     await fs.cp(path.join(root, 'node_modules', directory), path.join(output, 'vendor', directory), { recursive: true });
   }
   await fs.copyFile(path.join(root, "workspace/shiftcare.js"), path.join(output, "workspace/shiftcare.js"));
-  for (const file of ["automation-engine.js", "automation.js", "automation.css", "integration-proof.js", "integration-proof.css"]) await fs.copyFile(path.join(root, "workspace", file), path.join(output, "workspace", file));
+  for (const file of ["crm.css", "invoices.js", "automation-engine.js", "automation.js", "automation.css", "integration-proof.js", "integration-proof.css"]) await fs.copyFile(path.join(root, "workspace", file), path.join(output, "workspace", file));
   await fs.copyFile(path.join(root, "workspace/data.js"), path.join(output, "workspace/data.js"));
   await fs.writeFile(path.join(output, "workspace/map-config.js"), mapboxConfig());
   await fs.copyFile(path.join(root, "workspace/maps.js"), path.join(output, "workspace/maps.js"));

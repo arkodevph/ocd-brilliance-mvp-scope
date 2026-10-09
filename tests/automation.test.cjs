@@ -241,3 +241,18 @@ test('arrival snapshots require consent and current assignment, and withdraw sta
   b.workerId = 'WRK-03'; assert.equal(maps.snapshot(s, b, clock).phase, 'not-started');
   maps.reconcileJourneys(s); assert.equal(s.journeys[b.id], undefined);
 });
+
+test('fresh example cases remain unfinished without changing existing outcomes or duplicating on reload', () => {
+  const s = seed(), original = s.automation.jobs[0];
+  original.status = 'completed';
+  E.pendingExamples(s);
+  const examples = s.automation.jobs.filter(j => j.source.id.startsWith('EXAMPLE-'));
+  assert.ok(examples.length >= 7);
+  assert.ok(examples.every(j => ['needs_review', 'manual_action_required'].includes(j.status)));
+  assert.ok(examples.some(j => j.workflow === 'W12'));
+  assert.equal(original.status, 'completed');
+  assert.ok(s.automation.inbox.some(m => m.example && m.workflow === 'W02' && m.state === 'received' && !m.aiReview));
+  const counts = [s.automation.jobs.length, s.automation.inbox.length];
+  E.pendingExamples(s);
+  assert.deepEqual([s.automation.jobs.length, s.automation.inbox.length], counts);
+});

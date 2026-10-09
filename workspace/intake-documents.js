@@ -1,11 +1,16 @@
 window.OCD_DOCUMENTS = {
-  async extract(file) {
+  async extract(file, onProgress = () => {}) {
     if (!file || file.size > 2 * 1024 * 1024) throw new Error('Choose a PDF, PNG or JPEG of at most 2 MB.');
     if (!['application/pdf', 'image/png', 'image/jpeg'].includes(file.type)) throw new Error('Choose a PDF, PNG or JPEG.');
     const buffer = await file.arrayBuffer();
     let worker;
+    let scannedPages = 0;
     const recognize = async image => {
-      worker ||= await Tesseract.createWorker('eng', 1, { workerPath: '/vendor/tesseract.js/dist/worker.min.js', corePath: '/vendor/tesseract.js-core', langPath: '/vendor/@tesseract.js-data/eng/4.0.0_best_int', workerBlobURL: false });
+      scannedPages++;
+      onProgress('Reading scanned text…');
+      worker ||= await Tesseract.createWorker('eng', 1, { workerPath: '/vendor/tesseract.js/dist/worker.min.js', corePath: '/vendor/tesseract.js-core', langPath: '/vendor/@tesseract.js-data/eng/4.0.0_best_int', workerBlobURL: false, logger: progress => {
+        if (progress.status === 'recognizing text') onProgress(`Reading scanned text… ${Math.round(progress.progress * 100)}%`);
+      } });
       return (await worker.recognize(image)).data.text;
     };
     let text = '';
@@ -19,6 +24,7 @@ window.OCD_DOCUMENTS = {
         pdf = await loadingTask.promise;
         if (pdf.numPages > 20) throw new Error('Use a document of at most 20 pages.');
         for (let number = 1; number <= pdf.numPages; number++) {
+          onProgress(`Reading PDF page ${number} of ${pdf.numPages}…`);
           const page = await pdf.getPage(number);
           const content = await page.getTextContent();
           let pageText = content.items.map(item => (item.str || '') + (item.hasEOL ? '\n' : ' ')).join('');
@@ -42,7 +48,8 @@ window.OCD_DOCUMENTS = {
       }
       if (!text.trim() || text.length > 12000) throw new Error('No usable text found, or text exceeds 12,000 characters.');
       const data = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result.split(',')[1]); reader.onerror = reject; reader.readAsDataURL(file); });
-      return { text: text.trim(), originalDocument: { name: file.name, type: file.type, data } };
+      onProgress(scannedPages ? 'Scanned text read. Check names and numbers against the original.' : 'PDF text read.');
+      return { text: text.trim(), method: scannedPages ? 'Tesseract OCR' : 'PDF text', originalDocument: { name: file.name, type: file.type, data } };
     } finally { await worker?.terminate(); await loadingTask?.destroy(); }
   }
 };

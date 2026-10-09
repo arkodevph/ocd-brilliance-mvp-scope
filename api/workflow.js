@@ -2,6 +2,7 @@ const crypto = require('node:crypto');
 const { IntakeRepository } = require('../lib/intake-repository.cjs');
 const { IntakeService } = require('../lib/intake-service.cjs');
 const { WorkflowError, clean } = require('../lib/intake-domain.cjs');
+const { config: aiConfig, emailDraft, emailReview } = require('../lib/intake-ai.cjs');
 const { intakeOwner, configured, staffSession: cookie, sessionCookie, originAllowed, authenticate, staffRole, permits } = require('../lib/staff-auth.cjs');
 const R = require('../lib/intake-rules.cjs');
 
@@ -85,7 +86,24 @@ module.exports = async (req, res) => {
       return send(res, 200, { records });
     }
     const service = new IntakeService(db, covered);
-    if (action === 'rules' && req.method === 'GET') return send(res, 200, { rules: service.policy, extractionAllowed: R.extractionAllowed(service.policy), aiConfigured: Boolean(process.env.OCD_AI_API_KEY) });
+    if (action === 'ai-email-review' && req.method === 'POST') {
+      if (!aiConfig().demo) throw new WorkflowError(422, 'Email review is available in showcase mode.');
+      return send(res, 200, await emailReview(await body(req)));
+    }
+    if (action === 'ai-email' && req.method === 'POST') {
+      const data = await body(req);
+      if (data.id) {
+        const record = await db.get(clean(data.id, 40));
+        if (!record) throw new WorkflowError(404, 'Enquiry not found.');
+        return send(res, 200, await emailDraft({ fields: record, sourceText: record.onboarding?.sourceText || record.notes }));
+      }
+      if (!aiConfig().demo) throw new WorkflowError(422, 'Select a saved enquiry before drafting an email.');
+      return send(res, 200, await emailDraft(data));
+    }
+    if (action === 'rules' && req.method === 'GET') {
+      const ai = aiConfig();
+      return send(res, 200, { rules: service.policy, extractionAllowed: R.extractionAllowed(service.policy), documentAllowed: ai.demo || R.extractionAllowed(service.policy), aiConfigured: Boolean(ai.key), aiAllowed: Boolean(ai.key) && (ai.demo || R.extractionAllowed(service.policy)), aiDemo: ai.demo, aiProvider: ai.provider });
+    }
     if (action === 'queue' && req.method === 'GET') return send(res, 200, { items: await service.queue() });
     if (action === 'handoff-approve' && req.method === 'POST') return send(res, 200, { record: await service.approve(await body(req), staff) });
     if (action === 'handoff-failure' && req.method === 'PATCH') return send(res, 200, { record: await service.failure(await body(req), staff) });
