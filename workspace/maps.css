@@ -168,3 +168,79 @@
 @media (prefers-reduced-motion: reduce) {
   .map-service-pin, .map-worker-pin { animation: none; }
 }
+
+.booking-map-layout { position: relative; grid-template-columns: minmax(0, 1fr); }
+.booking-map-layout .booking-map-panel { border-radius: 16px; }
+.map-view-controls { left: auto; right: 16px; }
+.map-view-toggle button { min-height: 36px; }
+.map-view-controls > .btn { min-height: 42px; }
+.map-booking-card { min-height: 44px; }
+.map-booking-card.selected { border-color: var(--green); background: #edf6f0; box-shadow: 0 0 0 1px var(--green); }
+.map-worker-pin { background: var(--green); box-shadow: 0 0 0 7px #08734c24, 0 3px 10px #15392538; }
+.map-legend i.worker, .map-location-indicator.on { background: var(--green); }
+.map-location-indicator.on { box-shadow: 0 0 0 4px #edf6f0; }
+.map-side-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.map-booking-section { border-bottom: 0; border-right: 1px solid var(--line); }
+
+@media (min-width: 1201px) {
+  .booking-map-surface { height: 740px; }
+  .booking-map-layout .map-side-panel { position: absolute; z-index: 3; top: 16px; left: 16px; width: 300px; max-height: 690px; overflow-y: auto; display: block; background: rgba(255,255,255,.96); border-radius: 12px; box-shadow: 0 8px 32px #163d2420; backdrop-filter: blur(12px); }
+  .map-booking-section { border-right: 0; border-bottom: 1px solid var(--line); padding: 16px; }
+  .map-booking-list { max-height: 180px; }
+  .map-arrival-section { padding: 16px; }
+  .map-selected-label { left: 336px; bottom: 40px; max-width: calc(100% - 400px); }
+  .map-fallback { padding-left: 340px; padding-right: 24px; }
+  .map-stats { gap: 12px; }
+  .map-stats > div { padding: 10px 16px; }
+}
+
+@media (max-width: 760px) {
+  .map-side-panel { display: flex; }
+  .map-booking-section { border-right: 0; border-bottom: 1px solid var(--line); }
+  .map-view-controls { left: auto; right: 12px; }
+  .map-focus-actions .btn { min-height: 44px; }
+}
+
+/* Let the office map use the available viewport, with one booking panel scroll. */
+.page:has([data-map-area="office"]) .map-booking-list { max-height: none; overflow: visible; }
+
+@media (min-width: 761px) {
+  .app-shell:has([data-map-area="office"]) { height: 100dvh; min-height: 0; }
+  .workspace:has([data-map-area="office"]) { display: flex; flex-direction: column; min-height: 0; }
+  .workspace:has([data-map-area="office"]) > .topbar { flex: none; }
+  .page:has([data-map-area="office"]) { display: flex; flex-direction: column; flex: 1; min-height: 0; width: 100%; max-width: none; padding: 16px 24px; }
+  .page:has([data-map-area="office"]) > .page-header { flex: none; margin-bottom: 10px; align-items: center; }
+  .page:has([data-map-area="office"]) .page-header h1 { font-size: 20px; }
+  #booking-map-workspace[data-map-area="office"] { position: relative; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  [data-map-area="office"] .map-toolbar { flex: none; gap: 12px; margin-bottom: 10px; }
+  [data-map-area="office"] .map-stats { flex: none; margin-bottom: 10px; }
+  [data-map-area="office"] .map-stats > div { flex-direction: row; align-items: center; padding: 6px 12px; }
+  [data-map-area="office"] .map-stats strong { font-size: 18px; }
+  [data-map-area="office"] .booking-map-layout { flex: 1; min-height: 0; align-items: stretch; }
+  [data-map-area="office"] .booking-map-panel { display: flex; flex-direction: column; min-height: 0; }
+  [data-map-area="office"] .booking-map-surface { height: auto; flex: 1; min-height: 0; }
+  [data-map-area="office"] .map-footer { flex: none; min-height: 38px; padding: 6px 12px; }
+  [data-map-area="office"] .map-legend { width: auto; order: 0; }
+  [data-map-area="office"] .map-side-panel { overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
+  [data-map-area="office"] .map-booking-section, [data-map-area="office"] .map-arrival-section { padding: 12px; }
+  [data-map-area="office"] .map-booking-card { padding: 8px; }
+  [data-map-area="office"] .map-booking-phase { margin-top: 4px; }
+  [data-map-area="office"] .map-worker-heading { margin-bottom: 8px; }
+  [data-map-area="office"] .map-arrival-card { padding: 10px; }
+  [data-map-area="office"] .map-eta-value { font-size: 28px; margin: 3px 0; }
+  [data-map-area="office"] .map-booking-facts { gap: 8px; margin-top: 10px; }
+  [data-map-area="office"] .map-demo-note { flex: none; margin-top: 8px; }
+  [data-map-area="office"] .map-connection-panel { position: absolute; z-index: 5; top: 0; right: 0; width: min(420px, 100%); max-height: 100%; overflow-y: auto; margin: 0; box-shadow: 0 8px 32px #163d2420; }
+}
+
+@media (min-width: 1201px) {
+  [data-map-area="office"] .map-side-panel { top: 12px; left: 12px; bottom: 50px; max-height: none; }
+}
+
+@media (min-width: 761px) and (max-width: 1200px) {
+  [data-map-area="office"] .booking-map-layout { grid-template-columns: 280px minmax(0, 1fr); gap: 12px; }
+  [data-map-area="office"] .map-side-panel { grid-column: 1; grid-row: 1; display: block; }
+  [data-map-area="office"] .booking-map-panel { grid-column: 2; grid-row: 1; }
+  [data-map-area="office"] .map-booking-section { border-right: 0; border-bottom: 1px solid var(--line); }
+  [data-map-area="office"] .map-selected-label { bottom: 40px; }
+}

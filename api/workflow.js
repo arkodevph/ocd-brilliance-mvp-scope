@@ -1,62 +1,38 @@
 const crypto = require('node:crypto');
-const fs = require('node:fs/promises');
-const path = require('node:path');
-const { Redis } = require('@upstash/redis');
-const { secretEqual, staffEmail, configured, staffSession: cookie, sessionCookie, originAllowed } = require('../lib/staff-auth.cjs');
+const { IntakeRepository } = require('../lib/intake-repository.cjs');
+const { IntakeService } = require('../lib/intake-service.cjs');
+const { WorkflowError, clean } = require('../lib/intake-domain.cjs');
+const { intakeOwner, configured, staffSession: cookie, sessionCookie, originAllowed, authenticate, staffRole, permits } = require('../lib/staff-auth.cjs');
+const R = require('../lib/intake-rules.cjs');
 
-const file = path.join(process.env.WORKFLOW_DATA_DIR || path.join(__dirname, '..', '.local'), 'intakes.json');
-let localWrite = Promise.resolve();
-const statuses = ['New', 'Contacting', 'Reviewing', 'Ready for ShiftCare', 'Entered in ShiftCare', 'Closed'];
-
-function storage() {
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-    const redis = Redis.fromEnv();
-    const unpack = value => typeof value === 'string' ? JSON.parse(value) : value;
-    return {
-      all: async () => Object.values(await redis.hgetall('ocd:intakes') || {}).map(unpack),
-      get: async id => unpack(await redis.hget('ocd:intakes', id)),
-      set: async record => redis.hset('ocd:intakes', { [record.id]: JSON.stringify(record) })
-    };
-  }
-  if (process.env.VERCEL) return null;
-  async function read() {
-    try { return JSON.parse(await fs.readFile(file, 'utf8')); }
-    catch (error) { if (error.code === 'ENOENT') return {}; throw error; }
-  }
-  return {
-    all: async () => { await localWrite; return Object.values(await read()); },
-    get: async id => { await localWrite; return (await read())[id] || null; },
-    set: record => {
-      const next = localWrite.then(async () => {
-        await fs.mkdir(path.dirname(file), { recursive: true });
-        const records = await read();
-        records[record.id] = record;
-        const temp = `${file}.tmp`;
-        await fs.writeFile(temp, JSON.stringify(records, null, 2), { mode: 0o600 });
-        await fs.rename(temp, file);
-      });
-      localWrite = next.catch(() => {});
-      return next;
-    }
-  };
-}
+const storage = () => IntakeRepository.configured();
 
 function send(res, status, data, headers = {}) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...headers });
-  res.end(JSON.stringify(data));
+  res.end(JSON.stringify(data, (key, value) => ['operations', 'creationKey', 'creationHash', 'creationResult'].includes(key) ? undefined : value));
 }
 async function body(req) {
-  if (req.body && typeof req.body === 'object') return req.body;
+  const limit = new URL(req.url, 'http://localhost').searchParams.get('action') === 'draft' ? 3000000 : 20000;
+  const validate = value => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new WorkflowError(400, 'Request body must be a JSON object.');
+    return value;
+  };
+  if (req.body && typeof req.body === 'object') {
+    if (Buffer.byteLength(JSON.stringify(req.body)) > limit) throw new WorkflowError(413, 'Request too large');
+    return validate(req.body);
+  }
   let text = '';
   for await (const part of req) {
     text += part;
-    if (text.length > 20000) throw new Error('Request too large');
+    if (Buffer.byteLength(text) > limit) throw new WorkflowError(413, 'Request too large');
   }
-  return JSON.parse(text || '{}');
+  let parsed;
+  try { parsed = JSON.parse(text || '{}'); }
+  catch (_) { throw new WorkflowError(400, 'Request body must be valid JSON.'); }
+  return validate(parsed);
 }
-function clean(value, limit = 200) { return String(value || '').trim().slice(0, limit); }
 function covered(postcode) {
-  if (!configured() || !storage()) return { status: 'unconfigured', message: 'Requests are not open yet. Please contact the office.' };
+  if (!configured() || !storage() || !intakeOwner()) return { status: 'unconfigured', message: 'Requests are not open yet. Please contact the office.' };
   const approved = (process.env.SERVICE_POSTCODES || '').split(',').map(value => value.trim()).filter(Boolean);
   if (!approved.length) return { status: 'unconfigured', message: 'Service area has not been configured. Please contact the office.' };
   if (!/^\d{4}$/.test(postcode)) return { status: 'invalid', message: 'Enter a four-digit Australian postcode.' };
@@ -70,12 +46,13 @@ module.exports = async (req, res) => {
     const action = url.searchParams.get('action');
     if (!originAllowed(req)) return send(res, 403, { error: 'Request origin is not allowed.' });
     if (action === 'area' && req.method === 'GET') return send(res, 200, covered(clean(url.searchParams.get('postcode'), 10)));
-    if (action === 'session' && req.method === 'GET') return send(res, 200, { email: cookie(req), configured: configured(), storageReady: Boolean(storage()) });
+    if (action === 'session' && req.method === 'GET') return send(res, 200, { email: cookie(req), role: staffRole(cookie(req)), configured: configured(), storageReady: Boolean(storage()) });
     if (action === 'login' && req.method === 'POST') {
       const data = await body(req);
       if (!configured()) return send(res, 503, { error: 'Staff sign-in has not been configured.' });
-      if (clean(data.email).toLowerCase() !== staffEmail() || !secretEqual(data.password, process.env.WORKFLOW_STAFF_PASSWORD)) return send(res, 401, { error: 'Email or password is incorrect.' });
-      return send(res, 200, { email: staffEmail() }, { 'Set-Cookie': sessionCookie(staffEmail(), req) });
+      const email = authenticate(data.email, data.password);
+      if (!email) return send(res, 401, { error: 'Email or username, or password is incorrect.' });
+      return send(res, 200, { email, role: staffRole(email) }, { 'Set-Cookie': sessionCookie(email, req) });
     }
     if (action === 'logout' && req.method === 'POST') return send(res, 200, { ok: true }, { 'Set-Cookie': 'ocd_staff=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0' });
     const db = storage();
@@ -87,21 +64,19 @@ module.exports = async (req, res) => {
       const name = clean(data.name, 120), email = clean(data.email, 200), phone = clean(data.phone, 40);
       const service = clean(data.service, 120), suburb = clean(data.suburb, 120), notes = clean(data.notes, 2000);
       if (!name || !/^\S+@\S+\.\S+$/.test(email) || !phone || !service || !suburb || data.consent !== true) return send(res, 422, { error: 'Complete the required details and consent before submitting.' });
-      const now = new Date().toISOString();
-      const record = { id: `REQ-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, name, email, phone, service, suburb, postcode, notes, source: 'Website', status: 'New', owner: '', nextAction: 'Assign an owner and contact the requester', followUp: '', shiftCareId: '', createdAt: now, updatedAt: now, consentAt: now, history: [{ at: now, by: 'Public form', event: 'Submitted intake request' }] };
-      await db.set(record);
+      const record = await new IntakeService(db, covered).createDraft({ name, email, phone, service, suburb, postcode, notes, source: 'Website', sourceName: 'Website request', consent: true, idempotencyKey: data.idempotencyKey }, intakeOwner());
       return send(res, 201, { id: record.id, message: 'Request received. The office will review it and contact you.' });
     }
     const staff = cookie(req);
     if (!staff) return send(res, 401, { error: 'Sign in to continue.' });
+    const permission = action === 'handoff-approve' || action === 'handoff-verify' ? 'approve' : req.method === 'GET' ? 'read' : 'write';
+    if (!permits(staff, permission)) return send(res, 403, { error: 'Your role does not permit this action.' });
     if (action === 'staff-intake' && req.method === 'POST') {
       const data = await body(req);
       const name = clean(data.name, 120), email = clean(data.email, 200), phone = clean(data.phone, 40);
       const service = clean(data.service, 120), suburb = clean(data.suburb, 120), postcode = clean(data.postcode, 10), notes = clean(data.notes, 2000), source = clean(data.source, 30);
       if (!name || (!email && !phone) || (email && !/^\S+@\S+\.\S+$/.test(email)) || !service || !['Email', 'Phone', 'Coordinator'].includes(source) || (postcode && !/^\d{4}$/.test(postcode))) return send(res, 422, { error: 'Add a name, contact method, service, and source.' });
-      const now = new Date().toISOString();
-      const record = { id: `REQ-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, name, email, phone, service, suburb, postcode, notes, source, status: 'New', owner: staff, nextAction: 'Check service area and contact requester', followUp: '', shiftCareId: '', createdAt: now, updatedAt: now, consentAt: null, history: [{ at: now, by: staff, event: `Logged ${source.toLowerCase()} enquiry` }] };
-      await db.set(record);
+      const record = await new IntakeService(db, covered).createDraft({ name, email, phone, service, suburb, postcode, notes, source, idempotencyKey: data.idempotencyKey }, staff);
       return send(res, 201, { record });
     }
     if (action === 'intakes' && req.method === 'GET') {
@@ -109,22 +84,28 @@ module.exports = async (req, res) => {
       records.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       return send(res, 200, { records });
     }
-    if (action === 'record' && req.method === 'PATCH') {
+    const service = new IntakeService(db, covered);
+    if (action === 'rules' && req.method === 'GET') return send(res, 200, { rules: service.policy, extractionAllowed: R.extractionAllowed(service.policy), aiConfigured: Boolean(process.env.OCD_AI_API_KEY) });
+    if (action === 'queue' && req.method === 'GET') return send(res, 200, { items: await service.queue() });
+    if (action === 'handoff-approve' && req.method === 'POST') return send(res, 200, { record: await service.approve(await body(req), staff) });
+    if (action === 'handoff-failure' && req.method === 'PATCH') return send(res, 200, { record: await service.failure(await body(req), staff) });
+    if (action === 'draft-preview' && req.method === 'POST') {
       const data = await body(req);
-      const record = await db.get(clean(data.id, 40));
-      if (!record) return send(res, 404, { error: 'Request not found.' });
-      const status = clean(data.status, 40), owner = clean(data.owner, 120), nextAction = clean(data.nextAction, 250), followUp = clean(data.followUp, 20), shiftCareId = clean(data.shiftCareId, 100), postcode = clean(data.postcode, 10), suburb = clean(data.suburb, 120);
-      if (!statuses.includes(status) || !nextAction || (status !== 'New' && !owner) || (status === 'Entered in ShiftCare' && !shiftCareId) || (followUp && !/^\d{4}-\d{2}-\d{2}$/.test(followUp)) || (postcode && !/^\d{4}$/.test(postcode))) return send(res, 422, { error: 'Set a valid status, owner, next action, postcode, and ShiftCare ID when applicable.' });
-      if (['Ready for ShiftCare', 'Entered in ShiftCare'].includes(status) && covered(postcode).status !== 'covered') return send(res, 422, { error: 'Confirm a covered service postcode before the ShiftCare handoff.' });
-      record.status = status; record.owner = owner; record.nextAction = nextAction; record.followUp = followUp; record.shiftCareId = shiftCareId; record.postcode = postcode; record.suburb = suburb;
-      record.updatedAt = new Date().toISOString();
-      record.history.unshift({ at: record.updatedAt, by: staff, event: `Updated to ${status}${owner ? ` · owner ${owner}` : ''}` });
-      await db.set(record);
-      return send(res, 200, { record });
+      return send(res, 200, await service.previewText(data.text, data.ai === true));
     }
+    if (action === 'csv-preview' && req.method === 'POST') {
+      const data = await body(req);
+      return send(res, 200, { rows: await service.previewCsv(data.text, data.mapping) });
+    }
+    if (action === 'draft' && req.method === 'POST') return send(res, 201, { record: await service.createDraft(await body(req), staff) });
+    if (action === 'draft-review' && req.method === 'PATCH') return send(res, 200, { record: await service.update(await body(req), staff, true) });
+    if (action === 'handoff-verify' && req.method === 'PATCH') return send(res, 200, { record: await service.verify(await body(req), staff) });
+    if (action === 'handoff' && req.method === 'GET') return send(res, 200, { text: await service.handoff(clean(url.searchParams.get('id'), 40), clean(url.searchParams.get('revision'), 100)) });
+    if (action === 'record' && req.method === 'PATCH') return send(res, 200, { record: await service.update(await body(req), staff) });
     return send(res, 404, { error: 'Unknown action.' });
   } catch (error) {
+    if (error instanceof WorkflowError) return send(res, error.status, { error: error.message, ...error.details });
     console.error('Workflow request failed:', error);
-    send(res, error.message === 'Request too large' ? 413 : 500, { error: 'The request could not be completed.' });
+    send(res, 500, { error: 'The request could not be completed.' });
   }
 };

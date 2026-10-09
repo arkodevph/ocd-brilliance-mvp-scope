@@ -1,14 +1,19 @@
 {
   "name": "ocd-brilliance-mvp-scope",
   "private": true,
+  "engines": { "node": ">=22.13.0" },
   "scripts": {
     "start": "node server.cjs",
     "build": "node scripts/build-vercel.cjs",
     "test": "node --test",
-    "verify:prototype": "node scripts/prototype-browser-check.mjs"
+    "verify:prototype": "node scripts/prototype-browser-check.mjs",
+    "verify:intake": "PROTOTYPE_INTAKE=1 node scripts/prototype-browser-check.mjs"
   },
   "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
     "@upstash/redis": "^1.35.6",
+    "pdfjs-dist": "^6.4.299",
+    "tesseract.js": "^7.0.0",
     "web-push": "^3.6.7"
   }
 }

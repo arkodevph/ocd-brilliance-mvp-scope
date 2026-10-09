@@ -49,7 +49,7 @@ Discovery-call transcripts and their draft summaries stay in the browser-only pr
 
 ## Run locally
 
-Requires Node.js 20.12 or newer.
+Requires Node.js 22.13 or newer (PDF.js also supports Node.js 24 and later).
 
 ```bash
 npm install
@@ -93,6 +93,18 @@ Upstash Redis stores intake records and push subscriptions on Vercel. The app re
 `npm run build` publishes the application, manifest, app icons, service worker, and archived presentation. The service worker caches static assets and navigation fallback only; it does not cache intake records or API responses.
 
 ## Verification
+
+The shared intake now validates server-owned `OCD_INTAKE_RULES` and `SERVICE_POSTCODES`. Set a version, `approvedBy`, and policy `source`, plus OCD's required fields/documents, field mappings, and optional knowledge entries (`id`, `text`, `source`). The default technical baseline is labelled as awaiting OCD approval and cannot authorize a handoff. Required document checkboxes record staff inspection; they do not establish authenticity automatically.
+
+Before custom PDF/scan or AI extraction is enabled, record the Inbox Signals trial in the rules: `inboxSignals.tested: true`, a nonempty `evidence` reference and a `gaps` array describing what OCD still needs. Test representative OCD documents in Inbox Signals first and compare accuracy, field evidence, conflict handling and missing-document detection. This repository does not claim that trial has been performed. PDF.js reads digital PDF text; Tesseract.js processes scanned pages and PNG/JPEG images locally, using bundled English language data. Originals stay beside the draft and persist with it. Limits are 2 MB, 20 PDF pages and 12,000 extracted characters.
+
+Optional AI arrangement uses `OCD_AI_API_KEY` and `OCD_AI_MODEL` on the server. Staff explicitly select it before extracted text is sent to OpenAI. Returned field values require verbatim source evidence; unsupported values fall back to labelled extraction. AI explanations remain advisory; explicit server checks decide readiness. The adapter uses [OpenAI's documented JSON mode](https://developers.openai.com/api/docs/guides/structured-outputs), and validates the returned content. No live AI evaluation has been performed without credentials.
+
+Office → Work queue includes unresolved shared intakes with owners, next actions, due dates, missing information/documents, conflicts, potential matches and recorded failed manual transfers. New submissions receive an owner and a due date. `WORKFLOW_STAFF_ACCOUNTS` can contain server-configured `{email,password,role}` accounts: `reader` reads, `coordinator` prepares, and `admin` approves and verifies. The existing single office login defaults to admin. Browser persona selectors remain demonstrations.
+
+Before copying a handoff, an admin checks existing people in ShiftCare and explicitly approves the displayed fields. Approval is bound to reviewed fields, required document checks and the current rule configuration. Field or policy changes block the old approval. Draft creation accepts a per-submission `idempotencyKey`; identical retries return the original result, and reuse with changed details fails. Replayed revision-based mutations also return their saved result. Local writes and Redis writes check duplicates atomically.
+
+The website retains a labelled manual handoff because its ShiftCare adapter only supports reads. Saved-profile confirmation records a staff check and explicitly states that API read-back was not performed. Use “Record failed transfer” to return a failed handoff to the unresolved queue. Automated native creation and API verification remain unavailable until a supported application write/read-back adapter is configured and tested.
 
 ```bash
 npm test
@@ -181,3 +193,7 @@ The AU connection was verified on 6 October 2026: OAuth succeeded, connection an
 The application API above implements office client/staff/booking lookup with separate REST credentials. Scheduled reports and user-specific authorization are still needed for unattended automation and real worker/client access. Codex login alone does not provide website credentials. Attendance fields and available tools vary by account; missing data must be reported as unknown. Use the ShiftCare account's time zone and explicit datetime offsets for roster operations.
 
 Setup and capability references: [ShiftCare's ChatGPT and Codex setup guide](https://help.shiftcare.com/en/articles/14630405-connecting-shiftcare-mcp-to-chatgpt), [ShiftCare AI Skills](https://github.com/shiftcare/ai-skills), [ShiftCare daily rundown](https://github.com/shiftcare/ai-skills/blob/main/skills/shiftcare-daily-rundown/SKILL.md), [ShiftCare concepts and tools](https://github.com/shiftcare/ai-skills/blob/main/skills/shiftcare-basics/SKILL.md), and [official OpenAI MCP documentation](https://developers.openai.com/codex/mcp/).
+
+## Current screenshot presentation
+
+The [presentation hub](docs/presentation/Start%20here.md) includes a nine-slide screenshot deck, a ten-minute presenter guide with exact demo steps, and a screenshot map. Open `docs/presentation/OCD Brilliance — Presentation.html` in a browser; use arrow keys to navigate and F for fullscreen. All seven screenshots use fictional records. The linked Markdown notes also support an Obsidian vault rooted at this repository.

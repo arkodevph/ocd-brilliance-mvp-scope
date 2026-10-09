@@ -11,7 +11,10 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const liveMap = process.env.PROTOTYPE_MAPBOX_LIVE === '1';
 const integrationProof = process.env.PROTOTYPE_INTEGRATION === '1';
-const output = path.resolve(root, process.env.PROTOTYPE_REVIEW_DIR || (integrationProof ? 'docs/shiftcare-proof-review-2026-10-07' : 'docs/prototype-review-2026-10-07'));
+const intakeHandoff = process.env.PROTOTYPE_INTAKE === '1';
+const designReview = process.env.PROTOTYPE_DESIGN === '1';
+const automationDesign = process.env.PROTOTYPE_AUTOMATION_DESIGN === '1';
+const output = path.resolve(root, process.env.PROTOTYPE_REVIEW_DIR || (intakeHandoff ? 'docs/intake-review-2026-10-08' : integrationProof ? 'docs/shiftcare-proof-review-2026-10-07' : 'docs/prototype-review-2026-10-07'));
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'ocd-prototype-review-'));
 let nativeCapture;
 if (integrationProof) {
@@ -24,7 +27,8 @@ const port = probe.address().port; await new Promise(resolve => probe.close(reso
 const origin = `http://127.0.0.1:${port}`;
 const password = crypto.randomBytes(18).toString('hex');
 const email = 'prototype.office@example.test';
-const server = spawn(process.execPath, ['server.cjs'], { cwd: root, stdio: 'ignore', env: { ...process.env, PORT: String(port), VERCEL: '', WORKFLOW_DATA_DIR: path.join(temp, 'data'), WORKFLOW_STAFF_EMAIL: email, WORKFLOW_STAFF_PASSWORD: password, WORKFLOW_SESSION_SECRET: crypto.randomBytes(32).toString('hex'), UPSTASH_REDIS_REST_URL: '', UPSTASH_REDIS_REST_TOKEN: '', SERVICE_POSTCODES: '6024,6025,6026,6027,6065' } });
+const intakePolicy = JSON.stringify({ version: 'fictional-browser-test-v1', approvedBy: 'Fictional test coordinator', source: 'Browser test fixture', inboxSignals: { tested: true, gaps: ['Fictional extraction fixture'], evidence: 'Automated fixture; not an OCD document trial' } });
+const server = spawn(process.execPath, ['server.cjs'], { cwd: root, stdio: 'ignore', env: { ...process.env, PORT: String(port), VERCEL: '', WORKFLOW_DATA_DIR: path.join(temp, 'data'), WORKFLOW_STAFF_EMAIL: email, WORKFLOW_STAFF_PASSWORD: password, WORKFLOW_SESSION_SECRET: crypto.randomBytes(32).toString('hex'), UPSTASH_REDIS_REST_URL: '', UPSTASH_REDIS_REST_TOKEN: '', SERVICE_POSTCODES: '6024,6025,6026,6027,6065', OCD_INTAKE_RULES: intakePolicy, WORKFLOW_STAFF_ACCOUNTS: '', OCD_AI_API_KEY: '' } });
 const chrome = spawn(process.env.CHROME_PATH || '/usr/bin/google-chrome', ['--headless=new', '--no-sandbox', ...(liveMap ? ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : ['--disable-gpu']), '--disable-dev-shm-usage', '--no-first-run', '--no-default-browser-check', '--remote-debugging-pipe', `--user-data-dir=${path.join(temp, 'chrome')}`], { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] });
 let sequence = 0, buffer = '', session;
 const pending = new Map(), errors = [], requests = [], checks = [], captures = [];
@@ -58,8 +62,8 @@ const wait = async (expression, timeout = 6000) => {
 };
 const click = selector => evaluate(`(() => { const e=document.querySelector(${JSON.stringify(selector)}); if(!e) throw new Error('Missing element: '+${JSON.stringify(selector)}); e.click(); return true; })()`);
 async function route(value) { await evaluate(`location.hash=${JSON.stringify('#/' + value)}`); await wait(`location.hash===${JSON.stringify('#/' + value)} && !!document.querySelector('#main-content')`); await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))'); }
-async function submit(selector, values) {
-  await evaluate(`(() => { const f=document.querySelector(${JSON.stringify(selector)}); if(!f) throw new Error('Missing form'); for(const [k,v] of Object.entries(${JSON.stringify(values)})){ const e=f.elements[k]; if(!e) throw new Error('Missing field: '+k); if(e.type==='checkbox')e.checked=!!v; else e.value=v; } f.requestSubmit(); return true; })()`);
+async function submit(selector, values, submitter = '') {
+  await evaluate(`(() => { const f=document.querySelector(${JSON.stringify(selector)}); if(!f) throw new Error('Missing form'); for(const [k,v] of Object.entries(${JSON.stringify(values)})){ const e=f.elements[k]; if(!e) throw new Error('Missing field: '+k); if(e.type==='checkbox')e.checked=!!v; else e.value=v; } f.requestSubmit(${submitter ? `f.querySelector(${JSON.stringify(submitter)})` : ''}); return true; })()`);
   await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
 }
 const stored = expression => evaluate(`(() => { const s=JSON.parse(localStorage.getItem('ocd-brilliance-operations-v1')); return (${expression}); })()`);
@@ -87,6 +91,7 @@ try {
   const target = targets.targetInfos.find(t => t.type === 'page') || await command('Target.createTarget', { url: 'about:blank' }, null);
   session = (await command('Target.attachToTarget', { targetId: target.targetId, flatten: true }, null)).sessionId;
   await command('Page.enable'); await command('Runtime.enable'); await command('Network.enable');
+  await command('Emulation.setFocusEmulationEnabled', { enabled: true });
   // Map/network fallback is checked without spending Mapbox quota or contacting a real roster.
   if (!liveMap) await command('Network.setBlockedURLs', { urls: ['https://api.mapbox.com/*', 'https://events.mapbox.com/*'] });
   await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
@@ -97,13 +102,310 @@ try {
   }
   await command('Page.navigate', { url: origin + (integrationProof ? '/#/office/verification' : '/#/office/automation') }); await wait("!!document.querySelector('#staff-login')");
   await submit('#staff-login', { email, password }); await wait("!!document.querySelector('.sidebar')");
-  if (integrationProof) {
+  if (automationDesign) {
+    await click('[data-auto-action="ingest"]');
+    for (const id of ['areas', 'reminders', 'documents']) await click(`[data-auto-action="check"][data-id="${id}"]`);
+    const invoice = await job('finance-query');
+    await route(`office/automation/${invoice}`);
+    await capture('automation-review-desktop', 1720, 984);
+    assert.equal(await evaluate('document.documentElement.scrollHeight <= innerHeight'), true, 'The case workspace fits the desktop viewport');
+    assert.equal(await evaluate('document.querySelectorAll(".automation-case-list .pagination").length'), 0);
+    assert.equal(await evaluate('document.querySelectorAll("details").length'), 0);
+    assert.equal(await evaluate('Array.from(document.querySelectorAll("select")).filter(e=>e.getClientRects().length).length'), 0);
+    await submit('[data-auto-form="approve"]', { sourceReviewed: true });
+    await wait('!!document.querySelector("[data-auto-form=manual]")');
+    await submit('[data-auto-form="manual"]', { reference: 'Fictional invoice review INV-TEST', note: 'Bookkeeper compared the recorded hours with the invoice and confirmed the outcome.', checked: true });
+    await wait('!!document.querySelector(".automation-next .notice strong") && document.querySelector(".automation-next").textContent.includes("Human resolution recorded")');
+    assert.equal(await jobStatus(invoice), 'completed');
+    await click('[data-auto-action="filter"][data-id="all"]');
+    await route(`office/automation/${invoice}`);
+    assert.ok((await evaluate('document.querySelector(".automation-next").textContent')).includes('Bookkeeper compared'));
+    assert.ok((await evaluate('document.querySelector(".automation-thread .automation-history").textContent')).includes('Checked human outcome recorded'));
+    for (const [width,height] of [[1720,984], [1440,900], [1366,768]]) {
+      await capture(`automation-completed-${width}`, width, height);
+      assert.equal(await evaluate('document.documentElement.scrollHeight <= innerHeight'), true, 'Desktop page fit');
+      assert.equal(await evaluate('document.querySelector(".automation-case-heading").getBoundingClientRect().top >= 0'), true);
+    }
+    await evaluate('(() => {const input=document.querySelector("#automation-case-search");input.focus();input.value="Question about an invoice";input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+    assert.equal(await evaluate('document.querySelectorAll(".automation-case:not([hidden])").length'), 1);
+    assert.equal(await evaluate('document.activeElement.id'), 'automation-case-search');
+    await evaluate('(() => {const input=document.querySelector("#automation-case-search");input.value="no-such-case";input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+    assert.equal(await evaluate('document.querySelector(".automation-no-cases").hidden'), false);
+    await evaluate('(() => {const input=document.querySelector("#automation-case-search");input.value="";input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+    assert.ok(await evaluate('document.querySelectorAll(".automation-case:not([hidden])").length > 5'));
+    await capture('automation-case-mobile', 390, 900);
+    assert.equal(await evaluate('document.querySelector(".automation-queue").getClientRects().length'), 0);
+    assert.ok(await evaluate('document.querySelector(".automation-case-detail").getClientRects().length > 0'));
+    await click('.automation-back');
+    await wait('location.hash==="#/office/automation"');
+    assert.ok(await evaluate('document.querySelector(".automation-queue").getClientRects().length > 0'));
+    await capture('automation-queue-mobile', 390, 900);
+    assert.deepEqual(errors, []);
+    passed('Reference-led automation workspace', 'Intercom queue/thread/context layout, desktop fit, visible source and audit history, manual outcome persistence, inline search and empty results, mobile list/detail navigation, and no visible dropdowns.');
+  } else if (designReview) {
+    const routes = [
+      ...['overview', 'work', 'intake', 'schedule', 'calendar', 'participants', 'staff', 'enquiries', 'calls', 'agreements', 'visits', 'map', 'fees', 'automation', 'finance', 'shiftcare', 'verification'].map(section => `office/${section}`),
+      ...['today', 'map', 'calendar', 'availability', 'review'].map(section => `worker/${section}`),
+      ...['home', 'bookings', 'map', 'documents', 'intake'].map(section => `client/${section}`),
+      'public/book', 'public/intake', 'office/enquiries/ENQ-1043', 'office/participants/PAR-101', 'office/schedule/BKG-499', 'office/agreements/AGR-301', 'office/visits/VIS-701', 'worker/today/BKG-499'
+    ];
+    for (const destination of routes) {
+      await evaluate(`location.hash=${JSON.stringify('#/' + destination)}`);
+      await wait(destination.startsWith('public/') ? '!!document.querySelector(".public-main")' : '!!document.querySelector("#main-content")');
+      await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+      if (destination === 'office/verification') await wait('!!document.querySelector("#integration-proof-dashboard h1")');
+      assert.ok(await evaluate('!!document.querySelector("h1")'), `${destination}: heading`);
+      await capture('design-' + destination.replaceAll('/', '-'), 1440, 1000);
+      await capture('design-' + destination.replaceAll('/', '-') + '-mobile', 390, 900);
+    }
+    passed('All workspace layouts', `${routes.length} office, worker, client, public and detail screens rendered at desktop and mobile widths without horizontal page overflow.`);
+    await route('office/schedule/BKG-503');
+    assert.equal(await evaluate('document.querySelectorAll(".split-workspace").length'), 0);
+    assert.equal(await evaluate('document.querySelectorAll(".record-page .grid-detail section.panel:not([hidden])").length'), 1);
+    await evaluate('Array.from(document.querySelectorAll(".section-button")).find(b=>b.textContent==="Manage this service").click()');
+    assert.equal(await evaluate('document.querySelector("[data-action=cancel-booking]").getClientRects().length > 0'), true);
+    await capture('design-booking-manage', 1440, 1000);
+    await capture('design-booking-manage-mobile', 390, 900);
+    await route('worker/today/BKG-499');
+    await evaluate('Array.from(document.querySelectorAll(".section-button")).find(b=>b.textContent==="Visit record").click()');
+    await evaluate('document.querySelector("[name=note]").value="Unsaved pagination review fixture"');
+    await evaluate('document.querySelector(".section-button").click()');
+    await evaluate('Array.from(document.querySelectorAll(".section-button")).find(b=>b.textContent==="Visit record").click()');
+    assert.equal(await evaluate('document.querySelector("[name=note]").value'), 'Unsaved pagination review fixture');
+    const originalState = await evaluate('localStorage.getItem("ocd-brilliance-operations-v1")');
+    await evaluate(`(() => {
+      const state=JSON.parse(localStorage.getItem('ocd-brilliance-operations-v1')) || structuredClone(window.OCD_DEMO_SEED);
+      const template=state.enquiries[0];
+      for(let i=0;i<25;i++) state.enquiries.push({...template,id:'PAGER-'+i,name:'Pagination fixture '+String(i).padStart(2,'0'),received:'2099-01-01'});
+      localStorage.setItem('ocd-brilliance-operations-v1',JSON.stringify(state));
+      window.dispatchEvent(new StorageEvent('storage',{key:'ocd-brilliance-operations-v1'}));
+    })()`);
+    await route('office/enquiries');
+    await evaluate('(() => {const input=document.getElementById("enquiry-search");input.value="Pagination fixture";input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+    assert.equal(await evaluate('document.querySelectorAll("tbody tr:not([hidden])").length'), 8);
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '1–8 of 25');
+    const firstPage = await evaluate('document.querySelector("tbody tr:not([hidden]) a").getAttribute("href")');
+    await click('.pagination button:last-child');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '9–16 of 25');
+    assert.notEqual(await evaluate('document.querySelector("tbody tr:not([hidden]) a").getAttribute("href")'), firstPage);
+    await click('.pagination button:last-child');
+    await click('.pagination button:last-child');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '25–25 of 25');
+    assert.equal(await evaluate('document.querySelector(".pagination button:last-child").disabled'), true);
+    await evaluate('(() => {const select=document.querySelector(".pagination select");select.value="16";select.dispatchEvent(new Event("change",{bubbles:true}));})()');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '1–16 of 25');
+    assert.ok(await evaluate('document.querySelector(".table-wrap").clientHeight <= innerHeight * .6 + 1'));
+    assert.equal(await evaluate('getComputedStyle(document.querySelector("thead th")).position'), 'sticky');
+    await capture('design-pagination-mobile', 390, 900);
+    await evaluate('(() => {const input=document.getElementById("enquiry-search");input.value="Pagination fixture 24";input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '1–1 of 1');
+    await evaluate('(() => {const input=document.getElementById("enquiry-search");input.value="No matching pagination fixture";input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '0 records');
+    assert.equal(await evaluate('document.querySelector(".pagination button:last-child").disabled'), true);
+    await evaluate('(() => {const input=document.getElementById("enquiry-search");input.value="";input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+    await evaluate(`(() => {${originalState === null ? "localStorage.removeItem('ocd-brilliance-operations-v1')" : `localStorage.setItem('ocd-brilliance-operations-v1',${JSON.stringify(originalState)})`};window.dispatchEvent(new StorageEvent('storage',{key:'ocd-brilliance-operations-v1'}));})()`);
+    passed('Focused records and pagination', 'Record actions are reachable through sections, unsaved notes survive section changes, 25 fictional rows paginate without overlap, last-page and empty boundaries disable navigation, page size resets to the beginning, and filtering updates the result count.');
+    await route('office/verification');
+    await evaluate(`(async () => {
+      const originalFetch = window.fetch;
+      const capture = {
+        capturedAt: new Date().toISOString(),
+        source: { method: 'fixture' },
+        account: { id: 'fixture', name: 'Pagination fixture', timeZone: 'UTC', role: 'admin' },
+        range: { from: '2026-10-01', to: '2026-10-14' },
+        proof: { status: 'not_run' }, gaps: [],
+        data: { participants: [], staff: [], notes: [], shifts: Array.from({length: 17}, (_, i) => ({id: 'SHIFT-'+i, clients: [], staff: []})) },
+        receipts: Array.from({length: 17}, (_, i) => ({tool: 'fixture_read_'+i, status: 'passed', complete: true}))
+      };
+      const run = {id: 'FIXTURE-RUN', sourceHash: 'fixture', complete: true, findings: Array.from({length: 12}, (_, i) => ({id: 'FINDING-'+i, title: 'Fictional finding '+i, owner: 'Fixture owner', shiftId: 'SHIFT-'+i}))};
+      window.fetch = async (...args) => String(args[0]) === '/api/integration-proof'
+        ? new Response(JSON.stringify({capture, captureHash: 'fixture', runs: [run], rest: {configured: false, missing: ['Fixture key']}, serverStorage: true}), {status: 200})
+        : originalFetch(...args);
+      try { await window.OCD_INTEGRATION_PROOF.mount(document.getElementById('integration-proof-dashboard')); }
+      finally { window.fetch = originalFetch; }
+    })()`);
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '1–5 of 12');
+    await click('.pagination button:last-child');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '6–10 of 12');
+    await click('[data-proof="tab"][data-id="records"]');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '1–8 of 17');
+    await click('.pagination button:last-child');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '9–16 of 17');
+    await click('[data-proof="tab"][data-id="calls"]');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '1–8 of 17');
+    await click('[data-proof="tab"][data-id="records"]');
+    assert.equal(await evaluate('document.querySelector(".pagination-summary").textContent'), '9–16 of 17');
+    assert.equal(await evaluate('document.querySelectorAll(".pagination").length'), 1);
+    await capture('design-integration-pagination', 1440, 1000);
+    await capture('design-integration-pagination-mobile', 390, 900);
+    passed('Asynchronous integration pagination', 'Fictional findings and capture tables paginate after loading and tab changes, keep each table page independently and avoid duplicate footers. No native calls were made.');
+    await route('office/overview');
+    await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+    await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    assert.equal(await evaluate('Array.from(document.querySelectorAll(".nav-list a")).filter(e=>!e.closest("details") || e.closest("details").open).length'), 6);
+    await evaluate('document.querySelector(".nav-disclosure summary").focus()');
+    assert.equal(await evaluate('document.activeElement.matches(".nav-disclosure summary")'), true);
+    await command('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', text: '\r', windowsVirtualKeyCode: 13 });
+    await command('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await wait('document.querySelector(".nav-disclosure").open');
+    await route('office/agreements');
+    assert.equal(await evaluate('document.querySelector(".nav-link.active").closest("details").open'), true);
+    await route('office/intake');
+    await click('.context-help summary');
+    assert.equal(await evaluate('document.querySelector(".context-help").open'), true);
+    await evaluate('document.querySelector(".account-menu summary").focus()');
+    await command('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', text: '\r', windowsVirtualKeyCode: 13 });
+    await command('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await wait('document.querySelector(".account-menu").open');
+    assert.notEqual(await evaluate('getComputedStyle(document.activeElement).outlineStyle'), 'none');
+    await capture('design-help-and-account', 390, 900);
+    await route('office/work');
+    for (const filter of ['Cover', 'Intake', 'Checks', 'Messages', 'All']) {
+      await click(`[data-action="work-filter"][data-value="${filter}"]`);
+      assert.equal(await evaluate(`document.querySelector('[data-action="work-filter"][data-value="${filter}"]').getAttribute('aria-pressed')`), 'true');
+    }
+    await click('[data-action="mobile-menu"]');
+    await wait('document.querySelector("#modal").open');
+    assert.equal(await evaluate('document.querySelectorAll(".mobile-menu-list a").length'), 17);
+    await command('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+    await command('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+    await wait('!document.querySelector("#modal").open');
+    await capture('design-work-320', 320, 900);
+    await route('office/overview');
+    await evaluate('document.documentElement.style.fontSize="200%"');
+    await capture('design-home-large-text', 390, 900);
+    assert.equal(await evaluate('Array.from(document.querySelectorAll(".nav-list .nav-link")).filter(e=>e.getClientRects().length && getComputedStyle(e).display!=="none").every(e=>{const r=e.getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight;})'), true, 'Enlarged mobile navigation stays inside the viewport');
+    await evaluate('document.documentElement.style.fontSize=""');
+    await command('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+    assert.ok(parseFloat(await evaluate('getComputedStyle(document.querySelector(".nav-link")).transitionDuration')) < .02);
+    assert.deepEqual(errors, []);
+    assert.equal(requests.some(r => r.host.includes('shiftcare') && !['GET', 'HEAD'].includes(r.method)), false);
+    passed('Navigation, keyboard and reading support', 'Six visible daily destinations; secondary routes expand for the selected page; native help/account disclosures work by keyboard, all five work filters work, mobile More exposes every office route, 320px and doubled-text views reflow, and reduced motion is respected.');
+  } else if (intakeHandoff) {
+    await route('office/intake');
+    await click('[data-action="sample-intake"]');
+    await wait("!!document.querySelector('[data-form=intake-save]')");
+    assert.ok((await evaluate('document.querySelector("#intake-preview").textContent')).includes('Automatic checks completed'));
+    assert.equal(await evaluate('document.activeElement.id'), 'intake-source');
+    assert.equal(await evaluate('document.querySelectorAll("details").length'), 0);
+    assert.equal(await evaluate('Array.from(document.querySelectorAll("select")).filter(e=>e.getClientRects().length).length'), 0);
+    assert.ok((await evaluate("document.querySelector('#intake-source').value")).includes('Fictional presentation intake'));
+    await capture('intake-capture-desktop');
+    await submit('[data-form="intake-save"]', {});
+    await wait("!!document.querySelector('[data-form=intake-review]')");
+    const id = await evaluate("document.querySelector('[data-form=intake-review]').dataset.id");
+    assert.equal(await evaluate('document.querySelectorAll("[data-intake-section]:not([hidden])").length'), 1);
+    await evaluate('document.querySelector("[data-form=intake-review] [name=notes]").value="Unsaved tab-switch check"');
+    for (const section of ['handoff', 'verify', 'followup', 'activity', 'review']) {
+      await click(`[data-action="intake-section"][data-value="${section}"]`);
+      assert.equal(await evaluate('document.querySelectorAll("[data-intake-section]:not([hidden])").length'), 1);
+      assert.equal(await evaluate(`document.querySelector('[data-intake-section="${section}"]').getClientRects().length > 0`), true);
+      assert.equal(await evaluate(`document.querySelector('[data-action="intake-section"][data-value="${section}"]').getAttribute('aria-pressed')`), 'true');
+    }
+    assert.equal(await evaluate('document.querySelector("[data-form=intake-review] [name=notes]").value'), 'Unsaved tab-switch check');
+    passed('Focused intake sections', 'Only one section is visible at a time; all five navigation buttons work and preserve unsaved review fields.');
+    assert.equal(await evaluate("document.querySelector('[data-form=server-record] [name=status] option[value=\"Ready for ShiftCare\"]').disabled"), true);
+    await submit('[data-form="intake-review"]', { email: '', phone: '', sourceReviewed: true });
+    await wait("!!document.querySelector('[data-form=intake-review] .field-error')");
+    await submit('[data-form="intake-review"]', { name: 'Alex Reviewed', email: 'alex.intake@example.test', sourceReviewed: true }, '[value="review"]');
+    await wait("!!document.querySelector('[data-action=ready-intake]')");
+    assert.equal(await evaluate("!!document.querySelector('[data-form=intake-verify]')"), false);
+    await submit('[data-form="intake-review"]', { sourceReviewed: true }, '[value="ready"]');
+    await wait("!!document.querySelector('[data-form=intake-verify]')");
+    assert.equal(await evaluate("document.querySelector('[data-form=server-record] [name=status]').value"), 'Ready for ShiftCare');
+    assert.equal(await evaluate('document.querySelector("[data-intake-section]:not([hidden])").dataset.intakeSection'), 'handoff');
+    await click('[data-action="intake-section"][data-value="review"]');
+    assert.ok((await evaluate("document.querySelector('.intake-source').innerText")).includes('Alex Demo'));
+    await capture('intake-review-desktop');
+    await capture('intake-review-mobile', 390, 900);
+    await click('[data-action="intake-section"][data-value="handoff"]');
+    await click('[data-native-match]');
+    await click('[data-action="approve-intake-handoff"]');
+    await wait("!document.querySelector('[data-action=approve-intake-handoff]')");
+    await evaluate("Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => { window.intakeCopied = text; } } })");
+    await click('[data-action="copy-intake-field"][data-value="name"]');
+    await wait("window.intakeCopied === 'Alex Reviewed'");
+    await click('[data-action="copy-intake-handoff"]');
+    await wait("window.intakeCopied?.startsWith('SHIFTCARE MANUAL HANDOFF')");
+    assert.ok((await evaluate('window.intakeCopied')).includes('Manual entry; no ShiftCare sync'));
+    await evaluate("navigator.clipboard.writeText = async () => { throw new Error('Clipboard denied'); }");
+    await click('[data-action="copy-intake-field"][data-value="email"]');
+    await wait("!!document.querySelector('#modal[open] .copy-fallback')");
+    assert.equal(await evaluate("document.querySelector('.copy-fallback').value"), 'alex.intake@example.test');
+    await command('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+    await command('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+    await wait("!document.querySelector('#modal').open");
+    await capture('intake-handoff-mobile', 390, 900, '.intake-followup');
+    await click('[data-action="intake-section"][data-value="verify"]');
+    await submit('[data-form="intake-verify"]', { shiftCareId: 'SC-FICTIONAL-DEMO', profileChecked: true });
+    await wait("!!document.querySelector('.verification-receipt')");
+    assert.ok((await evaluate("document.querySelector('.verification-receipt').innerText")).includes('Staff manual verification'));
+    await command('Page.reload', { ignoreCache: true });
+    await wait("!!document.querySelector('.verification-receipt')");
+    assert.equal(await evaluate("document.querySelector('[data-form=intake-review] fieldset').disabled"), true);
+    assert.equal(await evaluate(`(JSON.parse(localStorage.getItem('ocd-brilliance-operations-v1'))?.enquiries || []).some(e => e.id === ${JSON.stringify(id)})`), false);
+    await capture('intake-verified-desktop');
+    await route('office/work');
+    await click('[data-action="work-filter"][data-value="Intake"]');
+    assert.equal(await evaluate(`Array.from(document.querySelectorAll('.work-item')).some(e => e.textContent.includes(${JSON.stringify(id)}))`), false);
+    await route('office/enquiries');
+    assert.equal(await evaluate(`!!document.querySelector('a[href="#/office/enquiries/${id}"]')`), true);
+    await route('office/intake');
+    await click('[data-action="sample-intake"]');
+    await submit('[data-form="intake-extract"]', {});
+    await wait("!!document.querySelector('.intake-warning a')");
+    assert.equal(await evaluate("document.querySelector('[data-form=intake-save] button').disabled"), true);
+    await capture('intake-duplicate-mobile', 320, 900);
+    await command('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+    await command('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+    assert.notEqual(await evaluate('getComputedStyle(document.activeElement).outlineStyle'), 'none');
+    const documentResults = await evaluate(`(async () => {
+      const lines = ['Full name: PDF Person', 'Email: pdf@example.test', 'Service: Transport', 'Suburb: Joondalup', 'Postcode: 6027'];
+      const pdfFile = (objects, name) => {
+        let data = '%PDF-1.4\\n'; const offsets = [0];
+        objects.forEach((object, index) => { offsets.push(data.length); data += (index + 1) + ' 0 obj\\n' + object + '\\nendobj\\n'; });
+        const xref = data.length;
+        data += 'xref\\n0 ' + offsets.length + '\\n0000000000 65535 f \\n' + offsets.slice(1).map(offset => String(offset).padStart(10, '0') + ' 00000 n \\n').join('');
+        data += 'trailer\\n<< /Size ' + offsets.length + ' /Root 1 0 R >>\\nstartxref\\n' + xref + '\\n%%EOF';
+        return new File([Uint8Array.from(data, c => c.charCodeAt(0))], name, { type: 'application/pdf' });
+      };
+      const content = 'BT /F1 16 Tf 50 750 Td ' + lines.map((line, index) => (index ? '0 -30 Td ' : '') + '(' + line + ') Tj').join(' ') + ' ET';
+      const digital = pdfFile(['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [3 0 R] /Count 1 >>', '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>', '<< /Length ' + content.length + ' >>\\nstream\\n' + content + '\\nendstream'], 'fictional-digital.pdf');
+      const extracted = await window.OCD_DOCUMENTS.extract(digital);
+      const canvas = document.createElement('canvas'); canvas.width = 1000; canvas.height = 350;
+      const context = canvas.getContext('2d'); context.fillStyle = 'white'; context.fillRect(0, 0, 1000, 350); context.fillStyle = 'black'; context.font = '30px Arial';
+      lines.forEach((line, index) => context.fillText(line, 30, 50 + index * 55));
+      const jpeg = atob(canvas.toDataURL('image/jpeg', .95).split(',')[1]);
+      const imageContent = 'q 550 0 0 193 30 550 cm /Image Do Q';
+      const scanned = pdfFile(['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [3 0 R] /Count 1 >>', '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /XObject << /Image 4 0 R >> >> /Contents 5 0 R >>', '<< /Type /XObject /Subtype /Image /Width 1000 /Height 350 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jpeg.length + ' >>\\nstream\\n' + jpeg + '\\nendstream', '<< /Length ' + imageContent.length + ' >>\\nstream\\n' + imageContent + '\\nendstream'], 'fictional-scanned.pdf');
+      const ocr = await window.OCD_DOCUMENTS.extract(scanned);
+      const response = await fetch('/api/workflow?action=draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'PDF Person', email: 'pdf@example.test', service: 'Transport', suburb: 'Joondalup', postcode: '6027', source: 'Text upload', sourceText: extracted.text, originalDocument: extracted.originalDocument, idempotencyKey: 'browser-document-001' }) });
+      const saved = await response.json();
+      return { digitalText: extracted.text, scanText: ocr.text, status: response.status, id: saved.record?.id, originalName: saved.record?.onboarding.originalDocument?.name };
+    })()`);
+    assert.ok(documentResults.digitalText.includes('Full name: PDF Person'));
+    assert.ok(documentResults.scanText.includes('PDF Person'));
+    assert.equal(documentResults.status, 201);
+    assert.equal(documentResults.originalName, 'fictional-digital.pdf');
+    await command('Page.reload', { ignoreCache: true });
+    await wait("!!document.querySelector('#intake-source')");
+    await route('office/enquiries/' + documentResults.id);
+    await wait("!!document.querySelector('[data-document-pdf][data-rendered=true] canvas')");
+    await capture('intake-original-document-desktop');
+    passed('Digital PDF and scanned PDF', 'PDF.js extracted digital text; Tesseract processed an image-only PDF using local language assets; the original PDF persisted and appeared beside the draft after reload.');
+    assert.deepEqual(errors, []);
+    assert.equal(requests.some(r => r.host.includes('shiftcare') && !['GET', 'HEAD'].includes(r.method)), false);
+    passed('Reviewed intake and manual handoff', 'Original source, missing contact gate, staff review, ready status, per-field/full copying and clipboard denial fallback were exercised with fictional data.');
+    passed('Verification and persistence', 'Staff check and reference persisted after reload; completed fields were disabled and shared intake data stayed out of browser localStorage.');
+    passed('Duplicate recovery and responsive keyboard flow', 'Duplicate extraction linked to the existing intake and prevented another draft; desktop, 390px and 320px captures had no horizontal page overflow; keyboard focus and dialog Escape were checked.');
+  } else if (integrationProof) {
     await wait("!!document.querySelector('[data-proof=run-mcp]') && !document.querySelector('[data-proof=run-mcp]').disabled");
     const dashboard = await evaluate("document.querySelector('#integration-proof-dashboard').innerText");
     assert.ok(dashboard.includes(nativeCapture.account.id));
     assert.ok(dashboard.includes(nativeCapture.account.timeZone));
     assert.ok(dashboard.includes('Authenticated MCP capture'));
-    assert.ok(dashboard.includes('does not hold the MCP login or poll ShiftCare'));
+    assert.equal(await evaluate('document.querySelectorAll(".proof-source details").length'), 0);
+    assert.ok((await evaluate("document.querySelector('#integration-proof-dashboard').innerText")).includes('does not hold the MCP login or poll ShiftCare'));
     assert.equal(await evaluate("document.querySelector('[data-proof-rest] button').disabled"), true);
     passed('Real capture and honest connection status', 'Dashboard identifies the authenticated capture, account, timestamp and time zone; website REST reads remain disabled without a separate key.');
 

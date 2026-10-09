@@ -13,6 +13,11 @@ async function build() {
   await fs.copyFile(path.join(root, "workspace/index.html"), path.join(output, "index.html"));
   await fs.copyFile(path.join(root, "index.html"), path.join(output, "presentation.html"));
   await fs.copyFile(path.join(root, "workspace/app.js"), path.join(output, "workspace/app.js"));
+  await fs.copyFile(path.join(root, "workspace/ui-layout.js"), path.join(output, "workspace/ui-layout.js"));
+  await fs.copyFile(path.join(root, "workspace/intake-documents.js"), path.join(output, "workspace/intake-documents.js"));
+  for (const directory of ['pdfjs-dist/build', 'pdfjs-dist/cmaps', 'pdfjs-dist/standard_fonts', 'tesseract.js/dist', 'tesseract.js-core', '@tesseract.js-data/eng/4.0.0_best_int']) {
+    await fs.cp(path.join(root, 'node_modules', directory), path.join(output, 'vendor', directory), { recursive: true });
+  }
   await fs.copyFile(path.join(root, "workspace/shiftcare.js"), path.join(output, "workspace/shiftcare.js"));
   for (const file of ["automation-engine.js", "automation.js", "automation.css", "integration-proof.js", "integration-proof.css"]) await fs.copyFile(path.join(root, "workspace", file), path.join(output, "workspace", file));
   await fs.copyFile(path.join(root, "workspace/data.js"), path.join(output, "workspace/data.js"));

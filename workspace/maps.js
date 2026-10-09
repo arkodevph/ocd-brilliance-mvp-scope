@@ -21,6 +21,12 @@
     check: '<path d="m5 12 4 4L19 6"/>'
   };
   const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${glyphs[name] || glyphs.map}</svg>`;
+  const clockLabel = value => {
+    const match = /^(\d{1,2}):(\d{2})$/.exec(value || "");
+    if (!match) return value || "—";
+    const hour = Number(match[1]);
+    return `${hour % 12 || 12}:${match[2]} ${hour < 12 ? "AM" : "PM"}`;
+  };
   const clamp = value => Math.max(0, Math.min(1, Number(value) || 0));
   const dateLabel = date => new Intl.DateTimeFormat("en-AU", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" }).format(new Date(`${date}T12:00:00Z`));
   const validCoordinates = coords => Array.isArray(coords) && coords.length === 2 && coords.every(Number.isFinite) && Math.abs(coords[0]) <= 180 && Math.abs(coords[1]) < 85;
@@ -102,8 +108,8 @@
   function page(ctx) {
     const pref = prepare(ctx);
     const titles = { office: ["Office / Booking map", "Booking map", "See service locations, assignments and worker arrivals in one place."], worker: ["Worker / Visit map", "My visit map", "Check your bookings and share a demo journey with the office and participant."], client: ["Client portal / Worker arrival", "My booking & arrival", "See your own service location and an arrival estimate, without a worker route or exact location."] };
-    const [eyebrow, title, subtitle] = titles[ctx.area];
-    return `<header class="page-header"><div><span class="eyebrow">${eyebrow}</span><h1>${title}</h1><p>${subtitle}</p></div><span class="map-demo-badge">${icon("car")} Simulated journey</span></header>
+    const [, title, subtitle] = titles[ctx.area];
+    return `<header class="page-header"><div><h1>${title}</h1><details class="context-help"><summary>Map help</summary><p>${subtitle}</p></details></div><span class="map-demo-badge">${icon("car")} Simulated journey</span></header>
       <section id="booking-map-workspace" data-map-area="${ctx.area}" aria-label="${title}">
         <div class="map-toolbar"><div class="map-date-control"><button class="btn map-day-button" data-map-action="previous-day" aria-label="Previous service day" type="button">‹</button><label for="map-service-date">Service date<input id="map-service-date" type="date" value="${pref.date}" required></label><button class="btn map-day-button" data-map-action="next-day" aria-label="Next service day" type="button">›</button></div>
         ${ctx.area === "office" ? `<label class="map-worker-filter" for="map-worker-filter">Assignment<select id="map-worker-filter"><option value="">All workers</option>${ctx.state.workers.map(w => `<option value="${esc(w.id)}" ${pref.worker === w.id ? "selected" : ""}>${esc(w.name)}</option>`).join("")}</select></label>` : `<span class="map-scope-note">${icon("check")} ${ctx.area === "worker" ? "Only your assigned services" : "Only your participant’s bookings"}</span>`}
@@ -116,8 +122,8 @@
           <div class="map-selected-label" data-map-selected-label hidden></div>
         </div><footer class="map-footer"><span class="map-connection-state" data-map-connection>Mapbox · 3D service locations</span><div class="map-legend"><span><i></i>Service location</span>${ctx.area === "client" ? "" : '<span><i class="worker"></i>Demo worker</span>'}<span><i class="cover"></i>Needs cover</span></div>${ctx.area === "office" ? '<button class="link-button" type="button" data-map-action="connection">Map connection</button>' : ""}</footer></section>
         <aside class="map-side-panel"><section class="map-booking-section"><div class="section-heading"><h2>${ctx.area === "office" ? "Service bookings" : "Your bookings"}</h2><span class="map-booking-count" data-map-count></span></div><div class="map-booking-list" data-map-list></div></section><section class="map-arrival-section" data-map-detail></section></aside></div>
-        <div class="map-demo-note">${icon("car")}<span>Fictional locations and accelerated playback; no real person is tracked. Only Worker can start a consented journey. Client sees their own service map and estimate, with no worker marker or route.</span></div>
-        ${ctx.area === "office" ? '<section class="panel map-connection-panel" data-map-settings hidden><h2>Connect Mapbox</h2><p class="muted">Use a public token from your <a class="map-account-link" href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer">Mapbox account</a>. This connection is saved only in this browser.</p><form data-map-form="connection"><label for="map-public-token">Public access token<input id="map-public-token" name="token" type="password" placeholder="pk.…" autocomplete="off" spellcheck="false" required></label><p class="field-error" data-map-token-error role="alert"></p><div class="button-row"><button class="btn primary" type="submit">Connect map</button><button class="btn" type="button" data-map-action="clear-token">Use configured connection</button></div></form></section>' : ""}
+        <div class="map-demo-note">${icon("car")}<span>Demo · no real tracking. Workers start with consent; clients see their own service and ETA only.</span></div>
+        ${ctx.area === "office" ? '<section class="panel map-connection-panel" data-map-settings hidden><h2>Connect Mapbox</h2><p class="muted">Use a public token from your <a class="map-account-link" href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer">Mapbox account</a>. This connection is saved only in this browser.</p><form data-map-form="connection"><label for="map-public-token">Public access token<input id="map-public-token" name="token" type="password" placeholder="pk.…" autocomplete="off" spellcheck="false" required></label><p class="field-error" data-map-token-error role="alert"></p><div class="button-row"><button class="btn primary" type="submit">Connect map</button><button class="btn" type="button" data-map-action="clear-token">Use configured connection</button><button class="btn" type="button" data-map-action="connection">Close</button></div></form></section>' : ""}
       </section>`;
   }
 
@@ -125,7 +131,7 @@
     if (!b) return "";
     const snap = snapshot(state, b);
     const worker = state.workers.find(w => w.id === b.workerId);
-    return `<a class="arrival-preview" href="#/client/map/${esc(b.id)}" data-arrival-preview="${esc(b.id)}"><span class="arrival-preview-icon">${icon("car")}</span><span><small>YOUR NEXT SERVICE · ${dateLabel(b.date)}</small><strong data-arrival-title>${phaseLabel(b, snap)}</strong><span>${b.status === "Needs cover" ? "Office arranging cover" : esc(worker?.name || "Your worker")} · <span data-arrival-time>${snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${esc(b.start)}`}</span></span><small>Simulated arrival · view status and ETA</small></span>${icon("arrow")}</a>`;
+    return `<a class="arrival-preview" href="#/client/map/${esc(b.id)}" data-arrival-preview="${esc(b.id)}"><span class="arrival-preview-icon">${icon("car")}</span><span><small>YOUR NEXT SERVICE · ${dateLabel(b.date)}</small><strong data-arrival-title>${phaseLabel(b, snap)}</strong><span>${b.status === "Needs cover" ? "Office arranging cover" : esc(worker?.name || "Your worker")} · <span data-arrival-time>${snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${esc(clockLabel(b.start))}`}</span></span><small>Simulated arrival · view status and ETA</small></span>${icon("arrow")}</a>`;
   }
 
   function ensureSdk() {
@@ -205,14 +211,14 @@
       this.query("[data-map-stats]").innerHTML = `<div><span>Services on this day</span><strong>${rows.length}</strong></div><div><span>Workers on the way</span><strong>${rows.filter(b => snapshot(this.ctx.state, b).phase === "en-route").length}</strong></div><div><span>${this.ctx.area === "client" ? "Participant" : this.ctx.area === "worker" ? "Assigned worker" : "Cover needed"}</span><strong class="map-stat-name">${this.ctx.area === "client" ? esc(this.ctx.state.participants.find(p => p.id === this.ctx.clientId)?.name) : this.ctx.area === "worker" ? esc(this.ctx.state.workers.find(w => w.id === this.ctx.workerId)?.name) : rows.filter(b => b.status === "Needs cover").length}</strong></div>`;
       this.query("[data-map-list]").innerHTML = rows.length ? rows.map((b, index) => {
         const p = locationFor(this.ctx, b), w = workerFor(this.ctx, b), snap = snapshot(this.ctx.state, b);
-        return `<button class="map-booking-card ${this.pref.selected === b.id ? "selected" : ""}" type="button" data-map-booking="${esc(b.id)}" aria-pressed="${this.pref.selected === b.id}"><span class="map-booking-number">${index + 1}</span><span class="map-booking-copy"><strong>${this.ctx.area === "client" ? esc(b.service) : esc(p?.name || "Participant")}</strong><span>${esc(b.start)}–${esc(b.end)} · ${esc(p?.suburb || "Location pending")}</span><small>${b.status === "Needs cover" ? "Office arranging cover" : esc(w?.name || "Worker pending")}</small><span class="map-booking-phase" data-booking-phase="${esc(b.id)}">${phaseLabel(b, snap)}</span></span><span class="map-card-chevron">›</span></button>`;
+        return `<button class="map-booking-card ${this.pref.selected === b.id ? "selected" : ""}" type="button" data-map-booking="${esc(b.id)}" aria-pressed="${this.pref.selected === b.id}"><span class="map-booking-number">${index + 1}</span><span class="map-booking-copy"><strong>${this.ctx.area === "client" ? esc(b.service) : esc(p?.name || "Participant")}</strong><span>${esc(clockLabel(b.start))}–${esc(clockLabel(b.end))} · ${esc(p?.suburb || "Location pending")}</span><small>${b.status === "Needs cover" ? "Office arranging cover" : esc(w?.name || "Worker pending")}</small><span class="map-booking-phase" data-booking-phase="${esc(b.id)}">${phaseLabel(b, snap)}</span></span><span class="map-card-chevron">›</span></button>`;
       }).join("") : '<div class="map-no-bookings"><strong>No bookings for this day</strong><p>Choose another service date to see bookings on the map.</p></div>';
       this.renderDetails();
       const selectedLabel = this.query("[data-map-selected-label]");
       const b = this.selected, p = b && locationFor(this.ctx, b);
       const selectedSnap = snapshot(this.ctx.state, b);
       selectedLabel.hidden = !b;
-      selectedLabel.innerHTML = b ? `${icon("pin")}<span><strong>${esc(p?.suburb || "Service location pending")}</strong><small>${esc(b.start)}–${esc(b.end)} · ${esc(b.service)}</small>${selectedSnap.phase === "en-route" || selectedSnap.phase === "arrived" ? `<small class="map-overlay-arrival" data-map-overlay-arrival>${selectedSnap.phase === "arrived" ? "Worker has arrived" : "Demo arrival · " + selectedSnap.remainingMinutes + " min away"}</small>` : ""}</span>` : "";
+      selectedLabel.innerHTML = b ? `${icon("pin")}<span><strong>${esc(p?.suburb || "Service location pending")}</strong><small>${esc(clockLabel(b.start))}–${esc(clockLabel(b.end))} · ${esc(b.service)}</small>${selectedSnap.phase === "en-route" || selectedSnap.phase === "arrived" ? `<small class="map-overlay-arrival" data-map-overlay-arrival>${selectedSnap.phase === "arrived" ? "Worker has arrived" : "Demo arrival · " + selectedSnap.remainingMinutes + " min away"}</small>` : ""}</span>` : "";
       this.refreshMarkers();
     }
 
@@ -224,15 +230,15 @@
       this.lastRunning = snap.running;
       const enRoute = snap.phase === "en-route", arrived = snap.phase === "arrived", allowed = trackingAllowed(b);
       const title = phaseLabel(b, snap);
-      const eta = snap.phase === "stale" ? "Unavailable" : enRoute ? `${snap.remainingMinutes}<span> min</span>` : arrived ? "Arrived" : allowed ? esc(b.start) : "—";
+      const eta = snap.phase === "stale" ? "Unavailable" : enRoute ? `${snap.remainingMinutes}<span> min</span>` : arrived ? "Arrived" : allowed ? esc(clockLabel(b.start)) : "—";
       const explanation = snap.phase === "stale" ? "The last estimate is too old. Arrival information is withdrawn; contact the office if the service is late." : b.status === "Needs cover" ? "The office will confirm the replacement worker. Arrival tracking will be available once the booking is confirmed." : b.status === "Cancelled" ? "This service was cancelled. No location is shared for this booking." : b.status === "Completed" ? "This visit is complete. Worker location sharing is off." : !allowed ? "Arrival tracking is available for confirmed services." : arrived ? "Your worker is at the demo service location. The visit record is completed separately." : enRoute ? "A sample worker estimate for this assigned service. This is not a live traffic or device location update." : "The arrival estimate appears when your assigned worker starts their journey.";
       let playback = "";
       if (allowed && !this.ctx.state.visits.some(v => v.bookingId === b.id && v.clockIn) && this.ctx.area === "worker") {
         playback = `<label class="journey-consent"><input type="checkbox" data-journey-consent ${this.ctx.state.journeys?.[b.id]?.consent ? "checked" : ""}><span>I agree to share an arrival estimate for this assigned service until arrival, cancellation or stop. My home origin and other participants are not shown to the client.</span></label><p class="field-error" data-journey-error hidden role="alert"></p><div class="map-playback"><span class="map-playback-label">${this.ctx.area === "worker" ? "JOURNEY CONTROLS · DEMO" : "ARRIVAL PREVIEW · DEMO"}</span><div class="button-row"><button class="btn primary" type="button" data-map-action="${snap.running ? "pause" : "play"}">${icon(snap.running ? "pause" : "play")} ${snap.running ? "Pause demo" : arrived ? "Replay demo" : enRoute ? "Play journey" : this.ctx.area === "worker" ? "Start journey (demo)" : "Preview arrival"}</button>${this.ctx.area === "worker" && (enRoute || snap.phase === "stale") ? '<button class="btn" type="button" data-map-action="arrive">Mark arrived</button><button class="link-button map-stop-sharing" type="button" data-map-action="stop">Stop sharing</button><button class="link-button" type="button" data-map-action="stale">Try stale update</button>' : ""}</div><small>Playback is accelerated. Location updates are simulated.</small></div>`;
       }
       this.query("[data-map-detail]").innerHTML = `<div class="map-worker-heading"><span class="avatar">${b.status === "Needs cover" ? "?" : esc(w?.initials || "—")}</span><span><small>${b.status === "Needs cover" ? "Assignment pending" : this.ctx.area === "client" ? "Your assigned worker" : this.ctx.area === "worker" ? "Your journey" : "Assigned worker"}</small><strong>${b.status === "Needs cover" ? "Awaiting cover" : esc(w?.name || "To be assigned")}</strong></span><span class="map-location-indicator ${enRoute ? "on" : ""}" aria-label="${enRoute ? "Simulated location available" : "Location sharing off"}"></span></div>
-        <div class="map-arrival-card ${enRoute || arrived ? "active" : ""}"><span class="map-arrival-status" data-map-arrival-status aria-live="polite">${title}</span><strong class="map-eta-value" data-map-eta>${eta}</strong><span class="map-eta-caption" data-map-eta-caption>${enRoute ? `Est. arrival ${esc(snap.arrivalTime)} AWST` : arrived ? "At the service location" : allowed ? "Scheduled service start · AWST" : dateLabel(b.date)}</span>${enRoute || arrived ? `<div class="map-journey-track"><span data-map-progress style="width:${Math.round(snap.progress * 100)}%"></span></div><div class="map-journey-steps"><span>On the way</span><span>Arrived</span></div>` : ""}<p>${explanation}</p></div>
-        <div class="map-booking-facts"><div><span>${icon("clock")}</span><span><small>Service booking</small><strong>${dateLabel(b.date)} · ${esc(b.start)}–${esc(b.end)}</strong></span></div><div><span>${icon("pin")}</span><span><small>Service location</small><strong>${esc(p?.address || "To be confirmed")}</strong><small>${validCoordinates(p?.location?.coordinates) ? "Approximate suburb location for this demo" : "Map coordinates have not been added"}</small></span></div></div>
+        <div class="map-arrival-card ${enRoute || arrived ? "active" : ""}"><span class="map-arrival-status" data-map-arrival-status aria-live="polite">${title}</span><strong class="map-eta-value" data-map-eta>${eta}</strong><span class="map-eta-caption" data-map-eta-caption>${enRoute ? `Est. arrival ${esc(clockLabel(snap.arrivalTime))} AWST` : arrived ? "At the service location" : allowed ? "Scheduled service start · AWST" : dateLabel(b.date)}</span>${enRoute || arrived ? `<div class="map-journey-track"><span data-map-progress style="width:${Math.round(snap.progress * 100)}%"></span></div><div class="map-journey-steps"><span>On the way</span><span>Arrived</span></div>` : ""}<p>${explanation}</p></div>
+        <div class="map-booking-facts"><div><span>${icon("clock")}</span><span><small>Service booking</small><strong>${dateLabel(b.date)} · ${esc(clockLabel(b.start))}–${esc(clockLabel(b.end))}</strong></span></div><div><span>${icon("pin")}</span><span><small>Service location</small><strong>${esc(p?.address || "To be confirmed")}</strong><small>${validCoordinates(p?.location?.coordinates) ? "Approximate suburb location for this demo" : "Map coordinates have not been added"}</small></span></div></div>
         <p class="map-route-source" data-map-route-source>${this.routeDescription()}</p>
         <div class="button-row map-focus-actions">${validCoordinates(p?.location?.coordinates) ? `<button class="btn small" type="button" data-map-action="focus">${icon("pin")} Service location</button>` : ""}${this.route ? `<button class="btn small" type="button" data-map-action="route">${icon("map")} Full route</button>` : ""}<a class="btn small" href="#/${this.ctx.area}/${this.ctx.area === "office" ? "schedule/" + esc(b.id) : this.ctx.area === "worker" ? "today/" + esc(b.id) : "bookings"}">Booking details</a></div>
         ${playback}<span class="map-update-note" data-map-update-note>${snap.phase === "stale" ? "Estimate withdrawn; no current update" : enRoute ? `Sample estimate updated ${new Date(this.ctx.state.journeys[b.id].updatedAt).toLocaleTimeString("en-AU")}; consent applies to this booking only` : "Location sharing is limited to this booking"}</span>`;
@@ -289,8 +295,8 @@
           this.query("[data-map-connection]").textContent = "Mapbox · 3D buildings available";
           for (const source of ["booking-route", "booking-travelled"]) this.map.addSource(source, { type: "geojson", data: lineData([]) });
           this.map.addLayer({ id: "route-casing", type: "line", source: "booking-route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#ffffff", "line-width": 9, "line-opacity": 0.92 } });
-          this.map.addLayer({ id: "route-line", type: "line", source: "booking-route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#4b80b1", "line-width": 5, "line-emissive-strength": 0.7 } });
-          this.map.addLayer({ id: "travelled-line", type: "line", source: "booking-travelled", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#08734c", "line-width": 5, "line-emissive-strength": 0.7 } });
+          this.map.addLayer({ id: "route-line", type: "line", source: "booking-route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#08734c", "line-width": 6, "line-emissive-strength": 0.7 } });
+          this.map.addLayer({ id: "travelled-line", type: "line", source: "booking-travelled", slot: "middle", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#06492f", "line-width": 6, "line-emissive-strength": 0.7 } });
           this.refreshMarkers(); this.drawRoute(); this.fitVisible();
         });
         this.map.on("error", event => {
@@ -306,7 +312,7 @@
           if (!this.ready && !this.disposed) this.fallback("The map is taking longer to load", "Check your connection or try connecting Mapbox again. Your booking details are still available.");
         }, 20000);
         this.resizeObserver?.disconnect();
-        this.resizeObserver = new ResizeObserver(() => this.map?.resize());
+        this.resizeObserver = new ResizeObserver(() => { this.map?.resize(); this.fitVisible(); });
         this.resizeObserver.observe(this.query(".booking-map-surface"));
       } catch (_) {
         if (!this.disposed && version === this.mapVersion) {
@@ -333,7 +339,7 @@
         el.type = "button";
         el.className = `map-service-pin ${group.some(item => item.b.id === this.pref.selected) ? "selected" : ""} ${item.b.status === "Needs cover" ? "cover" : item.b.status === "Cancelled" ? "inactive" : ""}`;
         el.textContent = group.length > 1 ? String(group.length) : String(item.i + 1);
-        el.setAttribute("aria-label", `${group.length > 1 ? group.length + " bookings at " : ""}${item.p.suburb}, ${item.b.start}. Select booking.`);
+        el.setAttribute("aria-label", `${group.length > 1 ? group.length + " bookings at " : ""}${item.p.suburb}, ${clockLabel(item.b.start)}. Select booking.`);
         el.addEventListener("click", () => this.selectBooking(item.b.id));
         this.markers.push(new window.mapboxgl.Marker({ element: el, anchor: "center" }).setLngLat(item.coords).addTo(this.map));
       });
@@ -405,9 +411,15 @@
       const coords = this.bookings.map(b => locationFor(this.ctx, b)?.location?.coordinates).filter(validCoordinates);
       if (this.route) coords.push(...this.route.geometry.coordinates);
       if (!coords.length) { this.map.easeTo({ center: officeFor(this.ctx).coordinates, zoom: 12, duration: 600 }); return; }
-      if (coords.length === 1) { this.map.easeTo({ center: coords[0], zoom: 15.7, duration: 600 }); return; }
       const bounds = coords.reduce((bounds, point) => bounds.extend(point), new window.mapboxgl.LngLatBounds(coords[0], coords[0]));
-      this.map.fitBounds(bounds, { padding: { top: 95, bottom: 95, left: 55, right: 55 }, maxZoom: 15.7, pitch: this.pref.threeD ? 60 : 0, bearing: this.pref.threeD ? -20 : 0, duration: 700 });
+      this.map.fitBounds(bounds, { padding: this.mapPadding(), retainPadding: false, maxZoom: 15.7, pitch: this.pref.threeD ? 60 : 0, bearing: this.pref.threeD ? -20 : 0, duration: 700 });
+    }
+
+    mapPadding() {
+      const surface = this.query(".booking-map-surface").getBoundingClientRect();
+      const panel = this.query(".map-side-panel").getBoundingClientRect();
+      const floating = panel.top < surface.bottom && panel.bottom > surface.top;
+      return { top: 85, bottom: 85, left: floating ? panel.right - surface.left + 24 : 40, right: 40 };
     }
 
     selectBooking(id) {
@@ -483,7 +495,7 @@
       if (action === "fit" || action === "route") this.fitVisible();
       if (action === "focus") {
         const coords = this.selected && locationFor(this.ctx, this.selected)?.location?.coordinates;
-        if (validCoordinates(coords)) this.map?.flyTo({ center: coords, zoom: 16.7, pitch: this.pref.threeD ? 65 : 0, duration: 900 });
+        if (validCoordinates(coords)) this.map?.flyTo({ center: coords, zoom: 16.7, padding: this.mapPadding(), retainPadding: false, pitch: this.pref.threeD ? 65 : 0, duration: 900 });
       }
       if (action === "connection" && this.ctx.area === "office") {
         const settings = this.query("[data-map-settings]"); settings.hidden = !settings.hidden;
@@ -540,7 +552,7 @@
         if (!b) return;
         const snap = snapshot(ctx.state, b);
         preview.querySelector("[data-arrival-title]").textContent = phaseLabel(b, snap);
-        preview.querySelector("[data-arrival-time]").textContent = snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${b.start}`;
+        preview.querySelector("[data-arrival-time]").textContent = snap.remainingMinutes ? `About ${snap.remainingMinutes} min away` : snap.phase === "arrived" ? "At your service location" : `Scheduled ${clockLabel(b.start)}`;
       }, 1000);
       active = { destroy: () => clearInterval(timer) };
     }
