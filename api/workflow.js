@@ -3,7 +3,7 @@ const { IntakeRepository } = require('../lib/intake-repository.cjs');
 const { IntakeService } = require('../lib/intake-service.cjs');
 const { WorkflowError, clean } = require('../lib/intake-domain.cjs');
 const { config: aiConfig, emailDraft, emailReview } = require('../lib/intake-ai.cjs');
-const { intakeOwner, configured, staffSession: cookie, sessionCookie, originAllowed, authenticate, staffRole, permits } = require('../lib/staff-auth.cjs');
+const { intakeOwner, ownerOptions, configured, staffSession: cookie, sessionCookie, originAllowed, authenticate, staffRole, permits } = require('../lib/staff-auth.cjs');
 const R = require('../lib/intake-rules.cjs');
 
 const storage = () => IntakeRepository.configured();
@@ -31,6 +31,11 @@ async function body(req) {
   try { parsed = JSON.parse(text || '{}'); }
   catch (_) { throw new WorkflowError(400, 'Request body must be valid JSON.'); }
   return validate(parsed);
+}
+async function assignmentBody(req) {
+  const data = await body(req);
+  if (!ownerOptions().some(user => user.email === data.owner)) throw new WorkflowError(422, 'Select an owner from the staff search results.');
+  return data;
 }
 function covered(postcode) {
   if (!configured() || !storage() || !intakeOwner()) return { status: 'unconfigured', message: 'Requests are not open yet. Please contact the office.' };
@@ -72,6 +77,7 @@ module.exports = async (req, res) => {
     if (!staff) return send(res, 401, { error: 'Sign in to continue.' });
     const permission = action === 'handoff-approve' || action === 'handoff-verify' ? 'approve' : req.method === 'GET' ? 'read' : 'write';
     if (!permits(staff, permission)) return send(res, 403, { error: 'Your role does not permit this action.' });
+    if (action === 'owners' && req.method === 'GET') return send(res, 200, { owners: ownerOptions() });
     if (action === 'staff-intake' && req.method === 'POST') {
       const data = await body(req);
       const name = clean(data.name, 120), email = clean(data.email, 200), phone = clean(data.phone, 40);
@@ -106,7 +112,7 @@ module.exports = async (req, res) => {
     }
     if (action === 'queue' && req.method === 'GET') return send(res, 200, { items: await service.queue() });
     if (action === 'handoff-approve' && req.method === 'POST') return send(res, 200, { record: await service.approve(await body(req), staff) });
-    if (action === 'handoff-failure' && req.method === 'PATCH') return send(res, 200, { record: await service.failure(await body(req), staff) });
+    if (action === 'handoff-failure' && req.method === 'PATCH') return send(res, 200, { record: await service.failure(await assignmentBody(req), staff) });
     if (action === 'draft-preview' && req.method === 'POST') {
       const data = await body(req);
       return send(res, 200, await service.previewText(data.text, data.ai === true));
@@ -116,10 +122,10 @@ module.exports = async (req, res) => {
       return send(res, 200, { rows: await service.previewCsv(data.text, data.mapping) });
     }
     if (action === 'draft' && req.method === 'POST') return send(res, 201, { record: await service.createDraft(await body(req), staff) });
-    if (action === 'draft-review' && req.method === 'PATCH') return send(res, 200, { record: await service.update(await body(req), staff, true) });
+    if (action === 'draft-review' && req.method === 'PATCH') return send(res, 200, { record: await service.update(await assignmentBody(req), staff, true) });
     if (action === 'handoff-verify' && req.method === 'PATCH') return send(res, 200, { record: await service.verify(await body(req), staff) });
     if (action === 'handoff' && req.method === 'GET') return send(res, 200, { text: await service.handoff(clean(url.searchParams.get('id'), 40), clean(url.searchParams.get('revision'), 100)) });
-    if (action === 'record' && req.method === 'PATCH') return send(res, 200, { record: await service.update(await body(req), staff) });
+    if (action === 'record' && req.method === 'PATCH') return send(res, 200, { record: await service.update(await assignmentBody(req), staff) });
     return send(res, 404, { error: 'Unknown action.' });
   } catch (error) {
     if (error instanceof WorkflowError) return send(res, error.status, { error: error.message, ...error.details });

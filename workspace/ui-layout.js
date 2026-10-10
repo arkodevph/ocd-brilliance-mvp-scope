@@ -3,6 +3,7 @@
   const pages = new Map();
   const views = new Map();
   const panels = { navigation: true, cases: true, details: false };
+  const navigationMedia = matchMedia('(max-width: 760px)');
   try { Object.assign(panels, JSON.parse(sessionStorage.getItem('ocd-workspace-panels') || '{}')); } catch {}
   const panelIcon = side => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M${side === 'right' ? 15 : 9} 4v16"/></svg>`;
   function reveal(element) {
@@ -41,8 +42,8 @@
     if (queue) desk.querySelector('.automation-case-layout').before(controls);
     function update() {
       shell.classList.toggle('navigation-folded', !panels.navigation);
-      sidebar.hidden = !panels.navigation;
-      const navigationLabel = panels.navigation ? 'Hide navigation' : 'Show navigation';
+      sidebar.hidden = !panels.navigation && navigationMedia.matches;
+      const navigationLabel = panels.navigation ? 'Collapse sidebar' : 'Expand sidebar';
       navigation.setAttribute('aria-label', navigationLabel); navigation.title = navigationLabel;
       navigation.setAttribute('aria-expanded', String(panels.navigation));
       buttons.forEach(({ key, region, label, button }) => {
@@ -56,6 +57,7 @@
       try { sessionStorage.setItem('ocd-workspace-panels', JSON.stringify(panels)); } catch {}
     }
     navigation.addEventListener('click', () => { panels.navigation = !panels.navigation; update(); reveal(shell.querySelector('main')); if (panels.navigation) reveal(sidebar); });
+    navigationMedia.onchange = update;
     update();
   }
 
@@ -78,25 +80,30 @@
       section.append(...details.childNodes); details.replaceWith(section);
     });
     root.querySelectorAll('select').forEach(select => {
+      if (select.closest('[data-owner-picker]')) return;
       if (select.dataset.visibleChoices) { select.refreshChoices?.(); return; }
       select.dataset.visibleChoices = 'true'; select.hidden = true; select.tabIndex = -1;
       const label = select.getAttribute('aria-label') || [...(select.labels?.[0]?.childNodes || [])].filter(n => n !== select).map(n => n.textContent).join(' ').trim() || select.name || 'Choose an option';
       const group = document.createElement('div'); group.className = 'visible-choices';
       group.setAttribute('role', 'group'); group.setAttribute('aria-label', label);
       const profiles = ['participantId', 'workerId'].includes(select.name);
+      const bookings = select.id === 'route-booking';
+      if (bookings) group.classList.add('booking-picker');
       if (profiles) group.classList.add('profile-picker');
       if (select.name === 'service') group.classList.add('service-picker');
       const results = document.createElement('div'); results.className = 'profile-picker-results';
       const empty = document.createElement('p'); empty.className = 'profile-picker-empty'; empty.textContent = `No matching ${select.name === 'workerId' ? 'workers' : 'participants'}. Try another name.`; empty.hidden = true;
-      if (profiles || select.options.length > 10) {
+      if (bookings) empty.textContent = 'No matching bookings. Try a name, booking ID or date.';
+      if (profiles || bookings || select.options.length > 10) {
         const search = document.createElement('input'); search.type = 'search'; search.placeholder = `Find ${label.toLowerCase()}`; search.setAttribute('aria-label', `Search ${label.toLowerCase()}`);
+        if (bookings) search.placeholder = 'Search by participant, booking ID or date';
         search.addEventListener('input', () => {
           group.querySelectorAll('button').forEach(button => { button.hidden = !button.textContent.toLowerCase().includes(search.value.trim().toLowerCase()); });
           empty.hidden = !!group.querySelector('button:not([hidden])');
         });
         group.append(search);
       }
-      if (profiles) { group.append(results, empty); empty.setAttribute('role', 'status'); }
+      if (profiles || bookings) { group.append(results, empty); empty.setAttribute('role', 'status'); }
       const choices = [...select.options].map(option => {
         const button = document.createElement('button'); button.type = 'button'; button.textContent = option.textContent; button.dataset.choice = option.value;
         if (profiles) {
@@ -116,7 +123,7 @@
           group.querySelector('.choice-error')?.remove(); update();
           select.dispatchEvent(new Event('change', { bubbles: true }));
         });
-        (profiles ? results : group).append(button); return { option, button };
+        (profiles || bookings ? results : group).append(button); return { option, button };
       });
       function update() { choices.forEach(({ option, button }) => { button.setAttribute('aria-pressed', String(option.selected)); const disabled = select.matches(':disabled') || option.disabled; if (button.disabled !== disabled) button.disabled = disabled; }); }
       select.refreshChoices = update;
@@ -126,6 +133,7 @@
         if (!group.querySelector('.choice-error')) { const error = document.createElement('p'); error.className = 'choice-error field-error'; error.textContent = 'Choose an option to continue.'; group.append(error); }
       });
       select.after(group); update();
+      if (bookings) requestAnimationFrame(() => { const selected = choices.find(({ option }) => option.selected)?.button; if (selected) results.scrollTop = selected.offsetTop; });
     });
     root.querySelectorAll('.header-actions, .button-row, .work-item-actions, .update-actions, .form-actions').forEach(actions => {
       const states = [...actions.children].filter(child => child.matches('.status'));

@@ -13,6 +13,8 @@
   const serviceTypes = ["Domestic assistance", "Support work", "Cleaning", "Transport", "Support coordination", "Nursing"];
   const ui = { enquiryQuery: "", enquiryStatus: "All statuses", participantQuery: "", participantTab: "Overview", callTab: "Bookings", publicTab: "Book", selectedSlot: "", publicConfirmation: null, areaCheck: null, workFilter: "All", scheduleWeekStart: "2026-10-05", scheduleDate: "2026-10-05", scheduleView: "day", scheduleWorkerQuery: "", scheduleStatus: "", calendarView: "week", calendarQuery: "", officeCalendarMonth: "2026-10-01", officeCalendarDate: "2026-10-05", workerCalendarMonth: "2026-10-01", workerCalendarDate: "2026-10-05", feeTab: "Routes", feePreview: null, routeBooking: "BKG-499", cancellationBooking: "BKG-506", workerId: "WRK-01", clientId: "PAR-101" };
   let state = load();
+  let employeeTab = "Overview";
+  let overviewWeekStart = demoWeek[0];
   let toastTimer;
   const intakeLabels = { name: "Full name", email: "Email", phone: "Phone", service: "Requested service", suburb: "Suburb", postcode: "Postcode", notes: "Intake notes" };
   let intakeText = "";
@@ -20,6 +22,7 @@
   let intakeLoadError = "";
   let intakeConfig = { rules: { requiredDocuments: [], mappings: {} }, extractionAllowed: false };
   let intakeQueue = [];
+  let intakeOwners = [];
   let intakeSection = { id: "", value: "" };
   let intakeDocument = null;
   let intakeSaveKey = crypto.randomUUID();
@@ -28,6 +31,14 @@
   let intakePreviewRequest = 0;
   let intakePreviewState = "idle";
   let intakePreviewError = "";
+
+  function ownerOptionsMarkup(selected, query = "") {
+    const matches = intakeOwners.filter(owner => `${owner.name} ${owner.email} ${owner.role}`.toLowerCase().includes(query.trim().toLowerCase()));
+    return `<option value="">${matches.length ? "Select a staff member" : "No matching staff"}</option>${matches.map(owner => `<option value="${attr(owner.email)}" ${owner.email === selected ? "selected" : ""}>${esc(owner.name)}${owner.name !== owner.email ? " · " + esc(owner.email) : ""} · ${esc(owner.role)}</option>`).join("")}`;
+  }
+  function ownerPicker(selected) {
+    return `<div data-owner-picker><label>Search staff<input type="search" data-owner-search placeholder="Name or email" autocomplete="off"></label><label>Owner<select name="owner" required>${ownerOptionsMarkup(selected)}</select></label><small>Select an office staff member from the results.</small></div>`;
+  }
 
   function localStatus(serverStatus) {
     return ({ New: "New", Contacting: "In progress", Reviewing: "In progress", "Ready for ShiftCare": "Ready for service", "Entered in ShiftCare": "Active", Closed: "Closed" })[serverStatus] || "New";
@@ -77,8 +88,9 @@
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Requests could not be loaded.");
       state.enquiries = [...result.records.map(serverEnquiry), ...state.enquiries.filter(enquiry => !enquiry.serverRecord)];
-      [intakeConfig, intakeQueue] = await Promise.all([
-        intakeRequest('rules'), intakeRequest('queue').then(result => result.items)
+      [intakeConfig, intakeQueue, intakeOwners] = await Promise.all([
+        intakeRequest('rules'), intakeRequest('queue').then(result => result.items),
+        intakeRequest('owners').then(result => result.owners)
       ]);
       intakeLoadError = "";
     } catch (reason) { intakeLoadError = reason.message; throw reason; }
@@ -101,6 +113,7 @@
       if (!p.location && seed?.location && p.address === seed.address && p.suburb === seed.suburb) p.location = structuredClone(seed.location);
     });
     data.coverOffers ||= [];
+    data.employeeReviews ||= [];
     data.updates ||= structuredClone(window.OCD_DEMO_SEED.updates);
     data.workerDocs ||= structuredClone(window.OCD_DEMO_SEED.workerDocs);
     for (const doc of window.OCD_DEMO_SEED.workerDocs) if (!data.workerDocs.some(d => d.id === doc.id)) data.workerDocs.push(structuredClone(doc));
@@ -165,6 +178,8 @@
       plus: '<path d="M12 5v14M5 12h14"/>',
       arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
       check: '<path d="m5 12 4 4L19 6"/>',
+      heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>',
+      star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>',
       alert: '<path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v4m0 4h.01"/>',
       activity: '<path d="M3 12h4l3-6 4 12 3-6h4"/>',
       home: '<path d="m3 11 9-8 9 8v10H3V11Z"/><path d="M9 21v-7h6v7"/>',
@@ -193,6 +208,7 @@
   }
   function crumb(label, parent, parentLabel) { return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/${parent}">${esc(parentLabel)}</a><span class="chev">/</span><span>${esc(label)}</span></nav>`; }
   function routeBreadcrumbs(area, section, detail) {
+    if (area === "office" && section === "staff" && detail) return "";
     if (area === "public" || !detail || (section === "intake" && detail === "new")) return "";
     const sectionLabel = nav[area]?.find(item => item[0] === section)?.[1] || "Workspace";
     const home = area === "office" ? "office/overview" : area === "worker" ? "worker/today" : "client/home";
@@ -226,7 +242,12 @@
   function completedBookingOptions(selected = "") { return state.bookings.filter(b => b.status === "Completed").map(b => `<option value="${attr(b.id)}" ${b.id === selected ? "selected" : ""}>${esc(b.id)} · ${esc(participant(b.participantId)?.name)} · ${dateLabel(b.date)}</option>`).join(""); }
   function cancelledBookingOptions(selected = "") { return state.bookings.filter(b => b.status === "Cancelled" && b.cancellation).map(b => `<option value="${attr(b.id)}" ${b.id === selected ? "selected" : ""}>${esc(b.id)} · ${esc(participant(b.participantId)?.name)} · ${dateLabel(b.date)}</option>`).join(""); }
   function viewSelect(current) { return `<label class="view-select"><span>View</span><select id="view-switch" aria-label="Explore a demo view">${[["office", "Office"], ["worker", "Worker"], ["client", "Client"], ["public", "Public"]].map(([value, label]) => `<option value="${value}" ${current === value ? "selected" : ""}>${label}</option>`).join("")}</select></label>`; }
-  function appToolsButton() { return `<button class="app-tools-trigger" data-app-tools-open type="button" aria-label="App and alerts">${icon("bell")}<span>App & alerts</span></button>`; }
+  function appToolsButton() {
+    const [area] = routeParts();
+    const recipient = area === "worker" ? `worker:${ui.workerId}` : area === "client" ? `client:${ui.clientId}` : "office";
+    const unread = state.updates.filter(update => update.to === recipient && !update.read).length;
+    return `<button class="app-tools-trigger" data-app-tools-open type="button" aria-label="App and alerts${unread ? `, ${unread} unread updates` : ""}" title="App and alerts${unread ? ` · ${unread} unread updates` : ""}"><span class="nav-icon">${icon("bell")}${unread ? '<i class="nav-notification" aria-hidden="true"></i>' : ""}</span><span>App & alerts</span></button>`;
+  }
 
   const nav = {
     office: [["overview", "Home", "home"], ["schedule", "Team schedule", "calendar"], ["work", "Work queue", "layers"], ["calendar", "Calendar", "calendar"], ["participants", "Participants", "people"], ["staff", "Staff", "people"], ["enquiries", "Enquiries", "inbox"], ["calls", "Discovery calls", "calendar"], ["agreements", "Agreements", "file"], ["visits", "Visit records", "clock"], ["map", "Booking map", "map"], ["fees", "Routes & fees", "route"]],
@@ -271,12 +292,13 @@
   function shell(area, section, content) {
     const title = nav[area]?.find(x => x[0] === section)?.[1] || "Workspace";
     const counts = { work: state.bookings.filter(b => b.status === "Needs cover").length + state.enquiries.filter(e => e.handoff && !["Entered in ShiftCare", "Closed"].includes(e.handoff.status)).length + state.requests.filter(r => r.status === "Pending").length + state.visits.filter(v => v.status !== "Reviewed").length + state.workerDocs.filter(d => d.status !== "Valid").length + state.inbound.filter(m => m.status === "New").length, enquiries: state.enquiries.filter(e => e.status === "New").length, schedule: state.bookings.filter(b => b.status === "Needs cover").length };
+    const navigationIcon = (glyph, count = 0) => `<span class="nav-icon">${icon(glyph)}${count ? '<i class="nav-notification" aria-hidden="true"></i>' : ""}</span>`;
     const primaryMobile = ["overview", "intake", "work", "participants"];
-    const navLink = ([path, label, glyph]) => `<a class="nav-link ${section === path ? "active" : ""} ${area === "office" && !primaryMobile.includes(path) ? "mobile-extra" : ""}" ${section === path ? 'aria-current="page"' : ""} href="#/${area}/${path}">${icon(glyph)}<span>${area === "office" ? `<span class="mobile-label">${esc(({ overview: "Home", intake: "Intake", work: "Work", participants: "People" })[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : esc(label)}</span>${counts[path] ? `<span class="nav-count">${counts[path]}</span>` : ""}</a>`;
+    const navLink = ([path, label, glyph]) => `<a class="nav-link ${section === path ? "active" : ""} ${area === "office" && !primaryMobile.includes(path) ? "mobile-extra" : ""}" ${section === path ? 'aria-current="page"' : ""} title="${attr(label)}${counts[path] ? ` · ${counts[path]} need attention` : ""}" aria-label="${attr(label)}${counts[path] ? `, ${counts[path]} need attention` : ""}" href="#/${area}/${path}">${navigationIcon(glyph, counts[path])}<span class="nav-label">${area === "office" ? `<span class="mobile-label">${esc(({ overview: "Home", intake: "Intake", work: "Work", participants: "People" })[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : esc(label)}</span></a>`;
     const groupLinks = groups => groups.map(([group, paths]) => `<div class="nav-group"><p class="nav-group-label">${group}</p>${paths.map(path => navLink(nav.office.find(item => item[0] === path))).join("")}</div>`).join("");
     const activeGroup = officeNavGroups.find(([, paths]) => paths.includes(section)) || officeNavGroups[0];
     const groupIcons = ["home", "people", "calendar", "file", "layers"];
-    const links = area === "office" ? `<div class="workspace-areas">${officeNavGroups.map(([label, paths], index) => `<a class="nav-link workspace-area ${activeGroup[0] === label ? "active" : ""}" href="#/office/${paths[0]}" ${activeGroup[0] === label ? 'aria-current="true"' : ""}>${icon(groupIcons[index])}<span>${esc(label)}</span></a>`).join("")}</div><div class="workspace-context"><p class="nav-group-label">${esc(activeGroup[0])}</p>${activeGroup[1].map(path => navLink(nav.office.find(item => item[0] === path))).join("")}</div><div class="mobile-primary">${primaryMobile.map(path => navLink(nav.office.find(item => item[0] === path))).join("")}</div>` : nav[area].map(navLink).join("");
+    const links = area === "office" ? `<div class="workspace-areas">${officeNavGroups.map(([label, paths], index) => `<a class="nav-link workspace-area ${activeGroup[0] === label ? "active" : ""}" href="#/office/${paths[0]}" ${activeGroup[0] === label ? 'aria-current="true"' : ""} title="${attr(label)}" aria-label="${attr(label)}">${navigationIcon(groupIcons[index], paths.reduce((total, path) => total + (counts[path] || 0), 0))}<span class="nav-label">${esc(label)}</span></a>`).join("")}</div><div class="workspace-context"><p class="nav-group-label">${esc(activeGroup[0])}</p>${activeGroup[1].map(path => navLink(nav.office.find(item => item[0] === path))).join("")}</div><div class="mobile-primary">${primaryMobile.map(path => navLink(nav.office.find(item => item[0] === path))).join("")}</div>` : nav[area].map(navLink).join("");
     const more = area === "office" ? `<button class="nav-link mobile-more ${primaryMobile.includes(section) ? "" : "active"}" data-action="mobile-menu" type="button" aria-label="More office sections">${icon("overview")}<span>More</span></button>` : "";
     const representative = area === "client" && ui.clientId === "PAR-103";
     const avatarName = area === "office" ? "Mia Roberts" : area === "worker" ? worker(ui.workerId)?.name || "Worker" : representative ? "Samira Ali" : participant(ui.clientId)?.name || "Participant";
@@ -284,7 +306,7 @@
     const portalAccount = area === "client" ? `<div class="portal-account"><span>Demo account</span><select id="client-persona" aria-label="Choose a demo portal account">${state.participants.map(p => `<option value="${attr(p.id)}" ${p.id === ui.clientId ? "selected" : ""}>${p.id === "PAR-103" ? "Samira Ali · Farah's representative" : esc(p.name) + " · participant"}</option>`).join("")}</select></div>` : "";
     const workerAccount = area === "worker" ? `<div class="automation-persona"><span>Demo worker</span><select id="worker-persona" aria-label="Choose a demo worker">${state.workers.map(w => `<option value="${attr(w.id)}" ${w.id === ui.workerId ? "selected" : ""}>${esc(w.name)}</option>`).join("")}</select><span class="status gray">Demo</span></div>` : "";
     const [, , detail] = routeParts();
-    return `<a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><div class="app-shell crm-shell ${section === "calendar" ? "calendar-shell" : area === "office" && section === "schedule" && !detail ? "schedule-shell" : ""}"><aside class="sidebar"><div class="brand"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></div><span class="brand-caption">Operations platform</span>${area === "office" ? "" : `<p class="nav-section-label">${area === "worker" ? "Worker workspace" : "Client portal"}</p>`}<nav class="nav-list" aria-label="Main navigation">${links}${more}</nav><div class="sidebar-bottom"><a href="#/office/shiftcare">${icon("layers")}<span>ShiftCare connection</span></a><small>Intake checks run automatically</small></div></aside><div class="workspace"><header class="topbar"><div class="topbar-left"><span class="topbar-workspace">${esc(area === "office" ? activeGroup[0] : area === "worker" ? "Worker workspace" : "Client portal")}</span><span class="topbar-divider">/</span><span class="topbar-title">${esc(title)}</span></div><div class="topbar-actions"><button class="workspace-search-trigger" data-action="workspace-search" type="button">${icon("search")}<span>Find a page or record</span></button>${appToolsButton()}<button class="account-trigger" data-action="account-settings" type="button" aria-label="Account and workspace view"><span class="avatar" aria-hidden="true">${avatarInitials}</span><span>Account</span></button></div></header>${portalAccount}${workerAccount}<main class="page" id="main-content" tabindex="-1">${routeBreadcrumbs(area, section, detail)}${content}</main></div></div>`;
+    return `<a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><div class="app-shell crm-shell ${section === "calendar" ? "calendar-shell" : area === "office" && section === "schedule" && !detail ? "schedule-shell" : ""}"><aside class="sidebar"><div class="brand"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></div><span class="sidebar-brand-mark" aria-hidden="true">OCD</span><span class="brand-caption">Operations platform</span><button class="sidebar-search" data-action="workspace-search" type="button" aria-label="Search pages and records" title="Search pages and records">${icon("search")}<span>Search</span></button>${area === "office" ? "" : `<p class="nav-section-label">${area === "worker" ? "Worker workspace" : "Client portal"}</p>`}<nav class="nav-list" aria-label="Main navigation">${links}${more}</nav><div class="sidebar-bottom"><a href="#/office/shiftcare" title="ShiftCare connection" aria-label="ShiftCare connection">${icon("layers")}<span class="nav-label">ShiftCare connection</span></a><small>Intake checks run automatically</small><button class="sidebar-account" data-action="account-settings" type="button" title="Account and workspace view" aria-label="Account and workspace view"><span class="avatar" aria-hidden="true">${avatarInitials}</span><span class="sidebar-account-label"><strong>${esc(avatarName)}</strong><small>Account settings</small></span></button></div></aside><div class="workspace"><header class="topbar"><div class="topbar-left"><span class="topbar-workspace">${esc(area === "office" ? activeGroup[0] : area === "worker" ? "Worker workspace" : "Client portal")}</span><span class="topbar-divider">/</span><span class="topbar-title">${esc(title)}</span></div><div class="topbar-actions"><button class="workspace-search-trigger" data-action="workspace-search" type="button">${icon("search")}<span>Find a page or record</span></button>${appToolsButton()}<button class="account-trigger" data-action="account-settings" type="button" aria-label="Account and workspace view"><span class="avatar" aria-hidden="true">${avatarInitials}</span><span>Account</span></button></div></header>${portalAccount}${workerAccount}<main class="page" id="main-content" tabindex="-1">${routeBreadcrumbs(area, section, detail)}${content}</main></div></div>`;
   }
   function publicShell(section, content) {
     return `<div class="public-shell"><header class="public-top"><a href="#/public/book" aria-label="OCD Brilliance public demo"><img src="assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></a><nav class="public-nav" aria-label="Public navigation"><a class="${section === "book" ? "active" : ""}" href="#/public/book">Book a call</a><a class="${section === "intake" ? "active" : ""}" href="#/public/intake">Intake form</a><span class="back-demo">${viewSelect("public")}</span></nav><div class="public-tools">${appToolsButton()}</div></header><main class="public-main">${content}</main></div>`;
@@ -310,7 +332,7 @@
     window.OCD_INTEGRATION_PROOF.unmount();
     const [area, section, detail] = routeParts();
     const pages = {
-      office: { overview: officeOverview, work: officeWorkQueue, enquiries: () => detail ? inspector(enquiryDetail(detail), "office/enquiries", "Enquiries") : enquiriesPage(), calls: callsPage, participants: () => detail ? inspector(participantDetail(detail), "office/participants", "Participants") : participantsPage(), staff: staffPage, agreements: () => detail ? inspector(agreementDetail(detail), "office/agreements", "Agreements") : agreementsPage(), calendar: () => calendarPage("office"), map: () => bookingMap("office", detail), schedule: () => detail ? inspector(bookingDetail(detail), "office/schedule", "Team schedule") : schedulePage(), visits: () => detail ? inspector(visitDetail(detail), "office/visits", "Visit records") : visitsPage(), fees: feesPage },
+      office: { overview: officeOverview, work: officeWorkQueue, enquiries: () => detail ? inspector(enquiryDetail(detail), "office/enquiries", "Enquiries") : enquiriesPage(), calls: callsPage, participants: () => detail ? inspector(participantDetail(detail), "office/participants", "Participants") : participantsPage(), staff: () => detail ? employeeProfile(detail) : staffPage(), agreements: () => detail ? inspector(agreementDetail(detail), "office/agreements", "Agreements") : agreementsPage(), calendar: () => calendarPage("office"), map: () => bookingMap("office", detail), schedule: () => detail ? inspector(bookingDetail(detail), "office/schedule", "Team schedule") : schedulePage(), visits: () => detail ? inspector(visitDetail(detail), "office/visits", "Visit records") : visitsPage(), fees: feesPage },
       worker: { today: () => detail ? inspector(workerVisit(detail), "worker/today", "Visits") : workerToday(), map: () => bookingMap("worker", detail), calendar: () => calendarPage("worker"), availability: workerAvailability },
       client: { home: clientHome, bookings: clientBookings, map: () => clientArrival(detail), documents: clientDocuments, intake: clientIntake },
       public: { book: publicBook, intake: publicIntake }
@@ -349,40 +371,98 @@
       ...state.visits.filter(v => v.status !== "Reviewed").map(v => ({ icon: "clock", tone: "", title: `Visit record · ${participant(booking(v.bookingId)?.participantId)?.name}`, detail: v.status, href: `office/visits/${v.id}`, action: "Review record" })),
       ...state.feeProposals.filter(f => f.status === "Proposed").map(f => ({ icon: "route", tone: "", title: `${f.type} fee needs approval`, detail: f.id, href: "office/fees", action: "Review proposal" }))
     ];
-    const demoDate = demoWeek[0];
-    const todayBookings = state.bookings.filter(b => b.date === demoDate && b.status !== "Cancelled").sort((a, b) => a.start.localeCompare(b.start));
-    const recentVisits = [...state.visits].filter(v => v.clockIn || v.clockOut).sort((a, b) => (booking(b.bookingId)?.date || "").localeCompare(booking(a.bookingId)?.date || "")).slice(0, 3);
-    const coverCount = state.bookings.filter(b => b.status === "Needs cover").length;
-    const reviewCount = state.visits.filter(v => v.status !== "Reviewed").length;
+    const weekDays = Array.from({ length: 7 }, (_, i) => addDays(overviewWeekStart, i));
+    const previousDays = weekDays.map(date => addDays(date, -7));
+    const previousBookings = state.bookings.filter(b => previousDays.includes(b.date));
+    const hours = b => Math.max(0, (Number(b.end.slice(0, 2)) * 60 + Number(b.end.slice(3)) - Number(b.start.slice(0, 2)) * 60 - Number(b.start.slice(3))) / 60);
+    const hourLabel = value => `${Number(value.toFixed(1))}h`;
+    const bookings = state.bookings.filter(b => weekDays.includes(b.date));
+    const categories = [
+      { label: "Completed", tone: "done" }, { label: "Confirmed", tone: "scheduled" },
+      { label: "Needs cover", tone: "cover" }, { label: "Cancelled", tone: "cancelled" }, { label: "Other", tone: "other" }
+    ];
+    const category = b => categories.find(c => c.label === b.status) || categories[4];
+    const totals = categories.map(c => ({ ...c, count: bookings.filter(b => category(b) === c).length }));
+    const daily = weekDays.map(date => ({ date, counts: categories.map(c => bookings.filter(b => b.date === date && category(b) === c).length) }));
+    const active = bookings.filter(b => b.status !== "Cancelled");
+    const records = state.visits.filter(v => bookings.some(b => b.id === v.bookingId));
+    const reviewed = records.filter(v => v.status === "Reviewed").length;
+    const reviewPercent = records.length ? Math.round(reviewed / records.length * 100) : 0;
+    const previousRecords = state.visits.filter(v => previousBookings.some(b => b.id === v.bookingId));
+    const previousValues = [previousBookings.filter(b => b.status !== "Cancelled").length, previousBookings.filter(b => b.status === "Completed").length, previousBookings.filter(b => b.status === "Needs cover").length, previousRecords.filter(v => v.status !== "Reviewed").length];
+    const scheduledHours = active.reduce((sum, b) => sum + hours(b), 0);
+    const completedHours = active.filter(b => b.status === "Completed").reduce((sum, b) => sum + hours(b), 0);
+    const nextVisit = active.filter(b => b.status === "Confirmed").sort((a, b) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`))[0];
+    const recentRecords = [...state.visits].filter(v => booking(v.bookingId) && (v.clockIn || v.clockOut)).sort((a, b) => `${booking(b.bookingId).date}${b.clockIn || ""}`.localeCompare(`${booking(a.bookingId).date}${a.clockIn || ""}`)).slice(0, 3);
     const metrics = [
-      { value: todayBookings.length, label: "Services today", href: "office/schedule" },
-      { value: coverCount, label: "Need cover", href: "office/schedule" },
-      { value: reviewCount, label: "Records to review", href: "office/visits" }
+      { value: active.length, label: "Visits this week", glyph: "calendar", tone: "scheduled", href: "office/schedule" },
+      { value: totals[0].count, label: "Completed", glyph: "check", tone: "done", href: "office/schedule" },
+      { value: totals[2].count, label: "Need cover", glyph: "alert", tone: "cover", href: "office/schedule" },
+      { value: records.length - reviewed, label: "Records to review", glyph: "file", tone: "other", href: "office/visits" }
     ];
-    const stages = [
-      { title: "Enquiry", glyph: "inbox", detail: "Check request", href: "office/enquiries" },
-      { title: "Intake", glyph: "people", detail: "Review source", href: "office/intake" },
-      { title: "Agreement", glyph: "file", detail: "Confirm supports", href: "office/agreements" },
-      { title: "Schedule", glyph: "calendar", detail: "Assign worker", href: "office/schedule" },
-      { title: "Visit record", glyph: "check", detail: "Check record", href: "office/visits" }
-    ];
-    const serviceRows = todayBookings.map(b => {
-      const v = visitForBooking(b.id);
-      const recorded = v?.clockIn || v?.clockOut;
-      return `<li class="desk-visit"><span class="desk-visit-marker" aria-hidden="true"></span><span class="desk-visit-time"><strong>${esc(clockLabel(b.start))}</strong><small>${esc(clockLabel(b.end))}</small></span><a class="desk-visit-detail" href="#/office/schedule/${attr(b.id)}"><span class="desk-visit-title">${esc(participant(b.participantId)?.name || "Participant")} ${icon("arrow")}</span><span class="desk-visit-sub">${esc(b.service)} · ${esc(worker(b.workerId)?.name || "Unassigned")}</span><span class="desk-visit-clock">${recorded ? `Time in ${esc(clockLabel(v.clockIn))} · Time out ${esc(clockLabel(v.clockOut))}` : "Time in — · Time out —"}</span></a><span class="desk-visit-status">${pill(b.status)}</span></li>`;
+    const maxVisits = Math.max(4, Math.ceil(Math.max(...daily.map(d => d.counts.reduce((a, b) => a + b, 0))) / 4) * 4);
+    const bars = daily.map((d, i) => {
+      let y = 210;
+      const count = d.counts.reduce((a, b) => a + b, 0);
+      const x = 65 + i * 80;
+      const segments = d.counts.map((value, j) => {
+        const height = value / maxVisits * 170;
+        y -= height;
+        return value ? `<rect class="chart-${categories[j].tone} chart-bar-fill" x="${x}" y="${y}" width="36" height="${height}"/>` : "";
+      }).join("");
+      const description = `${dateLabel(d.date, { weekday: "long" })}: ${d.counts.map((value, j) => `${value} ${categories[j].label.toLowerCase()}`).join(", ")}`;
+      return `<a href="#/office/schedule" data-action="overview-day" data-date="${d.date}" aria-label="${attr(description)}" data-chart-title="${attr(dateLabel(d.date, { weekday: "long", day: "numeric", month: "short" }))}" data-chart-count="${count}" data-chart-hours="${hourLabel(bookings.filter(b => b.date === d.date && b.status !== "Cancelled").reduce((sum, b) => sum + hours(b), 0))}" data-chart-breakdown="${attr(JSON.stringify(d.counts.map((value, j) => ({ label: categories[j].label, value }))))}"><title>${esc(description)}</title><rect class="chart-hit" x="${x - 12}" y="20" width="60" height="230"/>${count ? `<defs><clipPath id="overview-day-clip-${i}"><rect x="${x}" y="${y}" width="36" height="${210 - y}" rx="5"/></clipPath></defs><g clip-path="url(#overview-day-clip-${i})">${segments}</g>` : ""}</a>`;
     }).join("");
-    const actionRows = priorities.slice(0, 3).map((p, index) => `<li><a href="#/${p.href}"><span class="desk-action-index">${String(index + 1).padStart(2, "0")}</span><span class="desk-action-content"><strong>${esc(p.title)}</strong><small>${esc(p.detail)}</small><em>${esc(p.action)} ${icon("arrow")}</em></span></a></li>`).join("");
-    const recordRows = recentVisits.map(v => {
-      const b = booking(v.bookingId);
-      return `<li><a href="#/office/visits/${attr(v.id)}"><span><strong>${esc(worker(b?.workerId)?.name || "Unassigned")}</strong><small>${esc(participant(b?.participantId)?.name || "Participant")} · ${esc(dateLabel(b?.date))}</small></span><span class="desk-record-clock">In <b>${esc(clockLabel(v.clockIn))}</b><br>Out <b>${esc(clockLabel(v.clockOut))}</b></span>${icon("arrow")}</a></li>`;
+    let offset = 0;
+    const ring = totals.map(t => {
+      const percent = bookings.length ? t.count / bookings.length * 100 : 0;
+      const segment = t.count ? `<circle class="chart-${t.tone}" cx="100" cy="100" r="76" pathLength="100" stroke-dasharray="${percent} ${100 - percent}" stroke-dashoffset="-${offset}"/>` : "";
+      offset += percent;
+      return segment;
     }).join("");
-    return `<div class="desk-home">
-      <header class="desk-intro"><div class="desk-intro-copy"><span class="desk-eyebrow">SAMPLE WEEK · MON 5 OCT 2026</span><h1>Office overview</h1></div><nav class="desk-metrics" aria-label="Office overview totals">${metrics.map(m => `<a href="#/${m.href}"><strong>${m.value}</strong><span>${esc(m.label)}</span></a>`).join("")}</nav></header><nav class="quick-actions" aria-label="Quick actions"><a class="btn primary" href="#/office/intake/new">${icon("plus")} New intake</a><a class="btn" href="#/office/schedule">${icon("calendar")} Schedule</a><a class="btn" href="#/office/work">${icon("layers")} Work queue ${icon("arrow")}</a></nav>
-      <div class="desk-home-grid"><section class="desk-card desk-services" aria-labelledby="desk-services-title"><header class="desk-card-head"><div><span class="desk-eyebrow">TODAY'S PLAN · AUSTRALIA/PERTH</span><h2 id="desk-services-title">Scheduled visits</h2></div><a class="desk-circle-link" href="#/office/schedule" aria-label="Open full schedule">${icon("arrow")}</a></header><ol class="desk-visit-list">${serviceRows || `<li class="desk-empty">No services scheduled for Monday. <a href="#/office/schedule">Open schedule</a></li>`}</ol><div class="desk-card-footer"><span>Sample · Perth time</span><a href="#/office/schedule">Full schedule ${icon("arrow")}</a></div></section>
-      <section class="desk-card desk-actions" aria-labelledby="desk-actions-title"><header class="desk-card-head"><div><span class="desk-eyebrow">OFFICE DECISIONS</span><h2 id="desk-actions-title">Needs attention</h2><span class="muted tiny">${priorities.length} waiting</span></div><a class="desk-circle-link" href="#/office/work" aria-label="Open work queue">${icon("arrow")}</a></header><ol class="desk-action-list">${actionRows || `<li class="desk-empty">Nothing needs an office decision right now.</li>`}</ol><div class="desk-card-footer"><span>Showing the first ${Math.min(priorities.length, 3)}</span><a href="#/office/work">All work ${icon("arrow")}</a></div></section>
-      <section class="desk-card desk-flow" aria-labelledby="desk-flow-title"><header class="desk-card-head"><div><span class="desk-eyebrow">A CLEAR PATH</span><h2 id="desk-flow-title">Service journey</h2></div></header><ol class="desk-flow-list">${stages.map(s => `<li><a href="#/${s.href}"><span class="desk-flow-index" aria-hidden="true">${icon(s.glyph)}</span><strong>${esc(s.title)}</strong><small>${esc(s.detail)}</small>${icon("arrow")}</a></li>`).join("")}</ol></section>
-      <section class="desk-card desk-records" aria-labelledby="desk-records-title"><header class="desk-card-head"><div><span class="desk-eyebrow">RECORDED BY WORKERS</span><h2 id="desk-records-title">Recent visit times</h2><p>Actual entries, not scheduled hours.</p></div><a class="desk-circle-link" href="#/office/visits" aria-label="Open all visit records">${icon("arrow")}</a></header><ul class="desk-record-list">${recordRows || `<li class="desk-empty">No visit times recorded yet.</li>`}</ul></section></div>
-      <p class="desk-prototype-note">${icon("shield")} Sample workspace · care and billing records remain in ShiftCare.</p>
+    const workerLoads = [...state.workers.map(w => ({ id: w.id, name: w.name, initials: w.initials, hours: active.filter(b => b.workerId === w.id).reduce((sum, b) => sum + hours(b), 0), count: active.filter(b => b.workerId === w.id).length })),
+      ...(active.some(b => !b.workerId) ? [{ id: "", name: "Unassigned", initials: "?", hours: active.filter(b => !b.workerId).reduce((sum, b) => sum + hours(b), 0), count: active.filter(b => !b.workerId).length }] : [])].sort((a, b) => b.count - a.count);
+    const maxLoad = Math.max(1, ...workerLoads.map(w => w.count));
+    return `<div class="analytics-home">
+      <header class="analytics-header"><div><h1>Office overview</h1><span class="analytics-period"><i class="analytics-sample-dot"></i> Sample data <span>·</span> Australia/Perth</span></div><nav class="quick-actions" aria-label="Quick actions"><a class="btn" href="#/office/schedule">${icon("calendar")} Schedule</a><a class="btn primary" href="#/office/intake/new">${icon("plus")} New intake</a></nav></header>
+      <div class="analytics-metrics">${metrics.map((m, index) => { const delta = m.value - previousValues[index]; const series = weekDays.map(date => index === 3 ? records.filter(v => booking(v.bookingId)?.date === date && v.status !== "Reviewed").length : bookings.filter(b => b.date === date && (index === 0 ? b.status !== "Cancelled" : b.status === (index === 1 ? "Completed" : "Needs cover"))).length); const peak = Math.max(1, ...series); return `<a class="analytics-stat" href="#/${m.href}"><span class="analytics-icon chart-${m.tone}">${icon(m.glyph)}</span><span>${esc(m.label)}</span><strong>${m.value}</strong><svg class="analytics-sparkline" viewBox="0 0 80 30" aria-hidden="true"><line x1="0" x2="78" y1="28" y2="28" stroke="var(--chart-track)"/>${series.map((value, i) => value ? `<rect x="${i * 11}" y="${28 - value / peak * 24}" width="6" height="${value / peak * 24}" rx="3"/>` : "").join("")}</svg><span class="analytics-stat-foot"><span class="analytics-delta">${delta ? `${delta > 0 ? "+" : ""}${delta}` : "No change"}</span><span>vs prior week</span>${icon("arrow")}</span></a>`; }).join("")}</div>
+      <div class="analytics-board">
+        <div class="analytics-main">
+          <section class="analytics-card analytics-weekly"><header><div><h2>Weekly visits</h2><span class="analytics-muted">${dateLabel(weekDays[0], { day: "numeric", month: "short" })}–${dateLabel(weekDays[6], { day: "numeric", month: "short", year: "numeric" })} · Perth time</span></div><nav aria-label="Overview period"><div class="analytics-week-control"><button type="button" data-action="overview-week" data-value="previous" aria-label="Previous overview week">←</button><button type="button" data-action="overview-week" data-value="sample">Sample week</button><button type="button" data-action="overview-week" data-value="next" aria-label="Next overview week">→</button></div></nav></header>
+          <div class="analytics-legend">${totals.filter(t => t.count).map(t => `<span><i class="chart-${t.tone}"></i>${t.label}</span>`).join("")}</div>
+          <div class="analytics-chart-area"><svg class="weekly-chart" viewBox="0 0 640 260" preserveAspectRatio="none" aria-label="Weekly visits by status">${Array.from({ length: 5 }, (_, i) => `<line class="chart-gridline" x1="48" y1="${210 - i * 42.5}" x2="620" y2="${210 - i * 42.5}"/>`).join("")}${bars}</svg><div class="analytics-chart-labels" aria-hidden="true">${Array.from({ length: 5 }, (_, i) => `<span class="chart-axis" style="top:${(210 - i * 42.5) / 260 * 100}%">${i * maxVisits / 4}</span>`).join("")}${daily.map((d, i) => { const count = d.counts.reduce((a, b) => a + b, 0), left = (83 + i * 80) / 640 * 100; return `<span class="chart-value" style="left:${left}%;top:${(200 - count / maxVisits * 170) / 260 * 100}%">${count}</span><span style="left:${left}%;top:${238 / 260 * 100}%">${dateLabel(d.date, { weekday: "short" })}</span>`; }).join("")}</div><div id="overview-chart-tooltip" class="analytics-chart-tooltip" role="status" hidden></div></div>
+          <div class="analytics-chart-summary"><span><strong>${active.length}</strong> active visits</span><span><strong>${hourLabel(scheduledHours)}</strong> scheduled</span><span class="analytics-chart-hint">Hover for detail · select to open</span></div>
+        </section>
+          <div class="analytics-secondary">
+            <section class="analytics-card analytics-employees"><header><h2>Employee workload</h2><a href="#/office/staff" aria-label="View employees">${icon("arrow")}</a></header><span class="analytics-muted">Visits this week · excludes cancellations</span>
+          <div class="analytics-workload">${workerLoads.map(w => `<a href="#/office/${w.id ? `staff/${attr(w.id)}` : "schedule"}" aria-label="${attr(`${w.name}: ${w.count} visits this week`)}"><span class="analytics-worker"><span class="avatar">${esc(w.initials)}</span><span>${esc(w.name)}<small>${hourLabel(w.hours)} scheduled</small></span></span><strong>${w.count}<small>visits</small></strong><span class="workload-track"><i style="width:${w.count / maxLoad * 100}%"></i></span></a>`).join("") || '<p class="analytics-muted">No employees recorded</p>'}</div>
+        </section>
+            <section class="analytics-card analytics-activity"><header><h2>Recent visit activity</h2><a href="#/office/visits" aria-label="Open visit records">${icon("arrow")}</a></header><ul>
+          ${recentRecords.map(v => { const b = booking(v.bookingId), w = worker(b.workerId); return `<li><a href="#/office/visits/${attr(v.id)}"><span class="avatar">${esc(w?.initials || "?")}</span><span><strong>${esc(w?.name || "Unassigned")}</strong><small>${esc(participant(b.participantId)?.name)} · ${dateLabel(b.date)}</small></span><span class="analytics-activity-clock"><b>${clockLabel(v.clockIn)}</b><small>In · Out ${clockLabel(v.clockOut)}</small></span></a></li>`; }).join("") || '<li class="analytics-muted">No visit times recorded.</li>'}
+        </ul></section>
+          </div>
+          <div class="analytics-details">
+            <section class="analytics-card analytics-next"><header><h2>Next confirmed visit</h2><span class="analytics-mini-label">Selected week</span></header>
+          ${nextVisit ? `<span class="analytics-mini-label">${esc(nextVisit.service)}</span><h3>${esc(participant(nextVisit.participantId)?.name || "Participant")}</h3><p>${dateLabel(nextVisit.date)} · ${clockRange(nextVisit.start, nextVisit.end)}</p><div class="analytics-next-worker"><span class="avatar">${esc(worker(nextVisit.workerId)?.initials || "?")}</span>${esc(worker(nextVisit.workerId)?.name || "Unassigned")}${pill(nextVisit.status)}</div><a class="btn primary" href="#/office/schedule/${attr(nextVisit.id)}">View booking ${icon("arrow")}</a>` : '<p class="analytics-muted">No confirmed visits in this week.</p>'}
+        </section>
+            <section class="analytics-card analytics-hours"><header><h2>Scheduled hours</h2>${icon("clock")}</header><strong>${hourLabel(scheduledHours)}</strong><span>Selected week · excludes cancellations</span><div class="analytics-hours-track"><i style="width:${scheduledHours ? completedHours / scheduledHours * 100 : 0}%"></i></div><div class="analytics-hours-split"><span>Completed <b>${hourLabel(completedHours)}</b></span><span>Other booked <b>${hourLabel(scheduledHours - completedHours)}</b></span></div>
+        </section>
+          </div>
+        </div>
+        <aside class="analytics-rail" aria-label="Operations summary">
+          <div class="analytics-primary"><section class="analytics-card analytics-booking-status"><header><h2>Booking status</h2><a href="#/office/schedule" aria-label="View bookings">${icon("arrow")}</a></header>
+          <div class="analytics-donut"><svg viewBox="0 0 200 200" role="img" aria-label="${attr(totals.map(t => `${t.count} ${t.label.toLowerCase()}`).join(", "))}"><circle class="chart-ring-track" cx="100" cy="100" r="76"/>${ring}</svg><div><strong>${bookings.length}</strong><span>Bookings</span></div></div>
+          <div class="analytics-status-list">${totals.filter(t => t.count).map(t => `<div><span><i class="chart-${t.tone}"></i>${t.label}</span><span><small>${Number((t.count / bookings.length * 100).toFixed(1))}%</small><strong>${t.count}</strong></span></div>`).join("") || '<span class="analytics-muted">No bookings this week</span>'}</div>
+        </section></div>
+          <section class="analytics-card analytics-attention"><header><h2>Needs attention <span class="analytics-badge">${priorities.length}</span></h2><a href="#/office/work" aria-label="Open work queue">${icon("arrow")}</a></header><span class="analytics-muted">All open work</span>
+          <ol>${priorities.slice(0, 3).map(p => `<li><a href="#/${p.href}"><span class="analytics-attention-icon">${icon(p.icon)}</span><span><strong>${esc(p.title)}</strong><small>${esc(p.detail)}</small></span>${icon("arrow")}</a></li>`).join("") || '<li class="analytics-muted">All caught up</li>'}</ol><a class="analytics-all-work" href="#/office/work">View work queue ${icon("arrow")}</a>
+        </section>
+          <section class="analytics-card analytics-reviews"><header><h2>Record reviews</h2><a href="#/office/visits" aria-label="Review visit records">${icon("arrow")}</a></header>
+          <div class="analytics-donut review-donut"><svg viewBox="0 0 200 200" role="img" aria-label="${reviewed} of ${records.length} records reviewed"><circle class="chart-ring-track" cx="100" cy="100" r="76"/><circle class="chart-done" cx="100" cy="100" r="76" pathLength="100" stroke-dasharray="${reviewPercent} ${100 - reviewPercent}"/></svg><div><strong>${records.length ? reviewPercent + "%" : "—"}</strong><span>Reviewed</span></div></div>
+          <div class="analytics-review-count"><strong>${reviewed} / ${records.length}</strong><span>records this week</span></div><div class="analytics-review-detail"><span><i class="chart-done"></i> Reviewed <strong>${reviewed}</strong></span><span><i class="chart-cover"></i> Awaiting review <strong>${records.length - reviewed}</strong></span></div>
+        </section>
+        </aside>
+      </div>
     </div>`;
   }
 
@@ -526,7 +606,7 @@
       <div class="intake-layout" ${sectionAttrs("review")}><section class="panel intake-source-panel"><div class="section-heading"><div><h2>Original source</h2><p>${e.onboarding?.sourceText ? "Captured text stays visible while you review." : "Details supplied on the original enquiry."}</p></div><span class="status gray">${esc(e.source)}</span></div>${originalDocumentPanel(e.onboarding?.originalDocument)}<pre class="intake-source">${esc(original)}</pre>${reviewed ? `<p class="review-stamp">Reviewed by ${esc(e.onboarding.reviewedBy)} · ${stamp(e.onboarding.reviewedAt)}</p>` : ""}</section><section class="panel"><div class="section-heading"><div><h2>Review details</h2></div>${pill(reviewed ? "Reviewed" : "Needs review")}</div>${intakeWarnings([...warning, ...issues], null)}<form data-form="intake-review" data-id="${attr(e.id)}" data-revision="${attr(e.revision)}"><fieldset ${entered || closed ? "disabled" : ""}>${intakeInputs(e.intakeFields, e.onboarding?.evidence)}${intakeConfig.rules.requiredDocuments.map(name => `<label class="checkbox"><input name="document" value="${attr(name)}" type="checkbox" ${e.documents.includes(name) ? "checked" : ""}><span>Checked document: ${esc(name)}</span></label>`).join("")}</fieldset>${entered || closed ? `<p class="form-note">${entered ? "This handoff is complete. The saved details are shown for reference." : "This enquiry is closed."}</p>` : `<label class="checkbox"><input name="sourceReviewed" type="checkbox" required><span>I compared these fields with the source and resolved missing or conflicting details.</span></label><div class="form-actions"><button class="btn primary" type="submit" name="reviewAction" value="ready">Save review &amp; prepare handoff</button><button class="btn" type="submit" name="reviewAction" value="review">Save review only</button></div>`}</form></section></div>
       <div class="intake-layout intake-single intake-followup" ${sectionAttrs("handoff")}><section class="panel"><div class="section-heading"><div><h2>Enter in ShiftCare</h2><p>${ready || entered ? "Copy the reviewed fields into the matching ShiftCare record." : "Complete the review and set this request to Ready for ShiftCare."}</p></div></div>${ready || entered ? `<p class="form-note">Review the exact fields below before approving manual transfer. Approval is invalidated when fields or approved rules change.</p><dl class="handoff-fields">${Object.entries(intakeLabels).map(([key, label]) => `<div><dt>${label}<small>${esc(intakeConfig.rules.mappings[key] || "Confirm target field manually")}</small></dt><dd>${esc(e.intakeFields[key] || "Not supplied")}</dd><button class="btn small" data-action="copy-intake-field" data-id="${attr(e.id)}" data-value="${key}" type="button" aria-label="Copy ${label.toLowerCase()}" ${!e.intakeFields[key] ? "disabled" : ""}>Copy</button></div>`).join("")}</dl><div class="intake-handoff-actions">${ready && !e.handoffApproval ? `<div class="intake-handoff-approval"><label class="checkbox"><input type="checkbox" data-native-match="${attr(e.id)}"><span>I checked ShiftCare for an existing profile and will use it if there is a match.</span></label><button class="btn primary" data-action="approve-intake-handoff" data-id="${attr(e.id)}" type="button">Approve handoff</button><p class="form-note">Approves the reviewed fields for manual entry in ShiftCare.</p></div>` : ""}<div class="intake-handoff-tools"><button class="btn" data-action="copy-intake-handoff" data-id="${attr(e.id)}" type="button">${icon("file")} Copy full handoff</button><button class="intake-handoff-problem" data-action="intake-transfer-failure" data-id="${attr(e.id)}" type="button">Report a transfer problem</button></div></div>` : empty("Handoff not ready", "Review the source, confirm a covered postcode, then mark ready in Next action.")}</section></div>
       <div class="intake-layout intake-single" ${sectionAttrs("verify")}><section class="panel"><div class="section-heading"><div><h2>Verify saved profile</h2><p>Compare the saved ShiftCare profile with this handoff.</p></div></div>${entered && e.shiftCareVerification ? `<div class="verification-receipt">${pill("Staff checked")}<h3>ShiftCare reference: ${esc(e.shiftCareVerification.reference)}</h3><p>Checked by ${esc(e.shiftCareVerification.checkedBy)}<br>${stamp(e.shiftCareVerification.checkedAt)}</p><p class="form-note">Staff manual verification. No API read-back was performed.</p></div>` : ready ? `<form data-form="intake-verify" data-id="${attr(e.id)}" data-revision="${attr(e.revision)}"><label>ShiftCare client reference<input name="shiftCareId" maxlength="100" required placeholder="Client ID or saved profile URL"></label><p class="form-note">Use the reference from the profile saved in ShiftCare.</p><label class="checkbox"><input name="profileChecked" type="checkbox" required><span>I entered the details in ShiftCare and compared its saved profile with this reviewed handoff.</span></label><div class="form-actions"><button class="btn primary" type="submit">Record staff verification</button></div></form>` : empty("Verification comes after manual entry", "The reference and staff check are required before completion.")}</section></div>
-      <div class="intake-layout intake-single" ${sectionAttrs("followup")}><section class="panel"><h2>Next action</h2><form data-form="server-record" data-id="${attr(e.id)}" data-revision="${attr(e.revision)}"><div class="form-grid"><label>Owner<input name="owner" required maxlength="120" value="${attr(e.owner === "Unassigned" ? "" : e.owner)}"></label><label>Status<select name="status">${["New", "Contacting", "Reviewing", "Ready for ShiftCare", ...(entered ? ["Entered in ShiftCare"] : []), "Closed"].map(status => `<option value="${status}" ${status === e.serverStatus ? "selected" : ""} ${status === "Ready for ShiftCare" && !reviewed ? "disabled" : ""}>${status}</option>`).join("")}</select></label><label>Follow-up date<input name="followUp" type="date" required value="${attr(e.nextAction)}"></label><label class="full">Next action<textarea name="nextAction" maxlength="250" required>${esc(e.serverNextAction)}</textarea></label></div><p class="form-note">Ready requires reviewed fields and a covered service postcode. Changes are saved with edit protection.</p><div class="form-actions"><button class="btn" type="submit">Save next action</button><button class="btn" data-action="refresh-intake" type="button">Refresh saved record</button></div></form></section></div>
+      <div class="intake-layout intake-single" ${sectionAttrs("followup")}><section class="panel"><h2>Next action</h2><form data-form="server-record" data-id="${attr(e.id)}" data-revision="${attr(e.revision)}"><div class="form-grid">${ownerPicker(e.owner)}<label>Status<select name="status">${["New", "Contacting", "Reviewing", "Ready for ShiftCare", ...(entered ? ["Entered in ShiftCare"] : []), "Closed"].map(status => `<option value="${status}" ${status === e.serverStatus ? "selected" : ""} ${status === "Ready for ShiftCare" && !reviewed ? "disabled" : ""}>${status}</option>`).join("")}</select></label><label>Follow-up date<input name="followUp" type="date" required value="${attr(e.nextAction)}"></label><label class="full">Next action<textarea name="nextAction" maxlength="250" required>${esc(e.serverNextAction)}</textarea></label></div><p class="form-note">Ready requires reviewed fields and a covered service postcode. Changes are saved with edit protection.</p><div class="form-actions"><button class="btn" type="submit">Save next action</button><button class="btn" data-action="refresh-intake" type="button">Refresh saved record</button></div></form></section></div>
       <div class="intake-layout intake-single" ${sectionAttrs("email")}>${emailDraftPanel(e)}</div>
       <div class="intake-layout intake-single" ${sectionAttrs("activity")}><section class="panel"><h2>Activity</h2><ol class="record-history">${history}</ol></section></div>`;
   }
@@ -587,8 +667,45 @@
       <div class="staff-list">${state.workers.map(w => {
         const visits = state.bookings.filter(b => b.workerId === w.id && weekDays.includes(b.date) && b.status !== "Cancelled").length;
         const checks = state.workerDocs.filter(d => d.workerId === w.id && d.status !== "Valid");
-        return `<section class="panel staff-card"><div class="staff-heading"><span class="avatar">${esc(w.initials)}</span><div><h2>${esc(w.name)}</h2><span class="muted tiny">${esc(w.id)}</span></div>${pill(w.approved ? "Approved" : "Pending")}</div><p class="staff-services">${esc(w.services.join(" · "))}</p><div class="staff-facts"><span><strong>${visits}</strong> visits this week</span><span><strong>${esc(w.days.map(day => dayNames[day]).join(", "))}</strong> regular days</span></div>${checks.length ? `<p class="staff-check">${icon("alert")} ${checks.length} document check${checks.length === 1 ? "" : "s"} need attention</p>` : `<p class="staff-check clear">${icon("check")} Documents up to date in demo</p>`}<button class="btn small" data-action="schedule-worker" data-id="${attr(w.id)}" type="button">View in schedule</button></section>`;
+        return `<section class="panel staff-card"><div class="staff-heading"><span class="avatar">${esc(w.initials)}</span><div><h2><a href="#/office/staff/${attr(w.id)}">${esc(w.name)}</a></h2><span class="muted tiny">${esc(w.id)}</span></div>${pill(w.approved ? "Approved" : "Pending")}</div><p class="staff-services">${esc(w.services.join(" · "))}</p><div class="staff-facts"><span><strong>${visits}</strong> visits this week</span><span><strong>${esc(w.days.map(day => dayNames[day]).join(", "))}</strong> regular days</span></div>${checks.length ? `<p class="staff-check">${icon("alert")} ${checks.length} document check${checks.length === 1 ? "" : "s"} need attention</p>` : `<p class="staff-check clear">${icon("check")} Documents up to date in demo</p>`}<div class="button-row"><a class="btn small primary" href="#/office/staff/${attr(w.id)}">View profile</a><button class="btn small" data-action="schedule-worker" data-id="${attr(w.id)}" type="button">View in schedule</button></div></section>`;
       }).join("")}</div>`;
+  }
+
+  function employeeProfile(workerId) {
+    const w = worker(workerId);
+    if (!w) return `${pageHeader("Staff", "Employee not found")}<a class="btn" href="#/office/staff">Back to staff</a>`;
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const bookings = state.bookings.filter(b => b.workerId === w.id).sort((a, b) => `${b.date}${b.start}`.localeCompare(`${a.date}${a.start}`));
+    const docs = state.workerDocs.filter(d => d.workerId === w.id);
+    const reviews = state.employeeReviews.filter(r => r.workerId === w.id).sort((a, b) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`));
+    const clients = state.participants.filter(p => p.preferredWorker === w.id || bookings.some(b => b.participantId === p.id));
+    const checks = docs.filter(d => d.status !== "Valid").length;
+    const scheduled = reviews.filter(r => r.status === "Scheduled");
+    let content = "";
+    if (employeeTab === "Overview") content = `<div class="grid-half"><section class="panel"><h2>Availability & eligibility</h2><div class="spacer"></div>${pair("Regular days", w.days.map(d => days[d]).join(", ") || "None recorded")}${pair("Office approval", w.approved ? "Approved" : "Pending")}${pair("Eligibility review", /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(w.review) ? dateLabel(w.review) : w.review || "Not recorded")}<p class="form-note">Regular days are preferences. Check the roster before arranging a meeting.</p><button class="btn small" data-action="schedule-worker" data-id="${attr(w.id)}" type="button">View employee schedule</button></section><section class="panel"><h2>Clients supported</h2>${clients.map(p => `<div class="visit-row"><span class="avatar">${esc(p.name.split(" ").map(n => n[0]).join(""))}</span><span class="body"><a href="#/office/participants/${attr(p.id)}">${esc(p.name)}</a><small>${esc(p.service)} · ${esc(p.suburb)}</small></span></div>`).join("") || empty("No linked clients", "Clients appear here when assigned or listed as a preferred worker.")}</section></div><div class="spacer"></div><section class="panel"><div class="section-heading"><h2>Next client review</h2><button class="btn small" data-action="employee-tab" data-value="Client reviews" type="button">View all reviews</button></div>${scheduled.length ? reviewRows(scheduled.slice(0, 1)) : empty("No client review scheduled", "Arrange a conversation with the employee and client to review their support.")}</section>`;
+    if (employeeTab === "Visits") content = `<section class="panel tight"><div class="table-wrap"><table><thead><tr><th>Date & time</th><th>Client</th><th>Service</th><th>Status</th></tr></thead><tbody>${bookings.map(b => `<tr><td><a href="#/office/schedule/${attr(b.id)}">${dateLabel(b.date)} · ${clockRange(b.start, b.end)}</a></td><td>${esc(participant(b.participantId)?.name)}</td><td>${esc(b.service)}</td><td>${pill(b.status)}</td></tr>`).join("") || `<tr><td colspan="4">No visits recorded.</td></tr>`}</tbody></table></div></section>`;
+    if (employeeTab === "Documents") content = `<section class="panel"><h2>Document checks</h2><p class="form-note">These are document records. Original files have not been attached.</p>${docs.map(d => `<div class="visit-row"><span class="priority-icon">${icon("file")}</span><span class="body"><strong>${esc(d.name)}</strong><small>${d.expires ? `Recorded expiry: ${dateLabel(d.expires)}` : "No expiry recorded"}${d.evidence ? ` · ${esc(d.evidence)}` : ""}</small></span>${pill(d.status)}</div>`).join("") || empty("No documents recorded", "Confirm the required credentials with the office.")}</section>`;
+    if (employeeTab === "Client reviews") content = `<section class="panel"><div class="section-heading"><h2>Client reviews</h2><button class="btn primary" data-action="schedule-client-review" data-id="${attr(w.id)}" type="button">Schedule client review</button></div><p class="form-note">Saved in this browser demo. No calendar invitation or email is sent.</p>${reviews.length ? reviewRows(reviews) : empty("No reviews yet", "Choose a client, date and agenda to arrange the first review.")}</section>`;
+    return `<a class="record-back" href="#/office/schedule">${icon("arrow")} Back to schedule</a><header class="page-header"><h1>Employee profile</h1><div class="header-actions"><button class="btn primary" data-action="schedule-client-review" data-id="${attr(w.id)}" type="button">${icon("calendar")} Schedule client review</button></div></header><div class="employee-layout profile-layout"><aside class="panel employee-identity"><div class="employee-cover"></div><span class="avatar employee-avatar">${esc(w.initials)}</span><span class="profile-kind">Employee</span><h2>${esc(w.name)}</h2><p class="muted">Support team · ${esc(w.id)}</p>${pill(w.approved ? "Approved" : "Pending")}<div class="content-section"><h3>Services</h3><div class="employee-tags">${w.services.map(s => `<span>${esc(s)}</span>`).join("")}</div></div><div class="content-section"><h3>Contact</h3><p class="muted tiny">Contact details are not recorded in this demo.</p></div><div class="notice">${icon("shield")} Office profile · fictional demo records</div></aside><div class="employee-main">${profileRatings(bookings, "Client satisfaction")}<div class="employee-metrics">${[[clients.length, "Clients supported"], [checks, "Document checks"], [scheduled.length, "Scheduled reviews"]].map(([value, label]) => `<section class="panel"><strong>${value}</strong><span>${label}</span></section>`).join("")}</div><div class="tabs" aria-label="Employee profile sections">${["Overview", "Visits", "Documents", "Client reviews"].map(tab => `<button type="button" data-action="employee-tab" data-value="${tab}" class="${employeeTab === tab ? "active" : ""}" aria-pressed="${employeeTab === tab}">${tab}</button>`).join("")}</div>${content}</div></div>`;
+  }
+
+  function profileRatings(bookings, satisfactionLabel) {
+    const completed = bookings.filter(b => b.status === "Completed").length;
+    return `<section class="profile-ratings" aria-label="Satisfaction and ratings">
+      <div class="profile-stat-grid">
+        <section class="panel profile-stat"><span class="profile-stat-icon">${icon("heart")}</span><span>${esc(satisfactionLabel)}</span><strong>Not rated</strong><small>Awaiting scored feedback</small></section>
+        <section class="panel profile-stat"><span class="profile-stat-icon">${icon("star")}</span><span>Average rating</span><strong>— <small>/ 5</small></strong><small>No ratings recorded</small></section>
+        <section class="panel profile-stat"><span class="profile-stat-icon">${icon("check")}</span><span>Completed visits</span><strong>${completed}</strong><small>Across recorded bookings</small></section>
+      </div>
+      <div class="profile-score-grid">
+        <section class="panel profile-score"><h2>Satisfaction score</h2><div class="profile-gauge"><svg viewBox="0 0 240 130" aria-hidden="true"><path d="M 20 115 A 100 100 0 0 1 220 115" /></svg><div><strong>—</strong><span>Awaiting feedback</span></div></div><p>No scored feedback has been recorded.</p></section>
+        <section class="panel profile-rating-summary"><h2>Rating overview</h2><div class="profile-stars" aria-hidden="true">☆ ☆ ☆ ☆ ☆</div><h3>No ratings yet</h3><p>Written feedback and review outcomes remain in their existing sections. They do not count as a numeric rating.</p><span class="profile-rating-note">${icon("shield")} Based on recorded feedback</span></section>
+      </div>
+    </section>`;
+  }
+
+  function reviewRows(reviews) {
+    return reviews.map(r => `<article class="employee-review"><div><strong>${esc(participant(r.participantId)?.name || "Client unavailable")}</strong><p>${dateLabel(r.date)} · ${clockRange(r.start, r.end)} · Perth time</p><p>${esc(r.location)}</p><p class="muted">${esc(r.agenda)}</p><small>Recorded by ${esc(r.owner)}</small>${r.outcome ? `<p><strong>Outcome:</strong> ${esc(r.outcome)}</p>` : ""}</div><div class="employee-review-actions">${pill(r.status)}${r.status === "Scheduled" ? `<button class="btn small" data-action="complete-client-review" data-id="${attr(r.id)}" type="button">Record outcome</button><button class="btn small" data-action="cancel-client-review" data-id="${attr(r.id)}" type="button">Cancel review</button>` : ""}</div></article>`).join("");
   }
 
   function participantDetail(participantId) {
@@ -724,6 +841,10 @@
       <aside class="panel calendar-agenda" tabindex="-1" aria-label="Selected day details"><span class="eyebrow">Selected day</span><h2>${fullDate(selected)}</h2><p class="muted tiny">${selectedEvents.length ? `${selectedEvents.length} calendar item${selectedEvents.length === 1 ? "" : "s"}` : office ? "No service visits or booked calls" : "No assigned visits"}</p><div class="calendar-agenda-list">${eventRows || `<p class="calendar-agenda-empty">${office ? "No service visits or booked calls on this day." : "No confirmed or completed visits on this day."}</p>`}</div>${office ? `<div class="calendar-open-slots"><h3>Published call times still open</h3>${openSlots.length ? `<p>${openSlots.map(s => `${esc(clockLabel(s.time))} · ${s.duration} min`).join("<br>")}</p>` : `<p>None for this day.</p>`}<button class="btn small" data-action="add-slot" type="button">Add call slot</button></div>` : `<div class="calendar-open-slots"><p>Regular working days are managed separately from assigned visits.</p><a class="btn small" href="#/worker/availability">View availability</a></div>`}</aside></div>`;
   }
 
+  function scheduleEmployeeName(w) {
+    return w.id ? `<a class="employee-profile-link" href="#/office/staff/${attr(w.id)}" aria-label="${attr(`View employee profile for ${w.name}`)}"><strong>${esc(w.name)}</strong><span class="sr-only"> · View profile</span></a>` : `<strong>${esc(w.name)}</strong>`;
+  }
+
   function staffTimeline(bookings, rows) {
     const minutes = time => { const [hour, minute] = time.split(":").map(Number); return hour * 60 + minute; };
     const from = Math.floor(Math.min(8 * 60, ...bookings.map(b => minutes(b.start))) / 60) * 60;
@@ -742,7 +863,7 @@
         const width = (end-start)/range*100;
         return `<a class="timeline-visit" href="#/office/schedule/${attr(b.id)}" style="left:${(start-from)/range*100}%;width:${width}%;top:${12+lane*76}px" aria-label="${attr(`${participant(b.participantId)?.name}, ${clockRange(b.start,b.end)}, ${b.status}`)}"><strong>${esc(participant(b.participantId)?.name)}</strong><span>${esc(clockRange(b.start,b.end))}</span><small class="${statusClass(b.status)}">${esc(b.status)}</small></a>`;
       }).join("");
-      return `<div class="timeline-row" style="--row-height:${Math.max(1,ends.length)*76+24}px"><div class="timeline-person"><span class="avatar" aria-hidden="true">${esc(w.initials)}</span><div><strong>${esc(w.name)}</strong><small>${esc(w.services?.[0] || "Awaiting assignment")}</small></div></div><div class="timeline-track">${bars || '<span class="timeline-empty">No visits scheduled</span>'}</div></div>`;
+      return `<div class="timeline-row" style="--row-height:${Math.max(1,ends.length)*76+24}px"><div class="timeline-person"><span class="avatar" aria-hidden="true">${esc(w.initials)}</span><div>${scheduleEmployeeName(w)}<small>${esc(w.services?.[0] || "Awaiting assignment")}</small></div></div><div class="timeline-track">${bars || '<span class="timeline-empty">No visits scheduled</span>'}</div></div>`;
     }).join("") || empty("No matching team members", "Clear the employee search or choose another status.")}</div>`;
   }
 
@@ -764,7 +885,7 @@
     return `${pageHeader("Team roster", "Staff schedule", "See who is assigned, when visits happen and what needs attention.", `<a class="btn" href="#/office/map">${icon("map")} View map</a><button class="btn primary" data-action="new-booking" type="button">${icon("plus")} New booking</button>`)}
       <section class="schedule-surface" aria-label="Staff schedule"><div class="schedule-toolbar"><div class="schedule-period"><span class="schedule-kicker">${daily ? "DAY" : "WEEK"} VIEW · AUSTRALIA/PERTH</span><h2>${periodLabel}</h2></div><div class="schedule-controls"><div class="schedule-view-switch" role="group" aria-label="Schedule view">${["day","week"].map(view => `<button type="button" data-action="schedule-view" data-value="${view}" aria-pressed="${ui.scheduleView === view}">${view === "day" ? "Day" : "Week"}</button>`).join("")}</div><div class="week-nav" aria-label="Change schedule week"><button class="btn small" data-action="schedule-prev" type="button" aria-label="Previous week">←</button><button class="btn small" data-action="schedule-demo-week" type="button">${daily ? "Sample day" : "Demo week"}</button><button class="btn small" data-action="schedule-next" type="button" aria-label="Next week">→</button></div><label class="schedule-worker-search">${icon("search")}<span class="sr-only">Find employee</span><input id="schedule-worker-search" type="search" placeholder="Find employee" value="${attr(ui.scheduleWorkerQuery)}"></label></div></div>
       <div class="schedule-subbar"><span class="schedule-result" role="status">${daily ? dayBookings.length : shown.length} visits · ${daily ? dayRows.length : rows.length} team members</span><div class="schedule-status-filters" role="group" aria-label="Filter visits by status">${[["", "All visits"], ["Needs cover", "Needs cover"], ["Confirmed", "Confirmed"], ["Proposed", "Proposed"], ["Completed", "Completed"]].map(([value, label]) => `<button type="button" data-action="schedule-status" data-value="${value}" aria-pressed="${ui.scheduleStatus === value}">${label}</button>`).join("")}</div></div>
-      ${daily ? staffTimeline(dayBookings,dayRows) : `      <p class="mobile-scroll-hint">Swipe across to see each day of the week.</p><div class="roster-scroll" tabindex="0" aria-label="Weekly employee roster"><table class="roster-table"><thead><tr><th scope="col" class="roster-name-col">Team members</th>${weekDays.map(date => `<th scope="col" class="${date === todayPerth() ? "today" : ""}"><span class="roster-day-label">${dateLabel(date, { weekday: "long" })}</span><span class="roster-day-date"><b>${dateObj(date).getUTCDate()}</b><small>${dateLabel(date, { month: "short" })}</small></span></th>`).join("")}</tr></thead><tbody>${rows.map(w => `<tr><th scope="row" class="roster-name-col"><span class="person-cell"><span class="avatar">${esc(w.initials)}</span><span><strong>${esc(w.name)}</strong><small>${w.id ? esc(w.services.slice(0, 1).join("")) : "Awaiting assignment"}</small></span></span></th>${weekDays.map(date => { const bookings = shown.filter(b => (b.workerId || "") === w.id && b.date === date).sort((a, b) => a.start.localeCompare(b.start)); return `<td class="${date === todayPerth() ? "today" : ""}">${bookings.map(b => { const v = visitForBooking(b.id); return `<a class="roster-shift" href="#/office/schedule/${attr(b.id)}" aria-label="${attr(`View booking for ${participant(b.participantId)?.name}, ${clockRange(b.start, b.end)}, ${b.status}`)}"><span class="roster-shift-time">${esc(clockRange(b.start, b.end))}</span><strong>${esc(participant(b.participantId)?.name)}</strong><small>${esc(b.service)}</small><span class="roster-shift-status ${statusClass(b.status)}">${esc(b.status)}</span><span class="roster-clock"><span>IN <b>${esc(clockLabel(v?.clockIn))}</b></span><span>OUT <b>${esc(clockLabel(v?.clockOut))}</b></span></span></a>`; }).join("") || `<span class="roster-empty" aria-label="No visit">—</span>`}</td>`; }).join("")}</tr>`).join("") || `<tr class="roster-no-results"><td colspan="6">${empty("No matching visits", "Choose another employee, status or week.")}</td></tr>`}</tbody></table></div>` }<div class="schedule-foot"><span>Select a visit to review its booking and recorded attendance.</span><a href="#/office/visits">Open visit records ${icon("arrow")}</a></div></section>
+      ${daily ? staffTimeline(dayBookings,dayRows) : `      <p class="mobile-scroll-hint">Swipe across to see each day of the week.</p><div class="roster-scroll" tabindex="0" aria-label="Weekly employee roster"><table class="roster-table"><thead><tr><th scope="col" class="roster-name-col">Team members</th>${weekDays.map(date => `<th scope="col" class="${date === todayPerth() ? "today" : ""}"><span class="roster-day-label">${dateLabel(date, { weekday: "long" })}</span><span class="roster-day-date"><b>${dateObj(date).getUTCDate()}</b><small>${dateLabel(date, { month: "short" })}</small></span></th>`).join("")}</tr></thead><tbody>${rows.map(w => `<tr><th scope="row" class="roster-name-col"><span class="person-cell"><span class="avatar">${esc(w.initials)}</span><span>${scheduleEmployeeName(w)}<small>${w.id ? esc(w.services.slice(0, 1).join("")) : "Awaiting assignment"}</small></span></span></th>${weekDays.map(date => { const bookings = shown.filter(b => (b.workerId || "") === w.id && b.date === date).sort((a, b) => a.start.localeCompare(b.start)); return `<td class="${date === todayPerth() ? "today" : ""}">${bookings.map(b => { const v = visitForBooking(b.id); return `<a class="roster-shift" href="#/office/schedule/${attr(b.id)}" aria-label="${attr(`View booking for ${participant(b.participantId)?.name}, ${clockRange(b.start, b.end)}, ${b.status}`)}"><span class="roster-shift-time">${esc(clockRange(b.start, b.end))}</span><strong>${esc(participant(b.participantId)?.name)}</strong><small>${esc(b.service)}</small><span class="roster-shift-status ${statusClass(b.status)}">${esc(b.status)}</span><span class="roster-clock"><span>IN <b>${esc(clockLabel(v?.clockIn))}</b></span><span>OUT <b>${esc(clockLabel(v?.clockOut))}</b></span></span></a>`; }).join("") || `<span class="roster-empty" aria-label="No visit">—</span>`}</td>`; }).join("")}</tr>`).join("") || `<tr class="roster-no-results"><td colspan="6">${empty("No matching visits", "Choose another employee, status or week.")}</td></tr>`}</tbody></table></div>` }<div class="schedule-foot"><span>Select a visit to review its booking and recorded attendance.</span><a href="#/office/visits">Open visit records ${icon("arrow")}</a></div></section>
       <div class="spacer"></div><div class="grid-two"><section class="panel"><div class="section-heading"><h2>Needs cover</h2>${pill(`${needsCover.length} open`)}</div>${needsCover.length ? needsCover.map(b => `<div class="visit-row"><span class="priority-icon amber">${icon("alert")}</span><span class="body"><strong>${esc(participant(b.participantId)?.name)} · ${esc(b.service)}</strong><small>${dateLabel(b.date)} · ${clockRange(b.start, b.end)}</small></span><a class="btn small" href="#/office/schedule/${attr(b.id)}">Resolve</a></div>`).join("") : empty("No cover requests", "Worker absences will appear here.")}</section><section class="panel"><div class="section-heading"><h2>Worker eligibility</h2><span class="muted tiny">Approval is recorded by the office</span></div>${state.workers.map(w => `<div class="visit-row"><span class="avatar">${esc(w.initials)}</span><span class="body"><strong>${esc(w.name)}</strong><small>${esc(w.services.join(" · "))}</small></span>${pill(w.approved ? "Approved" : "Pending")}</div>`).join("")}</section></div><div class="spacer"></div><section class="panel"><div class="section-heading"><h2>Recorded cancellations</h2><a href="#/office/fees">Review fee rules</a></div>${cancellations.length ? cancellations.map(b => `<div class="visit-row"><span class="priority-icon">${icon("calendar")}</span><span class="body"><strong>${esc(participant(b.participantId)?.name)} · ${esc(b.service)}</strong><small>${dateLabel(b.date)} · ${esc(b.cancellation.cause)} cancellation</small></span><a class="btn small" href="#/office/schedule/${attr(b.id)}">Open record</a></div>`).join("") : `<p class="muted tiny">No cancellations have been recorded.</p>`}</section>`;
   }
 
@@ -923,6 +1044,10 @@
   }
   function closeModal() { if (modal.open) modal.close(); }
   document.addEventListener("input", event => {
+    if (event.target.matches("[data-owner-search]")) {
+      const select = event.target.closest("[data-owner-picker]").querySelector('[name="owner"]');
+      select.innerHTML = ownerOptionsMarkup(select.value, event.target.value);
+    }
     if (event.target.matches("[data-workspace-search]")) {
       const query=event.target.value.toLowerCase().trim();
       modal.querySelectorAll("[data-search-text]").forEach(link=>link.hidden=!link.dataset.searchText.includes(query));
@@ -983,6 +1108,30 @@
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     toast("CSV downloaded from sample records.");
   }
+
+  function showOverviewTooltip(event) {
+    const bar = event.target.closest?.("[data-chart-title]");
+    const tooltip = document.getElementById("overview-chart-tooltip");
+    if (!bar || !tooltip) return;
+    const breakdown = JSON.parse(bar.dataset.chartBreakdown).filter(row => row.value);
+    tooltip.innerHTML = `<strong>${esc(bar.dataset.chartTitle)}</strong><span>${esc(bar.dataset.chartCount)} bookings · ${esc(bar.dataset.chartHours)} scheduled</span>${breakdown.map(row => `<div><span>${esc(row.label)}</span><b>${row.value}</b></div>`).join("") || '<div>No bookings</div>'}`;
+    tooltip.hidden = false;
+    const area = tooltip.parentElement.getBoundingClientRect(), bounds = bar.getBoundingClientRect();
+    tooltip.style.left = `${Math.max(0, Math.min(area.width - tooltip.offsetWidth, bounds.left - area.left + bounds.width / 2 - tooltip.offsetWidth / 2))}px`;
+    tooltip.style.top = "0px";
+  }
+  function hideOverviewTooltip(event) {
+    if (event.type === "keydown" && event.key !== "Escape") return;
+    if (event.type !== "keydown" && !event.target.closest?.("[data-chart-title]")) return;
+    if (event.relatedTarget && event.relatedTarget.closest?.("[data-chart-title]") === event.target.closest?.("[data-chart-title]")) return;
+    const tooltip = document.getElementById("overview-chart-tooltip");
+    if (tooltip) tooltip.hidden = true;
+  }
+  document.addEventListener("pointerover", showOverviewTooltip);
+  document.addEventListener("focusin", showOverviewTooltip);
+  document.addEventListener("pointerout", hideOverviewTooltip);
+  document.addEventListener("focusout", hideOverviewTooltip);
+  document.addEventListener("keydown", hideOverviewTooltip);
 
   document.addEventListener("click", async event => {
     const autoButton = event.target.closest("[data-auto-action]");
@@ -1047,7 +1196,7 @@
     }
     if (action === 'intake-transfer-failure') {
       const e = find(state.enquiries, itemId);
-      return openModal('Record failed manual transfer', 'Keep the unresolved request owned and scheduled.', `<form data-form="intake-failure" data-id="${attr(e.id)}" data-revision="${attr(e.revision)}"><label>Failure<textarea name="reason" required maxlength="500"></textarea></label><label>Owner<input name="owner" required value="${attr(e.owner)}"></label><label>Next action<input name="nextAction" required maxlength="250"></label><label>Due date<input name="followUp" type="date" required value="${attr(e.nextAction)}"></label><div class="form-actions"><button class="btn primary" type="submit">Save unresolved work</button></div></form>`);
+      return openModal('Record failed manual transfer', 'Keep the unresolved request owned and scheduled.', `<form data-form="intake-failure" data-id="${attr(e.id)}" data-revision="${attr(e.revision)}"><label>Failure<textarea name="reason" required maxlength="500"></textarea></label>${ownerPicker(e.owner)}<label>Next action<input name="nextAction" required maxlength="250"></label><label>Due date<input name="followUp" type="date" required value="${attr(e.nextAction)}"></label><div class="form-actions"><button class="btn primary" type="submit">Save unresolved work</button></div></form>`);
     }
     if (["copy-intake-field", "copy-intake-handoff"].includes(action)) {
       const e = find(state.enquiries, itemId);
@@ -1061,6 +1210,18 @@
       return;
     }
     if (action === "close-modal") return closeModal();
+    if (action === "employee-tab") { employeeTab = value; render(); return; }
+    if (action === "schedule-client-review") {
+      const w = worker(itemId);
+      if (!w || !sessionEmail || routeParts()[0] !== "office") return;
+      return openModal("Schedule client review", `Arrange a review with ${w.name} and a client. Saved in this browser; invitations are not sent.`, `<form data-form="client-review" data-id="${attr(w.id)}"><div class="form-grid"><label class="full">Client<select name="participantId" required><option value="">Select a client</option>${participantOptions()}</select></label><label>Date (Perth)<input name="date" type="date" min="${todayPerth()}" value="${todayPerth()}" required></label><label>Location or meeting link<input name="location" maxlength="300" placeholder="Office, phone or meeting link" required></label><label>Starts (Perth)<input name="start" type="time" required></label><label>Ends (Perth)<input name="end" type="time" required></label><label class="full">Review agenda<textarea name="agenda" maxlength="2000" required placeholder="Support goals, client feedback and agreed next steps"></textarea></label></div><p class="form-note">Recorded by ${esc(sessionEmail)}. Confirm attendance with the employee and client separately.</p><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">Save scheduled review</button></div></form>`);
+    }
+    if (action === "complete-client-review" || action === "cancel-client-review") {
+      const r = find(state.employeeReviews, itemId);
+      if (!r || r.status !== "Scheduled" || !sessionEmail || routeParts()[0] !== "office") return;
+      const completing = action === "complete-client-review";
+      return openModal(completing ? "Record review outcome" : "Cancel client review", "Keep the decision and follow-up on the employee profile.", `<form data-form="client-review-outcome" data-id="${attr(r.id)}" data-status="${completing ? "Completed" : "Cancelled"}"><label>${completing ? "Outcome and agreed next steps" : "Cancellation reason"}<textarea name="outcome" maxlength="2000" required></textarea></label><div class="form-actions"><button class="btn primary" type="submit">${completing ? "Save outcome" : "Cancel review"}</button></div></form>`);
+    }
     if (action === "sign-out") { await fetch("/api/workflow?action=logout", { method: "POST" }); sessionEmail = ""; render(); return; }
     if (action === "read-update") { const u = find(state.updates, itemId); const [area] = routeParts(); const recipient = area === "office" ? "office" : area === "worker" ? `worker:${ui.workerId}` : `client:${ui.clientId}`; if (!u || u.to !== recipient) return; u.read = true; save(); render(); return; }
     if (action === "refresh-arrival") { render(); toast("Arrival status refreshed from the demo journey."); return; }
@@ -1145,6 +1306,8 @@
     if (action === "print-agreement") { window.print(); return; }
     if (action === "new-booking") return openModal("New booking", "Choose the people, then set the service and visit time.", `<form data-form="new-booking" class="booking-form"><div class="booking-form-columns"><section class="booking-form-section"><h3>People</h3><label>Participant<select name="participantId">${participantOptions()}</select></label><label>Worker<select name="workerId">${workerOptions("WRK-02")}</select></label></section><section class="booking-form-section"><h3>Service &amp; schedule</h3><label>Service<select name="service">${serviceOptions("Domestic assistance")}</select></label><label>Service date<input name="date" type="date" required value="2026-10-09"></label><div class="booking-time-fields"><label>Start time<input name="start" type="time" value="09:00" required></label><label>End time<input name="end" type="time" value="11:00" required></label></div><label>Recurrence<select name="recurrence">${["One-off", "Weekly", "Fortnightly"].map(x => option(x)).join("")}</select><span class="form-help">The demo creates four occurrences for a recurring booking.</span></label></section></div><div class="form-actions"><p class="form-note">Office checks and participant agreement are required before confirmation.</p><button class="btn primary" type="submit">Create proposed booking</button></div></form>`);
     if (action === "schedule-status") { ui.scheduleStatus = value; render(); document.querySelector(`[data-action="schedule-status"][data-value="${value}"]`)?.focus({ preventScroll: true }); return; }
+    if (action === "overview-week") { overviewWeekStart = value === "sample" ? demoWeek[0] : addDays(overviewWeekStart, value === "previous" ? -7 : 7); render(); return; }
+    if (action === "overview-day") { ui.scheduleView = "day"; ui.scheduleDate = button.dataset.date; ui.scheduleWeekStart = mondayOf(ui.scheduleDate); ui.scheduleWorkerQuery = ""; ui.scheduleStatus = ""; go("office/schedule"); return; }
     if (action === "schedule-view") { ui.scheduleView = value; render(); return; }
     if (action === "schedule-prev" || action === "schedule-next") { const direction = action === "schedule-prev" ? -1 : 1; ui.scheduleDate = addDays(ui.scheduleDate, direction * (ui.scheduleView === "day" ? 1 : 7)); ui.scheduleWeekStart = mondayOf(ui.scheduleDate); render(); return; }
     if (action === "schedule-demo-week") { ui.scheduleWeekStart = "2026-10-05"; ui.scheduleDate = "2026-10-05"; render(); return; }
@@ -1194,6 +1357,28 @@
     const kind = form.dataset.form;
     const itemId = form.dataset.id;
     let message = "";
+    if (kind === "client-review" || kind === "client-review-outcome") {
+      if (!sessionEmail || routeParts()[0] !== "office") return;
+      if (kind === "client-review") {
+        const workerId = itemId, participantId = val(form, "participantId"), date = val(form, "date"), start = val(form, "start"), end = val(form, "end"), location = val(form, "location"), agenda = val(form, "agenda");
+        if (!worker(workerId) || !participant(participantId)) return formError(form, "Select an existing employee and client.");
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(dateObj(date).getTime()) || dateObj(date).toISOString().slice(0, 10) !== date || date < todayPerth() || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(start) || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(end) || end <= start) return formError(form, "Choose today or a future date, with an end time after the start.");
+        if (!location || !agenda) return formError(form, "Enter a location and review agenda.");
+        const overlap = b => b.date === date && start < b.end && end > b.start && (b.workerId === workerId || b.participantId === participantId);
+        if (state.employeeReviews.some(r => r.status === "Scheduled" && overlap(r)) || state.bookings.some(b => b.status !== "Cancelled" && overlap(b))) return formError(form, "The employee or client already has a visit or review at this time. Choose another time.");
+        const review = { id: id("REV", state.employeeReviews), workerId, participantId, date, start, end, location, agenda, status: "Scheduled", owner: sessionEmail };
+        state.employeeReviews.push(review);
+        activity("Client review scheduled", `${worker(workerId).name} · ${participant(participantId).name} · ${date} · ${sessionEmail}`);
+        employeeTab = "Client reviews"; closeModal(); save(); go(`office/staff/${workerId}`); render(); toast("Review saved in this browser. Confirm attendance separately.");
+      } else {
+        const review = find(state.employeeReviews, itemId), outcome = val(form, "outcome");
+        if (!review || review.status !== "Scheduled" || !outcome || !["Completed", "Cancelled"].includes(form.dataset.status)) return formError(form, "Enter an outcome for a scheduled review.");
+        Object.assign(review, { status: form.dataset.status, outcome, reviewedBy: sessionEmail });
+        activity(`Client review ${review.status.toLowerCase()}`, `${review.id} · ${sessionEmail}`);
+        closeModal(); save(); render(); toast("Review updated.");
+      }
+      return;
+    }
     if (kind === 'new-invoice' || kind === 'invoice-review') {
       if (!sessionEmail || routeParts()[0] !== 'office') return;
       const I = window.OCD_INVOICES;
