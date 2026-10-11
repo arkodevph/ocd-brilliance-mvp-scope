@@ -1,9 +1,9 @@
 /* Fictional workflow adapter. No network calls or real ShiftCare writes. */
 (function (root, factory) {
-  const api = factory();
+  const api = factory(typeof module === 'object' && module.exports ? require('./booking-rules.js') : root.OCD_BOOKING_RULES);
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.OCD_AUTOMATION_ENGINE = api;
-})(typeof window === "undefined" ? globalThis : window, function () {
+})(typeof window === "undefined" ? globalThis : window, function (bookingRules) {
   "use strict";
   const clone = value => structuredClone(value);
   const now = () => new Date().toISOString();
@@ -55,6 +55,25 @@
     for (const source of samples) if (!a.inbox.some(m => m.id === source.id)) { a.inbox.push({ ...clone(source), state: "received", receivedAt: now() }); count++; }
     return count;
   }
+  function pendingExamples(state) {
+    const a = ensure(state);
+    if (a.pendingExamples === 1) return;
+    const fixture = clone(state);
+    fixture.automation.inbox = [];
+    receiveSamples(fixture);
+    for (const example of fixture.automation.inbox) {
+      const source = { ...example, id: `EXAMPLE-${example.id}`, prototypeInput: true, example: true, sender: example.fields?.email || 'office@example.test', label: 'Example message', state: 'received', receivedAt: now() };
+      delete source.jobId;
+      if (!a.inbox.some(m => m.id === source.id)) a.inbox.push(source);
+      if (source.workflow !== 'W02') {
+        const job = create(state, { ...source, source });
+        source.state = 'routed'; source.jobId = job.id;
+      }
+    }
+    const doc = state.workerDocs.find(d => d.id === 'WDC-04');
+    if (doc) create(state, { kind: 'document', workflow: 'W12', title: `Review document — ${doc.name}`, owner: 'HR / admin', targetId: doc.id, source: { id: `EXAMPLE-document:${doc.id}`, label: 'Example document', body: `${doc.name}: expiry ${doc.expires || 'not recorded'}. Check the original document and decide whether renewal or a metadata correction is needed.`, fields: { expires: doc.expires || '', noExpiration: false, note: '' } } });
+    a.pendingExamples = 1;
+  }
   function create(state, input) {
     const a = ensure(state);
     const existing = a.jobs.find(j => j.source.id === input.source.id && j.kind === input.kind);
@@ -96,7 +115,7 @@
     for (const b of state.bookings.filter(b => b.status === "Needs cover")) cover(state, b.id);
   }
   function request(state, r) {
-    const kind = r.type === "Cancellation request" ? "cancel" : r.type === "Feedback" ? "feedback" : r.type === "Profile update" ? "profile-update" : "change";
+    const kind = r.type === "Booking request" ? "booking-request" : r.type === "Cancellation request" ? "cancel" : r.type === "Feedback" ? "feedback" : r.type === "Profile update" ? "profile-update" : "change";
     return create(state, { kind, workflow: kind === "cancel" ? "W07" : kind === "change" ? "W08" : kind === "profile-update" ? "W03" : "W13", title: `${r.type} — ${state.participants.find(p => p.id === r.participantId)?.name}`, owner: "Office", targetId: r.bookingId || r.participantId, source: { id: `request:${r.id}`, label: "Demo participant portal", body: r.message, requestId: r.id, fields: kind === "cancel" ? { reason: r.message, charge: "unconfirmed", code: "", scope: "occurrence" } : clone(r.fields || {}) } });
   }
   function cancellation(state, bookingId, reason) {
@@ -187,6 +206,7 @@
     const w = record(state, "workers", workerId);
     if (!w?.approved || !w.services?.includes(occurrence.service) || (replacement && w.id === occurrence.workerId)) return "Recheck the approved worker and service eligibility in the native roster.";
     if (minutes(occurrence.start) === null || minutes(occurrence.end) === null || occurrence.end <= occurrence.start || !validDate(occurrence.date)) return "Verify the occurrence date and clock times before offering or confirming it.";
+    if (bookingRules.requiredSkills(occurrence).some(skill => !w.skills?.includes(skill))) return "Recheck required skills before assigning this service.";
     const bookings = [...state.automation.remote.bookings, ...state.bookings.filter(b => b.status === "Proposed" && !state.automation.remote.bookings.some(r => r.id === b.id))];
     if (bookings.some(b => b.workerId === workerId && b.id !== occurrence.id && b.date === occurrence.date && !["Cancelled", "Needs cover"].includes(b.status) && b.start < occurrence.end && b.end > occurrence.start)) return "The proposed worker overlaps another sample native visit. Review the current roster.";
     return "";
@@ -249,7 +269,7 @@
       else set(job, "completed", "done", "Local ownership/response audit complete. No ShiftCare roster mutation.");
       return job;
     }
-    if (["finance", "partial-report", "ambiguous", "change"].includes(job.kind)) { set(job, "manual_action_required", "followup", "Native review/action required; record evidence after resolving the exception."); return job; }
+    if (["finance", "partial-report", "ambiguous", "change", "booking-request"].includes(job.kind)) { set(job, "manual_action_required", "followup", "Native review/action required; record evidence after resolving the exception."); return job; }
     set(job, "approved", job.kind === "cover" && job.stage !== "assignment" ? "offer" : "native", "Approved for the supported native handoff. No record has changed yet.");
     return job;
   }
@@ -409,5 +429,5 @@
     if (!fail && !state.updates.some(u => u.messageId === m.id)) state.updates.unshift({ id: nextId("UPD", state.updates), messageId: m.id, to: m.to, title: m.title, detail: m.detail, href: "client/bookings", date: state.automation.date, read: false });
     return m;
   }
-  return { catalog, ensure, receiveSamples, create, ingest, intake, sync, request, cancellation, cover, document, signedFile, bookingProposal, run, get, approve, native, verify, accounting, workerResponse, manual, reopen, deliver, captureCare, financeIssues };
+  return { catalog, ensure, receiveSamples, pendingExamples, create, ingest, intake, sync, request, cancellation, cover, document, signedFile, bookingProposal, run, get, approve, native, verify, accounting, workerResponse, manual, reopen, deliver, captureCare, financeIssues };
 });
