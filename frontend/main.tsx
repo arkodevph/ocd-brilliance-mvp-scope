@@ -1,2 +1,10 @@
+import '@fontsource-variable/dm-sans';
+import './portal-pages.css';
+import './employee-social.css';
+import './employee-record.css';
+import './employee-feedback.css';
+import './workspace-navigation.css';
+import './calendar-workspace.css';
+import './solar-legacy';
 import './renderer';
 import '../workspace/app.js';

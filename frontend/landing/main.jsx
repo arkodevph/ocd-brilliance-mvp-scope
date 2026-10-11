@@ -12,7 +12,11 @@ if (window.location.hash === '#office') {
 } else if (/^#\/(office|worker|client|public)(\/|$)/.test(window.location.hash)) {
   window.location.replace('/workspace/' + window.location.search + window.location.hash);
 } else {
-  const element = <BrowserRouter><App /></BrowserRouter>;
+  const element = (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
   const root = document.getElementById('root');
   if (root.querySelector('main')) hydrateRoot(root, element);
   else createRoot(root).render(element);

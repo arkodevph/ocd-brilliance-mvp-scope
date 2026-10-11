@@ -1,0 +1,131 @@
+/* Accessible labels remain available to screen readers without crowding the UI. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.crm-shell .sidebar .brand,
+.crm-shell.calendar-shell .sidebar .brand {
+  padding: 2px 10px 0;
+  min-height: 52px;
+  margin: 0;
+}
+.crm-shell .sidebar .brand img,
+.crm-shell.calendar-shell .sidebar .brand img {
+  width: 146px;
+  max-width: 100%;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  filter: brightness(0) invert(1);
+}
+.crm-shell .sidebar .brand-caption,
+.crm-shell.calendar-shell .sidebar .brand-caption {
+  padding-left: 10px;
+  margin: 8px 0 24px;
+  color: #c4d4ca;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+.crm-shell .team-member-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 72px;
+  padding: 12px;
+  border: 1px solid #e3e9e5;
+  border-radius: 12px;
+  background: #fff;
+  color: #243a2e;
+  text-decoration: none;
+  text-align: left;
+}
+.crm-shell a.team-member-card:hover {
+  border-color: #b7cfc0;
+  background: #f5faf6;
+}
+.crm-shell a.team-member-card:focus-visible {
+  outline: 3px solid #087950;
+  outline-offset: 2px;
+}
+.crm-shell .team-member-card .avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  background: #e9f1ec;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #e3e9e5;
+}
+.crm-shell .team-member-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+.crm-shell .team-member-copy strong {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.crm-shell .team-member-copy small {
+  display: block;
+  color: #617268;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.crm-shell .team-member-arrow {
+  color: #087950;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+.crm-shell .team-member-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+.crm-shell .timeline-person.team-member-card {
+  margin: 12px 0;
+  padding: 12px;
+}
+.crm-shell .roster-name-col .person-cell.team-member-card {
+  width: 100%;
+}
+@media (min-width: 1000px) {
+  .crm-shell .timeline-heading,
+  .crm-shell .timeline-row {
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 18px;
+  }
+  .crm-shell .roster-table .roster-name-col {
+    width: 250px;
+  }
+}
+@media (max-width: 760px) {
+  .crm-shell .team-member-card {
+    padding: 10px;
+    gap: 9px;
+  }
+  .crm-shell .team-member-card .avatar {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .crm-shell .team-member-copy strong {
+    font-size: 13px;
+  }
+  .crm-shell .team-member-copy small {
+    font-size: 11px;
+  }
+}
