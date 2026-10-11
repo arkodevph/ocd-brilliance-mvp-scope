@@ -42,29 +42,8 @@ test('React migration preserves form values, delegated actions and widget remoun
     renderer.renderModal('<h2 id="modal-title">Review booking</h2><input name="date" value="2026-10-12">');
     assert.equal(window.document.querySelector('#modal input').value, '2026-10-12');
 
-    let received;
-    renderer.renderLogin(async credentials => { received = credentials; throw new window.Error('Check your credentials.'); });
-    let login = app.querySelector('#staff-login');
-    login.elements.email.value = 'office@example.test';
-    login.elements.password.value = 'test-password';
-    login.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
-    await new Promise(resolve => setTimeout(resolve, 30));
-    assert.equal(received.email, 'office@example.test');
-    assert.equal(received.password, 'test-password');
-    assert.equal(app.querySelector('[role="alert"]').textContent, 'Check your credentials.');
-    assert.equal(app.querySelector('[role="alert"]').hidden, false);
-    assert.equal(login.elements.password.value, 'test-password');
-    assert.equal(login.querySelector('button').disabled, false);
-
-    let finish;
-    renderer.renderLogin(() => new Promise(resolve => { finish = resolve; }));
-    login = app.querySelector('#staff-login');
-    login.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
-    await new Promise(resolve => setTimeout(resolve, 10));
-    assert.equal(login.querySelector('button').disabled, true);
-    finish();
-    await new Promise(resolve => setTimeout(resolve, 10));
-    assert.equal(login.querySelector('button').disabled, false);
+    assert.equal(renderer.renderLogin, undefined);
+    assert.equal(app.querySelector('input[type="password"]'), null);
     renderer.unmount();
   } finally {
     window.close();

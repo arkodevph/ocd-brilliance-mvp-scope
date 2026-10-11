@@ -8,7 +8,7 @@ import App from './App';
 import './styles.css';
 
 if (window.location.hash === '#office') {
-  window.location.replace('/portal');
+  window.location.replace('/workspace/#/office/intake');
 } else if (/^#\/(office|worker|client|public)(\/|$)/.test(window.location.hash)) {
   window.location.replace('/workspace/' + window.location.search + window.location.hash);
 } else {

@@ -2,7 +2,6 @@ import { Fragment } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import parse from 'html-react-parser';
-import { Login, type SignIn } from './login';
 
 // Existing templates and delegated handlers remain while screens move to TSX.
 // Parsing creates React elements; markup must come from escaped app templates.
@@ -18,9 +17,6 @@ export function createWorkspaceRenderer(app: HTMLElement, modal: HTMLElement) {
     render(markup: string) {
       // Legacy widgets mutate their own DOM. Remount after their explicit cleanup.
       flushSync(() => appRoot.render(<WorkspaceView key={++revision} markup={markup} />));
-    },
-    renderLogin(onSignIn: SignIn) {
-      flushSync(() => appRoot.render(<Login key={++revision} onSignIn={onSignIn} />));
     },
     renderModal(markup: string) {
       modalRoot ||= createRoot(modal);

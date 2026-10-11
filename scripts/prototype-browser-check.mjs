@@ -334,6 +334,10 @@ try {
     await route('office/shiftcare');
     await wait('!!document.querySelector("#shiftcare-connection [role=alert]")');
     assert.equal(await evaluate('!!document.querySelector("#staff-login")'), false);
+    await command('Page.navigate', {url:origin+'/#office'});
+    await wait('location.pathname === "/workspace/" && location.hash === "#/office/intake" && !!document.querySelector(".sidebar")');
+    assert.equal(await evaluate('!!document.querySelector("input[type=password]")'), false);
+    assert.equal(await evaluate('typeof window.OCD_REACT.renderLogin'), 'undefined');
     passed('Connected landing page', 'Native intake submits text and two chunked videos. Anonymous seeded employees and clients open directly, demo leave works without login, and private intake reads remain protected. Mobile layouts fit.');
     assert.deepEqual(errors, []);
   } else if (process.env.PROTOTYPE_MOTION === '1') {
