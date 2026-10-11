@@ -1,0 +1,6 @@
+# Generated bundles and deploy output
+workspace/generated/
+dist/
+.backend/
+.local/
+node_modules/

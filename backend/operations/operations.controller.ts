@@ -11,14 +11,22 @@ const proof = createProofHandler();
 @Controller('api')
 export class OperationsController {
   @All('workflow')
-  workflow(@Req() req: Request, @Res() res: Response): Promise<void> { return handleWorkflow(req, res); }
+  workflow(@Req() req: Request, @Res() res: Response): Promise<void> {
+    return handleWorkflow(req, res);
+  }
 
   @All('push')
-  push(@Req() req: Request, @Res() res: Response): Promise<void> { return handlePush(req, res); }
+  push(@Req() req: Request, @Res() res: Response): Promise<void> {
+    return handlePush(req, res);
+  }
 
   @All('shiftcare')
-  shiftcare(@Req() req: Request, @Res() res: Response): Promise<void> { return shiftCare(req, res); }
+  shiftcare(@Req() req: Request, @Res() res: Response): Promise<void> {
+    return shiftCare(req, res);
+  }
 
   @All('integration-proof')
-  evidence(@Req() req: Request, @Res() res: Response): Promise<void> { return proof(req, res); }
+  evidence(@Req() req: Request, @Res() res: Response): Promise<void> {
+    return proof(req, res);
+  }
 }

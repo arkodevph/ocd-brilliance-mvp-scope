@@ -20,17 +20,25 @@ export function createWorkspaceRenderer(app: HTMLElement, modal: HTMLElement) {
     },
     renderModal(markup: string) {
       modalRoot ||= createRoot(modal);
-      flushSync(() => modalRoot!.render(<Fragment key={++revision}><WorkspaceView markup={markup} /></Fragment>));
+      flushSync(() =>
+        modalRoot!.render(
+          <Fragment key={++revision}>
+            <WorkspaceView markup={markup} />
+          </Fragment>,
+        ),
+      );
     },
     unmount() {
       appRoot.unmount();
       modalRoot?.unmount();
-    }
+    },
   };
 }
 
 declare global {
-  interface Window { OCD_REACT: ReturnType<typeof createWorkspaceRenderer> }
+  interface Window {
+    OCD_REACT: ReturnType<typeof createWorkspaceRenderer>;
+  }
 }
 
 const app = document.getElementById('app');
