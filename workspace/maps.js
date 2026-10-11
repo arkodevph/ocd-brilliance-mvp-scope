@@ -273,23 +273,9 @@
       ],
     };
     const [, title, subtitle] = titles[ctx.area];
-    return `<header class="page-header"><div><h1>${title}</h1><details class="context-help"><summary>Map help</summary><p>${subtitle}</p></details></div><span class="map-demo-badge">${icon('car')} Arrival preview</span></header>
-      <section id="booking-map-workspace" data-map-area="${ctx.area}" aria-label="${title}">
-        <div class="map-toolbar"><div class="map-date-control"><button class="btn map-day-button" data-map-action="previous-day" aria-label="Previous service day" type="button">‹</button><label for="map-service-date">Service date<input id="map-service-date" type="date" value="${pref.date}" required></label><button class="btn map-day-button" data-map-action="next-day" aria-label="Next service day" type="button">›</button></div>
-        ${ctx.area === 'office' ? `<label class="map-worker-filter" for="map-worker-filter">Assignment<select id="map-worker-filter"><option value="">All workers</option>${ctx.state.workers.map((w) => `<option value="${esc(w.id)}" ${pref.worker === w.id ? 'selected' : ''}>${esc(w.name)}</option>`).join('')}</select></label>` : `<span class="map-scope-note">${icon('check')} ${ctx.area === 'worker' ? 'Only your assigned services' : 'Only your participant’s bookings'}</span>`}
-        <span class="map-timezone">Demo week · Perth time (AWST)</span></div>
-        <div class="map-stats" data-map-stats></div>
-        <div class="booking-map-layout"><section class="booking-map-panel" aria-label="Interactive booking map"><div class="booking-map-surface">
-          <div id="booking-map-canvas" aria-label="Mapbox map of service locations"></div>
-          <div class="map-view-controls"><div class="map-view-toggle" role="group" aria-label="Map perspective"><button type="button" data-map-action="3d" aria-pressed="${pref.threeD}">3D</button><button type="button" data-map-action="2d" aria-pressed="${!pref.threeD}">2D</button></div><button class="btn" type="button" data-map-action="fit">${icon('fit')} <span>Show all</span></button></div>
-          <div class="map-fallback" data-map-fallback><span class="map-fallback-symbol">${icon('map')}</span><h2>Preparing your booking map</h2><p>Loading service locations.</p></div>
-          <div class="map-selected-label" data-map-selected-label hidden></div>
-        </div><footer class="map-footer"><span class="map-connection-state" data-map-connection>Mapbox · 3D service locations</span><div class="map-legend"><span><i></i>Service location</span>${ctx.area === 'client' ? '' : '<span><i class="worker"></i>Demo worker</span>'}<span><i class="cover"></i>Needs cover</span></div>${ctx.area === 'office' ? '<button class="link-button" type="button" data-map-action="connection">Map connection</button>' : ''}</footer></section>
-        <aside class="map-side-panel"><section class="map-booking-section"><div class="section-heading"><h2>${ctx.area === 'office' ? 'Service bookings' : 'Your bookings'}</h2><span class="map-booking-count" data-map-count></span></div><div class="map-booking-list" data-map-list></div></section><section class="map-arrival-section" data-map-detail></section></aside></div>
-        <div class="map-demo-note">${icon('car')}<span>Prototype · location-based arrival updates are shared through the server. Service pins are approximate demo locations. Clients see ETA only until five minutes away; the nearby car is illustrative, never an employee GPS pin.</span></div>
-        <p class="muted" data-shared-arrival-status role="status"></p>${ctx.area === 'office' ? '<button class="btn small" type="button" data-map-action="publish-bookings">Publish prototype bookings to shared arrivals</button>' : ''}
-        ${ctx.area === 'office' ? '<section class="panel map-connection-panel" data-map-settings hidden><h2>Connect Mapbox</h2><p class="muted">Use a public token from your <a class="map-account-link" href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer">Mapbox account</a>. This connection is saved only in this browser.</p><form data-map-form="connection"><label for="map-public-token">Public access token<input id="map-public-token" name="token" type="password" placeholder="pk.…" autocomplete="off" spellcheck="false" required></label><p class="field-error" data-map-token-error role="alert"></p><div class="button-row"><button class="btn primary" type="submit">Connect map</button><button class="btn" type="button" data-map-action="clear-token">Use configured connection</button><button class="btn" type="button" data-map-action="connection">Close</button></div></form></section>' : ''}
-      </section>`;
+    const model = { area: ctx.area, title, subtitle, date: pref.date, threeD: pref.threeD,
+      worker: pref.worker, workers: ctx.state.workers.map(({ id, name }) => ({ id, name })) };
+    return `<div data-react-booking-map="${esc(JSON.stringify(model))}"></div>`;
   }
 
   function summary(state, b) {
@@ -443,18 +429,22 @@
       if (!rows.some((b) => b.id === this.pref.selected))
         this.pref.selected = rows.find(trackingAllowed)?.id || rows[0]?.id || '';
       this.query('[data-map-count]').textContent = String(rows.length);
-      this.query('[data-map-stats]').innerHTML =
-        `<div><span>Services on this day</span><strong>${rows.length}</strong></div><div><span>Workers on the way</span><strong>${rows.filter((b) => snapshot(this.ctx.state, b).phase === 'en-route').length}</strong></div><div><span>${this.ctx.area === 'client' ? 'Participant' : this.ctx.area === 'worker' ? 'Assigned worker' : 'Cover needed'}</span><strong class="map-stat-name">${this.ctx.area === 'client' ? esc(this.ctx.state.participants.find((p) => p.id === this.ctx.clientId)?.name) : this.ctx.area === 'worker' ? esc(this.ctx.state.workers.find((w) => w.id === this.ctx.workerId)?.name) : rows.filter((b) => b.status === 'Needs cover').length}</strong></div>`;
-      this.query('[data-map-list]').innerHTML = rows.length
-        ? rows
-            .map((b, index) => {
-              const p = locationFor(this.ctx, b),
-                w = workerFor(this.ctx, b),
-                snap = snapshot(this.ctx.state, b);
-              return `<button class="map-booking-card ${this.pref.selected === b.id ? 'selected' : ''}" type="button" data-map-booking="${esc(b.id)}" aria-pressed="${this.pref.selected === b.id}"><span class="map-booking-number">${index + 1}</span><span class="map-booking-copy"><strong>${this.ctx.area === 'client' ? esc(b.service) : esc(p?.name || 'Participant')}</strong><span>${esc(clockLabel(b.start))}–${esc(clockLabel(b.end))} · ${esc(p?.suburb || 'Location pending')}</span><small>${b.status === 'Needs cover' ? 'Office arranging cover' : esc(w?.name || 'Worker pending')}</small><span class="map-booking-phase" data-booking-phase="${esc(b.id)}">${phaseLabel(b, snap)}</span></span><span class="map-card-chevron">›</span></button>`;
-            })
-            .join('')
-        : '<div class="map-no-bookings"><strong>No bookings for this day</strong><p>Choose another service date to see bookings on the map.</p></div>';
+      window.OCD_REACT?.renderMapOverview(this.root, {
+        services: rows.length,
+        travelling: rows.filter((b) => snapshot(this.ctx.state, b).phase === 'en-route').length,
+        thirdLabel: this.ctx.area === 'client' ? 'Participant' : this.ctx.area === 'worker' ? 'Assigned worker' : 'Cover needed',
+        thirdValue: this.ctx.area === 'client' ? this.ctx.state.participants.find((p) => p.id === this.ctx.clientId)?.name || 'Participant' : this.ctx.area === 'worker' ? this.ctx.state.workers.find((w) => w.id === this.ctx.workerId)?.name || 'Worker' : rows.filter((b) => b.status === 'Needs cover').length,
+        bookings: rows.map((b) => {
+          const p = locationFor(this.ctx, b), w = workerFor(this.ctx, b);
+          return { id: b.id, selected: this.pref.selected === b.id,
+            title: this.ctx.area === 'client' ? b.service : p?.name || 'Participant',
+            time: `${clockLabel(b.start)}–${clockLabel(b.end)}`,
+            suburb: p?.suburb || 'Location pending',
+            worker: b.status === 'Needs cover' ? 'Office arranging cover' : w?.name || 'Worker pending',
+            phase: phaseLabel(b, snapshot(this.ctx.state, b)),
+          };
+        }),
+      });
       this.renderDetails();
       const selectedLabel = this.query('[data-map-selected-label]');
       const b = this.selected,
@@ -541,8 +531,6 @@
     routeDescription() {
       if (this.ctx.state.journeys?.[this.selected?.id]?.mode === 'location')
         return 'ETA only · nearby car is illustrative · no employee route or GPS pin is displayed.';
-      if (this.scene)
-        return 'Illustrative green route to the selected service · not worker GPS or a driving route.';
       if (this.ctx.area === 'client')
         return 'Your own service location only. Worker origins, routes and other participants are hidden.';
       if (this.routeState === 'sample')
@@ -564,8 +552,6 @@
 
     async createMap() {
       const version = ++this.mapVersion;
-      this.scene?.dispose();
-      this.scene = null;
       clearTimeout(this.mapTimeout);
       this.map?.remove();
       this.map = null;
@@ -574,7 +560,7 @@
       this.ready = false;
       this.connectionError = false;
       if (!token()) {
-        await this.createScene(version);
+        this.failMap(version, 'Connect Mapbox', 'The office must configure a Mapbox public token to show service locations.');
         return;
       }
       this.query('[data-map-fallback]').hidden = false;
@@ -701,11 +687,12 @@
           if (status === 401 || status === 403 || (status === 404 && !this.ready)) {
             this.connectionError = true;
             this.query('[data-map-connection]').textContent = 'Mapbox connection needs attention';
-            this.createScene(version);
+            this.failMap(version, 'Mapbox connection needs attention', 'The configured map connection was rejected. Check the public token and its allowed URLs, then retry.');
           }
         });
         this.mapTimeout = setTimeout(() => {
-          if (!this.ready && !this.disposed) this.createScene(version);
+          if (!this.ready && !this.disposed)
+            this.failMap(version, 'Mapbox could not load', 'Check your internet connection and retry the map.');
         }, 20000);
         this.resizeObserver?.disconnect();
         this.resizeObserver = new ResizeObserver(() => {
@@ -715,70 +702,23 @@
         this.resizeObserver.observe(this.query('.booking-map-surface'));
       } catch (_) {
         if (!this.disposed && version === this.mapVersion) {
-          await this.createScene(version);
+          this.failMap(version, 'Mapbox could not load', 'Check your internet connection and WebGL support, then retry the map.');
         }
       }
     }
 
-    async createScene(version) {
-      if (
-        this.disposed ||
-        version !== this.mapVersion ||
-        this.scene ||
-        this.sceneLoading === version
-      )
-        return;
-      this.sceneLoading = version;
-      try {
-        const { mountJourneyScene } = await import('/workspace/journey-scene.js');
-        if (this.disposed || version !== this.mapVersion) return;
-        clearTimeout(this.mapTimeout);
-        this.connectionError = true;
-        this.map?.remove();
-        this.map = null;
-        this.ready = false;
-        this.resizeObserver?.disconnect();
-        const canvas = this.query('#booking-map-canvas');
-        canvas.replaceChildren();
-        canvas.setAttribute(
-          'aria-label',
-          'Illustrative 3D neighbourhood and green route to the selected service',
-        );
-        this.scene = mountJourneyScene(canvas, {
-          client: this.ctx.area === 'client',
-          threeD: this.pref.threeD,
-          padding: () => this.mapPadding(),
-          snapshot: () => {
-            const snap = snapshot(this.ctx.state, this.selected);
-            return {
-              ...snap,
-              showVehicle:
-                this.ctx.area === 'client' || snap.mode === 'location'
-                  ? snap.nearby
-                  : ['en-route', 'arrived'].includes(snap.phase),
-              hideRoute: this.ctx.area === 'client' || snap.mode === 'location',
-              name: this.selected && locationFor(this.ctx, this.selected)?.name,
-            };
-          },
-        });
-        await this.scene.ready;
-        if (this.disposed || version !== this.mapVersion) return;
-        this.query('[data-map-fallback]').hidden = true;
-        this.query('[data-map-connection]').textContent =
-          '3D demo · fictional neighbourhood · green route remaining';
-        this.renderDetails();
-      } catch (_) {
-        if (!this.disposed && version === this.mapVersion) {
-          this.scene?.dispose();
-          this.scene = null;
-          this.fallback(
-            'The 3D preview could not load',
-            'Refresh in a browser with WebGL support. Booking details and journey controls remain available.',
-          );
-        }
-      } finally {
-        if (this.sceneLoading === version) this.sceneLoading = null;
-      }
+    failMap(version, title, message) {
+      if (this.disposed || version !== this.mapVersion) return;
+      clearTimeout(this.mapTimeout);
+      this.connectionError = true;
+      this.ready = false;
+      this.map?.remove();
+      this.map = null;
+      this.markers = [];
+      this.workerMarker = null;
+      this.resizeObserver?.disconnect();
+      this.query('[data-map-connection]').textContent = 'Mapbox unavailable';
+      this.fallback(title, message);
     }
 
     refreshMarkers() {
@@ -1019,7 +959,8 @@
     mapPadding() {
       const surface = this.query('.booking-map-surface').getBoundingClientRect();
       const panel = this.query('.map-side-panel').getBoundingClientRect();
-      const floating = panel.top < surface.bottom && panel.bottom > surface.top;
+      const floating = panel.top < surface.bottom && panel.bottom > surface.top &&
+        panel.right > surface.left && panel.left < surface.right;
       return {
         top: 85,
         bottom: 85,
@@ -1442,7 +1383,6 @@
           bearing: this.pref.threeD ? -20 : 0,
           duration: 600,
         });
-        this.scene?.setPerspective(this.pref.threeD);
       }
       if (['previous-day', 'next-day'].includes(action)) {
         const date = new Date(`${this.pref.date}T12:00:00Z`);
@@ -1543,6 +1483,7 @@
     }
 
     destroy() {
+      window.OCD_REACT?.clearMapWidgets();
       this.unsubscribeArrivals?.();
       this.stopLocation();
       this.disposed = true;
@@ -1557,7 +1498,6 @@
       this.root.removeEventListener('change', this.onChange);
       this.root.removeEventListener('submit', this.onSubmit);
       this.map?.remove();
-      this.scene?.dispose();
     }
   }
 

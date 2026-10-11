@@ -47,7 +47,8 @@ async function setup(area = 'worker', options = {}) {
     },
   };
   class MapboxMap {
-    constructor() {
+    constructor(config) {
+      this.config = config;
       this.sources = new Map();
       this.layers = new Map();
       this.events = {};
@@ -103,11 +104,11 @@ async function setup(area = 'worker', options = {}) {
     window: {
       isSecureContext: true,
       location: { href: 'http://localhost/' },
-      OCD_MAPBOX_CONFIG: { accessToken: 'pk.test' },
+      OCD_MAPBOX_CONFIG: { accessToken: options.token ?? 'pk.test' },
       mapboxgl: {
         Map: MapboxMap,
         Marker,
-        supported: () => true,
+        supported: () => options.supported !== false,
         NavigationControl: class {},
         AttributionControl: class {},
         FullscreenControl: class {},
@@ -161,7 +162,7 @@ async function setup(area = 'worker', options = {}) {
     save: () => saves++,
   });
   await new Promise((resolve) => setImmediate(resolve));
-  maps[0].events.load();
+  if (maps[0] && options.load !== false) maps[0].events.load();
   return {
     state,
     root,
@@ -533,4 +534,33 @@ test('client view cannot start a worker journey and does not expose the worker r
   assert.equal(f.maps[0].getSource('booking-route').data.features.length, 0);
   assert.equal(f.maps[0].getSource('booking-travelled').data.features.length, 0);
   f.access.unmount();
+});
+
+test('missing Mapbox configuration shows connection guidance without an illustrated scene', async (t) => {
+  const f = await setup('worker', { token: '' });
+  t.after(() => f.access.unmount());
+  assert.equal(f.maps.length, 0);
+  assert.equal(f.root.querySelector('[data-map-fallback]').hidden, false);
+  assert.match(f.root.querySelector('[data-map-fallback]').innerHTML, /configure a Mapbox public token/);
+  assert.equal(f.root.querySelector('[data-map-connection]').textContent, 'Mapbox unavailable');
+});
+
+test('Mapbox rejection removes the map and exposes a retry instead of a fictional scene', async (t) => {
+  const f = await setup('worker', { load: false });
+  t.after(() => f.access.unmount());
+  assert.equal(f.maps[0].config.style, 'mapbox://styles/mapbox/standard');
+  f.maps[0].events.error({ error: { status: 403 } });
+  assert.equal(f.maps[0].removed, true);
+  assert.equal(f.root.querySelector('[data-map-fallback]').hidden, false);
+  assert.match(f.root.querySelector('[data-map-fallback]').innerHTML, /allowed URLs/);
+  assert.match(f.root.querySelector('[data-map-fallback]').innerHTML, /Retry map/);
+  f.maps[0].events.load();
+  assert.equal(f.maps[0].sources.size, 0);
+});
+
+test('unsupported WebGL reports Mapbox unavailable', async (t) => {
+  const f = await setup('worker', { supported: false });
+  t.after(() => f.access.unmount());
+  assert.equal(f.maps.length, 0);
+  assert.match(f.root.querySelector('[data-map-fallback]').innerHTML, /WebGL support/);
 });
