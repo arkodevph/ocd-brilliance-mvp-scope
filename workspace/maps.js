@@ -310,19 +310,29 @@
       }
       const script = document.createElement('script');
       script.src = `https://api.mapbox.com/mapbox-gl-js/v${SDK_VERSION}/mapbox-gl.js`;
-      script.onload = () => {
-        if (window.mapboxgl) resolve(window.mapboxgl);
-        else {
-          sdkPromise = undefined;
-          script.remove();
-          reject(new Error('Map SDK unavailable'));
-        }
-      };
-      script.onerror = () => {
-        sdkPromise = undefined;
+      let settled = false;
+      const fail = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        script.onload = null;
+        script.onerror = null;
         script.remove();
+        sdkPromise = undefined;
         reject(new Error('Map SDK unavailable'));
       };
+      const timeout = setTimeout(fail, 15000);
+      script.onload = () => {
+        if (!window.mapboxgl) {
+          fail();
+          return;
+        }
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        resolve(window.mapboxgl);
+      };
+      script.onerror = fail;
       document.head.append(script);
     });
     return sdkPromise;
@@ -521,11 +531,13 @@
       }
       this.query('[data-map-detail]').innerHTML =
         `<div class="map-worker-heading"><span class="avatar">${b.status === 'Needs cover' ? '?' : esc(w?.initials || '—')}</span><span><small>${b.status === 'Needs cover' ? 'Assignment pending' : this.ctx.area === 'client' ? 'Your assigned worker' : this.ctx.area === 'worker' ? 'Your journey' : 'Assigned worker'}</small><strong>${b.status === 'Needs cover' ? 'Awaiting cover' : esc(w?.name || 'To be assigned')}</strong></span><span class="map-location-indicator ${enRoute ? 'on' : ''}" aria-label="${enRoute ? (snap.mode === 'location' ? 'Fresh arrival estimate available' : 'Simulated arrival estimate available') : 'No current arrival estimate'}"></span></div>
+        ${playback ? `<div class="map-detail-tabs" role="group" aria-label="Booking information"><button type="button" data-map-action="detail-summary" aria-pressed="${this.detailTab !== 'journey'}">Arrival details</button><button type="button" data-map-action="detail-journey" aria-pressed="${this.detailTab === 'journey'}">Journey controls</button></div>` : ''}
+        <div data-map-summary ${playback && this.detailTab === 'journey' ? 'hidden' : ''}>
         <div class="map-arrival-card ${enRoute || arrived ? 'active' : ''}"><span class="map-arrival-status" data-map-arrival-status aria-live="polite">${title}</span><strong class="map-eta-value" data-map-eta>${eta}</strong><span class="map-eta-caption" data-map-eta-caption>${enRoute ? `Est. arrival ${esc(clockLabel(snap.arrivalTime))} AWST` : arrived ? 'At the service location' : allowed ? 'Scheduled service start · AWST' : dateLabel(b.date)}</span>${enRoute || arrived ? `<div class="map-journey-track"><span data-map-progress style="width:${Math.round(snap.progress * 100)}%"></span></div><div class="map-journey-steps"><span>On the way</span><span>Arrived</span></div>` : ''}<p>${explanation}</p></div>
         <div class="map-booking-facts"><div><span>${icon('clock')}</span><span><small>Service booking</small><strong>${dateLabel(b.date)} · ${esc(clockLabel(b.start))}–${esc(clockLabel(b.end))}</strong></span></div><div><span>${icon('pin')}</span><span><small>Service location</small><strong>${esc(p?.address || 'To be confirmed')}</strong><small>${validCoordinates(p?.location?.coordinates) ? 'Approximate suburb location for this demo' : 'Map coordinates have not been added'}</small></span></div></div>
         <p class="map-route-source" data-map-route-source>${this.routeDescription()}</p>
         <div class="button-row map-focus-actions">${validCoordinates(p?.location?.coordinates) ? `<button class="btn small" type="button" data-map-action="focus">${icon('pin')} Service location</button>` : ''}${this.route ? `<button class="btn small" type="button" data-map-action="route">${icon('map')} Full route</button>` : ''}<a class="btn small" href="#/${this.ctx.area}/${this.ctx.area === 'office' ? 'schedule/' + esc(b.id) : this.ctx.area === 'worker' ? 'today/' + esc(b.id) : 'bookings'}">Booking details</a></div>
-        ${playback}<span class="map-update-note" data-map-update-note>${snap.phase === 'stale' ? 'Estimate withdrawn; no current update' : enRoute ? `${snap.mode === 'location' ? 'Location-based' : 'Sample'} estimate updated ${new Date(this.ctx.state.journeys[b.id].updatedAt).toLocaleTimeString('en-AU')}; consent applies to this booking only` : 'Location sharing is limited to this booking'}</span>`;
+        </div><div data-map-journey ${this.detailTab === 'journey' ? '' : 'hidden'}>${playback}</div><span class="map-update-note" data-map-update-note>${snap.phase === 'stale' ? 'Estimate withdrawn; no current update' : enRoute ? `${snap.mode === 'location' ? 'Location-based' : 'Sample'} estimate updated ${new Date(this.ctx.state.journeys[b.id].updatedAt).toLocaleTimeString('en-AU')}; consent applies to this booking only` : 'Location sharing is limited to this booking'}</span>`;
     }
 
     routeDescription() {
@@ -1355,6 +1367,12 @@
       const button = event.target.closest('[data-map-action]');
       if (!button) return;
       const action = button.dataset.mapAction;
+      if (action === 'detail-summary' || action === 'detail-journey') {
+        this.detailTab = action === 'detail-journey' ? 'journey' : 'summary';
+        this.renderDetails();
+        this.query(`[data-map-action="${action}"]`)?.focus({ preventScroll: true });
+        return;
+      }
       if (action === 'publish-bookings' && this.ctx.area === 'office') {
         window.OCD_JOURNEY_API.publish(this.ctx)
           .then(() => {

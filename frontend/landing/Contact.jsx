@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, ArrowRight, AlertCircle, LoaderCircle } from 'lucide-react';
+import { CheckCircle2, ArrowRight, AlertCircle, LoaderCircle } from '../solar-icons';
 import { PageHero, Eyebrow, Icon, TextLink } from './components';
 import { phone, email, services } from './data';
 

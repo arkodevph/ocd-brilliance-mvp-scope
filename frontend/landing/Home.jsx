@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, Phone, Leaf, Heart, ShieldCheck, Users } from 'lucide-react';
+import { ArrowRight, Check, Phone, Leaf, Heart, ShieldCheck, Users } from '../solar-icons';
 import { services, phone, articles } from './data';
 import ServiceAreaMap from './ServiceAreaMap';
 import {

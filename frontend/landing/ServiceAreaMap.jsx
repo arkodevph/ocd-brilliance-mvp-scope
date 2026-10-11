@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { RotateCcw, Search, X } from 'lucide-react';
+import { RotateCcw, Search, X } from '../solar-icons';
 import { serviceAreas } from './data';
 import 'leaflet/dist/leaflet.css';
 

@@ -196,25 +196,11 @@
     if (!notification) throw new Error('This notification is not available to this employee.');
     notification.read = true;
   }
-  function card(title, glyph, body, action = '') {
-    return `<section class="employee-card"><header>${glyph}<h2>${title}</h2>${action}</header>${body}</section>`;
-  }
-  function balances(context) {
-    const { state, workerId, esc } = context;
-    return `<div class="employee-balances">${ensure(state)
-      .profiles[workerId].balances.map(
-        (balance, index) =>
-          `<div><div class="employee-ring balance-${index}" style="--ring-progress:${(balance.available / balance.entitlement) * 100}%" role="img" aria-label="${esc(balance.type)}: ${balance.available} of ${balance.entitlement} demo days available"><span><strong>${balance.available.toString().padStart(2, '0')}</strong><small>days available</small></span></div><h3>${esc(balance.type)}</h3><p>${balance.entitlement} sample days / year</p></div>`,
-      )
-      .join(
-        '',
-      )}</div><p class="employee-footnote">Illustrative balances only. Requests need office approval; actual entitlements stay in the payroll system.</p>`;
-  }
   function shell(context, section, content) {
     const { state, workerId, esc, profileImage, icon } = context;
     const worker = state.workers.find((worker) => worker.id === workerId),
       profile = ensure(state).profiles[workerId];
-    return `<a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><div class="employee-shell"><header class="employee-top"><a href="#/worker/home"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></a><div><span class="employee-demo">Fictional employee demo</span><span class="employee-timezone">Perth · AWST</span><button class="employee-account" data-action="account-settings" type="button">${profileImage(worker.name)}<span>${esc(worker.name)}</span></button></div></header><nav class="employee-navigation" aria-label="Employee navigation">${navigation.map(([path, label]) => `<a href="#/worker/${path}" ${path === section ? 'aria-current="page"' : ''}>${label}</a>`).join('')}<label><span class="sr-only">Demo employee</span><select id="worker-persona" data-native-select aria-label="Choose a demo employee">${state.workers.map((person) => `<option value="${esc(person.id)}" ${person.id === workerId ? 'selected' : ''}>${esc(person.name)} · ${esc(person.role || 'Employee')}</option>`).join('')}</select></label></nav><div class="employee-layout"><aside class="employee-sidebar"><section class="employee-profile"><div>${profileImage(worker.name)}<h2>${esc(worker.name)}</h2><p>${esc(worker.role || 'Role not recorded')}</p><small>${esc(profile.team)} · ${esc(worker.id)}</small></div><dl><dt>Contact</dt><dd>${esc(profile.email)}<br>${esc(profile.phone)}</dd><dt>Reporting manager</dt><dd>${esc(profile.manager)}<br><small>Office coordinator</small></dd><dt>Approved services</dt><dd>${esc(worker.services.join(' · '))}</dd><dt>Assignment status</dt><dd>${worker.approved ? 'Approved in demo' : 'Approval pending'}</dd></dl></section><section class="employee-quick"><h2>${icon('layers')} Quick links</h2>${[
+    return `<a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><div class="employee-shell"><header class="employee-top"><a href="#/worker/home"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></a><div><span class="employee-demo">Fictional employee demo</span><span class="employee-timezone">Perth · AWST</span><button class="employee-alerts-button" type="button" data-app-tools-open aria-label="Manage phone notifications">${icon('bell')} Alerts</button><button class="employee-account" data-action="account-settings" type="button">${profileImage(worker.name)}<span>${esc(worker.name)}</span></button></div></header><nav class="employee-navigation" aria-label="Employee navigation">${navigation.map(([path, label]) => `<a href="#/worker/${path}" ${path === section ? 'aria-current="page"' : ''}>${label}</a>`).join('')}<label><span class="sr-only">Demo employee</span><select id="worker-persona" data-native-select aria-label="Choose a demo employee">${state.workers.map((person) => `<option value="${esc(person.id)}" ${person.id === workerId ? 'selected' : ''}>${esc(person.name)} · ${esc(person.role || 'Employee')}</option>`).join('')}</select></label></nav><div class="employee-layout"><aside class="employee-sidebar"><section class="employee-profile"><div>${profileImage(worker.name)}<h2>${esc(worker.name)}</h2><p>${esc(worker.role || 'Role not recorded')}</p><small>${esc(profile.team)} · ${esc(worker.id)}</small></div><dl><dt>Contact</dt><dd>${esc(profile.email)}<br>${esc(profile.phone)}</dd><dt>Reporting manager</dt><dd>${esc(profile.manager)}<br><small>Office coordinator</small></dd><dt>Approved services</dt><dd>${esc(worker.services.join(' · '))}</dd><dt>Assignment status</dt><dd>${worker.approved ? 'Approved in demo' : 'Approval pending'}</dd></dl>${section === 'home' ? '<a class="employee-personal-link" href="#/worker/personal">View personal details →</a>' : ''}</section><section class="employee-quick"><h2>${icon('layers')} Quick links</h2>${[
       ['today', 'calendar', 'My visits & attendance'],
       ['availability', 'clock', 'Update availability'],
       ['leave', 'calendar', 'Apply for leave'],
@@ -225,18 +211,6 @@
       .join(
         '',
       )}<button type="button" data-action="employee-help">${icon('people')} Contact the office</button></section><p class="employee-sidebar-note">Sample week: 5–9 October 2026. Leave, notifications and training are fictional records for this demonstration.</p></aside><main class="employee-main" id="main-content" tabindex="-1">${content}</main></div><footer class="employee-footer"><span>OCD Brilliance · Employee workspace</span><span>Demo only · changes are saved in this browser</span></footer></div>`;
-  }
-  function requests(context) {
-    const { state, workerId, esc, dateLabel } = context;
-    return ensure(state)
-      .requests.filter((request) => request.workerId === workerId)
-      .slice()
-      .reverse()
-      .map(
-        (request) =>
-          `<article class="employee-notification"><span class="employee-category-dot time-off"></span><div><h3>${esc(request.type)}</h3><p>${dateLabel(request.from)}–${dateLabel(request.to)} · ${request.days} weekday${request.days === 1 ? '' : 's'}</p><small>${esc(request.note || 'No note supplied')}</small></div><div class="employee-request-actions"><span class="status ${request.status === 'Approved' ? 'green' : request.status === 'Pending' ? 'amber' : 'gray'}">${request.status}</span>${request.status === 'Pending' ? `<button type="button" data-action="employee-withdraw" data-id="${esc(request.id)}">Withdraw</button>` : ''}</div></article>`,
-      )
-      .join('');
   }
   function calendar(context) {
     const { state, workerId, esc, dateLabel, clockRange } = context,
@@ -307,44 +281,34 @@
       '',
     )}</div><button class="employee-month-reset" type="button" data-action="employee-date" data-value="">Show month overview</button></div></div>`;
   }
+  function pageModel(context, page) {
+    const { state, workerId, todayPerth } = context;
+    const data = ensure(state), worker = state.workers.find((person) => person.id === workerId);
+    return {
+      page, today: todayPerth(),
+      worker: { id: worker.id, name: worker.name, role: worker.role || 'Employee', services: worker.services, skills: worker.skills || [], approved: worker.approved },
+      profile: data.profiles[workerId],
+      notices: data.notifications.filter((notice) => notice.workerId === workerId),
+      requests: data.requests.filter((request) => request.workerId === workerId).slice().reverse(),
+      selected: { tab: view(workerId).tab, category: view(workerId).category },
+      calendar: {
+        month: view(workerId).month, date: view(workerId).date,
+        events: [
+          ...state.bookings.filter((booking) => booking.workerId === workerId && !['Cancelled', 'Needs cover', 'Proposed'].includes(booking.status)).map((booking) => ({ date: booking.date, title: state.participants.find((person) => person.id === booking.participantId)?.name || 'Assigned visit', href: `worker/today/${booking.id}` })),
+          ...data.events.filter((event) => event.workerId === workerId),
+          ...data.requests.filter((request) => request.workerId === workerId && request.status === 'Approved').map((request) => ({ date: request.from, to: request.to, title: request.type, href: 'worker/leave' })),
+        ],
+      },
+    };
+  }
   function home(context) {
-    const { state, workerId, esc, icon, profileImage } = context,
-      selected = view(workerId),
-      data = ensure(state);
-    const worker = state.workers.find((worker) => worker.id === workerId),
-      notices = data.notifications.filter((notice) => notice.workerId === workerId);
-    const unread = notices.filter((notice) => !notice.read),
-      total = unread.length;
-    const counts = ['Roster', 'Attendance', 'Time off'].map(
-      (category) => unread.filter((notice) => notice.category === category).length,
-    );
-    const first = total ? (counts[0] / total) * 100 : 0,
-      second = total ? ((counts[0] + counts[1]) / total) * 100 : 0;
-    const list = notices.filter(
-      (notice) => selected.category === 'All' || selected.category === notice.category,
-    );
-    const notifications = `<div class="employee-tabs" role="group" aria-label="Notifications view">${[
-      ['updates', 'My updates'],
-      ['requests', 'My requests'],
-    ]
-      .map(
-        ([value, label]) =>
-          `<button type="button" data-action="employee-tab" data-value="${value}" aria-pressed="${selected.tab === value}">${label}</button>`,
-      )
-      .join(
-        '',
-      )}</div><div class="employee-notifications-layout"><div class="employee-notification-summary"><div class="employee-ring employee-total" style="--ring-gradient:${total ? `conic-gradient(var(--green) 0 ${first}%, var(--employee-sage) ${first}% ${second}%, var(--employee-lime) ${second}% 100%)` : '#e9edeb'}" role="img" aria-label="${total} unread notifications"><span><strong>${total.toString().padStart(2, '0')}</strong><small>Unread</small></span></div><div class="employee-legend">${['Roster', 'Attendance', 'Time off'].map((category, index) => `<button type="button" data-action="employee-category" data-value="${category}" aria-pressed="${selected.category === category}"><i class="category-${index}"></i>${category}<strong>${counts[index].toString().padStart(2, '0')}</strong></button>`).join('')}<button type="button" data-action="employee-category" data-value="All" aria-pressed="${selected.category === 'All'}">Show all updates</button></div></div><div class="employee-notification-list">${selected.tab === 'requests' ? requests(context) : list.map((notice) => `<article class="employee-notification ${notice.read ? 'is-read' : ''}">${profileImage(worker.name)}<div><h3>${esc(notice.title)}</h3><p>${esc(notice.detail)}</p><a href="#/${esc(notice.href)}">View ${esc(notice.category.toLowerCase())} →</a></div>${notice.read ? '<span class="employee-read-label">Read</span>' : `<button type="button" data-action="employee-read" data-id="${esc(notice.id)}">Mark read</button>`}</article>`).join('') || '<p class="employee-empty">No updates in this category.</p>'}</div></div>`;
-    return `<div class="employee-heading"><div><p>EMPLOYEE SELF SERVICE</p><h1>Welcome back, ${esc(worker.name.split(' ')[0])}</h1></div><span>October 2026 · Sample workspace</span></div>${card('Notifications', icon('inbox'), notifications)}<div class="employee-bottom-grid">${card('My calendar', icon('calendar'), calendar(context), '<a href="#/worker/calendar">View full calendar</a>')}${card('Leave balances', icon('calendar'), balances(context), '<a href="#/worker/leave">Apply for leave</a>')}</div>`;
+    return `<div data-react-employee-page="${context.esc(JSON.stringify(pageModel(context, 'home')))}"></div>`;
   }
   function personal(context) {
-    const { state, workerId, esc, icon } = context,
-      worker = state.workers.find((worker) => worker.id === workerId),
-      profile = ensure(state).profiles[workerId];
-    return `<div class="employee-heading"><h1>My personal details</h1><span>Fictional employee profile</span></div>${card('Employment & skills', icon('people'), `<div class="employee-personal"><dl><dt>Employee</dt><dd>${esc(worker.name)}</dd><dt>Role</dt><dd>${esc(worker.role || 'Role not recorded')}</dd><dt>Team</dt><dd>${esc(profile.team)}</dd><dt>Email</dt><dd>${esc(profile.email)}</dd><dt>Approved services</dt><dd>${esc(worker.services.join(' · '))}</dd><dt>Recorded skills</dt><dd>${esc((worker.skills || []).join(' · ') || 'Not recorded')}</dd><dt>Manager</dt><dd>${esc(profile.manager)}</dd></dl><a class="btn" href="#/worker/availability">Update my availability</a><p class="employee-footnote">Contact the office to update employment details or qualifications.</p></div>`)} `;
+    return `<div data-react-employee-page="${context.esc(JSON.stringify(pageModel(context, 'personal')))}"></div>`;
   }
   function leave(context) {
-    const { icon, todayPerth } = context;
-    return `<div class="employee-heading"><h1>My time off</h1><span>Leave requests · Fictional demo</span></div>${card('Leave balances', icon('calendar'), balances(context))}<div class="employee-bottom-grid">${card('Apply for leave', icon('calendar'), `<form data-form="employee-leave" class="employee-leave-form"><label>Leave type<select name="type" data-native-select>${leaveTypes.map((type) => `<option>${type}</option>`).join('')}</select></label><div><label>From<input type="date" name="from" min="${todayPerth()}" required></label><label>To<input type="date" name="to" min="${todayPerth()}" required></label></div><label>Note (optional)<textarea name="note" maxlength="500" placeholder="A short note for your coordinator. Medical details are not needed."></textarea></label><p class="employee-footnote">Weekdays are counted for this demo. Your coordinator checks the roster and actual entitlement. A request does not change assigned visits.</p><button class="btn primary" type="submit">Save demo request</button></form>`)}${card('My leave requests', icon('file'), `<div class="employee-leave-list">${requests(context)}</div>`)}</div>`;
+    return `<div data-react-employee-page="${context.esc(JSON.stringify(pageModel(context, 'leave')))}"></div>`;
   }
   function action(context, button) {
     const { state, workerId, save, render, toast, openModal } = context,

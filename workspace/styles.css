@@ -505,6 +505,47 @@ label > input, label > select, label > textarea { margin-top: 6px; font-weight: 
 .field-error { color: var(--red); font-size: 11px; margin: 5px 0 0; }
 .filter-select { width: auto; min-width: 140px; font-size: 12px; }
 
+/* Enquiry search: keep the icon and input in one stable control at every
+   workspace width. The generic form rules were allowing the toolbar to shrink
+   the field until its placeholder looked clipped. */
+.crm-shell .toolbar .filters .search {
+  display: flex;
+  align-items: center;
+  flex: 0 1 320px;
+  min-width: 240px;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #aabac4;
+  border-radius: 9px;
+  background: #fff;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.crm-shell .toolbar .filters .search:focus-within {
+  border-color: #087d68;
+  box-shadow: 0 0 0 3px rgba(8, 125, 104, .13);
+}
+.crm-shell .toolbar .filters .search svg {
+  position: static;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: #536874;
+}
+.crm-shell .toolbar .filters .search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 0 0 9px;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+  font-size: 13px;
+}
+@media (max-width: 760px) {
+  .crm-shell .toolbar .filters .search { flex: 1 1 100%; min-width: 0; }
+}
+
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 th { padding: 11px 16px; color: #708076; background: #f9fbf8; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; font-weight: 790; white-space: nowrap; border-bottom: 1px solid var(--line); }
@@ -1659,4 +1700,42 @@ table td:first-child a:hover { color: var(--green); text-decoration: underline; 
   .intake-capture-layout { margin-bottom: 0; }
   .page:has(.intake-capture-layout) .intake-stats > div { display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 12px 20px; }
   .page:has(.intake-capture-layout) .intake-preview-fields > div { padding: 4px 0; }
+}
+
+/* OCD overview polish: keep the legacy workspace aligned with the React surfaces. */
+.crm-shell .analytics-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch;
+}
+.crm-shell .analytics-metrics .analytics-stat {
+  min-width: 0;
+  min-height: 150px;
+  padding: 20px !important;
+  border: 1px solid #d9e3dc !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  box-shadow: 0 1px 2px rgba(18, 48, 33, .04), 0 10px 30px rgba(18, 48, 33, .035) !important;
+}
+.crm-shell .analytics-metrics .analytics-stat:hover {
+  border-color: #9bbfa7 !important;
+  box-shadow: 0 8px 24px rgba(18, 48, 33, .08) !important;
+}
+.crm-shell .analytics-metrics .analytics-stat > strong { color: #17231d; }
+.crm-shell .analytics-metrics .analytics-stat-foot { color: #5c6a61; }
+.crm-shell .analytics-board { gap: 16px; }
+.crm-shell .analytics-card, .crm-shell .analytics-weekly {
+  border-color: #d9e3dc;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(18, 48, 33, .04);
+}
+.crm-shell .nav-icon svg { width: 19px; height: 19px; stroke-width: 1.7; }
+.crm-shell .solar-icon { display: inline-flex; width: 19px; height: 19px; flex: none; color: currentColor; }
+.crm-shell .solar-icon svg { width: 100%; height: 100%; }
+@media (max-width: 1100px) {
+  .crm-shell .analytics-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 640px) {
+  .crm-shell .analytics-metrics { grid-template-columns: minmax(0, 1fr) !important; }
 }

@@ -21,7 +21,7 @@ import {
   Clock,
   MoveUpRight,
   ExternalLink,
-} from 'lucide-react';
+} from '../solar-icons';
 import {
   services,
   mainNav,

@@ -1,4 +1,4 @@
-import { Car, Check, ChevronLeft, ChevronRight, Expand, MapPin, ShieldCheck } from 'lucide-react';
+import { Car, Check, ChevronLeft, ChevronRight, Expand, MapPin, ShieldCheck } from './solar-icons';
 export type BookingMapModel = { area: 'office' | 'worker' | 'client'; title: string; subtitle: string; date: string; threeD: boolean; worker: string; workers: { id: string; name: string }[] };
 export function BookingMapView({ model }: { model: BookingMapModel }) {
   const { area, title, subtitle } = model;

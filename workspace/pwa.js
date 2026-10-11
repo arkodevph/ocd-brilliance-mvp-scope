@@ -5,6 +5,67 @@
   let subscription = null;
   let config = { available: false, publicKey: '', localDemo: false };
   let trigger = null;
+  let activeWorker = null;
+  const alertStore = 'ocd-worker-alert-status-v1';
+  let workerAlerts = {};
+  try {
+    workerAlerts = JSON.parse(localStorage.getItem(alertStore) || '{}');
+  } catch (_) {}
+  if (!workerAlerts || typeof workerAlerts !== 'object' || Array.isArray(workerAlerts))
+    workerAlerts = {};
+
+  function recordAlertStatus(workerId, status, detail) {
+    if (!workerId) return;
+    workerAlerts[workerId] = { status, detail, checkedAt: new Date().toISOString() };
+    try {
+      localStorage.setItem(alertStore, JSON.stringify(workerAlerts));
+    } catch (_) {}
+    document.querySelectorAll('[data-worker-alert-status]').forEach((node) => {
+      if (node.dataset.workerAlertStatus === workerId) node.textContent = status;
+    });
+    document.querySelectorAll('[data-worker-alert-checked]').forEach((node) => {
+      if (node.dataset.workerAlertChecked === workerId)
+        node.textContent = `Last checked ${new Date(workerAlerts[workerId].checkedAt).toLocaleString('en-AU')}`;
+    });
+    document.querySelectorAll('[data-worker-alert-detail]').forEach((node) => {
+      if (node.dataset.workerAlertDetail === workerId) node.textContent = detail;
+    });
+  }
+  window.OCD_ALERTS = {
+    get(workerId) {
+      return (
+        workerAlerts[workerId] || {
+          status: 'Not checked',
+          detail: 'This worker has not checked alerts on this demo browser.',
+        }
+      );
+    },
+    setWorker(workerId) {
+      if (activeWorker === workerId) return;
+      activeWorker = workerId;
+      if (workerId) refresh();
+    },
+  };
+  window.addEventListener('storage', (event) => {
+    if (event.key !== alertStore) return;
+    try {
+      const records = JSON.parse(event.newValue || '{}');
+      if (!records || typeof records !== 'object' || Array.isArray(records)) return;
+      workerAlerts = records;
+      document.querySelectorAll('[data-worker-alert-checked]').forEach((node) => {
+        const record = window.OCD_ALERTS.get(node.dataset.workerAlertChecked);
+        node.textContent = record.checkedAt
+          ? `Last checked ${new Date(record.checkedAt).toLocaleString('en-AU')}`
+          : 'No device check recorded';
+      });
+      document.querySelectorAll('[data-worker-alert-status]').forEach((node) => {
+        node.textContent = window.OCD_ALERTS.get(node.dataset.workerAlertStatus).status;
+      });
+      document.querySelectorAll('[data-worker-alert-detail]').forEach((node) => {
+        node.textContent = window.OCD_ALERTS.get(node.dataset.workerAlertDetail).detail;
+      });
+    } catch (_) {}
+  });
 
   dialog.innerHTML = `<div class="app-tools-head"><div><span class="app-tools-kicker">YOUR APP</span><h2 id="app-tools-heading" tabindex="-1">App & alerts</h2><p>Keep the demo close and choose whether this device receives updates.</p></div><button class="app-tools-close" type="button" data-app-tools-close aria-label="Close app and alerts">×</button></div>
     <div class="app-tools-body"><section class="app-tools-section" aria-labelledby="install-heading"><div class="app-tools-step">01</div><div class="app-tools-copy"><h3 id="install-heading">Add to Home Screen</h3><p id="install-status" role="status">Checking installation…</p><p class="app-tools-detail">On iPhone or iPad, use Share → Add to Home Screen. On other devices, look for Install or Add to Home Screen in your browser menu.</p><button class="btn primary app-tools-action" id="install-app" type="button" hidden>Add app</button></div></section>
@@ -50,8 +111,14 @@
   }
 
   async function refresh() {
+    const checkedWorker = activeWorker;
     updateInstall();
     if (appleMobile() && !standalone()) {
+      recordAlertStatus(
+        checkedWorker,
+        'Not set up',
+        'Add the app to Home Screen to enable phone alerts.',
+      );
       alertsStatus.textContent =
         'Add the app to your Home Screen, then open it from its icon to turn on alerts.';
       enableButton.hidden = testButton.hidden = disableButton.hidden = true;
@@ -59,6 +126,11 @@
       return;
     }
     if (!supported()) {
+      recordAlertStatus(
+        checkedWorker,
+        'Unavailable',
+        'Notifications are unavailable on this device.',
+      );
       alertsStatus.textContent = !window.isSecureContext
         ? 'Alerts need HTTPS or localhost.'
         : 'Push alerts are unavailable in this browser. You can still use the app.';
@@ -74,11 +146,25 @@
       if (subscription && config.available && Notification.permission === 'granted')
         await post('subscribe', { subscription: subscription.toJSON() });
       if (Notification.permission === 'denied') {
+        recordAlertStatus(
+          checkedWorker,
+          'Off · blocked',
+          'Notifications are blocked in this browser’s settings.',
+        );
         alertsStatus.textContent =
           'Blocked in browser settings. Allow notifications there to turn alerts on.';
       } else if (!config.available) {
+        recordAlertStatus(checkedWorker, 'Not set up', 'The push server is not configured.');
         alertsStatus.textContent = 'The demo push server is not configured yet.';
       } else {
+        const enabled = Boolean(subscription) && Notification.permission === 'granted';
+        recordAlertStatus(
+          checkedWorker,
+          enabled ? 'On' : 'Off',
+          enabled
+            ? 'This demo device is subscribed to alerts.'
+            : 'This demo device is not receiving alerts.',
+        );
         alertsStatus.textContent = subscription
           ? 'Alerts are on for this device.'
           : 'Alerts are off. Turn them on when you want demo updates.';
@@ -90,6 +176,11 @@
       disableButton.hidden = !subscription;
       demoBroadcast.hidden = !config.localDemo || !subscription;
     } catch (_) {
+      recordAlertStatus(
+        checkedWorker,
+        'Unknown',
+        'Could not verify this device’s alert connection.',
+      );
       alertsStatus.textContent = 'Cannot reach the push server right now. The app still works.';
       enableButton.hidden = testButton.hidden = true;
       disableButton.hidden = !subscription;
@@ -228,6 +319,9 @@
     updateInstall();
   });
   window.addEventListener('appinstalled', updateInstall);
+  window.addEventListener('focus', () => {
+    if (activeWorker) refresh();
+  });
   if ('serviceWorker' in navigator)
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
   updateInstall();

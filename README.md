@@ -76,6 +76,10 @@ npm start
 
 The local server saves requests in `.local/intakes.json`, push subscriptions in `.local/push-subscriptions.json`, and generated development VAPID keys in `.local/push-keys.json`. All are excluded from Git.
 
+### Icon attribution
+
+The React interface uses [Solar Icons](https://github.com/saoudi-h/solar-icons) via `@solar-icons/react`. The icon artwork is by 480 Design and is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 ## Vercel setup
 
 Set these deployment environment variables:

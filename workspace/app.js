@@ -61,6 +61,8 @@
     ui.clientId = demoAccount.get('demoClient');
   const workspaceIdentity = () => sessionEmail || 'Mia Roberts (demo)';
   let employeeTab = 'Overview';
+  let employeeRecordPage = 0;
+  let employeeRecordWorker = null;
   let overviewWeekStart = demoWeek[0];
   let toastTimer;
   const clientBooking = {
@@ -425,37 +427,15 @@
     return `<span class="status ${statusClass(status)}">${esc(status)}</span>`;
   }
   function icon(name) {
-    const paths = {
-      overview:
-        '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
-      inbox: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 14h5l2 3h4l2-3h5"/>',
-      calendar:
-        '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/>',
-      people:
-        '<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M19 20v-2a5 5 0 0 0-3-4.5"/>',
-      file: '<path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M15 3v5h5M8 13h8M8 17h8"/>',
-      clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-      route:
-        '<circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h7a5 5 0 0 1 0 10H9a4 4 0 0 0 0 8h8"/>',
-      map: '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6ZM9 3v15M15 6v15"/>',
-      search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
-      plus: '<path d="M12 5v14M5 12h14"/>',
-      arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
-      check: '<path d="m5 12 4 4L19 6"/>',
-      heart:
-        '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>',
-      star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>',
-      alert: '<path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v4m0 4h.01"/>',
-      activity: '<path d="M3 12h4l3-6 4 12 3-6h4"/>',
-      home: '<path d="m3 11 9-8 9 8v10H3V11Z"/><path d="M9 21v-7h6v7"/>',
-      edit: '<path d="M4 20h4l11-11-4-4L4 16v4ZM13 7l4 4"/>',
-      download: '<path d="M12 3v12m-4-4 4 4 4-4M4 18v3h16v-3"/>',
-      reset: '<path d="M3 11a9 9 0 1 1 2 6M3 17v-6h6"/>',
-      shield: '<path d="M12 2 4 5v7c0 5 3 8 8 10 5-2 8-5 8-10V5l-8-3Z"/><path d="m9 12 2 2 4-4"/>',
-      bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>',
-      layers: '<path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/>',
+    const solarNames = {
+      overview: 'widget-4-linear', inbox: 'letter-linear', calendar: 'calendar-linear',
+      people: 'users-group-rounded-linear', file: 'file-text-linear', clock: 'clock-circle-linear',
+      route: 'routing-2-linear', map: 'map-linear', search: 'magnifier-linear', plus: 'add-linear',
+      arrow: 'arrow-right-linear', check: 'check-linear', heart: 'heart-linear', star: 'star-linear',
+      alert: 'danger-circle-linear', activity: 'pulse-2-linear', shield: 'shield-check-linear',
+      bell: 'bell-linear', layers: 'layers-linear', home: 'home-linear',
     };
-    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.file}</svg>`;
+    return `<i class="solar-icon" data-solar="${solarNames[name] || 'file-text-linear'}" aria-hidden="true"></i>`;
   }
   function activity(text, detail) {
     state.activity.unshift({
@@ -500,8 +480,10 @@
   }
   function pageHeader(eyebrow, title, subtitle = '', actions = '') {
     const [, , detail] = routeParts();
-    return `<header class="page-header"><div>${detail ? `<span class="eyebrow">${esc(eyebrow)}</span>` : ''}<h1>${esc(title)}</h1>${subtitle ? (detail ? `<p>${esc(subtitle)}</p>` : help(subtitle, `About ${title.toLowerCase()}`)) : ''}</div>${actions ? `<div class="header-actions">${actions}</div>` : ''}</header>`;
+    const model = { title, subtitle, eyebrow: detail ? eyebrow : '' };
+    return `<div data-react-page-heading="${attr(JSON.stringify(model))}">${actions}</div>`;
   }
+
   function crumb(label, parent, parentLabel) {
     return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/${parent}">${esc(parentLabel)}</a><span class="chev">/</span><span>${esc(label)}</span></nav>`;
   }
@@ -625,7 +607,7 @@
       ['schedule', 'Team schedule', 'calendar'],
       ['work', 'Work queue', 'layers'],
       ['calendar', 'Calendar', 'calendar'],
-      ['participants', 'Participants', 'people'],
+      ['participants', 'Clients', 'people'],
       ['staff', 'Staff', 'people'],
       ['enquiries', 'Enquiries', 'inbox'],
       ['calls', 'Discovery calls', 'calendar'],
@@ -657,10 +639,8 @@
   nav.office.push(['finance', 'Bookkeeping', 'file']);
   nav.office.push(['invoices', 'Invoices', 'file']);
   nav.office.push(['verification', 'Integration proof', 'shield']);
-  nav.office.push(['presentation', 'Client walkthrough', 'overview']);
   nav.office.push(['intake', 'Intake', 'inbox']);
   const officeNavGroups = [
-    ['Client demo', ['presentation']],
     ['Daily work', ['overview', 'work', 'automation']],
     ['Clients & intake', ['enquiries', 'intake', 'participants', 'calls', 'agreements']],
     ['Scheduling', ['schedule', 'calendar', 'visits', 'map']],
@@ -687,7 +667,7 @@
       `<span class="nav-icon">${icon(glyph)}${count ? '<i class="nav-notification" aria-hidden="true"></i>' : ''}</span>`;
     const primaryMobile = ['overview', 'intake', 'work', 'participants'];
     const navLink = ([path, label, glyph]) =>
-      `<a class="nav-link ${section === path ? 'active' : ''} ${area === 'office' && !primaryMobile.includes(path) ? 'mobile-extra' : ''}" ${section === path ? 'aria-current="page"' : ''} title="${attr(label)}${counts[path] ? ` · ${counts[path]} need attention` : ''}" aria-label="${attr(label)}${counts[path] ? `, ${counts[path]} need attention` : ''}" href="#/${area}/${path}">${navigationIcon(glyph, counts[path])}<span class="nav-label">${area === 'office' ? `<span class="mobile-label">${esc({ overview: 'Home', intake: 'Intake', work: 'Work', participants: 'People' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : area === 'client' ? `<span class="mobile-label">${esc({ home: 'Home', bookings: 'Bookings', map: 'Arrival', documents: 'Docs', intake: 'Details' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : esc(label)}</span></a>`;
+      `<a class="nav-link ${section === path ? 'active' : ''} ${area === 'office' && !primaryMobile.includes(path) ? 'mobile-extra' : ''}" ${section === path ? 'aria-current="page"' : ''} title="${attr(label)}${counts[path] ? ` · ${counts[path]} need attention` : ''}" aria-label="${attr(label)}${counts[path] ? `, ${counts[path]} need attention` : ''}" href="#/${area}/${path}">${navigationIcon(glyph, counts[path])}<span class="nav-label">${area === 'office' ? `<span class="mobile-label">${esc({ overview: 'Home', intake: 'Intake', work: 'Work', participants: 'Clients' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : area === 'client' ? `<span class="mobile-label">${esc({ home: 'Home', bookings: 'Bookings', map: 'Arrival', documents: 'Docs', intake: 'Details' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : esc(label)}</span></a>`;
     const groupLinks = (groups) =>
       groups
         .map(
@@ -809,6 +789,7 @@
     window.OCD_INTEGRATION_PROOF.unmount();
     window.OCD_CLIENT_PRESENTATION.unmount();
     const [area, section, detail] = routeParts();
+    window.OCD_ALERTS?.setWorker(area === 'worker' ? ui.workerId : null);
     const pages = {
       office: {
         overview: officeOverview,
@@ -886,6 +867,7 @@
           ? clientShell(actualSection, content)
           : shell(actualArea, actualSection, content),
     );
+    window.OCD_SOLAR_REFRESH?.();
     window.OCD_UI.mount(
       app.querySelector('main'),
       [actualArea, actualSection, detail].filter(Boolean).join('/'),
@@ -1050,7 +1032,6 @@
     const active = bookings.filter((b) => b.status !== 'Cancelled');
     const records = state.visits.filter((v) => bookings.some((b) => b.id === v.bookingId));
     const reviewed = records.filter((v) => v.status === 'Reviewed').length;
-    const reviewPercent = records.length ? Math.round((reviewed / records.length) * 100) : 0;
     const previousRecords = state.visits.filter((v) =>
       previousBookings.some((b) => b.id === v.bookingId),
     );
@@ -1064,9 +1045,6 @@
     const completedHours = active
       .filter((b) => b.status === 'Completed')
       .reduce((sum, b) => sum + hours(b), 0);
-    const nextVisit = active
-      .filter((b) => b.status === 'Confirmed')
-      .sort((a, b) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`))[0];
     const recentRecords = [...state.visits]
       .filter((v) => booking(v.bookingId) && (v.clockIn || v.clockOut))
       .sort((a, b) =>
@@ -1105,155 +1083,17 @@
         href: 'office/visits',
       },
     ];
-    const maxVisits = Math.max(
-      4,
-      Math.ceil(Math.max(...daily.map((d) => d.counts.reduce((a, b) => a + b, 0))) / 4) * 4,
-    );
-    const bars = daily
-      .map((d, i) => {
-        let y = 210;
-        const count = d.counts.reduce((a, b) => a + b, 0);
-        const x = 65 + i * 80;
-        const segments = d.counts
-          .map((value, j) => {
-            const height = (value / maxVisits) * 170;
-            y -= height;
-            return value
-              ? `<rect class="chart-${categories[j].tone} chart-bar-fill" x="${x + 8}" y="${y}" width="20" height="${height}"/>`
-              : '';
-          })
-          .join('');
-        const description = `${dateLabel(d.date, { weekday: 'long' })}: ${d.counts.map((value, j) => `${value} ${categories[j].label.toLowerCase()}`).join(', ')}`;
-        return `<a href="#/office/schedule" data-action="overview-day" data-date="${d.date}" aria-label="${attr(description)}" data-chart-title="${attr(dateLabel(d.date, { weekday: 'long', day: 'numeric', month: 'short' }))}" data-chart-count="${count}" data-chart-hours="${hourLabel(bookings.filter((b) => b.date === d.date && b.status !== 'Cancelled').reduce((sum, b) => sum + hours(b), 0))}" data-chart-breakdown="${attr(JSON.stringify(d.counts.map((value, j) => ({ label: categories[j].label, value }))))}"><title>${esc(description)}</title><rect class="chart-hit" x="${x - 12}" y="20" width="60" height="230"/>${count ? `<defs><clipPath id="overview-day-clip-${i}"><rect x="${x + 8}" y="${y}" width="20" height="${210 - y}" rx="3"/></clipPath></defs><g clip-path="url(#overview-day-clip-${i})">${segments}</g>` : ''}</a>`;
-      })
-      .join('');
-    let offset = 0;
-    const ring = totals
-      .map((t) => {
-        const percent = bookings.length ? (t.count / bookings.length) * 100 : 0;
-        const segment = t.count
-          ? `<circle class="chart-${t.tone}" cx="100" cy="100" r="76" pathLength="100" stroke-dasharray="${percent} ${100 - percent}" stroke-dashoffset="-${offset}"/>`
-          : '';
-        offset += percent;
-        return segment;
-      })
-      .join('');
-    const workerLoads = [
-      ...state.workers.map((w) => ({
-        id: w.id,
-        name: w.name,
-        initials: w.initials,
-        hours: active.filter((b) => b.workerId === w.id).reduce((sum, b) => sum + hours(b), 0),
-        count: active.filter((b) => b.workerId === w.id).length,
-      })),
-      ...(active.some((b) => !b.workerId)
-        ? [
-            {
-              id: '',
-              name: 'Unassigned',
-              initials: '?',
-              hours: active.filter((b) => !b.workerId).reduce((sum, b) => sum + hours(b), 0),
-              count: active.filter((b) => !b.workerId).length,
-            },
-          ]
-        : []),
-    ].sort((a, b) => b.count - a.count);
-    const maxLoad = Math.max(1, ...workerLoads.map((w) => w.count));
-    return `${window.OCD_CLIENT_PRESENTATION.banner()}<div class="analytics-home">
-      <header class="analytics-header"><div><h1>Office overview</h1><span class="analytics-period"><i class="analytics-sample-dot"></i> Sample data <span>·</span> Australia/Perth</span></div><nav class="quick-actions" aria-label="Quick actions"><a class="btn" href="#/office/schedule">${icon('calendar')} Schedule</a><a class="btn primary" href="#/office/intake/new">${icon('plus')} New intake</a></nav></header>
-      <div class="analytics-metrics">${metrics
-        .map((m, index) => {
-          const delta = m.value - previousValues[index];
-          const series = weekDays.map((date) =>
-            index === 3
-              ? records.filter(
-                  (v) => booking(v.bookingId)?.date === date && v.status !== 'Reviewed',
-                ).length
-              : bookings.filter(
-                  (b) =>
-                    b.date === date &&
-                    (index === 0
-                      ? b.status !== 'Cancelled'
-                      : b.status === (index === 1 ? 'Completed' : 'Needs cover')),
-                ).length,
-          );
-          const peak = Math.max(1, ...series);
-          return `<a class="analytics-stat" href="#/${m.href}"><span class="analytics-icon chart-${m.tone}">${icon(m.glyph)}</span><span>${esc(m.label)}</span><strong>${m.value}</strong><svg class="analytics-sparkline" viewBox="0 0 80 30" aria-hidden="true"><line x1="0" x2="78" y1="28" y2="28" stroke="var(--chart-track)"/>${series.map((value, i) => (value ? `<rect x="${i * 11}" y="${28 - (value / peak) * 24}" width="6" height="${(value / peak) * 24}" rx="3"/>` : '')).join('')}</svg><span class="analytics-stat-foot"><span class="analytics-delta">${delta ? `${delta > 0 ? '+' : ''}${delta}` : 'No change'}</span><span>vs prior week</span>${icon('arrow')}</span></a>`;
-        })
-        .join('')}</div>
-      <div class="analytics-board">
-        <div class="analytics-main">
-          <section class="analytics-card analytics-weekly"><header><div><h2>Weekly visits</h2><span class="analytics-muted">${dateLabel(weekDays[0], { day: 'numeric', month: 'short' })}–${dateLabel(weekDays[6], { day: 'numeric', month: 'short', year: 'numeric' })} · Perth time</span></div><nav aria-label="Overview period"><div class="analytics-week-control"><button type="button" data-action="overview-week" data-value="previous" aria-label="Previous overview week">←</button><button type="button" data-action="overview-week" data-value="sample">Sample week</button><button type="button" data-action="overview-week" data-value="next" aria-label="Next overview week">→</button></div></nav></header>
-          <div class="analytics-legend">${totals
-            .filter((t) => t.count)
-            .map((t) => `<span><i class="chart-${t.tone}"></i>${t.label}</span>`)
-            .join('')}</div>
-          <div class="analytics-chart-area"><svg class="weekly-chart" viewBox="0 0 640 260" preserveAspectRatio="none" aria-label="Weekly visits by status">${Array.from({ length: 5 }, (_, i) => `<line class="chart-gridline" x1="48" y1="${210 - i * 42.5}" x2="620" y2="${210 - i * 42.5}"/>`).join('')}${bars}</svg><div class="analytics-chart-labels" aria-hidden="true">${Array.from({ length: 5 }, (_, i) => `<span class="chart-axis" style="top:${((210 - i * 42.5) / 260) * 100}%">${(i * maxVisits) / 4}</span>`).join('')}${daily
-            .map((d, i) => {
-              const count = d.counts.reduce((a, b) => a + b, 0),
-                left = ((83 + i * 80) / 640) * 100;
-              return `<span class="chart-value" style="left:${left}%;top:${((200 - (count / maxVisits) * 170) / 260) * 100}%">${count}</span><span style="left:${left}%;top:${(238 / 260) * 100}%">${dateLabel(d.date, { weekday: 'short' })}</span>`;
-            })
-            .join(
-              '',
-            )}</div><div id="overview-chart-tooltip" class="analytics-chart-tooltip" role="status" hidden></div></div>
-          <div class="analytics-chart-summary"><span><strong>${active.length}</strong> active visits</span><span><strong>${hourLabel(scheduledHours)}</strong> scheduled</span><span class="analytics-chart-hint">Hover for detail · select to open</span></div>
-        </section>
-          <div class="analytics-secondary">
-            <section class="analytics-card analytics-employees"><header><h2>Employee workload</h2><a href="#/office/staff" aria-label="View employees">${icon('arrow')}</a></header><span class="analytics-muted">Visits this week · excludes cancellations</span>
-          <div class="analytics-workload">${workerLoads.map((w) => `<a href="#/office/${w.id ? `staff/${attr(w.id)}` : 'schedule'}" aria-label="${attr(`${w.name}: ${w.count} visits this week`)}"><span class="analytics-worker">${profileImage(w.name)}<span>${esc(w.name)}<small>${hourLabel(w.hours)} scheduled</small></span></span><strong>${w.count}<small>visits</small></strong><span class="workload-track"><i style="width:${(w.count / maxLoad) * 100}%"></i></span></a>`).join('') || '<p class="analytics-muted">No employees recorded</p>'}</div>
-        </section>
-            <section class="analytics-card analytics-activity"><header><h2>Recent visit activity</h2><a href="#/office/visits" aria-label="Open visit records">${icon('arrow')}</a></header><ul>
-          ${
-            recentRecords
-              .map((v) => {
-                const b = booking(v.bookingId),
-                  w = worker(b.workerId);
-                return `<li><a href="#/office/visits/${attr(v.id)}">${profileImage(w?.name)}<span><strong>${esc(w?.name || 'Unassigned')}</strong><small>${esc(participant(b.participantId)?.name)} · ${dateLabel(b.date)}</small></span><span class="analytics-activity-clock"><b>${clockLabel(v.clockIn)}</b><small>In · Out ${clockLabel(v.clockOut)}</small></span></a></li>`;
-              })
-              .join('') || '<li class="analytics-muted">No visit times recorded.</li>'
-          }
-        </ul></section>
-          </div>
-          <div class="analytics-details">
-            <section class="analytics-card analytics-next"><header><h2>Next confirmed visit</h2><span class="analytics-mini-label">Selected week</span></header>
-          ${nextVisit ? `<span class="analytics-mini-label">${esc(nextVisit.service)}</span><h3>${esc(participant(nextVisit.participantId)?.name || 'Participant')}</h3><p>${dateLabel(nextVisit.date)} · ${clockRange(nextVisit.start, nextVisit.end)}</p><div class="analytics-next-worker">${profileImage(worker(nextVisit.workerId)?.name)}${esc(worker(nextVisit.workerId)?.name || 'Unassigned')}${pill(nextVisit.status)}</div><a class="btn primary" href="#/office/schedule/${attr(nextVisit.id)}">View booking ${icon('arrow')}</a>` : '<p class="analytics-muted">No confirmed visits in this week.</p>'}
-        </section>
-            <section class="analytics-card analytics-hours"><header><h2>Scheduled hours</h2>${icon('clock')}</header><strong>${hourLabel(scheduledHours)}</strong><span>Selected week · excludes cancellations</span><div class="analytics-hours-track"><i style="width:${scheduledHours ? (completedHours / scheduledHours) * 100 : 0}%"></i></div><div class="analytics-hours-split"><span>Completed <b>${hourLabel(completedHours)}</b></span><span>Other booked <b>${hourLabel(scheduledHours - completedHours)}</b></span></div>
-        </section>
-          </div>
-        </div>
-        <aside class="analytics-rail" aria-label="Operations summary">
-          <div class="analytics-primary"><section class="analytics-card analytics-booking-status"><header><h2>Booking status</h2><a href="#/office/schedule" aria-label="View bookings">${icon('arrow')}</a></header>
-          <div class="analytics-donut"><svg viewBox="0 0 200 200" role="img" aria-label="${attr(totals.map((t) => `${t.count} ${t.label.toLowerCase()}`).join(', '))}"><circle class="chart-ring-track" cx="100" cy="100" r="76"/>${ring}</svg><div><strong>${bookings.length}</strong><span>Bookings</span></div></div>
-          <div class="analytics-status-list">${
-            totals
-              .filter((t) => t.count)
-              .map(
-                (t) =>
-                  `<div><span><i class="chart-${t.tone}"></i>${t.label}</span><span><small>${Number(((t.count / bookings.length) * 100).toFixed(1))}%</small><strong>${t.count}</strong></span></div>`,
-              )
-              .join('') || '<span class="analytics-muted">No bookings this week</span>'
-          }</div>
-        </section></div>
-          <section class="analytics-card analytics-attention"><header><h2>Needs attention <span class="analytics-badge">${priorities.length}</span></h2><a href="#/office/work" aria-label="Open work queue">${icon('arrow')}</a></header><span class="analytics-muted">All open work</span>
-          <ol>${
-            priorities
-              .slice(0, 3)
-              .map(
-                (p) =>
-                  `<li><a href="#/${p.href}"><span class="analytics-attention-icon">${icon(p.icon)}</span><span><strong>${esc(p.title)}</strong><small>${esc(p.detail)}</small></span>${icon('arrow')}</a></li>`,
-              )
-              .join('') || '<li class="analytics-muted">All caught up</li>'
-          }</ol><a class="analytics-all-work" href="#/office/work">View work queue ${icon('arrow')}</a>
-        </section>
-          <section class="analytics-card analytics-reviews"><header><h2>Record reviews</h2><a href="#/office/visits" aria-label="Review visit records">${icon('arrow')}</a></header>
-          <div class="analytics-donut review-donut"><svg viewBox="0 0 200 200" role="img" aria-label="${reviewed} of ${records.length} records reviewed"><circle class="chart-ring-track" cx="100" cy="100" r="76"/><circle class="chart-done" cx="100" cy="100" r="76" pathLength="100" stroke-dasharray="${reviewPercent} ${100 - reviewPercent}"/></svg><div><strong>${records.length ? reviewPercent + '%' : '—'}</strong><span>Reviewed</span></div></div>
-          <div class="analytics-review-count"><strong>${reviewed} / ${records.length}</strong><span>records this week</span></div><div class="analytics-review-detail"><span><i class="chart-done"></i> Reviewed <strong>${reviewed}</strong></span><span><i class="chart-cover"></i> Awaiting review <strong>${records.length - reviewed}</strong></span></div>
-        </section>
-        </aside>
-      </div>
-    </div>`;
+    const model = {
+      period: `${dateLabel(weekDays[0], { day: 'numeric', month: 'short' })}–${dateLabel(weekDays[6], { day: 'numeric', month: 'short', year: 'numeric' })}`,
+      scheduledHours: hourLabel(scheduledHours), completedHours: hourLabel(completedHours), reviewed, records: records.length,
+      metrics: metrics.map((metric, index) => ({ ...metric, delta: metric.value - previousValues[index] })),
+      categories: totals,
+      daily: daily.map((day) => ({ ...day, label: dateLabel(day.date, { weekday: 'short' }), title: dateLabel(day.date, { weekday: 'long', day: 'numeric', month: 'short' }), hours: hourLabel(bookings.filter((b) => b.date === day.date && b.status !== 'Cancelled').reduce((sum, b) => sum + hours(b), 0)) })),
+      priorities,
+      workers: state.workers.map((w) => ({ id: w.id, name: w.name, count: active.filter((b) => b.workerId === w.id).length, hours: hourLabel(active.filter((b) => b.workerId === w.id).reduce((sum, b) => sum + hours(b), 0)) })).sort((a, b) => b.count - a.count),
+      recent: recentRecords.map((v) => { const b = booking(v.bookingId); return { id: v.id, worker: worker(b.workerId)?.name || 'Unassigned', participant: participant(b.participantId)?.name || 'Participant', date: dateLabel(b.date), clockIn: clockLabel(v.clockIn), clockOut: clockLabel(v.clockOut) }; }),
+    };
+    return `${window.OCD_CLIENT_PRESENTATION.banner()}<div data-react-office-overview="${attr(JSON.stringify(model))}"></div>`;
   }
 
   function officeWorkQueue() {
@@ -1732,6 +1572,14 @@
     const w = worker(workerId);
     if (!w)
       return `${pageHeader('Staff', 'Employee not found')}<a class="btn" href="#/office/staff">Back to staff</a>`;
+    if (employeeRecordWorker !== workerId) {
+      employeeRecordWorker = workerId;
+      employeeRecordPage = 0;
+    }
+    const alerts = window.OCD_ALERTS?.get(workerId) || {
+      status: 'Not checked',
+      detail: 'No alert status has been reported on this demo browser.',
+    };
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const bookings = state.bookings
       .filter((b) => b.workerId === w.id)
@@ -1745,16 +1593,37 @@
     );
     const checks = docs.filter((d) => d.status !== 'Valid').length;
     const scheduled = reviews.filter((r) => r.status === 'Scheduled');
+    const collection =
+      employeeTab === 'Visits'
+        ? bookings
+        : employeeTab === 'Documents'
+          ? docs
+          : employeeTab === 'Client reviews'
+            ? reviews
+            : clients;
+    const pageSize = employeeTab === 'Overview' ? 2 : employeeTab === 'Client reviews' ? 1 : 3;
+    const pages = Math.max(1, Math.ceil(collection.length / pageSize));
+    employeeRecordPage = Math.min(employeeRecordPage, pages - 1);
+    const shown = collection.slice(
+      employeeRecordPage * pageSize,
+      (employeeRecordPage + 1) * pageSize,
+    );
+    const pagination =
+      pages > 1
+        ? `<nav class="employee-record-pagination" aria-label="Employee record pages"><button class="btn small" type="button" data-action="employee-record-page" data-value="-1" ${employeeRecordPage === 0 ? 'disabled' : ''}>Previous</button><span>${employeeRecordPage + 1} / ${pages}</span><button class="btn small" type="button" data-action="employee-record-page" data-value="1" ${employeeRecordPage === pages - 1 ? 'disabled' : ''}>Next</button></nav>`
+        : '';
+    const feedbackModel = { worker: { id: w.id, name: w.name }, completed: bookings.filter(booking => booking.status === 'Completed').length, alerts };
     let content = '';
     if (employeeTab === 'Overview')
-      content = `<div class="grid-half"><section class="panel"><h2>Availability & eligibility</h2><div class="spacer"></div>${pair('Regular days', w.days.map((d) => days[d]).join(', ') || 'None recorded')}${pair('Office approval', w.approved ? 'Approved' : 'Pending')}${pair('Eligibility review', /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(w.review) ? dateLabel(w.review) : w.review || 'Not recorded')}<p class="form-note">Regular days are preferences. Check the roster before arranging a meeting.</p><button class="btn small" data-action="schedule-worker" data-id="${attr(w.id)}" type="button">View employee schedule</button></section><section class="panel"><h2>Clients supported</h2>${clients.map((p) => `<div class="visit-row">${profileImage(p.name)}<span class="body"><a href="#/office/participants/${attr(p.id)}">${esc(p.name)}</a><small>${esc(p.service)} · ${esc(p.suburb)}</small></span></div>`).join('') || empty('No linked clients', 'Clients appear here when assigned or listed as a preferred worker.')}</section></div><div class="spacer"></div><section class="panel"><div class="section-heading"><h2>Next client review</h2><button class="btn small" data-action="employee-tab" data-value="Client reviews" type="button">View all reviews</button></div>${scheduled.length ? reviewRows(scheduled.slice(0, 1)) : empty('No client review scheduled', 'Arrange a conversation with the employee and client to review their support.')}</section>`;
+      content = `<div class="grid-half"><section class="panel"><h2>Availability & eligibility</h2><div class="spacer"></div>${pair('Regular days', w.days.map((d) => days[d]).join(', ') || 'None recorded')}${pair('Office approval', w.approved ? 'Approved' : 'Pending')}${pair('Eligibility review', /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(w.review) ? dateLabel(w.review) : w.review || 'Not recorded')}<p class="form-note">Regular days are preferences. Check the roster before arranging a meeting.</p><button class="btn small" data-action="schedule-worker" data-id="${attr(w.id)}" type="button">View employee schedule</button></section><section class="panel"><h2>Clients supported</h2>${shown.map((p) => `<div class="visit-row">${profileImage(p.name)}<span class="body"><a href="#/office/participants/${attr(p.id)}">${esc(p.name)}</a><small>${esc(p.service)} · ${esc(p.suburb)}</small></span></div>`).join('') || empty('No linked clients', 'Clients appear here when assigned or listed as a preferred worker.')}</section></div><div class="spacer"></div><section class="panel"><div class="section-heading"><h2>Next client review</h2><button class="btn small" data-action="employee-tab" data-value="Client reviews" type="button">View all reviews</button></div>${scheduled.length ? reviewRows(scheduled.slice(0, 1)) : empty('No client review scheduled', 'Arrange a conversation with the employee and client to review their support.')}</section>`;
+    if (employeeTab === 'Demo reviews') content = `<div data-react-employee-feedback="${attr(JSON.stringify({ ...feedbackModel, mode: 'reviews' }))}"></div>`;
     if (employeeTab === 'Visits')
-      content = `<section class="panel tight"><div class="table-wrap"><table><thead><tr><th>Date & time</th><th>Client</th><th>Service</th><th>Status</th></tr></thead><tbody>${bookings.map((b) => `<tr><td><a href="#/office/schedule/${attr(b.id)}">${dateLabel(b.date)} · ${clockRange(b.start, b.end)}</a></td><td>${esc(participant(b.participantId)?.name)}</td><td>${esc(b.service)}</td><td>${pill(b.status)}</td></tr>`).join('') || `<tr><td colspan="4">No visits recorded.</td></tr>`}</tbody></table></div></section>`;
+      content = `<section class="panel tight"><div class="table-wrap"><table><thead><tr><th>Date & time</th><th>Client</th><th>Service</th><th>Status</th></tr></thead><tbody>${shown.map((b) => `<tr><td><a href="#/office/schedule/${attr(b.id)}">${dateLabel(b.date)} · ${clockRange(b.start, b.end)}</a></td><td>${esc(participant(b.participantId)?.name)}</td><td>${esc(b.service)}</td><td>${pill(b.status)}</td></tr>`).join('') || `<tr><td colspan="4">No visits recorded.</td></tr>`}</tbody></table></div></section>`;
     if (employeeTab === 'Documents')
-      content = `<section class="panel"><h2>Document checks</h2><p class="form-note">These are document records. Original files have not been attached.</p>${docs.map((d) => `<div class="visit-row"><span class="priority-icon">${icon('file')}</span><span class="body"><strong>${esc(d.name)}</strong><small>${d.expires ? `Recorded expiry: ${dateLabel(d.expires)}` : 'No expiry recorded'}${d.evidence ? ` · ${esc(d.evidence)}` : ''}</small></span>${pill(d.status)}</div>`).join('') || empty('No documents recorded', 'Confirm the required credentials with the office.')}</section>`;
+      content = `<section class="panel"><h2>Document checks</h2><p class="form-note">These are document records. Original files have not been attached.</p>${shown.map((d) => `<div class="visit-row"><span class="priority-icon">${icon('file')}</span><span class="body"><strong>${esc(d.name)}</strong><small>${d.expires ? `Recorded expiry: ${dateLabel(d.expires)}` : 'No expiry recorded'}${d.evidence ? ` · ${esc(d.evidence)}` : ''}</small></span>${pill(d.status)}</div>`).join('') || empty('No documents recorded', 'Confirm the required credentials with the office.')}</section>`;
     if (employeeTab === 'Client reviews')
-      content = `<section class="panel"><div class="section-heading"><h2>Client reviews</h2><button class="btn primary" data-action="schedule-client-review" data-id="${attr(w.id)}" type="button">Schedule client review</button></div><p class="form-note">Saved in this browser demo. No calendar invitation or email is sent.</p>${reviews.length ? reviewRows(reviews) : empty('No reviews yet', 'Choose a client, date and agenda to arrange the first review.')}</section>`;
-    return `<a class="record-back" href="#/office/schedule">${icon('arrow')} Back to schedule</a><header class="page-header"><h1>Employee profile</h1><div class="header-actions"><button class="btn primary" data-action="schedule-client-review" data-id="${attr(w.id)}" type="button">${icon('calendar')} Schedule client review</button></div></header><div class="employee-layout profile-layout"><aside class="panel employee-identity"><div class="employee-cover"></div>${window.OCD_AUTOMATION.profileImage(w.name, 'avatar employee-avatar')}<span class="profile-kind">Employee</span><h2>${esc(w.name)}</h2><p class="muted">${esc(w.role || 'Role not recorded')} · ${esc(w.id)}</p>${pill(w.approved ? 'Approved' : 'Pending')}<div class="content-section"><h3>Services</h3><div class="employee-tags">${w.services.map((s) => `<span>${esc(s)}</span>`).join('')}</div></div><div class="content-section"><h3>Contact</h3><p class="muted tiny">Contact details are not recorded in this demo.</p></div><div class="notice">${icon('shield')} Office profile · fictional demo records</div></aside><div class="employee-main">${profileRatings(bookings, 'Client satisfaction')}<div class="employee-metrics">${[
+      content = `<section class="panel"><div class="section-heading"><h2>Client reviews</h2><button class="btn primary" data-action="schedule-client-review" data-id="${attr(w.id)}" type="button">Schedule client review</button></div><p class="form-note">Saved in this browser demo. No calendar invitation or email is sent.</p>${reviews.length ? reviewRows(shown) : empty('No reviews yet', 'Choose a client, date and agenda to arrange the first review.')}</section>`;
+    return `<a class="record-back" href="#/office/schedule">${icon('arrow')} Back to schedule</a><header class="page-header"><h1>Employee profile</h1><div class="header-actions"><button class="btn primary" data-action="schedule-client-review" data-id="${attr(w.id)}" type="button">${icon('calendar')} Schedule client review</button></div></header><div class="employee-layout profile-layout"><aside class="panel employee-identity"><div class="employee-cover"></div>${window.OCD_AUTOMATION.profileImage(w.name, 'avatar employee-avatar')}<span class="profile-kind">Employee</span><h2>${esc(w.name)}</h2><p class="muted">${esc(w.role || 'Role not recorded')} · ${esc(w.id)}</p>${pill(w.approved ? 'Approved' : 'Pending')}<div class="content-section"><h3>Services</h3><div class="employee-tags">${w.services.map((s) => `<span>${esc(s)}</span>`).join('')}</div></div><div class="content-section"><h3>Contact</h3><p class="muted tiny">Contact details are not recorded in this demo.</p></div><div class="content-section worker-alert-card"><h3>Phone notifications</h3><strong data-worker-alert-status="${attr(w.id)}">${esc(alerts.status)}</strong><p data-worker-alert-detail="${attr(w.id)}">${esc(alerts.detail)}</p><small><span data-worker-alert-checked="${attr(w.id)}">${alerts.checkedAt ? `Last checked ${esc(new Date(alerts.checkedAt).toLocaleString('en-AU'))}` : 'No device check recorded'}</span> · This demo browser</small><a class="btn small" href="/workspace/?demoWorker=${attr(w.id)}#/worker/home">Open employee alerts</a></div><div class="notice">${icon('shield')} Office profile · fictional demo records</div></aside><div class="employee-main"><div data-react-employee-feedback="${attr(JSON.stringify({ ...feedbackModel, mode: 'summary' }))}"></div><div class="employee-metrics">${[
       [clients.length, 'Clients supported'],
       [checks, 'Document checks'],
       [scheduled.length, 'Scheduled reviews'],
@@ -1765,10 +1634,10 @@
       )
       .join(
         '',
-      )}</div><div class="tabs" aria-label="Employee profile sections">${['Overview', 'Visits', 'Documents', 'Client reviews'].map((tab) => `<button type="button" data-action="employee-tab" data-value="${tab}" class="${employeeTab === tab ? 'active' : ''}" aria-pressed="${employeeTab === tab}">${tab}</button>`).join('')}</div>${content}</div></div>`;
+      )}</div><div class="tabs" aria-label="Employee profile sections">${['Overview', 'Demo reviews', 'Visits', 'Documents', 'Client reviews'].map((tab) => `<button type="button" data-action="employee-tab" data-value="${tab}" class="${employeeTab === tab ? 'active' : ''}" aria-pressed="${employeeTab === tab}">${tab}</button>`).join('')}</div>${content}${employeeTab === 'Demo reviews' ? '' : pagination}</div></div>`;
   }
 
-  function profileRatings(bookings, satisfactionLabel) {
+  function profileRatings(bookings, satisfactionLabel, compact = false) {
     const completed = bookings.filter((b) => b.status === 'Completed').length;
     return `<section class="profile-ratings" aria-label="Satisfaction and ratings">
       <div class="profile-stat-grid">
@@ -1776,7 +1645,7 @@
         <section class="panel profile-stat"><span class="profile-stat-icon">${icon('star')}</span><span>Average rating</span><strong>— <small>/ 5</small></strong><small>No ratings recorded</small></section>
         <section class="panel profile-stat"><span class="profile-stat-icon">${icon('check')}</span><span>Completed visits</span><strong>${completed}</strong><small>Across recorded bookings</small></section>
       </div>
-      <div class="profile-score-grid">
+      <div class="profile-score-grid" ${compact ? 'hidden' : ''}>
         <section class="panel profile-score"><h2>Satisfaction score</h2><div class="profile-gauge"><svg viewBox="0 0 240 130" aria-hidden="true"><path d="M 20 115 A 100 100 0 0 1 220 115" /></svg><div><strong>—</strong><span>Awaiting feedback</span></div></div><p>No scored feedback has been recorded.</p></section>
         <section class="panel profile-rating-summary"><h2>Rating overview</h2><div class="profile-stars" aria-hidden="true">☆ ☆ ☆ ☆ ☆</div><h3>No ratings yet</h3><p>Written feedback and review outcomes remain in their existing sections. They do not count as a numeric rating.</p><span class="profile-rating-note">${icon('shield')} Based on recorded feedback</span></section>
       </div>
@@ -1947,7 +1816,7 @@
                       .join(' ')
                   : cardTitle;
               const width = 100 / g.lanes.length;
-              return `<a class="week-event ${e.tone} ${g.lanes.length > 1 ? 'narrow' : ''} ${short ? 'short' : e.endMinute - e.startMinute < 90 ? 'compact' : ''}" href="${e.href}" style="top:${((e.startMinute - startHour * 60) / 60) * 88}px;height:${Math.max(40, ((e.endMinute - e.startMinute) / 60) * 88 - 6)}px;left:calc(${e.lane * width}% + 4px);width:calc(${width}% - 8px)" aria-label="${attr(`${fullDate(date)} · ${e.title} · ${e.timeLabel} · ${e.detail} · ${e.status}`)}" title="${attr(`${e.title} · ${e.detail} · ${e.timeLabel} · ${e.status}`)}"><strong>${esc(label)}</strong><span class="week-event-time">${esc(e.timeLabel)}</span>${
+              return `<a class="week-event ${e.tone} ${g.lanes.length > 1 ? 'narrow' : ''} ${short ? 'short' : e.endMinute - e.startMinute < 90 ? 'compact' : ''}" href="${e.href}" style="--event-top:${((e.startMinute - startHour * 60) / ((endHour - startHour) * 60)) * 100}%;--event-height:${((e.endMinute - e.startMinute) / ((endHour - startHour) * 60)) * 100}%;top:${((e.startMinute - startHour * 60) / 60) * 88}px;height:${Math.max(40, ((e.endMinute - e.startMinute) / 60) * 88 - 6)}px;left:calc(${e.lane * width}% + 4px);width:calc(${width}% - 8px)" aria-label="${attr(`${fullDate(date)} · ${e.title} · ${e.timeLabel} · ${e.detail} · ${e.status}`)}" title="${attr(`${e.title} · ${e.detail} · ${e.timeLabel} · ${e.status}`)}"><strong>${esc(label)}</strong><span class="week-event-time">${esc(e.timeLabel)}</span>${
                 short
                   ? ''
                   : `<span class="week-event-service">${esc(e.type === 'call' ? 'Discovery call' : e.detail.split(' · ')[0])}</span><span class="week-event-person">${
@@ -1980,7 +1849,7 @@
       })
       .join('');
     const selectedEvents = events.filter((e) => e.date === selected);
-    return `<section class="week-calendar" aria-label="${office ? 'Office' : 'My'} weekly calendar"><header class="week-toolbar"><div class="week-heading"><h1>${dateLabel(selected, { month: 'long' })} <span>${selected.slice(0, 4)}</span></h1><p>${dateLabel(weekStart, { day: 'numeric', month: 'short' })} – ${dateLabel(days[6], { day: 'numeric', month: 'short' })} · Perth time</p></div><div class="week-controls"><button class="btn" data-action="calendar-today" type="button">Today</button><div class="week-view-switch" role="group" aria-label="Calendar view"><button type="button" aria-pressed="true" data-action="calendar-view" data-value="week">Week</button><button type="button" aria-pressed="false" data-action="calendar-view" data-value="month">Month</button></div><label class="week-search"><span class="sr-only">Search calendar</span>${icon('search')}<input id="calendar-search" type="search" placeholder="Search calendar" value="${attr(ui.calendarQuery)}"></label>${office ? `<button class="btn primary" data-action="new-booking" type="button">${icon('plus')} New booking</button>` : `<a class="btn primary" href="#/worker/today">My visits</a>`}</div></header><div class="week-meta"><div class="calendar-legend"><span><i class="service"></i> Service visit</span>${office ? '<span><i class="call"></i> Discovery call</span><span><i class="cover"></i> Needs cover</span><span><i class="proposed"></i> Proposed</span>' : ''}</div><span class="week-count" role="status">${events.length} ${events.length === 1 ? 'event' : 'events'} this week${query && !events.length ? ' · No matches' : ''}</span></div><div class="week-scroll" tabindex="0" role="region" aria-label="Week timetable. Scroll to see more hours or days."><div class="week-grid"><div class="week-day-header"><div class="week-arrows"><button data-action="calendar-prev" type="button" aria-label="Previous schedule period">‹</button><button data-action="calendar-next" type="button" aria-label="Next schedule period">›</button></div>${days.map((date) => `<button class="week-date ${date === selected ? 'selected' : ''} ${date === todayPerth() ? 'today' : ''}" data-action="calendar-day" data-date="${date}" aria-label="${attr(fullDate(date))}" aria-pressed="${date === selected}" type="button"><span>${dateLabel(date, { weekday: 'short' })}</span><strong>${dateObj(date).getUTCDate()}</strong></button>`).join('')}</div><div class="week-timetable" style="height:${height}px"><div class="week-time-axis">${Array.from({ length: endHour - startHour }, (_, i) => `<span style="top:${i * 88}px">${timeLabel(startHour + i)}</span>`).join('')}</div>${columns}</div></div></div><footer class="week-footer"><span>${office ? 'Service visits & discovery calls' : 'Your assigned visits'}</span><button class="link-button" data-action="calendar-demo" type="button">Sample week · 5 Oct</button></footer></section><section class="calendar-agenda week-agenda" tabindex="-1" aria-label="Selected day details"><div class="week-agenda-heading"><div><span class="eyebrow">Day at a glance</span><h2>${fullDate(selected)}</h2></div>${office ? '<button class="btn" data-action="add-slot" type="button">Add call slot</button>' : '<a class="btn" href="#/worker/availability">View availability</a>'}</div><div class="calendar-agenda-list">${selectedEvents.map((e) => `<a class="calendar-agenda-item ${e.tone}" href="${e.href}"><span class="calendar-agenda-time">${esc(e.timeLabel)}</span><span class="calendar-agenda-copy"><strong>${esc(e.title)}</strong><small>${esc(e.detail)}</small></span>${pill(e.status)}</a>`).join('') || '<p class="calendar-agenda-empty">No matching events on this day.</p>'}</div></section>`;
+    return `<div class="calendar-screen"><section class="week-calendar" aria-label="${office ? 'Office' : 'My'} weekly calendar"><header class="week-toolbar"><div class="week-heading"><h1>${dateLabel(selected, { month: 'long' })} <span>${selected.slice(0, 4)}</span></h1><p>${dateLabel(weekStart, { day: 'numeric', month: 'short' })} – ${dateLabel(days[6], { day: 'numeric', month: 'short' })} · Perth time</p></div><div class="week-controls"><button class="btn" data-action="calendar-today" type="button">Today</button><div class="week-view-switch" role="group" aria-label="Calendar view"><button type="button" aria-pressed="true" data-action="calendar-view" data-value="week">Week</button><button type="button" aria-pressed="false" data-action="calendar-view" data-value="month">Month</button></div><label class="week-search"><span class="sr-only">Search calendar</span>${icon('search')}<input id="calendar-search" type="search" placeholder="Search calendar" value="${attr(ui.calendarQuery)}"></label>${office ? `<button class="btn primary" data-action="new-booking" type="button">${icon('plus')} New booking</button>` : `<a class="btn primary" href="#/worker/today">My visits</a>`}</div></header><div class="week-meta"><div class="calendar-legend"><span><i class="service"></i> Service visit</span>${office ? '<span><i class="call"></i> Discovery call</span><span><i class="cover"></i> Needs cover</span><span><i class="proposed"></i> Proposed</span>' : ''}</div><span class="week-count" role="status">${events.length} ${events.length === 1 ? 'event' : 'events'} this week${query && !events.length ? ' · No matches' : ''}</span></div><div class="week-scroll" tabindex="0" role="region" aria-label="Weekly timetable"><div class="week-grid"><div class="week-day-header"><div class="week-arrows"><button data-action="calendar-prev" type="button" aria-label="Previous schedule period">‹</button><button data-action="calendar-next" type="button" aria-label="Next schedule period">›</button></div>${days.map((date) => `<button class="week-date ${date === selected ? 'selected' : ''} ${date === todayPerth() ? 'today' : ''}" data-action="calendar-day" data-date="${date}" aria-label="${attr(fullDate(date))}" aria-pressed="${date === selected}" type="button"><span>${dateLabel(date, { weekday: 'short' })}</span><strong>${dateObj(date).getUTCDate()}</strong></button>`).join('')}</div><div class="week-timetable" style="--calendar-hours:${endHour - startHour};height:${height}px"><div class="week-time-axis">${Array.from({ length: endHour - startHour }, (_, i) => `<span style="--hour-top:${(i / (endHour - startHour)) * 100}%;top:${i * 88}px">${timeLabel(startHour + i)}</span>`).join('')}</div>${columns}</div></div></div><footer class="week-footer"><span>${office ? 'Service visits & discovery calls' : 'Your assigned visits'}</span><button class="link-button" data-action="calendar-demo" type="button">Sample week · 5 Oct</button></footer></section><section class="calendar-agenda week-agenda" tabindex="-1" aria-label="Selected day details"><div class="week-agenda-heading"><div><span class="eyebrow">Day at a glance</span><h2>${fullDate(selected)}</h2></div>${office ? '<button class="btn" data-action="add-slot" type="button">Add call slot</button>' : '<a class="btn" href="#/worker/availability">View availability</a>'}</div><div class="calendar-agenda-list">${selectedEvents.map((e) => `<a class="calendar-agenda-item ${e.tone}" href="${e.href}"><span class="calendar-agenda-time">${esc(e.timeLabel)}</span><span class="calendar-agenda-copy"><strong>${esc(e.title)}</strong><small>${esc(e.detail)}</small></span>${pill(e.status)}</a>`).join('') || '<p class="calendar-agenda-empty">No matching events on this day.</p>'}</div></section></div>`;
   }
 
   function calendarMonthPage(area) {
@@ -2051,10 +1920,11 @@
       <aside class="panel calendar-agenda" tabindex="-1" aria-label="Selected day details"><span class="eyebrow">Selected day</span><h2>${fullDate(selected)}</h2><p class="muted tiny">${selectedEvents.length ? `${selectedEvents.length} calendar item${selectedEvents.length === 1 ? '' : 's'}` : office ? 'No service visits or booked calls' : 'No assigned visits'}</p><div class="calendar-agenda-list">${eventRows || `<p class="calendar-agenda-empty">${office ? 'No service visits or booked calls on this day.' : 'No confirmed or completed visits on this day.'}</p>`}</div>${office ? `<div class="calendar-open-slots"><h3>Published call times still open</h3>${openSlots.length ? `<p>${openSlots.map((s) => `${esc(clockLabel(s.time))} · ${s.duration} min`).join('<br>')}</p>` : `<p>None for this day.</p>`}<button class="btn small" data-action="add-slot" type="button">Add call slot</button></div>` : `<div class="calendar-open-slots"><p>Regular working days are managed separately from assigned visits.</p><a class="btn small" href="#/worker/availability">View availability</a></div>`}</aside></div>`;
   }
 
-  function scheduleEmployeeName(w) {
-    return w.id
-      ? `<a class="employee-profile-link" href="#/office/staff/${attr(w.id)}" aria-label="${attr(`View employee profile for ${w.name}`)}"><strong>${esc(w.name)}</strong><span class="sr-only"> · View profile</span></a>`
-      : `<strong>${esc(w.name)}</strong>`;
+  function scheduleEmployeeCard(w, className) {
+    const role = w.role || (w.id ? 'Role not recorded' : 'Awaiting assignment');
+    const content = `${profileImage(w.name)}<span class="team-member-copy"><strong>${esc(w.name)}</strong><small>${esc(role)}</small></span>`;
+    if (!w.id) return `<div class="${className} team-member-card">${content}</div>`;
+    return `<a class="${className} team-member-card" href="#/office/staff/${attr(w.id)}" aria-label="${attr(`View profile for ${w.name}, ${role}`)}">${content}<span class="team-member-arrow" aria-hidden="true">${icon('arrow')}</span></a>`;
   }
 
   function staffTimeline(bookings, rows) {
@@ -2086,7 +1956,7 @@
               return `<a class="timeline-visit" href="#/office/schedule/${attr(b.id)}" style="left:${((start - from) / range) * 100}%;width:${width}%;top:${12 + lane * 76}px" aria-label="${attr(`${participant(b.participantId)?.name}, ${clockRange(b.start, b.end)}, ${b.status}`)}"><strong>${esc(participant(b.participantId)?.name)}</strong><span>${esc(clockRange(b.start, b.end))}</span><small class="${statusClass(b.status)}">${esc(b.status)}</small></a>`;
             })
             .join('');
-          return `<div class="timeline-row" style="--row-height:${Math.max(1, ends.length) * 76 + 24}px"><div class="timeline-person">${profileImage(w.name)}<div>${scheduleEmployeeName(w)}<small>${esc(w.role || w.services?.[0] || 'Awaiting assignment')}</small></div></div><div class="timeline-track">${bars || '<span class="timeline-empty">No visits scheduled</span>'}</div></div>`;
+          return `<div class="timeline-row" style="--row-height:${Math.max(1, ends.length) * 76 + 24}px">${scheduleEmployeeCard(w, 'timeline-person')}<div class="timeline-track">${bars || '<span class="timeline-empty">No visits scheduled</span>'}</div></div>`;
         })
         .join('') ||
       empty('No matching team members', 'Clear the employee search or choose another status.')
@@ -2170,7 +2040,7 @@
               rows
                 .map(
                   (w) =>
-                    `<tr><th scope="row" class="roster-name-col"><span class="person-cell">${profileImage(w.name)}<span>${scheduleEmployeeName(w)}<small>${w.id ? esc(w.role || 'Role not recorded') : 'Awaiting assignment'}</small></span></span></th>${weekDays
+                    `<tr><th scope="row" class="roster-name-col">${scheduleEmployeeCard(w, 'person-cell')}</th>${weekDays
                       .map((date) => {
                         const bookings = shown
                           .filter((b) => (b.workerId || '') === w.id && b.date === date)
@@ -2353,34 +2223,6 @@
     return `<div class="client-app"><a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><header class="client-app-header"><a href="#/client/home" aria-label="OCD Brilliance home"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></a><nav class="client-app-nav" aria-label="Client navigation">${links.map(([path, label, glyph]) => `<a href="#/client/${path}" ${section === path || (path === 'intake' && section === 'documents') ? 'aria-current="page"' : ''}>${icon(glyph)}<span>${label}</span></a>`).join('')}</nav><div><button class="btn" data-action="client-feedback" type="button">${icon('inbox')} Get help</button><button class="client-account-button" data-action="account-settings" type="button" aria-label="Account and workspace view">${profileImage(p.name)}</button></div></header><main class="client-app-main" id="main-content" tabindex="-1">${account}${content}</main></div>`;
   }
 
-  function clientBookingCalendar() {
-    const today = todayPerth();
-    const month = clientBooking.month || `${today.slice(0, 7)}-01`;
-    const start = addDays(month, -(weekday(month) + 6) % 7);
-    const count =
-      Math.ceil(
-        (((weekday(month) + 6) % 7) +
-          new Date(
-            Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0),
-          ).getUTCDate()) /
-          7,
-      ) * 7;
-    const bookings = state.bookings.filter(
-      (b) => b.participantId === ui.clientId && ['Confirmed', 'Needs cover'].includes(b.status),
-    );
-    return `<div class="client-calendar" aria-label="Choose a preferred date"><div class="client-calendar-heading"><button class="btn" data-action="client-month" data-value="-1" type="button" aria-label="Previous month">‹</button><h3 aria-live="polite">${dateLabel(month, { month: 'long', year: 'numeric' })}</h3><button class="btn" data-action="client-month" data-value="1" type="button" aria-label="Next month">›</button></div><div class="client-calendar-weekdays" aria-hidden="true">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day) => `<span>${day}</span>`).join('')}</div><div class="client-calendar-days">${Array.from(
-      { length: count },
-      (_, i) => {
-        const date = addDays(start, i);
-        if (date.slice(0, 7) !== month.slice(0, 7)) return '<span aria-hidden="true"></span>';
-        const scheduled = bookings.filter((b) => b.date === date);
-        return `<button type="button" data-action="client-date" data-value="${date}" ${date < today ? 'disabled' : ''} aria-pressed="${date === clientBooking.date}" ${date === today ? 'aria-current="date"' : ''} aria-label="${attr(dateLabel(date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }))}${scheduled.length ? `: ${scheduled.length} existing booking(s), ${scheduled.map((b) => esc(b.service)).join(', ')}` : ''}"><span>${dateObj(date).getUTCDate()}</span>${scheduled.length ? '<span class="client-calendar-marker" aria-hidden="true"></span>' : ''}</button>`;
-      },
-    ).join(
-      '',
-    )}</div><p class="form-note">Dot = an existing booking. Dates are preferences; the office checks availability.</p></div>`;
-  }
-
   function clientHome() {
     const p = participant(ui.clientId);
     const representative = ui.clientId === 'PAR-103';
@@ -2398,56 +2240,19 @@
       .filter((r) => r.participantId === p.id && r.status === 'Pending')
       .slice(-2)
       .reverse();
-    const glyphs = ['home', 'people', 'check', 'map', 'people', 'heart'];
-    const confirmation = clientBooking.confirmation;
     const previous = window.OCD_BOOKING_RULES.previousBooking(state.bookings, p.id);
-    const repeatChoice = `<h2>Book again</h2><p>Keep your previous service or tell us what has changed.</p><div class="button-row">${previous ? `<button class="btn primary" data-action="client-repeat" data-id="${attr(previous.id)}" type="button">Same as before</button>` : ''}<button class="btn" data-action="client-different" type="button">Different services / new video</button></div>${previous ? `<p class="form-note">Last completed: ${esc(previous.service)} · ${dateLabel(previous.date)} · ${clockRange(previous.start, previous.end)}. Availability and price will be reviewed.</p>` : ''}<div class="spacer"></div>`;
-    const chooser = clientBooking.service
-      ? `<div class="section-heading"><div><span class="eyebrow">Preferred date</span><h2>${esc(clientBooking.service)}</h2></div><button class="btn" data-action="client-service-back" type="button">Change service</button></div><div class="client-inline-calendar">${clientBookingCalendar()}</div><label class="client-date-label">Preferred date (Perth)<input id="client-booking-date" type="date" min="${today}" value="${attr(clientBooking.date)}" aria-describedby="client-booking-note"></label><p id="client-booking-note" class="form-note" role="status">${clientBooking.date ? `Selected: ${dateLabel(clientBooking.date, { weekday: 'long', day: 'numeric', month: 'long' })}` : 'Choose a date to continue.'}</p><button class="btn primary client-booking-cta" data-action="client-booking-review" type="button" ${clientBooking.date ? '' : 'disabled'}>Review booking request ${icon('arrow')}</button>`
-      : `<h2>Book support</h2><p>Choose a service to request a booking.</p><div class="client-service-grid">${[
-          [0, 2],
-          [1, 3],
-          [5, 4],
-        ]
-          .map(
-            (indices, group) =>
-              `<div class="client-service-group client-service-group-${group}"><div class="client-service-category">${icon(['home', 'people', 'heart'][group])}<h3>${['At home', 'Out & about', 'Specialist care'][group]}</h3></div>${indices.map((i) => `<button class="client-service-tile" data-action="client-service" data-value="${attr(serviceTypes[i])}" type="button">${icon(glyphs[i])}<span>${esc(serviceTypes[i])}</span>${icon('arrow')}</button>`).join('')}</div>`,
-          )
-          .join(
-            '',
-          )}</div><p class="form-note">The office confirms your service, worker and price before booking.</p>`;
-    return `<div class="client-greeting"><div><p>Hello, ${representative ? 'Samira' : esc(p.name.split(' ')[0])}</p><h1>Your support</h1>${representative ? '<p>You’re arranging support for Farah.</p>' : ''}</div><a class="btn" href="#/client/bookings">${icon('calendar')} My bookings</a></div>${confirmation ? `<section class="panel client-confirmation" role="status"><h2>Booking request saved</h2><p>${esc(confirmation.fields.service)} · ${dateLabel(confirmation.fields.date)} · ${esc(confirmation.serverId || confirmation.id)}</p><p>Sent to the office for review. Your service, worker and price still need confirmation.</p><button class="btn" data-action="client-booking-dismiss" type="button">Request another service</button></section>` : ''}<div class="client-home-tabs" role="group" aria-label="Home views">${[
-      ['book', 'Book support'],
-      ['upcoming', 'Upcoming'],
-      ['requests', 'Requests'],
-    ]
-      .map(
-        ([view, label]) =>
-          `<button class="btn" data-action="client-home-view" data-value="${view}" type="button" aria-pressed="${(ui.clientHomeView || 'book') === view}">${label}</button>`,
-      )
-      .join(
-        '',
-      )}</div><div class="client-booking-layout" data-home-view="${ui.clientHomeView || 'book'}"><section class="panel client-booking-panel ${clientBooking.service ? 'client-booking-selected' : ''}" aria-label="Request a booking">${!clientBooking.service ? repeatChoice : ''}${chooser}</section><section class="panel client-calendar-panel"><h2>Your calendar</h2>${clientBookingCalendar()}</section><section class="panel client-upcoming"><div class="section-heading"><h2>Upcoming bookings</h2><a class="btn" href="#/client/bookings">View all</a></div>${
-      upcoming.length
-        ? upcoming
-            .slice(0, 1)
-            .map(
-              (b) =>
-                `<article class="client-booking-card"><div class="client-booking-person">${profileImage(worker(b.workerId)?.name || 'Worker to be confirmed')}<div><h3>${esc(b.service)}</h3><p>${dateLabel(b.date, { day: 'numeric', month: 'short' })} · ${clockRange(b.start, b.end)}</p><p class="client-worker-status">${esc(worker(b.workerId)?.name || 'Worker to be confirmed')} · ${esc(worker(b.workerId)?.role || 'Role to be confirmed')} ${pill(b.status)}</p></div></div><div class="button-row"><a class="btn" href="#/client/map/${attr(b.id)}">Arrival details</a><button class="btn" data-action="request-change" data-id="${attr(b.id)}" type="button">Request change</button></div></article>`,
-            )
-            .join('')
-        : '<div class="client-empty"><h3>No upcoming bookings</h3><p>Choose a service above to request support. View all includes earlier bookings.</p></div>'
-    }</section><section class="panel client-request-panel ${pending.length ? 'client-pending' : ''}"><div class="section-heading"><h2>Your requests</h2><a class="btn" href="#/client/bookings">View all</a></div><p class="form-note">Demo requests need office confirmation.</p>${
-      pending.length
-        ? pending
-            .slice(0, 1)
-            .map(
-              (r) =>
-                `<article class="client-booking-card"><h3>${esc(r.fields?.service || r.type)}</h3><p>${esc(r.message)}</p>${pill(r.status)}</article>`,
-            )
-            .join('')
-        : '<div class="client-empty"><h3>No requests waiting</h3><p>Your saved requests will appear here so you can follow what happens next.</p></div>'
-    }</section><section class="panel client-help-panel"><div class="client-help-art" aria-hidden="true">${icon('heart')}</div><h2>Need a hand?</h2><p>Ask us about a service or your next visit.</p><button class="btn primary" data-action="client-feedback" type="button">Ask the office for help ${icon('arrow')}</button>${agreement && agreement.status !== 'Signed' ? '<a class="client-agreement-link" href="#/client/documents">Review your service agreement →</a>' : '<a class="client-agreement-link" href="#/client/documents">My documents →</a>'}</section></div>`;
+    const confirmation = clientBooking.confirmation;
+    const model = {
+      name: p.name, representative, today, homeView: ui.clientHomeView || 'book', services: serviceTypes,
+      selection: { service: clientBooking.service || '', date: clientBooking.date || '', month: clientBooking.month || `${today.slice(0, 7)}-01` },
+      previous: previous ? { id: previous.id, service: previous.service, date: previous.date, time: clockRange(previous.start, previous.end) } : undefined,
+      confirmation: confirmation ? { service: confirmation.fields.service, date: confirmation.fields.date, reference: confirmation.serverId || confirmation.id } : undefined,
+      upcoming: upcoming.map((b) => ({ id: b.id, service: b.service, date: b.date, time: clockRange(b.start, b.end), worker: worker(b.workerId)?.name || 'Worker to be confirmed', status: b.status })),
+      requests: pending.map((r) => ({ id: r.id, service: r.fields?.service || r.type, message: r.message, status: r.status })),
+      calendarBookings: state.bookings.filter((b) => b.participantId === p.id && ['Confirmed', 'Needs cover'].includes(b.status)).map((b) => ({ date: b.date, service: b.service })),
+      agreementPending: !!agreement && agreement.status !== 'Signed',
+    };
+    return `<div data-react-client-home="${attr(JSON.stringify(model))}"></div>`;
   }
 
   function reviewClientBooking() {
@@ -2484,15 +2289,17 @@
     ui.clientBookingsPage = Math.min(ui.clientBookingsPage || 1, pageCount);
     const offset = (ui.clientBookingsPage - 1) * 5;
     const shown = rows.slice(offset, offset + 5);
-    const pagination =
-      rows.length > 5
-        ? `<div class="client-pagination"><button class="btn" data-action="client-bookings-page" data-value="-1" type="button" ${ui.clientBookingsPage === 1 ? 'disabled' : ''}>Previous</button><span role="status">${offset + 1}–${offset + shown.length} of ${rows.length}</span><button class="btn" data-action="client-bookings-page" data-value="1" type="button" ${ui.clientBookingsPage === pageCount ? 'disabled' : ''}>Next</button></div>`
-        : '';
     const requests = state.requests
       .filter((r) => r.participantId === p.id)
       .slice(-5)
       .reverse();
-    return `${pageHeader('My bookings', ui.clientId === 'PAR-103' ? "Farah's bookings" : 'My bookings', 'Your services and booking requests.', '<a class="btn" href="#/client/home">Request a booking</a>')}<div class="tabs" role="group" aria-label="Booking views"><button class="tab ${history ? '' : 'active'}" data-action="client-bookings-view" data-value="upcoming" type="button" aria-pressed="${!history}">Upcoming</button><button class="tab ${history ? 'active' : ''}" data-action="client-bookings-view" data-value="history" type="button" aria-pressed="${history}">Past bookings</button></div><section class="panel"><h2>${history ? 'Past bookings' : 'Upcoming bookings'}</h2>${shown.map((b) => `<article class="client-booking-card"><p class="client-booking-date">${dateLabel(b.date)} · ${clockRange(b.start, b.end)}</p><h3>${esc(b.service)}</h3><p>${esc(worker(b.workerId)?.name || 'Worker to be confirmed')}</p>${pill(b.status)}${!history ? `<div class="button-row"><a class="btn" href="#/client/map/${attr(b.id)}">Arrival details</a><button class="btn" data-action="request-change" data-id="${attr(b.id)}" type="button">Request change</button></div>` : ''}</article>`).join('') || empty(history ? 'No past bookings' : 'No upcoming bookings', history ? 'Earlier services will appear here.' : 'Choose a service on Home to request support.')}${pagination}</section>${requests.length ? `<section class="panel client-booking-requests"><h2>Booking requests</h2><p class="form-note">Your five most recent requests. A request is not a confirmed booking.</p>${requests.map((r) => `<article class="client-booking-card"><h3>${esc(r.fields?.service || r.type)}</h3><p>${esc(r.message)}</p>${pill(r.status)}${r.outcome ? `<p>${esc(r.outcome)}</p>` : ''}</article>`).join('')}</section>` : ''}`;
+    const model = {
+      title: ui.clientId === 'PAR-103' ? "Farah's bookings" : 'My bookings', history,
+      page: ui.clientBookingsPage, pageCount, offset, total: rows.length,
+      bookings: shown.map((b) => ({ id: b.id, service: b.service, date: b.date, time: clockRange(b.start, b.end), worker: worker(b.workerId)?.name || 'Worker to be confirmed', status: b.status })),
+      requests: requests.map((r) => ({ id: r.id, service: r.fields?.service || r.type, message: r.message, status: r.status, outcome: r.outcome })),
+    };
+    return `<div data-react-client-bookings="${attr(JSON.stringify(model))}"></div>`;
   }
 
   function clientArrival(bookingId) {
@@ -2515,7 +2322,8 @@
 
   function clientIntake() {
     const p = participant(ui.clientId);
-    return `${pageHeader('My account', 'My account', 'Your contact details and support preferences.', '<a class="btn" href="#/client/documents">My documents</a>' + appToolsButton())}<div class="grid-two"><section class="panel"><h2>Contact & service preferences</h2><div class="spacer"></div><form data-form="client-details"><div class="form-grid"><label>Email<input name="email" type="email" required value="${attr(p.email)}"></label><label>Phone<input name="phone" type="tel" required value="${attr(p.phone)}"></label><label class="full">Service preferences<textarea name="preference" required>${esc(p.intakeUpdate)}</textarea></label></div><div class="form-actions"><button class="btn primary" type="submit">Request update</button></div></form></section><aside class="panel"><h2>Access</h2><div class="spacer"></div>${pair('Participant', p.name)}${pair('Service', p.service)}${pair('Representative', p.representative)}<div class="spacer"></div><div class="notice">${icon('shield')} Other participants' records and internal staff notes are not available in the client portal.</div></aside></div>`;
+    const model = { name: p.name, email: p.email, phone: p.phone, preference: p.intakeUpdate, service: p.service, representative: p.representative };
+    return `<div data-react-client-account="${attr(JSON.stringify(model))}">${appToolsButton()}</div>`;
   }
 
   function availableSlots() {
@@ -3129,7 +2937,13 @@
       return;
     }
     if (action === 'close-modal') return closeModal();
+    if (action === 'employee-record-page') {
+      employeeRecordPage = Math.max(0, employeeRecordPage + Number(value));
+      render();
+      return;
+    }
     if (action === 'employee-tab') {
+      employeeRecordPage = 0;
       employeeTab = value;
       render();
       return;

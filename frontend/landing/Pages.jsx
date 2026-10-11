@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { Search, Check, ArrowRight, Heart, ShieldCheck } from 'lucide-react';
+import { Search, Check, ArrowRight, Heart, ShieldCheck } from '../solar-icons';
 import { services, articles, faqs, suburbs, legal, phone } from './data';
 import {
   PageHero,

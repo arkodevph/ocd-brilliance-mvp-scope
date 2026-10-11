@@ -308,7 +308,9 @@ export async function handleWorkflow(req: Request, res: Response): Promise<void>
       return send(res, 200, {
         rules: service.policy,
         extractionAllowed: R.extractionAllowed(service.policy),
-        documentAllowed: ai.demo || R.extractionAllowed(service.policy),
+        // PDF/image extraction runs entirely in the browser. Keep it available
+        // even when the separate AI/extraction policy has not been approved.
+        documentAllowed: true,
         aiConfigured: Boolean(ai.key),
         aiAllowed: Boolean(ai.key) && (ai.demo || R.extractionAllowed(service.policy)),
         aiDemo: ai.demo,
