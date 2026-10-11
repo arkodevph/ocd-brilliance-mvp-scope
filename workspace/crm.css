@@ -626,13 +626,29 @@ body { background:var(--crm-canvas); color:var(--crm-ink); font-size:14px; }
 .ai-mail-reply form { display:grid;gap:12px; }
 @media(max-width:680px) { .ai-mail-review { grid-template-columns:1fr; } }
 
-@keyframes workspace-content-in { from { opacity:.8; } to { opacity:1; } }
-@keyframes workspace-dialog-in { from { opacity:0;transform:translateY(6px); } to { opacity:1;transform:translateY(0); } }
+@keyframes workspace-content-in { from { opacity:.35;transform:translateY(8px); } to { opacity:1;transform:translateY(0); } }
+@keyframes workspace-card-in { from { opacity:.4;transform:translateY(5px); } to { opacity:1;transform:translateY(0); } }
+:root {--motion-fast:160ms;--motion-enter:320ms;--motion-ease:cubic-bezier(.22,1,.36,1);}
 @media(prefers-reduced-motion:no-preference) {
- .page { animation:workspace-content-in 180ms ease-out; }
- #modal[open] .modal-body { animation:workspace-dialog-in 180ms ease-out; }
- #intake-preview > * { animation:workspace-content-in 180ms ease-out; }
- .btn,.visible-choices button,.automation-tabs button,.section-button,.nav-list a,.automation-case,.email-source,.profile-picker-results button,input,textarea { transition:background-color 160ms ease-out,border-color 160ms ease-out,color 160ms ease-out,box-shadow 160ms ease-out; }
+ .page {animation:workspace-content-in var(--motion-enter) var(--motion-ease);}
+ .staff-card,.enquiry-card,.email-source,.automation-case-detail,#intake-preview > * {animation:workspace-card-in 280ms var(--motion-ease);}
+ .btn,button,.nav-list a,.automation-person-open,input,textarea,select {transition:background-color var(--motion-fast) ease,border-color var(--motion-fast) ease,color var(--motion-fast) ease,box-shadow 220ms ease,transform var(--motion-fast) var(--motion-ease);}
+ .analytics-stat,.staff-card,.enquiry-card,.automation-case {transition:border-color 220ms ease,box-shadow 220ms ease,background-color var(--motion-fast) ease;}
+ .btn:active,button:active,.automation-person-open:active {transform:scale(.98);}
+ .workload-track i,.analytics-hours-track i {transition:width 420ms var(--motion-ease);}
+ #toast {transition:opacity 220ms ease,transform 320ms var(--motion-ease);}
+ dialog {opacity:0;transform:translateY(10px) scale(.98);transition:opacity 180ms ease,transform 280ms var(--motion-ease),display 280ms allow-discrete,overlay 280ms allow-discrete;}
+ dialog[open] {opacity:1;transform:translateY(0) scale(1);}
+ #modal::backdrop,.app-tools-dialog::backdrop {background-color:transparent;transition:background-color 220ms ease,display 280ms allow-discrete,overlay 280ms allow-discrete;}
+ #modal[open]::backdrop,.app-tools-dialog[open]::backdrop {background-color:#14282060;}
+ @starting-style {
+  dialog[open] {opacity:0;transform:translateY(10px) scale(.98);}
+  #modal[open]::backdrop,.app-tools-dialog[open]::backdrop {background-color:transparent;}
+ }
+ @media(hover:hover) {
+  .btn:hover,.automation-person-open:hover {transform:translateY(-1px);}
+  .staff-card:hover,.enquiry-card:hover {box-shadow:0 4px 16px #183c2910;}
+ }
 }
 .incoming-message-form,.ai-mail-assignment { display:grid;gap:16px; }
 .ai-mail-assignment { margin-top:24px;padding-top:24px;border-top:1px solid var(--crm-line); }
@@ -717,3 +733,59 @@ body { background:var(--crm-canvas); color:var(--crm-ink); font-size:14px; }
 .visible-choices.booking-picker button:last-child { border-bottom:0; }
 .visible-choices.booking-picker button[aria-pressed=true] { background:var(--crm-canvas);color:var(--crm-accent);box-shadow:inset 3px 0 var(--crm-accent);font-weight:600; }
 .visible-choices.booking-picker button[hidden] { display:none; }
+
+/* Person-led automation pipeline with one case expanded at a time. */
+.crm-shell .automation-pipeline {height:auto;min-height:0;}
+.crm-shell .automation-pipeline .automation-case-layout {grid-template-columns:minmax(0,1fr);min-height:0;overflow:visible;border:0;background:transparent;}
+.crm-shell .automation-pipeline .automation-queue {border:0;background:transparent;}
+.crm-shell .automation-pipeline .automation-queue-header {padding:16px 0 8px;}
+.crm-shell .automation-pipeline .automation-case-list {display:grid;gap:14px;padding:0;max-height:none;overflow:visible;}
+.crm-shell .automation-pipeline .automation-case {display:block;min-width:0;padding:0;border:1px solid var(--crm-line);border-radius:10px;background:#fff;overflow:hidden;}
+.crm-shell .automation-pipeline .automation-case[hidden] {display:none;}
+.crm-shell .automation-pipeline .automation-case.selected {border-color:var(--crm-accent);box-shadow:0 0 0 1px var(--crm-accent);background:#fff;border-radius:10px;}
+.automation-person-heading {display:flex;align-items:center;gap:12px;padding:16px 18px 8px;}
+.automation-person-heading > div {min-width:0;flex:1;}
+.automation-person-heading h3 {font-size:16px;margin:0 0 4px;}
+.automation-person-heading p {font-size:12px;color:var(--crm-muted);margin:0;overflow-wrap:anywhere;}
+.automation-person-heading .status {flex:none;}
+.automation-person-task {margin:4px 18px 12px;font-size:13px;color:var(--crm-muted);}
+.automation-person-facts {display:flex;flex-wrap:wrap;gap:14px 24px;border-top:1px solid var(--crm-line);margin:0 18px;padding:12px 0;}
+.automation-person-facts > div {min-width:0;flex:1 1 140px;}
+.automation-person-facts > div:last-child {flex:2 1 240px;}
+.automation-person-facts dt {font-size:11px;color:var(--crm-muted);margin-bottom:5px;}
+.automation-person-facts dd {font-size:13px;margin:0;overflow-wrap:anywhere;}
+.automation-person-progress {padding:0 18px;}
+.automation-person-progress .automation-progress {display:flex;gap:4px;flex-wrap:wrap;margin:0 0 12px;}
+.automation-person-progress .automation-progress li {flex:1 1 100px;justify-content:center;padding:8px;background:#f2f4f3;border-radius:4px;}
+.automation-person-progress .automation-progress li > span {display:none;}
+.automation-person-progress .automation-progress .past {background:#e3f2e9;color:#006b59;}
+.automation-person-progress .automation-progress .current {background:var(--crm-accent);color:#fff;}
+.automation-person-open {display:inline-flex;align-items:center;justify-content:center;flex:none;min-height:44px;padding:10px 16px;border:1px solid var(--crm-accent);border-radius:7px;background:var(--crm-accent);color:#fff;font-size:13px;font-weight:650;text-decoration:none;}
+.automation-person-open:hover {background:#005344;border-color:#005344;color:#fff;}
+.automation-person-open[aria-expanded=true] {background:#fff;color:var(--crm-accent);}
+.automation-person-open[aria-expanded=true]:hover {background:#edf5f2;}
+.automation-person-open:focus-visible {outline:2px solid var(--crm-accent);outline-offset:3px;}
+.automation-person-reference {padding:8px 18px;border-top:1px solid var(--crm-line);font-size:11px;color:var(--crm-muted);}
+.profile-image {overflow:hidden;flex:none;}
+.profile-image img {display:block;width:100%;height:100%;object-fit:cover;}
+.participant-person {display:flex;align-items:center;gap:10px;}
+.page-header h1:has(.profile-image) {display:flex;align-items:center;gap:12px;}
+.page-header h1 .profile-image {width:48px;height:48px;}
+.automation-person-heading .profile-image {width:44px;height:44px;border-radius:50%;}
+.automation-pagination {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:18px 0;}
+.automation-pagination > span {font-size:12px;color:var(--crm-muted);}
+.automation-pagination .btn {min-height:44px;}
+.automation-pagination .btn:disabled {opacity:.45;cursor:default;}
+@media(max-width:760px) {.automation-pagination > span {order:-1;flex-basis:100%;text-align:center;}}
+.crm-shell .automation-pipeline .automation-case-detail {display:block;}
+.automation-pipeline .automation-case-view {height:auto;overflow:visible;}
+.automation-pipeline .automation-case-content {min-height:0;}
+.automation-pipeline .automation-thread,.automation-pipeline .automation-context {overflow:visible;}
+.automation-pipeline .automation-back {display:none;}
+@media(max-width:760px) {
+ .automation-person-heading {flex-wrap:wrap;}
+ .automation-person-heading .status {flex-basis:100%;margin-left:46px;}
+ .automation-person-heading .automation-person-open {width:100%;}
+ .automation-person-facts > div:last-child {flex-basis:100%;}
+ .crm-shell .automation-pipeline .automation-queue:not([hidden]) {display:flex;}
+}

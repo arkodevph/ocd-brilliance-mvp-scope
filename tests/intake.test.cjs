@@ -124,7 +124,7 @@ test('authenticated API contract completes the intake without opening a network 
   process.env.OCD_INTAKE_RULES = JSON.stringify(policyInput);
   t.after(() => { if (previousPolicy === undefined) delete process.env.OCD_INTAKE_RULES; else process.env.OCD_INTAKE_RULES = previousPolicy; });
   t.after(() => { for (const [key, value] of Object.entries(previous)) if (value === undefined) delete process.env[key]; else process.env[key] = value; });
-  const handler = require('../api/workflow.js');
+  const { handleWorkflow: handler } = require('../.backend/operations/workflow.handler.js');
   let cookie = '';
   async function call(action, method = 'GET', body) {
     const result = {};
@@ -232,7 +232,7 @@ test('roles are enforced on API actions using server identities', async t => {
   const previous = Object.fromEntries(Object.keys(env).map(key => [key, process.env[key]]));
   Object.assign(process.env, env);
   t.after(() => { for (const [key, value] of Object.entries(previous)) if (value === undefined) delete process.env[key]; else process.env[key] = value; });
-  const handler = require('../api/workflow.js');
+  const { handleWorkflow: handler } = require('../.backend/operations/workflow.handler.js');
   const { sessionCookie } = require('../lib/staff-auth.cjs');
   async function call(action, method, email, body) {
     const result = {};

@@ -1,10 +1,17 @@
 {
-  "buildCommand": "node scripts/build-vercel.cjs",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/workspace", "destination": "/workspace/index.html" },
+    { "source": "/services/:path*", "destination": "/index.html" },
+    { "source": "/resources/:path*", "destination": "/index.html" },
+    { "source": "/:page(funding|about|areas-we-serve|careers|intake|portal|login|contact|faq|participant-rights|complaints|privacy|terms)", "destination": "/index.html" }
+  ],
   "functions": {
-    "api/workflow.js": { "maxDuration": 30 },
-    "api/push.js": { "maxDuration": 60 },
-    "api/shiftcare.js": { "maxDuration": 30 },
-    "api/integration-proof.js": { "maxDuration": 30 }
+    "api/journeys.js": { "maxDuration": 30, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" },
+    "api/workflow.js": { "maxDuration": 30, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" },
+    "api/push.js": { "maxDuration": 60, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" },
+    "api/shiftcare.js": { "maxDuration": 30, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" },
+    "api/integration-proof.js": { "maxDuration": 30, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" }
   }
 }

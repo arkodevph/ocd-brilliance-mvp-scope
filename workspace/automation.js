@@ -2,7 +2,8 @@
 (() => {
   "use strict";
   const E = window.OCD_AUTOMATION_ENGINE;
-  const ui = { tab: "inbox", filter: "open", query: "" };
+  const ui = { tab: "cases", filter: "open", query: "", page: 1 };
+  const pageSize = 5;
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const option = (value, label, selected) => `<option value="${esc(value)}" ${value === selected ? "selected" : ""}>${esc(label)}</option>`;
   const titles = { needs_review: "Needs review", approved: "Approved for native step", manual_action_required: "Human action needed", verifying: "Awaiting read-back", completed: "Completed (demo)", reconciliation_required: "Outcome unknown", retry_scheduled: "Retry available", rejected: "Rejected" };
@@ -16,6 +17,51 @@
     const a = E.ensure(c.state), open = a.jobs.filter(j => j.status !== "completed").length;
     return `<a class="automation-home-link" href="#/office/automation"><span><span class="eyebrow">From incoming request to verified outcome</span><strong>Follow the automation workflow</strong><small>${open} assigned tasks · review, native handoff, read-back and exceptions</small></span><span class="btn primary">Open automation →</span></a>`;
   }
+  function casePerson(state, job) {
+    const draft = job.draft || {};
+    const booking = state.bookings.find(row => row.id === job.targetId);
+    const document = state.workerDocs.find(row => row.id === job.targetId);
+    const agreement = state.agreements.find(row => row.id === job.targetId);
+    const person = document ? state.workers.find(row => row.id === document.workerId)
+      : booking || agreement ? state.participants.find(row => row.id === (booking || agreement).participantId)
+      : state.enquiries.find(row => row.id === job.targetId)
+        || state.participants.find(row => row.id === job.targetId)
+        || state.workers.find(row => row.id === job.targetId);
+    const name = person?.name || draft.person || [draft.firstName, draft.lastName].filter(Boolean).join(' ') || draft.name;
+    return { name: name || 'Person needs confirmation', email: person?.email || draft.email || '', detail: person?.suburb || draft.suburb || '', booking };
+  }
+  function nextAction(job) {
+    if (job.status === 'completed') return 'Outcome recorded';
+    if (job.status === 'reconciliation_required') return 'Confirm the native outcome before retrying';
+    if (job.status === 'verifying') return 'Compare the result with the native record';
+    if (job.status === 'retry_scheduled') return 'Recheck the source before retrying';
+    if (job.stage === 'worker_acceptance') return 'Await the selected worker’s response';
+    if (job.stage === 'accounting') return 'Confirm the separate accounting or payroll setup';
+    if (job.status === 'approved') return 'Perform the approved native step';
+    if (job.status === 'manual_action_required') return 'Record the checked human outcome';
+    return job.draft.nextAction || 'Review the source and confirm the next step';
+  }
+  function caseSearch(state, job) {
+    const person = casePerson(state, job);
+    return `${person.name} ${person.email} ${person.detail} ${job.title} ${job.id} ${job.owner} ${job.source.body}`.toLowerCase();
+  }
+  function profileImage(name, className = 'automation-source-avatar') {
+    if (!name || ['Person needs confirmation', 'Unassigned'].includes(name)) return `<span class="${esc(className)}" aria-hidden="true">?</span>`;
+    const hash = [...name].reduce((value, char) => (value * 31 + char.codePointAt(0)) >>> 0, 0);
+    return `<span class="${esc(className)} profile-image"><img src="/assets/profiles/profile-${hash % 6 + 1}.svg" alt="" width="80" height="80" loading="lazy"></span>`;
+  }
+  function caseCard(c, job, selected, matches) {
+    const person = casePerson(c.state, job);
+    const workflow = E.catalog.find(row => row.id === job.workflow)?.title || job.workflow;
+    return `<article class="automation-case ${selected ? 'selected' : ''}" ${matches ? '' : 'hidden'} data-case-search="${esc(caseSearch(c.state, job))}">
+      <header class="automation-person-heading">${profileImage(person.name)}<div><h3>${esc(person.name)}</h3><p>${esc([person.email, person.detail].filter(Boolean).join(' · ') || 'Contact details not recorded')}</p></div>${status(job)}<a class="automation-person-open" href="#/office/automation${selected ? '' : '/' + esc(job.id)}" aria-label="${selected ? 'Hide' : 'Review'} case details for ${esc(person.name)}" aria-expanded="${selected}" ${selected ? `aria-controls="case-${esc(job.id)}"` : ''}>${selected ? 'Hide case details ↑' : 'Review case details →'}</a></header>
+      <p class="automation-person-task">${esc(job.title)}</p>
+      <dl class="automation-person-facts"><div><dt>Responsible person / team</dt><dd>${esc(job.owner || 'Unassigned')}</dd></div><div><dt>Workflow</dt><dd>${esc(workflow)}</dd></div><div><dt>Received</dt><dd>${dateTime(job.createdAt)}</dd></div>${person.booking ? `<div><dt>Visit</dt><dd>${esc(person.booking.date)} · ${esc(person.booking.start)}–${esc(person.booking.end)}</dd></div>` : ''}<div><dt>Next action</dt><dd>${esc(nextAction(job))}</dd></div></dl>
+      <div class="automation-person-progress">${steps(job)}</div>
+      <div class="automation-person-reference">${esc(job.id)}${job.priority === 'Urgent' ? ' · Urgent' : ''}</div>
+      ${selected ? `<section id="case-${esc(job.id)}" class="automation-case-detail" aria-label="Case for ${esc(person.name)}">${caseDetail(c, job)}</section>` : ''}
+    </article>`;
+  }
   function page(c, detailId) {
     const a = E.ensure(c.state);
     const selected = detailId ? a.jobs.find(j => j.id === detailId) : null;
@@ -27,9 +73,14 @@
     else {
       const filter = selected?.status === "completed" && ui.filter === "open" ? "completed" : ui.filter;
       const jobs = a.jobs.filter(j => filter === "all" || (filter === "completed" ? j.status === "completed" : filter === "exceptions" ? ["reconciliation_required", "retry_scheduled", "manual_action_required"].includes(j.status) : j.status !== "completed"));
-      const current = selected || [...jobs].reverse()[0];
-      const matches = job => `${job.title} ${job.id} ${job.owner} ${job.source.body}`.toLowerCase().includes(ui.query.toLowerCase());
-      return `<div class="automation-desk"><header class="automation-desk-header"><div><h1>Automation</h1><span class="status blue">Prototype workspace</span></div><a class="btn small" href="#/office/finance">Bookkeeping review →</a></header><nav class="automation-tabs" aria-label="Automation workspace">${[["cases", "Cases"], ["inbox", "Email review"], ["readiness", "Connection status"]].map(([key, label]) => `<button type="button" class="${tab === key ? "active" : ""}" data-auto-action="tab" data-id="${key}" aria-pressed="${tab === key}">${label}</button>`).join("")}<span>${counts.review} to review · ${counts.verification} to verify</span></nav><div class="automation-desk-tools"><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button>${button("check", "Check enquiry ownership", "areas")}${button("check", "Run three-day check", "reminders")}${button("check", "Check documents", "documents")}<span>Prototype tasks · <a href="#/office/shiftcare">Live connection</a></span></div><div class="automation-case-layout"><section class="automation-queue" aria-label="Automation cases"><header class="automation-queue-header"><div><h2>Cases</h2><span data-case-count>${jobs.filter(matches).length}</span></div><label class="automation-case-search"><span class="sr-only">Search cases</span><input type="search" id="automation-case-search" placeholder="Search cases" value="${esc(ui.query)}"></label><div class="automation-filters" role="group" aria-label="Case filter">${[["open", "Open"], ["exceptions", "Needs help"], ["completed", "Completed"], ["all", "All"]].map(([key, label]) => `<button class="${filter === key ? "active" : ""}" data-auto-action="filter" data-id="${key}" aria-pressed="${filter === key}">${label}</button>`).join("")}</div></header><div class="automation-case-list">${[...jobs].reverse().map(j => `<a class="automation-case ${current?.id === j.id ? "selected" : ""}" href="#/office/automation/${esc(j.id)}" ${current?.id === j.id ? 'aria-current="true"' : ""} ${matches(j) ? "" : "hidden"} data-case-search="${esc(`${j.title} ${j.id} ${j.owner} ${j.source.body}`.toLowerCase())}"><span class="automation-case-meta"><span>${esc(j.id)}</span>${j.priority === "Urgent" ? '<span class="status red">Urgent</span>' : ""}<time>${dateTime(j.createdAt)}</time></span><strong>${esc(j.title)}</strong><p class="automation-case-preview">${esc(j.source.body)}</p><div class="automation-case-foot"><small>${esc(j.owner)}</small>${status(j)}</div></a>`).join("")}<div class="empty automation-no-cases" ${jobs.some(matches) ? "hidden" : ""}><strong>No matching cases</strong><p>${jobs.length ? "Try another search." : "Add a message to start a follow-up."}</p></div></div><footer class="automation-queue-footer">Select a case to review its source and next action.</footer></section><section class="automation-case-detail" aria-label="Selected case">${current ? caseDetail(c, current) : `<div class="automation-start"><h2>Your case workspace</h2><p>Add a message, review the AI suggestion and assign a follow-up task.</p><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button></div>`}</section></div></div>`;
+      const matches = job => caseSearch(c.state, job).includes(ui.query.toLowerCase());
+      const ordered = [...jobs].reverse();
+      const matching = ordered.filter(matches);
+      const selectedIndex = matching.findIndex(job => job.id === selected?.id);
+      const pages = Math.max(1, Math.ceil(matching.length / pageSize));
+      ui.page = selectedIndex >= 0 ? Math.floor(selectedIndex / pageSize) + 1 : Math.min(ui.page, pages);
+      const visible = matching.slice((ui.page - 1) * pageSize, ui.page * pageSize);
+      return `<div class="automation-desk automation-pipeline"><header class="automation-desk-header"><div><h1>Automation</h1><span class="status blue">Prototype workspace</span></div><a class="btn small" href="#/office/finance">Bookkeeping review →</a></header><nav class="automation-tabs" aria-label="Automation workspace">${[["cases", "Cases"], ["inbox", "Email review"], ["readiness", "Connection status"]].map(([key, label]) => `<button type="button" class="${tab === key ? "active" : ""}" data-auto-action="tab" data-id="${key}" aria-pressed="${tab === key}">${label}</button>`).join("")}<span>${counts.review} to review · ${counts.verification} to verify</span></nav><div class="automation-desk-tools"><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button>${button("check", "Check enquiry ownership", "areas")}${button("check", "Run three-day check", "reminders")}${button("check", "Check documents", "documents")}<span>Prototype tasks · <a href="#/office/shiftcare">Live connection</a></span></div><div class="automation-case-layout"><section class="automation-queue" aria-label="Automation cases"><header class="automation-queue-header"><div><h2>People &amp; follow-ups</h2><span data-case-count>${jobs.filter(matches).length}</span></div><label class="automation-case-search"><span class="sr-only">Search cases</span><input type="search" id="automation-case-search" placeholder="Search person, owner or case" value="${esc(ui.query)}"></label><div class="automation-filters" role="group" aria-label="Case filter">${[["open", "Open"], ["exceptions", "Needs help"], ["completed", "Completed"], ["all", "All"]].map(([key, label]) => `<button class="${filter === key ? "active" : ""}" data-auto-action="filter" data-id="${key}" aria-pressed="${filter === key}">${label}</button>`).join("")}</div></header><div class="automation-case-list">${ordered.map(j => caseCard(c, j, selected?.id === j.id, visible.includes(j))).join("")}<div class="empty automation-no-cases" ${jobs.some(matches) ? "hidden" : ""}><strong>No matching cases</strong><p>${jobs.length ? "Try another search." : "Add a message to start a follow-up."}</p></div></div><nav class="automation-pagination" aria-label="Case pages"><button type="button" class="btn small" data-auto-action="case-page" data-id="previous" ${ui.page === 1 ? 'disabled' : ''}>← Previous</button><span data-page-summary role="status">${matching.length ? (ui.page - 1) * pageSize + 1 : 0}–${Math.min(ui.page * pageSize, matching.length)} of ${matching.length} cases · Page ${ui.page} of ${pages}</span><button type="button" class="btn small" data-auto-action="case-page" data-id="next" ${ui.page === pages ? 'disabled' : ''}>Next →</button></nav></section></div></div>`;
     }
     return `${header("Automation", "Turn repeated checks into owned cases, then verify each outcome.")}${boundary()}<div class="automation-metrics">${[[counts.inbox, "Incoming sources"], [counts.review, "Need review"], [counts.native, "Human handoffs"], [counts.verification, "Need verification"]].map(([n, label]) => `<div><strong>${n}</strong><span>${label}</span></div>`).join("")}</div><nav class="automation-tabs" aria-label="Automation workspace">${[["cases", "Cases"], ["inbox", "Email review"], ["readiness", "Connection status"]].map(([key, label]) => `<button type="button" class="${tab === key ? "active" : ""}" data-auto-action="tab" data-id="${key}" aria-pressed="${tab === key}">${label}</button>`).join("")}</nav>${tab === "cases" ? `<div class="automation-checks"><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button>${button("check", "Check enquiry ownership", "areas")}${button("check", "Run three-day check", "reminders")}${button("check", "Check documents", "documents")}<small>Scenario date: 5 October 2026 · demo Perth time</small></div>` : ""}${body}`;
   }
@@ -56,7 +107,8 @@
     } else if (job.kind === "cancel") fields = `<label class="full">Participant reason<textarea name="reason" required>${esc(d.reason)}</textarea></label><label>Billing treatment<select name="charge">${option("unconfirmed", "Choose reviewed treatment", d.charge)}${option("native-policy", "Native UI — agreed office treatment", d.charge)}${option("with-charge", "With charge — reviewed reason code", d.charge)}</select></label><label>NDIS reason code (if charged)<select name="code">${option("", "Office to confirm", d.code)}${["NSDH", "NSDF", "NSDT", "NSDO"].map(x => option(x, x, d.code)).join("")}</select></label><label>Scope<select name="scope">${option("occurrence", "This occurrence only", d.scope)}</select></label><label class="checkbox full"><input name="policyReviewed" type="checkbox" required><span>The office reviewed the applicable charge, notice, people and policy. This prototype selects no rate or notice rule automatically.</span></label><p class="form-note full">Whole-shift with-charge MCP affects every participant. Group/locked services require a specific native office/bookkeeper action.</p>`;
     else if (job.kind === "cover") {
       const b = state.bookings.find(b => b.id === job.targetId);
-      fields = `<label class="full">Reviewed replacement<select name="workerId">${option("", "Choose after checking native records", d.workerId || "")}${state.workers.filter(w => w.id !== b?.workerId).map(w => option(w.id, `${w.name} · ${w.approved ? "Approved" : "Screening pending"}`, d.workerId)).join("")}</select></label>${job.stage === "assignment" ? '<p class="form-note full">Worker acceptance was received in the simulated native step. Recheck current assignment before telling the participant.</p><label class="full">Participant communication / proposed outcome<textarea name="communication" required placeholder="Record who was contacted and the arrangement agreed."></textarea></label>' : '<label class="checkbox full"><input name="availabilityReviewed" type="checkbox" required><span>Office checked personal availability, leave, qualifications and conflicts. Calendar gaps alone are insufficient.</span></label>'}`;
+      const matches = window.OCD_BOOKING_RULES.candidates(state.automation.remote.workers.filter(w => w.id !== b?.workerId), b || {}, state.participants.find(p => p.id === b?.participantId), state.automation.remote.bookings);
+      fields = `<label class="full">Reviewed replacement<select name="workerId" data-native-select>${option("", "Choose after checking native records", d.workerId || "")}${matches.map(({worker: w, distanceKm}) => option(w.id, `${w.name} · ${w.role || "Role not recorded"} · ${distanceKm === null ? "Distance unavailable" : distanceKm.toFixed(1) + " km approximate"}`, d.workerId)).join("")}</select></label><p class="form-note full">${matches.length} eligible workers, nearest dispatch area first. Skill, availability and overlap checks apply. Demo distances use dispatch areas, never employee home addresses. Confirm travel time and worker consent.</p>${job.stage === "assignment" ? '<p class="form-note full">Worker acceptance was received in the simulated native step. Recheck current assignment before telling the participant.</p><label class="full">Participant communication / proposed outcome<textarea name="communication" required placeholder="Record who was contacted and the arrangement agreed."></textarea></label>' : '<label class="checkbox full"><input name="availabilityReviewed" type="checkbox" required><span>Office checked personal availability, leave, qualifications and conflicts. Calendar gaps alone are insufficient.</span></label>'}`;
     } else if (job.kind === "document") fields = `${field("expires", "Verified expiry date (if applicable)", d.expires, "date", false)}<label class="checkbox"><input type="checkbox" name="noExpiration" ${d.noExpiration ? "checked" : ""}><span>Evidence truly never expires; clear the date explicitly.</span></label><label class="full">Evidence / review note<textarea name="note" required>${esc(d.note || "")}</textarea></label><p class="form-note full">Staff-document correction is a native UI step. A blank date alone does not establish never-expires evidence.</p>`;
     else if (job.kind === "file") fields = `<div class="review-box full"><strong>${esc(d.fileName)}</strong><p>${esc(d.person)} · ${esc(d.version)}</p></div><label class="checkbox full"><input type="checkbox" name="fileReviewed" required><span>I checked the correct person, approved version, signature and ShiftCare filing location.</span></label><p class="form-note full">Keep the existing signing provider. Native UI/Inbox Signals handles filing; no file-upload API is assumed.</p>`;
     else if (job.kind === "area") fields = `<label>Reviewed area result<select name="area">${[["review", "Uncertain / adjacent — office review"], ["covered", "Approved area; capacity still to confirm"], ["outside", "Outside current area; record advice"]].map(([v, l]) => option(v, l, d.area)).join("")}</select></label>${field("owner", "Case owner", d.owner)}${field("nextAction", "Next action", d.nextAction)}`;
@@ -97,7 +149,15 @@
     try {
       let message = "Sample workflow updated.";
       if (action === "tab") { ui.tab = id; c.go("office/automation"); return true; }
-      if (action === "filter") { ui.filter = id; c.go("office/automation"); return true; }
+      if (action === "filter") { ui.filter = id; ui.page = 1; c.go("office/automation"); return true; }
+      if (action === "case-page") {
+        ui.page += id === 'next' ? 1 : -1;
+        const queue = element.closest('.automation-queue');
+        paginate(queue);
+        queue.scrollIntoView({ block: 'start' });
+        queue.querySelector('#automation-case-search').focus({ preventScroll: true });
+        return true;
+      }
       if (action === "ingest" || action === "samples") return;
       if (action === "check") E.run(c.state, id);
       if (action === "verify") E.verify(c.state, id);
@@ -129,11 +189,22 @@
   document.addEventListener("input", event => {
     if (event.target.id !== "automation-case-search") return;
     ui.query = event.target.value;
-    const queue = event.target.closest(".automation-queue");
-    let count = 0;
-    queue.querySelectorAll(".automation-case").forEach(row => { row.hidden = !row.dataset.caseSearch.includes(ui.query.toLowerCase()); if (!row.hidden) count++; });
-    queue.querySelector("[data-case-count]").textContent = count;
-    queue.querySelector(".automation-no-cases").hidden = count > 0;
+    ui.page = 1;
+    paginate(event.target.closest('.automation-queue'));
   });
-  window.OCD_AUTOMATION = { page, finance, banner, click, submit };
+  function paginate(queue) {
+    const rows = [...queue.querySelectorAll('.automation-case')];
+    const matching = rows.filter(row => row.dataset.caseSearch.includes(ui.query.toLowerCase()));
+    const pages = Math.max(1, Math.ceil(matching.length / pageSize));
+    ui.page = Math.max(1, Math.min(ui.page, pages));
+    const start = (ui.page - 1) * pageSize;
+    const visible = matching.slice(start, start + pageSize);
+    rows.forEach(row => { row.hidden = !visible.includes(row); });
+    queue.querySelector('[data-case-count]').textContent = matching.length;
+    queue.querySelector('.automation-no-cases').hidden = matching.length > 0;
+    queue.querySelector('[data-page-summary]').textContent = `${matching.length ? start + 1 : 0}–${Math.min(start + pageSize, matching.length)} of ${matching.length} cases · Page ${ui.page} of ${pages}`;
+    queue.querySelector('[data-auto-action="case-page"][data-id="previous"]').disabled = ui.page === 1;
+    queue.querySelector('[data-auto-action="case-page"][data-id="next"]').disabled = ui.page === pages;
+  }
+  window.OCD_AUTOMATION = { page, finance, banner, click, submit, profileImage };
 })();

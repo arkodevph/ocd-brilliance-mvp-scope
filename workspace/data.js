@@ -41,7 +41,7 @@ window.OCD_DEMO_SEED = {
   participants: [
     {
       id: "PAR-101", name: "Olivia Hart", email: "olivia.hart@example.com", phone: "0400 000 201",
-      suburb: "Woodvale", address: "Woodvale, WA", service: "Domestic assistance", funding: "Plan managed",
+      postcode: "6026", suburb: "Woodvale", address: "Woodvale, WA", service: "Domestic assistance", funding: "Plan managed",
       location: { coordinates: [115.7963, -31.7912], label: "Woodvale · approximate demo location" },
       preferredWorker: "WRK-01", schedulePreference: "Monday mornings", representative: "None recorded",
       emergencyContact: "Recorded in restricted profile", status: "Active",
@@ -50,7 +50,7 @@ window.OCD_DEMO_SEED = {
     },
     {
       id: "PAR-102", name: "Daniel Wu", email: "daniel.wu@example.com", phone: "0400 000 202",
-      suburb: "Kingsley", address: "Kingsley, WA", service: "Domestic assistance", funding: "Self managed",
+      postcode: "6026", suburb: "Kingsley", address: "Kingsley, WA", service: "Domestic assistance", funding: "Self managed",
       location: { coordinates: [115.7894, -31.8093], label: "Kingsley · approximate demo location" },
       preferredWorker: "WRK-02", schedulePreference: "Monday afternoons", representative: "None recorded",
       emergencyContact: "Recorded in restricted profile", status: "Active",
@@ -58,7 +58,7 @@ window.OCD_DEMO_SEED = {
     },
     {
       id: "PAR-103", name: "Farah Ali", email: "farah.ali@example.com", phone: "0400 000 203",
-      suburb: "Ellenbrook", address: "Ellenbrook, WA", service: "Support work", funding: "Plan managed",
+      postcode: "6069", suburb: "Ellenbrook", address: "Ellenbrook, WA", service: "Support work", funding: "Plan managed",
       location: { coordinates: [115.9692, -31.7826], label: "Ellenbrook · approximate demo location" },
       preferredWorker: "", schedulePreference: "To be confirmed", representative: "Samira Ali — authority to confirm",
       emergencyContact: "Recorded in restricted profile", status: "Onboarding",
@@ -71,10 +71,10 @@ window.OCD_DEMO_SEED = {
     { id: "AGR-303", participantId: "PAR-103", service: "Support work", schedule: "To be confirmed", template: "Demo template v1", status: "Awaiting signature", generated: "2026-10-02", sent: "2026-10-02", signed: "", pricing: "To be confirmed in approved template", cancellation: "To be confirmed in approved template" }
   ],
   workers: [
-    { id: "WRK-01", name: "Elena Cruz", initials: "EC", services: ["Domestic assistance", "Support work"], approved: true, review: "2027-03-01", days: [1, 2, 3, 4] },
-    { id: "WRK-02", name: "Sam Walker", initials: "SW", services: ["Domestic assistance"], approved: true, review: "2027-01-20", days: [1, 2, 3, 4, 5] },
-    { id: "WRK-03", name: "Priya Shah", initials: "PS", services: ["Domestic assistance", "Support work"], approved: true, review: "2027-04-14", days: [1, 2, 4, 5] },
-    { id: "WRK-04", name: "Alex Kim", initials: "AK", services: ["Domestic assistance"], approved: false, review: "Pending", days: [1, 2, 3, 4, 5] }
+    { id: "WRK-01", name: "Elena Cruz", initials: "EC", role: "Caregiver / support worker", skills: ["household-support", "personal-care"], dispatchLocation: { coordinates: [115.78, -31.80], label: "Approximate demo dispatch area" }, services: ["Domestic assistance", "Support work"], approved: true, review: "2027-03-01", days: [1, 2, 3, 4] },
+    { id: "WRK-02", name: "Sam Walker", initials: "SW", role: "Cleaner", skills: ["household-support", "cleaning"], dispatchLocation: { coordinates: [115.79, -31.81], label: "Approximate demo dispatch area" }, services: ["Domestic assistance", "Cleaning"], approved: true, review: "2027-01-20", days: [1, 2, 3, 4, 5] },
+    { id: "WRK-03", name: "Priya Shah", initials: "PS", role: "Registered nurse (demo)", skills: ["registered-nursing", "personal-care", "household-support"], dispatchLocation: { coordinates: [115.77, -31.75], label: "Approximate demo dispatch area" }, services: ["Nursing", "Domestic assistance", "Support work"], approved: true, review: "2027-04-14", days: [1, 2, 4, 5] },
+    { id: "WRK-04", name: "Alex Kim", initials: "AK", role: "Cleaner", skills: ["household-support", "cleaning"], dispatchLocation: { coordinates: [115.80, -31.79], label: "Approximate demo dispatch area" }, services: ["Domestic assistance", "Cleaning"], approved: false, review: "Pending", days: [1, 2, 3, 4, 5] }
   ],
   bookings: [
     { id: "BKG-498", participantId: "PAR-102", workerId: "WRK-02", service: "Domestic assistance", date: "2026-10-01", start: "13:00", end: "15:00", recurrence: "One-off", status: "Completed", participantAgreed: true },

@@ -14,6 +14,24 @@ const jobOf = (s, kind) => s.automation.jobs.find(j => j.kind === kind);
 const reviewed = (job, extra = {}) => ({ ...job.draft, sourceReviewed: true, areaReviewed: true, ...extra });
 const cancelReview = j => reviewed(j, { charge: 'with-charge', code: 'NSDH', policyReviewed: true });
 
+test('a client booking request needs manual follow-up and never creates a confirmed booking', () => {
+  const s = seed(), before = structuredClone(s.bookings);
+  const r = { id: 'REQ-NEW', participantId: 'PAR-101', bookingId: '', type: 'Booking request', message: 'Cleaning on a preferred date', fields: { service: 'Cleaning', date: '2026-11-02', notes: 'Morning preferred' }, status: 'Pending' };
+  s.requests.push(r);
+  const job = E.request(s, r);
+  assert.equal(job.kind, 'booking-request');
+  assert.deepEqual(job.draft, r.fields);
+  assert.equal(E.request(s, r).id, job.id);
+  const restored = JSON.parse(JSON.stringify(s));
+  assert.equal(E.request(restored, r).id, job.id);
+  E.approve(s, job.id, reviewed(job));
+  assert.equal(job.status, 'manual_action_required');
+  assert.throws(() => E.native(s, job.id), /Approve/);
+  E.manual(s, job.id, { checked: true, reference: 'DEMO-contact', note: 'Discussed availability; no booking agreed' });
+  assert.equal(r.status, 'Handled');
+  assert.deepEqual(s.bookings, before);
+});
+
 test('routing assigns owners and deduplicates repeated source IDs across reload', () => {
   const s = seed(), count = s.automation.jobs.length;
   assert.equal(jobOf(s, 'finance-query').owner, 'Bookkeeper');

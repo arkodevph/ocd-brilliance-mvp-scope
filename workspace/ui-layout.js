@@ -4,11 +4,19 @@
   const views = new Map();
   const panels = { navigation: true, cases: true, details: false };
   const navigationMedia = matchMedia('(max-width: 760px)');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const activeReveals = new Set();
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches) activeReveals.forEach(animation => animation.cancel());
+  });
   try { Object.assign(panels, JSON.parse(sessionStorage.getItem('ocd-workspace-panels') || '{}')); } catch {}
   const panelIcon = side => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M${side === 'right' ? 15 : 9} 4v16"/></svg>`;
   function reveal(element) {
-    if (!element || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    element.animate([{ opacity: .8 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' });
+    if (!element || reducedMotion.matches) return;
+    element.getAnimations().forEach(animation => animation.cancel());
+    const animation = element.animate([{ opacity: .35, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 280, easing: 'cubic-bezier(.22,1,.36,1)' });
+    activeReveals.add(animation);
+    animation.finished.then(() => activeReveals.delete(animation), () => activeReveals.delete(animation));
   }
 
   function panelControls(root) {
@@ -38,8 +46,9 @@
       button.addEventListener('click', () => { panels[key] = !panels[key]; update(); reveal(desk.querySelector('.automation-case-detail')); if (panels[key]) reveal(region); });
       controls.append(button); buttons.push({ key, region, label, button });
     }
-    add('cases', queue, 'Cases'); add('details', context, 'Details');
-    if (queue) desk.querySelector('.automation-case-layout').before(controls);
+    if (!desk?.classList.contains('automation-pipeline')) add('cases', queue, 'Cases');
+    add('details', context, 'Details');
+    if (buttons.length) desk.querySelector('.automation-case-layout').before(controls);
     function update() {
       shell.classList.toggle('navigation-folded', !panels.navigation);
       sidebar.hidden = !panels.navigation && navigationMedia.matches;
@@ -69,6 +78,7 @@
       group.querySelectorAll(':scope > button').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('active'))));
     });
     root.querySelectorAll('details').forEach(details => {
+      if (details.classList.contains('client-onboarding-guide')) return;
       const section = document.createElement('section');
       section.className = `${details.className} expanded-details`;
       if (details.id) section.id = details.id;
@@ -80,7 +90,7 @@
       section.append(...details.childNodes); details.replaceWith(section);
     });
     root.querySelectorAll('select').forEach(select => {
-      if (select.closest('[data-owner-picker]')) return;
+      if (select.closest('[data-owner-picker]') || select.hasAttribute('data-native-select')) return;
       if (select.dataset.visibleChoices) { select.refreshChoices?.(); return; }
       select.dataset.visibleChoices = 'true'; select.hidden = true; select.tabIndex = -1;
       const label = select.getAttribute('aria-label') || [...(select.labels?.[0]?.childNodes || [])].filter(n => n !== select).map(n => n.textContent).join(' ').trim() || select.name || 'Choose an option';
@@ -107,8 +117,9 @@
       const choices = [...select.options].map(option => {
         const button = document.createElement('button'); button.type = 'button'; button.textContent = option.textContent; button.dataset.choice = option.value;
         if (profiles) {
-          const avatar = document.createElement('span'); avatar.className = 'profile-picker-avatar'; avatar.setAttribute('aria-hidden', 'true');
-          avatar.textContent = option.textContent.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('');
+          const avatarTemplate = document.createElement('template');
+          avatarTemplate.innerHTML = window.OCD_AUTOMATION.profileImage(option.value ? option.textContent.trim() : '', 'profile-picker-avatar');
+          const avatar = avatarTemplate.content.firstElementChild;
           const text = document.createElement('span'); text.className = 'profile-picker-text';
           const name = document.createElement('strong'); name.textContent = option.textContent;
           const detail = document.createElement('small'); detail.textContent = option.dataset.profileDetail || option.value;
@@ -232,6 +243,7 @@
     function move(delta) {
       current.page += delta;
       update();
+      reveal(table ? container.querySelector('tbody') : container);
       if (previous.disabled || next.disabled) (delta > 0 ? previous : next).focus({ preventScroll: true });
     }
     previous.addEventListener('click', () => move(-1));
