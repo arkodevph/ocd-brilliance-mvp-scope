@@ -10,7 +10,7 @@
 
   async function mount(root) {
     unmount();
-    const context = { root, controller: new AbortController(), config: null, result: null, resource: 'shifts', page: 1, busy: true, error: '', checkedAt: '', from: '', to: '' };
+    const context = { root, controller: new AbortController(), config: null, result: null, readiness: null, resource: 'shifts', page: 1, busy: true, error: '', checkedAt: '', from: '', to: '' };
     active = context;
     const alive = () => active === context && root.isConnected;
     async function request(params) {
@@ -54,6 +54,9 @@
       root.innerHTML = `<div class="section-heading"><div><h2>ShiftCare connection</h2><p>Current account and connection status</p></div><span class="status ${context.checkedAt ? '' : 'amber'}">${context.checkedAt ? 'Verified' : config.configured ? 'Ready to check' : 'Awaiting setup'}</span></div>
         <p class="muted">Account ${esc(config.accountId || 'not set')} · ${esc(config.region.toUpperCase())} · ${esc(config.timeZone || 'time zone not set')}</p>
         ${config.configured ? `<button class="btn" data-check type="button" ${context.busy ? 'disabled' : ''}>${context.busy ? 'Reading…' : 'Check connection'}</button>${context.checkedAt ? `<p class="form-note">Last successful read: ${esc(dateTime(context.checkedAt))}</p>` : ''}` : `<div class="notice warning">${esc(config.error || 'The office administrator needs to finish the account connection before live records can be read.')}</div>`}
+        ${config.configured ? `<div class="spacer"></div><button class="btn" data-readiness type="button" ${context.busy ? 'disabled' : ''}>Check clients, staff &amp; bookings</button><p class="form-note">Checks the selected booking dates, or today when no dates are entered.</p>` : ''}
+        ${context.readiness ? `<div class="review-box" role="status"><strong>${context.readiness.readsReady ? 'All three reads passed' : 'Connection needs attention'}</strong><ul>${context.readiness.reads.map(check => `<li>${esc({ clients: 'Clients', staff: 'Staff', shifts: 'Bookings' }[check.resource])}: ${check.connected ? 'Read verified' : esc(check.error)}</li>`).join('')}</ul><p class="form-note">Native writes and live worker location are not connected.</p></div>` : ''}
+        <details><summary>ShiftCare setup &amp; workflow references</summary><p>Ask your ShiftCare administrator to enable API access and configure the account connection.</p><ul><li><a href="https://help.shiftcare.com/en/articles/13906196-managing-api-keys" target="_blank" rel="noopener noreferrer">API key setup</a></li><li><a href="https://help.shiftcare.com/en/articles/3703862-scheduler-interface-and-navigation" target="_blank" rel="noopener noreferrer">Roster screenshots</a></li><li><a href="https://help.shiftcare.com/en/articles/3852009-create-a-shift-in-the-scheduler-roster" target="_blank" rel="noopener noreferrer">Booking workflow screenshots</a></li></ul></details>
         ${context.error ? `<p class="field-error" role="alert">${esc(context.error)}</p>` : ''}
         ${config.configured ? `<div class="spacer"></div><form data-shiftcare-read><div class="form-grid"><label>Records<select name="resource" ${context.busy ? 'disabled' : ''}>${[['shifts', 'Bookings'], ['clients', 'Clients'], ['staff', 'Staff']].map(([value, title]) => `<option value="${value}" ${context.resource === value ? 'selected' : ''}>${title}</option>`).join('')}</select></label><label class="shiftcare-date" ${context.resource !== 'shifts' ? 'hidden' : ''}>From<input name="from" type="date" value="${esc(context.from)}" ${context.resource === 'shifts' ? 'required' : 'disabled'}></label><label class="shiftcare-date" ${context.resource !== 'shifts' ? 'hidden' : ''}>To<input name="to" type="date" value="${esc(context.to)}" ${context.resource === 'shifts' ? 'required' : 'disabled'}></label></div><p class="form-note">Bookings can be read for up to 31 days at a time.</p><div class="form-actions"><button class="btn primary" type="submit" ${context.busy ? 'disabled' : ''}>Load records</button></div></form><div class="spacer"></div>${results()}` : ''}`;
     }
@@ -62,9 +65,12 @@
       context.error = '';
       render();
       try {
-        const result = await request(check ? { action: 'check' } : { action: context.resource, page, per_page: 20, ...(context.resource === 'shifts' ? { from: context.from, to: context.to } : {}) });
+        const result = await request(check === 'readiness'
+          ? { action: 'readiness', from: context.from, to: context.to }
+          : check ? { action: 'check' } : { action: context.resource, page, per_page: 20, ...(context.resource === 'shifts' ? { from: context.from, to: context.to } : {}) });
         if (!alive()) return;
-        context.checkedAt = result.checkedAt || result.fetchedAt;
+        if (check === 'readiness') context.readiness = result;
+        context.checkedAt = result.readsReady === false ? '' : result.checkedAt || result.fetchedAt;
         if (!check) { context.result = result; context.page = result.pagination.page; }
       } catch (error) {
         if (!alive()) return;
@@ -97,6 +103,12 @@
       if (context.busy || !alive()) return;
       const button = event.target.closest('button');
       if (button?.hasAttribute('data-check')) read(true);
+      else if (button?.hasAttribute('data-readiness')) {
+        context.from = root.querySelector('[name=from]').value || context.from;
+        context.to = root.querySelector('[name=to]').value || context.to;
+        context.readiness = null;
+        read('readiness');
+      }
       else if (button?.dataset.page && context.result) read(false, context.page + (button.dataset.page === 'next' ? 1 : -1));
     }, { signal: context.controller.signal });
     render();

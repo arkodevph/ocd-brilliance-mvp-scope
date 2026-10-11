@@ -17,7 +17,7 @@ test('office authentication protects ShiftCare credentials and reads', async t =
   let requests = [];
   let reply = () => json({ _metadata: { total_count: '2' }, clients: [{ id: '101', first_name: 'Alex', family_name: 'Example', dob: '1950-01-01', ndis_number: 'private-fixture', notes: 'private care details' }] });
   const env = { ...credentials };
-  const handler = createHandler({ env, fetchImpl: async (url, options) => { requests.push({ url, options }); return reply(); } });
+  const handler = createHandler({ env, fetchImpl: async (url, options) => { requests.push({ url, options }); return reply(url); } });
   const workflow = require('../api/workflow.js');
   const server = http.createServer((req, res) => new URL(req.url, 'http://localhost').pathname === '/api/workflow' ? workflow(req, res) : handler(req, res));
   server.listen(0, '127.0.0.1');
@@ -73,6 +73,32 @@ test('office authentication protects ShiftCare credentials and reads', async t =
     }
     assert.equal((await call('action=create_client', cookie)).status, 404);
     assert.equal(requests.length, 0);
+  });
+  await t.test('readiness verifies each resource separately and never exposes records or enables writes', async () => {
+    const before = requests.length;
+    assert.equal((await call('action=readiness', cookie)).status, 422);
+    assert.equal(requests.length, before);
+    reply = () => json({ clients: [], staff: [], shifts: [] });
+    const ready = await call('action=readiness&from=2026-10-04&to=2026-10-04', cookie);
+    assert.equal(ready.status, 200);
+    assert.equal(ready.body.readsReady, true);
+    assert.deepEqual(ready.body.reads.map(item => [item.resource, item.connected]), [['clients', true], ['staff', true], ['shifts', true]]);
+    assert.equal(ready.body.nativeWritesEnabled, false);
+    assert.equal(ready.body.liveLocationEnabled, false);
+    assert.equal(requests.length - before, 3);
+    assert.ok(!JSON.stringify(ready.body).includes(credentials.SHIFTCARE_API_KEY));
+    assert.ok(!JSON.stringify(ready.body).includes('records'));
+    assert.equal(requests.find(item => item.url.pathname.endsWith('/staff')).url.searchParams.has('time_zone'), false);
+    reply = url => url.pathname.endsWith('/staff') ? json({ error: credentials.SHIFTCARE_API_KEY }, { status: 403 }) : json({ clients: [], shifts: [] });
+    const partial = await call('action=readiness&from=2026-10-04&to=2026-10-04', cookie);
+    assert.equal(partial.body.readsReady, false);
+    assert.deepEqual(partial.body.reads.map(item => [item.resource, item.connected]), [['clients', true], ['staff', false], ['shifts', true]]);
+    reply = () => json({ error: credentials.SHIFTCARE_API_KEY }, { status: 403 });
+    const denied = await call('action=readiness&from=2026-10-04&to=2026-10-04', cookie);
+    assert.equal(denied.body.readsReady, false);
+    assert.ok(denied.body.reads.every(item => item.code === 'SHIFTCARE_FORBIDDEN'));
+    assert.ok(!JSON.stringify(denied.body).includes(credentials.SHIFTCARE_API_KEY));
+    reply = () => json({ _metadata: { total_count: '2' }, clients: [{ id: '101', first_name: 'Alex', family_name: 'Example', dob: '1950-01-01', ndis_number: 'private-fixture', notes: 'private care details' }] });
   });
   await t.test('uses the documented regional Basic authentication and returns only necessary person fields', async () => {
     const result = await call('action=clients&per_page=1&page=2&url=https://another.example', cookie);

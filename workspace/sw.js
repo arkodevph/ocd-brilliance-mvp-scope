@@ -1,16 +1,29 @@
-const CACHE = "ocd-brilliance-operations-v5";
+const CACHE = "ocd-brilliance-operations-v61";
 const SHELL = [
   "/",
+  "/workspace/",
+  "/workspace/generated/landing.js",
+  "/workspace/generated/landing.css",
+  "/assets/landing/logo.png",
   "/workspace/styles.css",
+  "/workspace/crm.css",
   "/workspace/maps.css",
   "/workspace/pwa.css",
   "/workspace/data.js",
+  "/workspace/invoices.js",
   "/workspace/maps.js",
+  "/workspace/journey-api.js",
   "/workspace/pwa.js",
-  "/workspace/app.js",
+  "/workspace/transcript.js",
+  "/workspace/generated/frontend.js",
+  "/workspace/employee-portal.js",
+  "/workspace/employee-portal.css",
+  "/workspace/ui-layout.js",
+  "/workspace/intake-documents.js",
   "/workspace/shiftcare.js",
   "/workspace/integration-proof.js",
   "/workspace/integration-proof.css",
+  "/workspace/booking-rules.js",
   "/workspace/automation-engine.js",
   "/workspace/automation.js",
   "/workspace/automation.css",
@@ -20,7 +33,8 @@ const SHELL = [
   "/workspace/manifest.webmanifest",
   "/assets/ocd-brilliance-logo.png",
   "/assets/app-icon-192.png",
-  "/assets/app-icon-512.png"
+  "/assets/app-icon-512.png",
+  ...Array.from({ length: 6 }, (_, i) => `/assets/profiles/profile-${i + 1}.svg`)
 ];
 
 self.addEventListener("install", event => {
@@ -39,7 +53,7 @@ self.addEventListener("fetch", event => {
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname) || url.pathname.includes("/api/")) return;
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(() => caches.match("/")));
+    event.respondWith(fetch(request).catch(() => caches.match(url.pathname.startsWith('/workspace') ? '/workspace/' : '/')));
     return;
   }
   event.respondWith(fetch(request).then(async response => {
