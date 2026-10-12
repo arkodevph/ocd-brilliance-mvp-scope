@@ -212,6 +212,23 @@
     padding: 12px;
   }
 }
+
+/* Profile records can exceed one viewport. Let the document own scrolling instead of
+   clipping the overview and lower review sections inside the shell. */
+@media (min-width: 1000px) {
+  body:has(.crm-shell .profile-layout) { overflow-x: hidden; overflow-y: auto; }
+  .crm-shell .page:has(.profile-layout) {
+    height: auto !important;
+    min-height: calc(100dvh - 68px);
+    overflow: visible !important;
+  }
+  .crm-shell .page:has(.profile-layout) .profile-layout,
+  .crm-shell .page:has(.profile-layout) .employee-main {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+}
 @media (min-width: 1000px) and (max-height: 800px) {
   .crm-shell .page:has(.profile-layout) {
     padding-block: 12px;
