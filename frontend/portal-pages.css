@@ -634,6 +634,15 @@ p.portal-caption { margin: 12px 0 24px; }
   .portal-client-home .client-help-panel p { font-size: 11px; line-height: 1.35; }
 }
 
+/* Office records can be taller than the viewport. Keep the shell readable instead of
+   clipping the detail page at the fold; the overview keeps its own compact layout above. */
+@media (min-width: 1000px) {
+  body:has(.crm-shell) { overflow-x: hidden; overflow-y: auto; }
+  .crm-shell { height: auto; min-height: 100dvh; overflow: visible; }
+  .crm-shell > .workspace { min-height: 100dvh; }
+  .crm-shell .page { min-height: calc(100dvh - 68px); }
+}
+
 /* A more current employee shell while preserving the existing navigation and content order. */
 @media (min-width: 1000px) {
   .employee-shell { background: radial-gradient(circle at 76% 6%, rgba(177, 219, 193, .38), transparent 34%), #eef3ef; }
