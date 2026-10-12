@@ -641,6 +641,9 @@ p.portal-caption { margin: 12px 0 24px; }
   .crm-shell { height: auto; min-height: 100dvh; overflow: visible; }
   .crm-shell > .workspace { min-height: 100dvh; }
   .crm-shell .page { min-height: calc(100dvh - 68px); }
+  .crm-shell:has(.profile-layout) .page,
+  .crm-shell:has(.profile-layout) .employee-main,
+  .crm-shell:has(.profile-layout) .employee-layout { height: auto; min-height: 0; overflow: visible; }
 }
 
 /* A more current employee shell while preserving the existing navigation and content order. */
