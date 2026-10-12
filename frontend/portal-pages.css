@@ -540,7 +540,7 @@ p.portal-caption { margin: 12px 0 24px; }
   .portal-client-home { max-width: 1320px; margin: 0 auto; }
 }
 .portal-client-home .client-booking-layout { position: relative; }
-.portal-client-home .client-booking-layout::before { content: ''; position: absolute; z-index: 0; top: -48px; right: -80px; width: 360px; height: 280px; pointer-events: none; background: radial-gradient(circle at 30% 25%, rgba(91,197,151,.28), transparent 58%), radial-gradient(circle at 78% 70%, rgba(246,190,99,.2), transparent 55%); filter: blur(3px); }
+.portal-client-home .client-booking-layout::before { content: ''; position: absolute; z-index: 0; top: -48px; right: 0; width: min(100%, 360px); height: 280px; pointer-events: none; background: radial-gradient(circle at 30% 25%, rgba(91,197,151,.28), transparent 58%), radial-gradient(circle at 78% 70%, rgba(246,190,99,.2), transparent 55%); filter: blur(3px); }
 .portal-client-home .client-booking-layout > * { position: relative; z-index: 1; }
 .portal-client-home .client-help-panel { background: linear-gradient(140deg, #f7fbf8 0%, #e2f1e8 55%, #d6e9df 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 14px 34px rgba(19,91,62,.08); position: relative; }
 .portal-client-home .client-help-panel::after { content: ''; position: absolute; right: 20px; top: 18px; width: 84px; height: 84px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.7), rgba(104,185,143,.22) 48%, transparent 70%); pointer-events: none; }
@@ -646,22 +646,153 @@ p.portal-caption { margin: 12px 0 24px; }
   .employee-shell .employee-card, .employee-shell .portal-panel { border-color: #cfe0d4; border-radius: 14px; box-shadow: 0 10px 28px rgba(22, 76, 49, .07); }
   .employee-shell .portal-panel > header { background: linear-gradient(100deg, #f8fcf9, #eef7f0); }
   .employee-home-page .portal-updates article { padding-block: 12px; }
-  .crm-shell .page:has(.portal-overview-metrics) { height: calc(100dvh - 68px); min-height: 0; overflow: hidden; padding-block: 22px; }
+  .crm-shell .page:has(.portal-overview-metrics) { min-height: 0; padding-block: 16px; }
   .crm-shell .portal-overview-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 12px; }
-  .crm-shell .portal-overview-metrics .analytics-stat { min-height: 124px; padding: 16px; }
+  .crm-shell .portal-overview-metrics .analytics-stat { min-height: 0; padding: 12px 16px; }
   .crm-shell .portal-office-grid { min-height: 0; grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr); gap: 14px; }
   .crm-shell .portal-office-grid > .portal-panel { min-height: 0; }
 }
 
+/* Size the overview panels from the space left after the header and metrics. */
+@media (min-width: 1000px) and (min-height: 700px) {
+  .crm-shell:has(.portal-office-overview) { height: 100dvh; min-height: 0; }
+  .crm-shell:has(.portal-office-overview) > .workspace { display: flex; flex-direction: column; min-height: 0; }
+  .crm-shell:has(.portal-office-overview) .topbar { flex: 0 0 auto; }
+  .crm-shell .page:has(.portal-office-overview) { display: flex; flex-direction: column; flex: 1; width: 100%; min-height: 0; }
+  .crm-shell .page:has(.portal-office-overview) > .cp-launch { flex-shrink: 0; padding: 10px 16px; margin-bottom: 12px; }
+  [data-react-office-overview] { display: flex; flex: 1; min-height: 0; }
+  .crm-shell .portal-office-overview { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .crm-shell .portal-office-overview .page-header { margin-bottom: 12px; }
+  .portal-office-overview .portal-page-heading p { margin-top: 4px; }
+  .crm-shell .portal-office-overview .portal-overview-metrics { flex-shrink: 0; margin-bottom: 12px; }
+  .portal-office-overview .analytics-stat strong { font-size: 28px; margin: 4px 0; }
+  .crm-shell .portal-office-grid { flex: 1; min-height: 0; align-items: stretch; grid-template-rows: minmax(0, 1.5fr) minmax(0, 1fr); }
+  .portal-office-grid > .portal-stack { display: contents; }
+  .portal-office-grid > div > .portal-panel { grid-column: 1; }
+  .portal-office-grid > aside > .portal-panel { grid-column: 2; }
+  .portal-office-grid .portal-panel:first-child { grid-row: 1; }
+  .portal-office-grid .portal-panel:last-child { grid-row: 2; }
+  .portal-office-grid .portal-panel { display: flex; flex-direction: column; min-height: 0; }
+  .portal-office-grid .portal-panel > header { flex-shrink: 0; padding: 10px 16px; }
+  .portal-office-grid .portal-panel > header h2 { font-size: 15px; }
+  .portal-office-grid .portal-panel > header p { margin-top: 3px; }
+  .portal-office-grid .portal-panel-body { flex: 1; min-height: 0; padding: 12px 16px; overflow: auto; }
+  .portal-office-grid .analytics-weekly .portal-panel-body { display: flex; flex-direction: column; }
+  .portal-office-overview .analytics-legend { flex-shrink: 0; margin-bottom: 6px; }
+  .portal-office-overview .analytics-chart-area { flex: 1; min-height: 0; }
+  .portal-office-overview .weekly-chart { height: 100%; min-height: 0; max-height: none; }
+  .portal-office-overview .portal-overview-footer { flex-shrink: 0; padding-top: 6px; gap: 8px; }
+  .portal-office-grid .portal-priorities { gap: 6px; }
+  .portal-priorities > a { padding: 8px 10px; flex-shrink: 0; }
+  .portal-priorities small, .portal-priorities a span { margin-top: 2px; }
+  .portal-office-grid .portal-worker-loads { gap: 10px 16px; align-content: start; }
+  .portal-office-grid .portal-recent-visits { gap: 10px; }
+}
+
 /* Final desktop sizing: reserve only the actual compact header height. */
+@media (min-width: 1000px) {
+  .client-app { display: flex; flex-direction: column; }
+  .client-app-header { flex: none; width: 100%; margin: 0 auto; }
+  .client-app-main { flex: 1; width: 100%; height: auto !important; min-height: 0; margin: 0 auto; }
+  [data-react-client-bookings] { height: 100%; min-height: 0; }
+  .client-bookings-page { display: grid; height: 100%; min-height: 0; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); gap: 12px 20px; }
+  .client-bookings-page > .page-header, .client-bookings-page > .portal-tabs { grid-column: 1 / -1; margin-bottom: 0; }
+  .client-bookings-page > .portal-panel { display: flex; flex-direction: column; min-height: 0; }
+  .client-bookings-page > .portal-panel + .portal-panel { margin-top: 0; }
+  .client-bookings-page > .portal-panel:only-of-type { grid-column: 1 / -1; }
+  .client-bookings-page .portal-panel > header { padding: 12px 16px; }
+  .client-bookings-page .portal-panel-body { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 16px; }
+  .client-bookings-page .portal-empty { flex: 1; padding: 20px; }
+  .client-bookings-page .portal-bookings { gap: 12px; }
+  .client-bookings-page .client-booking-card { padding: 12px; gap: 12px; }
+  .client-bookings-page .portal-booking-body p { margin: 4px 0; }
+  .client-bookings-page .portal-request-list { flex: 1; gap: 12px; }
+  .client-bookings-page .portal-request-list article { padding: 12px; }
+  .client-bookings-page .portal-list-pagination, .client-bookings-page .client-pagination { margin-top: auto; }
+  .client-app-main:has([data-map-area="client"]) { display: flex; flex-direction: column; }
+  .client-app-main:has([data-map-area="client"]) > .page-header { flex: none; margin-bottom: 10px; }
+  #booking-map-workspace[data-map-area="client"] { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  [data-map-area="client"] .map-toolbar, [data-map-area="client"] .map-stats { flex: none; margin-bottom: 10px; }
+  [data-map-area="client"] .map-stats > div { flex-direction: row; align-items: center; padding: 8px 12px; }
+  [data-map-area="client"] .map-stats strong { font-size: 20px; }
+  [data-map-area="client"] .booking-map-layout { flex: 1; min-height: 0; grid-template-columns: 300px minmax(0, 1fr); align-items: stretch; gap: 12px; }
+  [data-map-area="client"] .booking-map-panel { display: flex; flex-direction: column; grid-column: 2; grid-row: 1; min-height: 0; }
+  [data-map-area="client"] .booking-map-surface { flex: 1; min-height: 0; height: auto; }
+  [data-map-area="client"] .map-footer { flex: none; min-height: 34px; padding: 6px 12px; }
+  [data-map-area="client"] .map-legend { width: auto; order: 0; }
+  [data-map-area="client"] .map-side-panel { position: static; grid-column: 1; grid-row: 1; display: flex; flex-direction: column; width: auto; min-height: 0; max-height: none; overflow: visible; }
+  [data-map-area="client"] .map-booking-section, [data-map-area="client"] .map-arrival-section { padding: 10px 12px; }
+  [data-map-area="client"] .map-booking-section .section-heading { margin-bottom: 6px; }
+  [data-map-area="client"] .map-booking-card { padding: 6px 8px; }
+  [data-map-area="client"] .map-booking-phase { margin-top: 3px; }
+  [data-map-area="client"] .map-worker-heading { margin-bottom: 6px; }
+  [data-map-area="client"] .map-arrival-card { padding: 8px; }
+  [data-map-area="client"] .map-eta-value { font-size: 26px; margin: 2px 0; }
+  [data-map-area="client"] .map-journey-track { margin-top: 6px; }
+  [data-map-area="client"] .map-arrival-card p { margin-top: 6px; }
+  [data-map-area="client"] .map-booking-facts { gap: 6px; margin-top: 8px; }
+  [data-map-area="client"] .map-route-source { margin: 6px 0; }
+  [data-map-area="client"] .map-update-note { margin-top: 6px; }
+  [data-map-area="client"] .map-demo-note { flex: none; margin-top: 6px; }
+  [data-map-area="client"] [data-shared-arrival-status]:empty { display: none; }
+  [data-map-area="client"] .map-fallback { padding: 60px 20px; }
+  [data-map-area="client"] .map-selected-label { left: 16px; bottom: 16px; max-width: calc(100% - 80px); }
+}
 @media (min-width: 1000px) {
   .client-app-main { height: calc(100dvh - 74px); padding-block: 14px 18px; }
   .portal-client-home .client-greeting { margin-bottom: 10px; }
-  .portal-client-home .client-booking-layout { height: calc(100% - 78px); grid-template-rows: minmax(0, 1fr) minmax(0, .62fr); gap: 12px; }
+  .portal-client-home { display: flex; flex-direction: column; min-height: 0; }
+  .portal-client-home > .client-greeting,
+  .portal-client-home > .client-home-tabs,
+  .portal-client-home > .portal-confirmation { flex-shrink: 0; }
+  .client-app-main:has(.portal-client-home) { overflow-y: auto; }
+  .portal-client-home { height: auto; min-height: 100%; overflow: visible; }
+  .portal-client-home .client-booking-layout { flex: 1; min-height: 0; height: auto; grid-template-rows: auto auto; gap: 12px; }
   .portal-client-home .client-booking-layout > .portal-panel { padding: 14px; }
   .portal-client-home .client-service-grid { gap: 8px; margin: 8px 0; }
   .portal-client-home .client-service-group { padding: 10px; border-radius: 12px; background: linear-gradient(145deg, #f4fbf6, #e5f3eb); }
   .portal-client-home .client-service-group:nth-child(2) { background: linear-gradient(145deg, #f5f8fd, #e7eff9); }
   .portal-client-home .client-service-group:nth-child(3) { background: linear-gradient(145deg, #fcf7f8, #f6e9ed); }
   .portal-client-home .client-service-tile { min-height: 58px; padding: 8px 10px; border-radius: 10px; }
+  .portal-client-home .client-help-panel { gap: 4px; }
+  .portal-client-home .client-help-panel > * { flex-shrink: 0; }
+  .portal-client-home .client-help-panel .portal-help-icon { display: none; }
+  .portal-client-home .client-help-panel h2 { font-size: 16px; }
+  .portal-client-home .client-help-panel p { max-width: none; font-size: 11px; }
+  .portal-client-home .client-help-panel .btn { min-height: 30px; padding: 5px 8px; margin-top: 0; }
+  .portal-client-home .client-help-panel .client-agreement-link { font-size: 11px; padding: 3px 0; }
+  .portal-client-home .client-featured-workers { gap: 4px; margin-top: 0; }
+  .portal-client-home .client-featured-worker { padding-block: 4px; }
+  .portal-client-home .client-featured-workers .portal-list-pagination { padding-top: 2px; font-size: 11px; }
+}
+
+/* Short desktop windows use the existing view tabs, keeping each panel complete. */
+@media (min-width: 1000px) and (max-height: 850px) {
+  .portal-client-home .client-booking-layout { grid-template-rows: auto; }
+  .portal-client-home .client-booking-layout > .portal-panel { display: none; }
+  .portal-client-home .client-booking-layout[data-home-view="book"] > .client-booking-panel,
+  .portal-client-home .client-booking-layout[data-home-view="book"] > .client-calendar-panel,
+  .portal-client-home .client-booking-layout[data-home-view="upcoming"] > .client-upcoming,
+  .portal-client-home .client-booking-layout[data-home-view="requests"] > .client-request-panel { display: block; grid-row: 1; }
+  .portal-client-home .client-booking-layout[data-home-view="upcoming"] > .client-upcoming,
+  .portal-client-home .client-booking-layout[data-home-view="requests"] > .client-request-panel { grid-column: 1 / 9; }
+  .portal-client-home .client-booking-layout:not([data-home-view="book"]) > .client-help-panel { display: flex; grid-column: 9 / -1; grid-row: 1; }
+  .portal-client-home .portal-repeat { padding-bottom: 10px; margin-bottom: 10px; }
+  .portal-client-home .client-booking-panel:not(.client-booking-selected) { padding: 14px; }
+}
+
+:is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app)) {
+  scrollbar-width: thin;
+  scrollbar-color: #acbdb2 transparent;
+}
+:is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app)):hover {
+  scrollbar-color: #7d9b89 transparent;
+}
+@supports selector(::-webkit-scrollbar) {
+  :is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app)) { scrollbar-width: auto; scrollbar-color: auto; }
+  :is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app))::-webkit-scrollbar { width: 6px; height: 6px; }
+  :is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app))::-webkit-scrollbar-track { background: transparent; }
+  :is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app))::-webkit-scrollbar-thumb { background: #acbdb2; border-radius: 999px; }
+  :is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app))::-webkit-scrollbar-thumb:hover { background: #7d9b89; }
+  :is(.portal-page, .portal-page *, .client-app-main, body:has(.client-app))::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 }

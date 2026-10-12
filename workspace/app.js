@@ -1,4 +1,5 @@
 /* Full operations workspace. ShiftCare remains authoritative for delivered services. */
+import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-intake.mjs';
 (async () => {
   const STORE = 'ocd-brilliance-operations-v1';
   const app = document.getElementById('app');
@@ -84,8 +85,9 @@
   let intakePreview = null;
   let intakeLoadError = '';
   let intakeConfig = {
-    rules: { requiredDocuments: [], mappings: {} },
+    rules: sessionEmail ? { requiredDocuments: [], mappings: {} } : demoIntakeRules,
     extractionAllowed: false,
+    documentAllowed: true,
   };
   let intakeQueue = [];
   let intakeOwners = [];
@@ -188,7 +190,13 @@
     };
   }
   async function syncServerIntakes() {
-    if (!sessionEmail) return;
+    if (!sessionEmail) {
+      state.enquiries = [
+        ...readDemoIntakes(localStorage).map(record => ({ ...serverEnquiry(record), demoCached: true })),
+        ...state.enquiries.filter(enquiry => !enquiry.demoCached),
+      ];
+      return;
+    }
     try {
       const response = await fetch('/api/workflow?action=intakes', {
         cache: 'no-store',
@@ -1273,6 +1281,7 @@
     const ready = records.filter((e) => e.serverStatus === 'Ready for ShiftCare').length;
     const entered = records.filter((e) => e.serverStatus === 'Entered in ShiftCare').length;
     return `${capture ? `<a class="record-back" href="#/office/intake">${icon('arrow')} Back to saved intakes</a>` : ''}${pageHeader('Office / Intake', capture ? 'New intake' : 'Intake', capture ? 'Paste the original request. Extraction and validation run automatically.' : 'Find a saved request, check its stage, then review the next action.', capture ? `<button class="btn" data-action="sample-intake" type="button">Load sample intake</button>` : `<button class="btn" data-action="sample-intake" type="button">Load sample intake</button><a class="btn primary" href="#/office/intake/new">${icon('plus')} New intake</a>`)}
+      ${!sessionEmail ? '<div class="notice"><strong>Demo intake</strong><p>Use fictional details. Drafts and reviews are cached in this browser and remain available after refresh.</p></div>' : ''}
       ${intakeLoadError ? `<div class="intake-warning" role="alert"><strong>Saved intake list is unavailable or out of date</strong><p>${esc(intakeLoadError)}</p><button class="btn small" data-action="refresh-intake" type="button">Retry loading saved intakes</button></div>` : ''}
       <div class="intake-stats" ${capture ? 'hidden' : ''}><div><span>Requests to review</span><strong>${review}</strong></div><div><span>Ready for ShiftCare</span><strong>${ready}</strong></div><div><span>Handoff completed</span><strong>${entered}</strong></div></div>
       <div class="intake-auto-guide" ${capture ? '' : 'hidden'}>${icon('check')}<span>Paste request → Automatic extraction &amp; validation → Review result</span></div><div class="intake-layout intake-capture-layout" ${capture ? '' : 'hidden'}><section class="panel"><div class="section-heading"><div><h2>Paste the request</h2></div></div><form data-form="intake-extract"><label>Original enquiry<textarea id="intake-source" name="text" rows="6" maxlength="12000" required placeholder="Full name: …&#10;Email: …&#10;Service: …&#10;Suburb: …&#10;Postcode: …&#10;Notes: …">${esc(intakeText)}</textarea></label><label>PDF or scan<input id="intake-document" type="file" accept="application/pdf,image/png,image/jpeg" ${intakeConfig.documentAllowed ? '' : 'disabled'}></label><p class="form-note"><a href="/assets/samples/fictional-intake.pdf" download="OCD-fictional-intake.pdf">Download sample PDF</a> · Fictional details for testing</p><div id="intake-original">${originalDocumentPanel(intakeDocument)}</div>${intakeConfig.aiDemo && intakeConfig.aiAllowed ? `<p class="form-note"><strong>AI showcase</strong> · Try a fictional request written in ordinary sentences.</p>` : ''}<p class="form-note">${intakeConfig.documentAllowed ? 'PDFs and scans are processed on this device.' : 'Document import is unavailable until extraction setup is complete. Text requests can be checked automatically.'} ${intakeConfig.aiConfigured ? `AI runs when you select Extract with AI, sending this text to ${esc(intakeConfig.aiProvider || 'the configured provider')}. Use fictional details for the showcase.` : ''}</p><div class="form-actions"><span class="intake-auto-caption">Checks run automatically as you type.</span><button class="btn ${intakeConfig.aiAllowed ? 'primary' : ''}" type="submit">${intakeConfig.aiAllowed ? 'Extract with AI' : 'Recheck'}</button></div></form></section><section class="panel" id="intake-preview" aria-live="polite">${intakePreviewPanel()}</section></div>
@@ -2285,10 +2294,10 @@
           ? `${b.date}${b.start}`.localeCompare(`${a.date}${a.start}`)
           : `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`),
       );
-    const pageCount = Math.max(1, Math.ceil(rows.length / 5));
+    const pageCount = Math.max(1, Math.ceil(rows.length / 2));
     ui.clientBookingsPage = Math.min(ui.clientBookingsPage || 1, pageCount);
-    const offset = (ui.clientBookingsPage - 1) * 5;
-    const shown = rows.slice(offset, offset + 5);
+    const offset = (ui.clientBookingsPage - 1) * 2;
+    const shown = rows.slice(offset, offset + 2);
     const requests = state.requests
       .filter((r) => r.participantId === p.id)
       .slice(-5)
@@ -2526,6 +2535,8 @@
     note.scrollIntoView({ block: 'nearest' });
   }
   async function intakeRequest(action, method = 'GET', payload) {
+    if (!sessionEmail && ['draft-preview', 'draft', 'draft-review'].includes(action))
+      return demoIntakeRequest(action, payload, localStorage, () => crypto.randomUUID());
     const response = await fetch(`/api/workflow?action=${action}`, {
       method,
       cache: 'no-store',
@@ -4939,6 +4950,7 @@
       return;
     }
     if (target.id === 'intake-document') {
+      if (!target.files?.length) return;
       clearTimeout(intakePreviewTimer);
       const generation = ++documentGeneration;
       intakePreview = null;
@@ -5098,12 +5110,10 @@
     }
   });
 
-  if (sessionEmail) {
-    try {
-      await syncServerIntakes();
-    } catch (reason) {
-      console.error('Request sync failed:', reason);
-    }
+  try {
+    await syncServerIntakes();
+  } catch (reason) {
+    console.error('Request sync failed:', reason);
   }
   render();
 })();
