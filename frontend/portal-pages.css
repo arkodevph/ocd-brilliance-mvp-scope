@@ -644,6 +644,7 @@ p.portal-caption { margin: 12px 0 24px; }
   .crm-shell:has(.profile-layout) .page,
   .crm-shell:has(.profile-layout) .employee-main,
   .crm-shell:has(.profile-layout) .employee-layout { height: auto; min-height: 0; overflow: visible; }
+  .crm-shell .intake-layout [data-document-pdf] { max-height: none !important; overflow: visible !important; }
 }
 
 /* A more current employee shell while preserving the existing navigation and content order. */
