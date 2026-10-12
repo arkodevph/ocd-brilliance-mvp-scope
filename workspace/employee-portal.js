@@ -9,6 +9,7 @@
   const navigation = [
     ['home', 'Home'],
     ['personal', 'Personal'],
+    ['reviews', 'My reviews'],
     ['today', 'My visits'],
     ['map', 'Visit map'],
     ['calendar', 'Calendar'],

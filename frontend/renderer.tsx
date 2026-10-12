@@ -1,4 +1,4 @@
-import { EmployeeFeedback, type EmployeeFeedbackModel } from './employee-feedback';
+import { EmployeeFeedback, WorkerRating, type EmployeeFeedbackModel } from './employee-feedback';
 import { EmployeePage, type EmployeePageModel } from './employee-pages';
 import { Fragment } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
@@ -15,6 +15,7 @@ const parserOptions: HTMLReactParserOptions = {
   replace(node) {
     if (!(node instanceof Element)) return;
     const children = () => domToReact(node.children as Parameters<typeof domToReact>[0], parserOptions);
+    if (node.attribs['data-react-worker-rating']) return <WorkerRating {...JSON.parse(node.attribs['data-react-worker-rating']) as { name: string }} />;
     if (node.attribs['data-react-employee-feedback']) return <EmployeeFeedback model={JSON.parse(node.attribs['data-react-employee-feedback']) as EmployeeFeedbackModel} />;
     if (node.attribs['data-react-page-heading']) return <PageHeading model={JSON.parse(node.attribs['data-react-page-heading']) as PageHeadingModel}>{children()}</PageHeading>;
     if (node.attribs['data-react-employee-page']) return <EmployeePage model={JSON.parse(node.attribs['data-react-employee-page']) as EmployeePageModel} />;

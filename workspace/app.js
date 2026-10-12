@@ -629,6 +629,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     worker: [
       ['home', 'Home', 'home'],
       ['personal', 'Personal', 'people'],
+      ['reviews', 'My reviews', 'star'],
       ['today', 'My visits', 'calendar'],
       ['map', 'Visit map', 'map'],
       ['calendar', 'My calendar', 'calendar'],
@@ -639,6 +640,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     client: [
       ['home', 'Home', 'home'],
       ['bookings', 'My bookings', 'calendar'],
+      ['workers', 'Support workers', 'people'],
       ['map', 'Arrival status', 'clock'],
       ['documents', 'Documents', 'file'],
       ['intake', 'My details', 'people'],
@@ -838,6 +840,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       client: {
         home: clientHome,
         bookings: clientBookings,
+        workers: () => clientWorkerProfile(detail),
         map: () => clientArrival(detail),
         documents: clientDocuments,
         intake: clientIntake,
@@ -845,6 +848,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       public: { book: publicBook, intake: publicIntake },
     };
     pages.worker.review = workerReview;
+    pages.worker.reviews = workerFeedback;
     pages.worker.home = () => window.OCD_EMPLOYEE.home(employeeContext());
     pages.worker.personal = () => window.OCD_EMPLOYEE.personal(employeeContext());
     pages.worker.leave = () => window.OCD_EMPLOYEE.leave(employeeContext());
@@ -1772,6 +1776,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     );
   }
 
+  function calendarChrome(area, selected, subtitle, view, count) {
+    const office = area === 'office';
+    const query = ui.calendarQuery.trim();
+    return `<header class="week-toolbar"><div class="week-heading"><h1>${dateLabel(selected, { month: 'long' })} <span>${selected.slice(0, 4)}</span></h1><p>${esc(subtitle)}</p></div><div class="week-controls"><button class="btn" data-action="calendar-today" type="button">Today</button><button class="btn" data-action="calendar-reset" type="button" title="Return to the sample week of 5–11 October and clear search">Reset view</button><div class="week-view-switch" role="group" aria-label="Calendar view"><button type="button" aria-pressed="${view === 'week'}" data-action="calendar-view" data-value="week">Week</button><button type="button" aria-pressed="${view === 'month'}" data-action="calendar-view" data-value="month">Month</button></div><label class="week-search"><span class="sr-only">Search calendar</span>${icon('search')}<input id="calendar-search" type="search" placeholder="Search calendar" value="${attr(ui.calendarQuery)}"></label>${office ? `<button class="btn primary" data-action="new-booking" type="button">${icon('plus')} New booking</button>` : `<a class="btn primary" href="#/worker/today">My visits</a>`}</div></header><div class="week-meta"><div class="calendar-legend"><span><i class="service"></i> Service visit</span>${office ? '<span><i class="call"></i> Discovery call</span><span><i class="cover"></i> Needs cover</span><span><i class="proposed"></i> Proposed</span>' : ''}</div><span class="week-count" role="status">${count} ${count === 1 ? 'event' : 'events'} this ${view}${query && !count ? ' · No matches' : ''}</span></div>`;
+  }
+
   function calendarPage(area) {
     if (ui.calendarView === 'month') return calendarMonthPage(area);
     const office = area === 'office';
@@ -1833,13 +1843,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
                   ? ''
                   : `<span class="week-event-service">${esc(e.type === 'call' ? 'Discovery call' : e.detail.split(' · ')[0])}</span><span class="week-event-person">${
                       e.workerName
-                        ? `<i aria-hidden="true">${esc(
-                            e.workerName
-                              .split(' ')
-                              .map((n) => n[0])
-                              .slice(0, 2)
-                              .join(''),
-                          )}</i>${esc(e.workerName)}`
+                        ? `${window.OCD_AUTOMATION.profileImage(e.workerName, 'week-worker-avatar')}<span class="week-worker-name">${esc(e.workerName)}</span>`
                         : 'Discovery call'
                     }</span><span class="week-event-status">${esc(e.status)}</span>`
               }</a>`;
@@ -1861,23 +1865,16 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       })
       .join('');
     const selectedEvents = events.filter((e) => e.date === selected);
-    return `<div class="calendar-screen"><section class="week-calendar" aria-label="${office ? 'Office' : 'My'} weekly calendar"><header class="week-toolbar"><div class="week-heading"><h1>${dateLabel(selected, { month: 'long' })} <span>${selected.slice(0, 4)}</span></h1><p>${dateLabel(weekStart, { day: 'numeric', month: 'short' })} – ${dateLabel(days[6], { day: 'numeric', month: 'short' })} · Perth time</p></div><div class="week-controls"><button class="btn" data-action="calendar-today" type="button">Today</button><div class="week-view-switch" role="group" aria-label="Calendar view"><button type="button" aria-pressed="true" data-action="calendar-view" data-value="week">Week</button><button type="button" aria-pressed="false" data-action="calendar-view" data-value="month">Month</button></div><label class="week-search"><span class="sr-only">Search calendar</span>${icon('search')}<input id="calendar-search" type="search" placeholder="Search calendar" value="${attr(ui.calendarQuery)}"></label>${office ? `<button class="btn primary" data-action="new-booking" type="button">${icon('plus')} New booking</button>` : `<a class="btn primary" href="#/worker/today">My visits</a>`}</div></header><div class="week-meta"><div class="calendar-legend"><span><i class="service"></i> Service visit</span>${office ? '<span><i class="call"></i> Discovery call</span><span><i class="cover"></i> Needs cover</span><span><i class="proposed"></i> Proposed</span>' : ''}</div><span class="week-count" role="status">${events.length} ${events.length === 1 ? 'event' : 'events'} this week${query && !events.length ? ' · No matches' : ''}</span></div><div class="week-scroll" tabindex="0" role="region" aria-label="Weekly timetable"><div class="week-grid"><div class="week-day-header"><div class="week-arrows"><button data-action="calendar-prev" type="button" aria-label="Previous schedule period">‹</button><button data-action="calendar-next" type="button" aria-label="Next schedule period">›</button></div>${days.map((date) => `<button class="week-date ${date === selected ? 'selected' : ''} ${date === todayPerth() ? 'today' : ''}" data-action="calendar-day" data-date="${date}" aria-label="${attr(fullDate(date))}" aria-pressed="${date === selected}" type="button"><span>${dateLabel(date, { weekday: 'short' })}</span><strong>${dateObj(date).getUTCDate()}</strong></button>`).join('')}</div><div class="week-timetable" style="--calendar-hours:${endHour - startHour};height:${height}px"><div class="week-time-axis">${Array.from({ length: endHour - startHour }, (_, i) => `<span style="--hour-top:${(i / (endHour - startHour)) * 100}%;top:${i * 88}px">${timeLabel(startHour + i)}</span>`).join('')}</div>${columns}</div></div></div><footer class="week-footer"><span>${office ? 'Service visits & discovery calls' : 'Your assigned visits'}</span><button class="link-button" data-action="calendar-demo" type="button">Sample week · 5 Oct</button></footer></section><section class="calendar-agenda week-agenda" tabindex="-1" aria-label="Selected day details"><div class="week-agenda-heading"><div><span class="eyebrow">Day at a glance</span><h2>${fullDate(selected)}</h2></div>${office ? '<button class="btn" data-action="add-slot" type="button">Add call slot</button>' : '<a class="btn" href="#/worker/availability">View availability</a>'}</div><div class="calendar-agenda-list">${selectedEvents.map((e) => `<a class="calendar-agenda-item ${e.tone}" href="${e.href}"><span class="calendar-agenda-time">${esc(e.timeLabel)}</span><span class="calendar-agenda-copy"><strong>${esc(e.title)}</strong><small>${esc(e.detail)}</small></span>${pill(e.status)}</a>`).join('') || '<p class="calendar-agenda-empty">No matching events on this day.</p>'}</div></section></div>`;
+    return `<div class="calendar-screen"><section class="week-calendar" aria-label="${office ? 'Office' : 'My'} weekly calendar">${calendarChrome(area, selected, `${dateLabel(weekStart, { day: 'numeric', month: 'short' })} – ${dateLabel(days[6], { day: 'numeric', month: 'short' })} · Perth time`, 'week', events.length)}<div class="week-scroll" tabindex="0" role="region" aria-label="Weekly timetable"><div class="week-grid"><div class="week-day-header"><div class="week-arrows"><button data-action="calendar-prev" type="button" aria-label="Previous schedule period">‹</button><button data-action="calendar-next" type="button" aria-label="Next schedule period">›</button></div>${days.map((date) => `<button class="week-date ${date === selected ? 'selected' : ''} ${date === todayPerth() ? 'today' : ''}" data-action="calendar-day" data-date="${date}" aria-label="${attr(fullDate(date))}" aria-pressed="${date === selected}" type="button"><span>${dateLabel(date, { weekday: 'short' })}</span><strong>${dateObj(date).getUTCDate()}</strong></button>`).join('')}</div><div class="week-timetable" style="--calendar-hours:${endHour - startHour};height:${height}px"><div class="week-time-axis">${Array.from({ length: endHour - startHour }, (_, i) => `<span style="--hour-top:${(i / (endHour - startHour)) * 100}%;top:${i * 88}px">${timeLabel(startHour + i)}</span>`).join('')}</div>${columns}</div></div></div><footer class="week-footer"><span>${office ? 'Service visits & discovery calls' : 'Your assigned visits'}</span><button class="link-button" data-action="calendar-demo" type="button">Sample week · 5 Oct</button></footer></section><section class="calendar-agenda week-agenda" tabindex="-1" aria-label="Selected day details"><div class="week-agenda-heading"><div><span class="eyebrow">Day at a glance</span><h2>${fullDate(selected)}</h2></div>${office ? '<button class="btn" data-action="add-slot" type="button">Add call slot</button>' : '<a class="btn" href="#/worker/availability">View availability</a>'}</div><div class="calendar-agenda-list">${selectedEvents.map((e) => `<a class="calendar-agenda-item ${e.tone}" href="${e.href}"><span class="calendar-agenda-time">${esc(e.timeLabel)}</span><span class="calendar-agenda-copy"><strong>${esc(e.title)}</strong><small>${esc(e.detail)}</small></span>${pill(e.status)}</a>`).join('') || '<p class="calendar-agenda-empty">No matching events on this day.</p>'}</div></section></div>`;
   }
 
   function calendarMonthPage(area) {
     const office = area === 'office';
     const month = ui[office ? 'officeCalendarMonth' : 'workerCalendarMonth'];
     const selected = ui[office ? 'officeCalendarDate' : 'workerCalendarDate'];
-    const events = calendarEvents(area);
+    const query = ui.calendarQuery.trim().toLowerCase();
+    const events = calendarEvents(area).filter(e => `${e.title} ${e.detail} ${e.status}`.toLowerCase().includes(query));
     const monthEvents = events.filter((e) => e.date.slice(0, 7) === month.slice(0, 7));
-    const occupiedDays = new Set(
-      monthEvents.filter((e) => e.tone !== 'proposed').map((e) => e.date),
-    ).size;
-    const serviceCount = monthEvents.filter(
-      (e) => e.type === 'service' && e.tone !== 'proposed',
-    ).length;
-    const callCount = monthEvents.filter((e) => e.type === 'call').length;
-    const proposedCount = monthEvents.filter((e) => e.tone === 'proposed').length;
     const firstOffset = (weekday(month) + 6) % 7;
     const daysInMonth = new Date(
       Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0),
@@ -1923,13 +1920,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           `<a class="calendar-agenda-item" href="${e.href}"><span class="calendar-agenda-time">${esc(e.timeLabel)}</span><span class="calendar-agenda-copy"><strong>${esc(e.title)}</strong><small>${esc(e.detail)}</small></span>${pill(e.status)}</a>`,
       )
       .join('');
-    const action = office
-      ? `<a class="btn" href="#/office/calls">Manage calls</a><a class="btn primary" href="#/office/schedule">Open schedule ${icon('arrow')}</a>`
-      : `<a class="btn primary" href="#/worker/today">My visits ${icon('arrow')}</a>`;
-    return `${pageHeader(office ? 'Office / Calendar' : 'Worker / Calendar', office ? 'Calendar' : 'My calendar', office ? 'See service bookings and booked discovery calls across the month.' : 'See your confirmed and completed service visits across the month.', action)}
-      <div class="calendar-summary"><span><strong>${occupiedDays}</strong> occupied day${occupiedDays === 1 ? '' : 's'}</span><span><strong>${serviceCount}</strong> service visit${serviceCount === 1 ? '' : 's'}</span>${office ? `<span><strong>${callCount}</strong> booked call${callCount === 1 ? '' : 's'}</span>${proposedCount ? `<span><strong>${proposedCount}</strong> proposed</span>` : ''}` : ''}<span class="calendar-timezone">Australia/Perth time</span></div>
-      <div class="calendar-layout"><section class="panel calendar-panel" aria-label="Month calendar"><div class="calendar-toolbar"><h2>${dateLabel(month, { month: 'long', year: 'numeric' })}</h2><div class="calendar-nav"><button class="btn small" data-action="calendar-view" data-value="week" type="button">Week view</button><button class="btn small" data-action="calendar-prev" type="button" aria-label="Previous month">←</button><button class="btn small" data-action="calendar-demo" type="button">Demo month</button><button class="btn small" data-action="calendar-next" type="button" aria-label="Next month">→</button></div></div><div class="calendar-legend"><span><i class="service"></i> Service visit</span>${office ? `<span><i class="call"></i> Discovery call</span><span><i class="cover"></i> Needs cover</span><span><i class="proposed"></i> Proposed</span>` : ''}</div><div class="calendar-weekdays" aria-hidden="true">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => `<span>${day}</span>`).join('')}</div><div class="calendar-grid">${cells}</div></section>
-      <aside class="panel calendar-agenda" tabindex="-1" aria-label="Selected day details"><span class="eyebrow">Selected day</span><h2>${fullDate(selected)}</h2><p class="muted tiny">${selectedEvents.length ? `${selectedEvents.length} calendar item${selectedEvents.length === 1 ? '' : 's'}` : office ? 'No service visits or booked calls' : 'No assigned visits'}</p><div class="calendar-agenda-list">${eventRows || `<p class="calendar-agenda-empty">${office ? 'No service visits or booked calls on this day.' : 'No confirmed or completed visits on this day.'}</p>`}</div>${office ? `<div class="calendar-open-slots"><h3>Published call times still open</h3>${openSlots.length ? `<p>${openSlots.map((s) => `${esc(clockLabel(s.time))} · ${s.duration} min`).join('<br>')}</p>` : `<p>None for this day.</p>`}<button class="btn small" data-action="add-slot" type="button">Add call slot</button></div>` : `<div class="calendar-open-slots"><p>Regular working days are managed separately from assigned visits.</p><a class="btn small" href="#/worker/availability">View availability</a></div>`}</aside></div>`;
+    return `<div class="calendar-screen"><section class="week-calendar month-calendar" aria-label="${office ? 'Office' : 'My'} monthly calendar">${calendarChrome(area, month, 'Month overview · Perth time', 'month', monthEvents.length)}
+      <div class="week-scroll month-scroll" tabindex="0" role="region" aria-label="Monthly calendar"><div class="month-navigation week-arrows"><button data-action="calendar-prev" type="button" aria-label="Previous month">‹</button><button data-action="calendar-next" type="button" aria-label="Next month">›</button></div><div class="calendar-weekdays" aria-hidden="true">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => `<span>${day}</span>`).join('')}</div><div class="calendar-grid">${cells}</div></div>
+      <footer class="week-footer"><span>${office ? 'Service visits & discovery calls' : 'Your assigned visits'}</span><button class="link-button" data-action="calendar-demo" type="button">Sample month · October</button></footer></section>
+      <aside class="calendar-agenda week-agenda" tabindex="-1" aria-label="Selected day details"><div class="week-agenda-heading"><div><span class="eyebrow">Day at a glance</span><h2>${fullDate(selected)}</h2></div>${office ? '<a class="btn" href="#/office/calls">Manage calls</a>' : '<a class="btn" href="#/worker/availability">View availability</a>'}</div><p class="muted tiny">${selectedEvents.length ? `${selectedEvents.length} calendar item${selectedEvents.length === 1 ? '' : 's'}` : office ? 'No service visits or booked calls' : 'No assigned visits'}</p><div class="calendar-agenda-list">${eventRows || `<p class="calendar-agenda-empty">${office ? 'No service visits or booked calls on this day.' : 'No confirmed or completed visits on this day.'}</p>`}</div>${office ? `<div class="calendar-open-slots"><h3>Published call times still open</h3>${openSlots.length ? `<p>${openSlots.map(s => `${esc(clockLabel(s.time))} · ${s.duration} min`).join('<br>')}</p>` : '<p>None for this day.</p>'}<button class="btn small" data-action="add-slot" type="button">Add call slot</button></div>` : ''}</aside></div>`;
   }
 
   function scheduleEmployeeCard(w, className) {
@@ -2225,6 +2219,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const links = [
       ['home', 'Home', 'home'],
       ['bookings', 'Bookings', 'calendar'],
+      ['workers', 'Workers', 'people'],
       ['map', 'Arrival', 'clock'],
       ['intake', 'My account', 'people'],
     ];
@@ -2255,6 +2250,8 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const previous = window.OCD_BOOKING_RULES.previousBooking(state.bookings, p.id);
     const confirmation = clientBooking.confirmation;
     const model = {
+      workers: state.workers.filter(w => w.approved).map(w => ({ id: w.id, name: w.name, role: w.role || 'Support worker', specialties: w.services.join(' · ') })),
+      preferredWorkerId: p.preferredWorker,
       name: p.name, representative, today, homeView: ui.clientHomeView || 'book', services: serviceTypes,
       selection: { service: clientBooking.service || '', date: clientBooking.date || '', month: clientBooking.month || `${today.slice(0, 7)}-01` },
       previous: previous ? { id: previous.id, service: previous.service, date: previous.date, time: clockRange(previous.start, previous.end) } : undefined,
@@ -2265,6 +2262,30 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       agreementPending: !!agreement && agreement.status !== 'Signed',
     };
     return `<div data-react-client-home="${attr(JSON.stringify(model))}"></div>`;
+  }
+
+  function portalWorkerFeedback(w, employee = false) {
+    const model = {
+      mode: 'profile', worker: { id: w.id, name: w.name },
+      completed: state.bookings.filter(b => b.workerId === w.id && b.status === 'Completed').length,
+      hideAlerts: !employee,
+      alerts: employee ? window.OCD_ALERTS?.get(w.id) || { status: 'Not checked', detail: 'No device check recorded.' } : { status: '', detail: '' },
+    };
+    return `<div data-react-employee-feedback="${attr(JSON.stringify(model))}"></div>`;
+  }
+
+  function workerFeedback() {
+    const w = worker(ui.workerId);
+    return `${pageHeader('Employee / My reviews', 'My reviews', `Ratings and client feedback for ${w.name}.`)}${portalWorkerFeedback(w, true)}`;
+  }
+
+  function clientWorkerProfile(workerId) {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const available = state.workers.filter(w => w.approved);
+    if (!workerId) return `<div class="portal-page client-worker-directory">${pageHeader('Your care / Our team', 'Support workers', 'Meet the team, explore their services and read sample client feedback.')}<div class="worker-directory-intro"><span>${available.length} office-approved worker${available.length === 1 ? '' : 's'}</span><p>Regular days are preferences. The office confirms availability for your booking.</p></div><div class="worker-directory-grid">${available.map(w => `<article class="worker-directory-card"><header class="worker-directory-card-head"><a href="#/client/workers/${attr(w.id)}" aria-label="View ${attr(w.name)}'s profile">${window.OCD_AUTOMATION.profileImage(w.name, 'worker-directory-avatar')}</a><span class="worker-directory-approval">${icon('shield')} Office approved</span></header><div class="worker-directory-identity"><h2><a href="#/client/workers/${attr(w.id)}">${esc(w.name)}</a></h2><p>${esc(w.role || 'Support worker')}</p></div><div data-react-worker-rating="${attr(JSON.stringify({ name: w.name }))}"></div><div class="worker-directory-services"><h3>Support services</h3><ul>${w.services.map(service => `<li>${esc(service)}</li>`).join('')}</ul></div><div class="worker-directory-days">${icon('calendar')}<div><span>Regular days</span><p>${esc(w.days.map(day => days[day].slice(0, 3)).join(' · ') || 'Ask the office')}</p></div></div><footer><a class="btn primary" href="#/client/workers/${attr(w.id)}">View profile &amp; reviews ${icon('arrow')}</a></footer></article>`).join('') || `<section class="worker-directory-empty">${empty('No workers available', 'Ask the office for help choosing a support worker.')}<button class="btn" type="button" data-action="client-feedback">Ask the office</button></section>`}</div></div>`;
+    const w = available.find(w => w.id === workerId);
+    if (!w) return `${pageHeader('Client portal / Workers', 'Employee not available')}<a class="btn" href="#/client/workers">Back to support workers</a>`;
+    return `<a class="record-back" href="#/client/workers">${icon('arrow')} Back to support workers</a>${pageHeader('Client portal / Employee profile', w.name, w.role || 'Support worker')}<section class="panel"><div class="visit-row">${profileImage(w.name)}<span class="body"><h2>Employee profile</h2><p>${esc(w.services.join(' · '))}</p><small>Regular days: ${esc(w.days.map(d => days[d]).join(', ') || 'Ask the office')}</small></span>${pill('Approved')}</div><p class="form-note">The office confirms availability for each booking.</p></section><div class="spacer"></div>${portalWorkerFeedback(w)}`;
   }
 
   function reviewClientBooking() {
@@ -3415,6 +3436,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         'calendar-prev',
         'calendar-next',
         'calendar-demo',
+        'calendar-reset',
         'calendar-day',
         'calendar-today',
         'calendar-view',
@@ -3430,9 +3452,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } else if (action === 'calendar-day') {
         ui[dateKey] = button.dataset.date;
         ui[monthKey] = `${button.dataset.date.slice(0, 7)}-01`;
-      } else if (action === 'calendar-demo') {
+      } else if (action === 'calendar-demo' || action === 'calendar-reset') {
         ui[monthKey] = '2026-10-01';
         ui[dateKey] = '2026-10-05';
+        ui.calendarQuery = '';
+        if (action === 'calendar-reset') ui.calendarView = 'week';
       } else if (ui.calendarView === 'week') {
         ui[dateKey] = addDays(ui[dateKey], action === 'calendar-next' ? 7 : -7);
         ui[monthKey] = `${ui[dateKey].slice(0, 7)}-01`;

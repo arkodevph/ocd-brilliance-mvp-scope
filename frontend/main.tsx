@@ -5,6 +5,7 @@ import './employee-record.css';
 import './employee-feedback.css';
 import './workspace-navigation.css';
 import './calendar-workspace.css';
+import './workspace-depth.css';
 import './solar-legacy';
 import './renderer';
 import '../workspace/app.js';
