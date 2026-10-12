@@ -740,27 +740,39 @@ p.portal-caption { margin: 12px 0 24px; }
 }
 @media (min-width: 1000px) {
   .client-app-main { height: calc(100dvh - 74px); padding-block: 14px 18px; }
-  .portal-client-home .client-greeting { margin-bottom: 10px; }
+  .client-app-header { grid-template-columns: auto minmax(0, 1fr) auto; padding: 8px 24px; }
+  .client-app-header > .client-app-nav { grid-column: auto; grid-row: auto; flex-wrap: nowrap; }
+  .client-app-nav a { padding: 10px; font-size: 14px; white-space: nowrap; }
+  .portal-client-home .client-greeting { margin-bottom: 4px; }
+  .portal-client-home .client-greeting p { margin-bottom: 4px; }
+  .portal-client-home .client-greeting h1 + p { margin-top: 4px; }
+  .portal-client-home .client-home-tabs { margin-bottom: 8px; }
+  .portal-client-home .client-home-tabs .btn { min-height: 36px; padding-block: 6px; }
   .portal-client-home { display: flex; flex-direction: column; min-height: 0; }
   .portal-client-home > .client-greeting,
   .portal-client-home > .client-home-tabs,
   .portal-client-home > .portal-confirmation { flex-shrink: 0; }
-  .client-app-main:has(.portal-client-home) { overflow-y: auto; }
+  .client-app-main:has(.portal-client-home) { overflow-y: auto; padding-block: 12px; }
   .portal-client-home { height: auto; min-height: 100%; overflow: visible; }
   .portal-client-home .client-booking-layout { flex: 1; min-height: 0; height: auto; grid-template-rows: auto auto; gap: 12px; }
   .portal-client-home .client-booking-layout > .portal-panel { padding: 14px; }
+  .portal-client-home .portal-repeat { flex-direction: row; align-items: center; margin-bottom: 8px; padding-bottom: 8px; }
+  .portal-client-home .client-booking-panel:not(.client-booking-selected) > h2,
+  .portal-client-home .client-booking-panel:not(.client-booking-selected) > p { margin-bottom: 8px; }
+  .portal-client-home .client-calendar-days button { min-height: 36px; padding: 4px 0 8px; font-size: 14px; }
+  .portal-client-home .client-calendar-heading .btn { min-height: 36px; height: 36px; }
   .portal-client-home .client-service-grid { gap: 8px; margin: 8px 0; }
-  .portal-client-home .client-service-group { padding: 10px; border-radius: 12px; background: linear-gradient(145deg, #f4fbf6, #e5f3eb); }
+  .portal-client-home .client-service-group { padding: 8px; border-radius: 12px; background: linear-gradient(145deg, #f4fbf6, #e5f3eb); }
   .portal-client-home .client-service-group:nth-child(2) { background: linear-gradient(145deg, #f5f8fd, #e7eff9); }
   .portal-client-home .client-service-group:nth-child(3) { background: linear-gradient(145deg, #fcf7f8, #f6e9ed); }
-  .portal-client-home .client-service-tile { min-height: 58px; padding: 8px 10px; border-radius: 10px; }
+  .portal-client-home .client-service-tile { min-height: 48px; padding: 8px 10px; border-radius: 10px; }
   .portal-client-home .client-help-panel { gap: 4px; }
   .portal-client-home .client-help-panel > * { flex-shrink: 0; }
   .portal-client-home .client-help-panel .portal-help-icon { display: none; }
   .portal-client-home .client-help-panel h2 { font-size: 16px; }
   .portal-client-home .client-help-panel p { max-width: none; font-size: 11px; }
   .portal-client-home .client-help-panel .btn { min-height: 30px; padding: 5px 8px; margin-top: 0; }
-  .portal-client-home .client-help-panel .client-agreement-link { font-size: 11px; padding: 3px 0; }
+  .portal-client-home .client-help-panel .client-agreement-link { min-height: 28px; font-size: 11px; padding: 3px 0; }
   .portal-client-home .client-featured-workers { gap: 4px; margin-top: 0; }
   .portal-client-home .client-featured-worker { padding-block: 4px; }
   .portal-client-home .client-featured-workers .portal-list-pagination { padding-top: 2px; font-size: 11px; }
