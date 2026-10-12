@@ -739,6 +739,7 @@ p.portal-caption { margin: 12px 0 24px; }
   [data-map-area="client"] .map-selected-label { left: 16px; bottom: 16px; max-width: calc(100% - 80px); }
 }
 @media (min-width: 1000px) {
+  body:has(.crm-shell .client-presentation) { overflow-y: auto; }
   .crm-shell .page:has(.ai-email-panel) { max-height: calc(100dvh - 68px); overflow-y: auto; }
   .client-app-main { height: calc(100dvh - 74px); padding-block: 14px 18px; }
   .client-app-header { grid-template-columns: auto minmax(0, 1fr) auto; padding: 8px 24px; }
