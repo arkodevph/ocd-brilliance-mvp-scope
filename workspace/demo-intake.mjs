@@ -38,6 +38,16 @@ export function demoIntakeRequest(action, input, storage, identity) {
         originalDocument: input.originalDocument || null, sourceName: input.sourceName || '', capturedAt: now,
         reviewedAt: null, reviewedBy: null } };
     records.unshift(record);
+  } else if (action === 'ai-email') {
+    record = input.id ? records.find(item => item.id === input.id) : domain.intakeFields(input.fields || {});
+    if (!record) throw new Error('This demo intake is no longer cached.');
+    const missing = Object.entries({ name: 'your full name', service: 'the support you need',
+      suburb: 'your suburb', postcode: 'your postcode' }).filter(([key]) => !record[key]).map(([, label]) => label);
+    if (!record.email && !record.phone) missing.push('a contact email or phone number');
+    const message = `Hi ${record.name?.split(' ')[0] || 'there'},\n\nThank you for contacting OCD Brilliance${record.service ? ` about ${record.service}` : ''}.\n\n${missing.length ? `Could you please provide ${missing.join(', ')} so our office can review your enquiry?` : 'Could you please let us know your preferred days and times for support? Our office will review your needs and confirm availability and the next steps.'}\n\nKind regards,\nOCD Brilliance team`;
+    Object.assign(record, { emailSubject: 'Your enquiry with OCD Brilliance', emailDraft: message,
+      emailAI: { provider: 'Demo', model: 'Local sample draft', demo: true }, emailStatus: 'Needs review' });
+    if (!input.id) return { subject: record.emailSubject, message: record.emailDraft, ai: record.emailAI };
   } else if (action === 'draft-review') {
     record = records.find(item => item.id === input.id);
     if (!record) throw new Error('This demo intake is no longer cached.');
@@ -54,5 +64,7 @@ export function demoIntakeRequest(action, input, storage, identity) {
   }
   try { storage.setItem(DEMO_INTAKE_KEY, JSON.stringify(records)); }
   catch { throw new Error('Browser cache is full or unavailable. Use a smaller document or free browser storage.'); }
-  return { record };
+  return action === 'ai-email'
+    ? { subject: record.emailSubject, message: record.emailDraft, ai: record.emailAI }
+    : { record };
 }

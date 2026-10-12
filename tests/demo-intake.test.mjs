@@ -43,3 +43,19 @@ test('cache failures are reported and malformed cache does not prevent demo chec
   assert.deepEqual(readDemoIntakes(storage), []);
   assert.throws(() => demoIntakeRequest('draft', { sourceText: source }, storage, () => 'test'), /cache is full or unavailable/);
 });
+
+test('demo email drafting uses cached intake facts and survives reload without authentication', () => {
+  const { request, storage } = setup();
+  const { draft } = request('draft-preview', { text: source });
+  const { record } = request('draft', { ...draft.fields, sourceText: source, idempotencyKey: 'email' });
+  const email = request('ai-email', { id: record.id });
+  assert.match(email.message, /Alex/);
+  assert.match(email.message, /Domestic assistance/);
+  assert.ok(email.subject);
+  assert.equal(email.ai.provider, 'Demo');
+  assert.equal(email.ai.demo, true);
+  assert.equal(readDemoIntakes(storage)[0].emailDraft, email.message);
+  assert.equal(readDemoIntakes(storage)[0].emailSubject, email.subject);
+  assert.equal(readDemoIntakes(storage)[0].status, 'New');
+  assert.throws(() => request('ai-email', { id: 'DEMO-missing' }), /no longer cached/);
+});

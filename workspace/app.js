@@ -184,8 +184,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       },
       history: record.history || [],
       aiReview: null,
-      emailDraft: null,
-      emailStatus: 'Not drafted',
+      emailDraft: record.emailDraft || null,
+      emailSubject: record.emailSubject || '',
+      emailAI: record.emailAI || null,
+      emailStatus: record.emailStatus || 'Not drafted',
       serverRecord: true,
     };
   }
@@ -1455,10 +1457,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   }
 
   function emailComposer(draft, recipient = '') {
-    return `<form data-form="ai-email-copy"><p class="form-note">AI suggestion · edit and review before use. No email is sent. Copy the draft before leaving this page.</p><label>Subject<input name="subject" maxlength="200" value="${attr(draft.subject || 'Your enquiry with OCD Brilliance')}"></label><label>Message${recipient ? ' to ' + esc(recipient) : ''}<textarea name="message" rows="8" required>${esc(draft.message)}</textarea></label><p class="form-note">${esc(draft.ai?.provider || 'AI')} · ${esc(draft.ai?.model || '')}</p><div class="form-actions"><button class="btn primary" data-action="copy-ai-email" type="button">Copy email draft</button></div></form>`;
+    return `<form data-form="ai-email-copy"><p class="form-note">${draft.ai?.provider === 'Demo' ? 'Demo suggestion generated locally' : 'AI suggestion'} · edit and review before use. No email is sent. Copy the draft before leaving this page.</p><label>Subject<input name="subject" maxlength="200" value="${attr(draft.subject || 'Your enquiry with OCD Brilliance')}"></label><label>Message${recipient ? ' to ' + esc(recipient) : ''}<textarea name="message" rows="8" required>${esc(draft.message)}</textarea></label><p class="form-note">${esc(draft.ai?.provider || 'AI')} · ${esc(draft.ai?.model || '')}</p><div class="form-actions"><button class="btn primary" data-action="copy-ai-email" type="button">Copy email draft</button></div></form>`;
   }
   function emailDraftPanel(e) {
-    return `<section class="panel ai-email-panel"><div class="section-heading"><div><h2>Email draft</h2><p>Prepare a follow-up from this enquiry.</p></div><span class="status">${e.emailDraft ? 'Unsent draft' : 'AI assistant'}</span></div>${e.emailDraft ? emailComposer({ subject: e.emailSubject, message: e.emailDraft, ai: e.emailAI }, e.email) : `<p class="muted">AI uses the request to acknowledge the enquiry and ask for missing details. Staff review the wording.</p>`}<div class="ai-email-secondary"><button class="btn ${e.emailDraft ? '' : 'primary'}" data-action="draft-email" data-id="${attr(e.id)}" type="button">${e.emailDraft ? 'Regenerate with AI' : 'Draft email with AI'}</button></div></section>`;
+    const demo = !sessionEmail;
+    return `<section class="panel ai-email-panel"><div class="section-heading"><div><h2>Email draft</h2><p>Prepare a follow-up from this enquiry.</p></div><span class="status">${e.emailDraft ? 'Unsent draft' : demo ? 'Demo assistant' : 'AI assistant'}</span></div>${e.emailDraft ? emailComposer({ subject: e.emailSubject, message: e.emailDraft, ai: e.emailAI }, e.email) : `<p class="muted">${demo ? 'Create a local sample draft from the enquiry. Demo drafts are cached in this browser.' : 'AI uses the request to acknowledge the enquiry and ask for missing details.'} Staff review the wording.</p>`}<div class="ai-email-secondary"><button class="btn ${e.emailDraft ? '' : 'primary'}" data-action="draft-email" data-id="${attr(e.id)}" type="button">${demo ? (e.emailDraft ? 'Regenerate demo draft' : 'Draft demo email') : (e.emailDraft ? 'Regenerate with AI' : 'Draft email with AI')}</button></div></section>`;
   }
   function showEmailReview(source) {
     const review = source.aiReview;
@@ -2535,7 +2538,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     note.scrollIntoView({ block: 'nearest' });
   }
   async function intakeRequest(action, method = 'GET', payload) {
-    if (!sessionEmail && ['draft-preview', 'draft', 'draft-review'].includes(action))
+    if (!sessionEmail && ['draft-preview', 'draft', 'draft-review', 'ai-email'].includes(action))
       return demoIntakeRequest(action, payload, localStorage, () => crypto.randomUUID());
     const response = await fetch(`/api/workflow?action=${action}`, {
       method,
@@ -3231,7 +3234,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           e.emailStatus = 'Needs review';
           save();
           render();
-          toast('AI draft ready. Review before copying.');
+          toast(result.ai?.provider === 'Demo' ? 'Demo draft ready. Review before copying.' : 'AI draft ready. Review before copying.');
         } else
           openModal(
             'AI email draft',
