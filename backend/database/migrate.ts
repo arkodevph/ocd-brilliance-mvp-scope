@@ -28,6 +28,7 @@ export async function migrate(client: Client, directory = migrationDirectory): P
     for (const row of applied.rows) {
       if (!ordered.includes(row.name)) throw new Error(`Applied migration is missing: ${row.name}`);
     }
+
     const completed: string[] = [];
     for (const name of ordered) {
       const version = Number(name.split('_')[0]);
@@ -39,6 +40,7 @@ export async function migrate(client: Client, directory = migrationDirectory): P
           throw new Error(`Applied migration changed: ${name}`);
         continue;
       }
+
       if (applied.rows.some((row) => row.version > version))
         throw new Error(`Migration is out of order: ${name}`);
       await client.query(sql);
@@ -48,6 +50,7 @@ export async function migrate(client: Client, directory = migrationDirectory): P
       );
       completed.push(name);
     }
+
     await client.query('COMMIT');
     return completed;
   } catch (error) {
@@ -60,6 +63,7 @@ async function main(): Promise<void> {
   if (!process.env.DATABASE_URL)
     throw new Error('Set DATABASE_URL to the target PostgreSQL database.');
   const client = new Client({ connectionString: process.env.DATABASE_URL });
+
   try {
     await client.connect();
     const completed = await migrate(client);

@@ -41,7 +41,9 @@ export default function Contact() {
     role: params.get('role') || '',
     consent: false,
   });
+
   const [errors, setErrors] = useState({});
+
   const [state, setState] = useState('idle');
   const [scenario, setScenario] = useState('success');
   const summary = useRef(null);
@@ -63,16 +65,20 @@ export default function Contact() {
       ...previous,
       [name]: type === 'checkbox' ? checked : value,
     }));
+
     if (errors[name])
       setErrors((previous) => {
         const next = { ...previous };
+
         delete next[name];
         return next;
       });
   };
+
   function submit(event) {
     event.preventDefault();
     const next = {};
+
     if (!values.name.trim()) next.name = 'Please enter your name.';
     if (values.method === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))
       next.email = 'Enter an email address, such as name@example.com.';
@@ -86,9 +92,11 @@ export default function Contact() {
       setState('offline');
       return;
     }
+
     setState('pending');
     timer.current = setTimeout(() => setState(scenario === 'error' ? 'error' : 'success'), 800);
   }
+
   const field = (name, label, type = 'text', optional = false) => (
     <div className="field">
       <label htmlFor={name}>

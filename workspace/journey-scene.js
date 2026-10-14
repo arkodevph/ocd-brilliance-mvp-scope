@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 export function mountJourneyScene(surface, options) {
   let disposed = false;
   const renderer = new THREE.WebGLRenderer({ antialias: true });
+
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor('#edf1e9');
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -28,12 +29,14 @@ export function mountJourneyScene(surface, options) {
     'centripetal',
   );
   const material = (color) => new THREE.MeshStandardMaterial({ color, roughness: 1 });
+
   function box(width, height, depth, x, z, color) {
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material(color));
     mesh.position.set(x, height / 2 - 0.15, z);
     scene.add(mesh);
     return mesh;
   }
+
   box(46, 0.2, 40, 0, 0, '#e1e8db').position.y = -0.2;
   const road = new THREE.Mesh(
     new THREE.TubeGeometry(route, 100, 1.5, 8, false),
@@ -64,6 +67,7 @@ export function mountJourneyScene(surface, options) {
       indices.push(v, v + 1, v + 2, v + 1, v + 3, v + 2);
     }
   });
+
   const routeGeometry = new THREE.BufferGeometry();
   routeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
   routeGeometry.setIndex(indices);
@@ -88,6 +92,7 @@ export function mountJourneyScene(surface, options) {
     box(3.5, height, 3, x, z, '#ced8c7');
     box(3.9, 0.3, 3.4, x, z, '#a5b59e').position.y = height;
   }
+
   for (const [x, z] of [
     [-19, -11],
     [-19, 11],
@@ -100,6 +105,7 @@ export function mountJourneyScene(surface, options) {
     leaves.position.set(x, 2.2, z);
     scene.add(leaves);
   }
+
   function label(text, position) {
     const canvas = document.createElement('canvas');
     canvas.width = 512;
@@ -114,11 +120,13 @@ export function mountJourneyScene(surface, options) {
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, depthTest: false }));
+
     sprite.position.copy(position);
     sprite.scale.set(9, 1.7, 1);
     scene.add(sprite);
     return { canvas, context, texture };
   }
+
   label(
     options.client ? 'Illustrative approach' : 'Office · demo',
     route
@@ -148,8 +156,10 @@ export function mountJourneyScene(surface, options) {
       release(car);
       return;
     }
+
     scene.add(car);
   });
+
   function resize() {
     const padding = options.padding();
     const width = Math.max(1, surface.clientWidth - padding.left - padding.right);
@@ -165,6 +175,7 @@ export function mountJourneyScene(surface, options) {
     renderer.setSize(surface.clientWidth, surface.clientHeight);
     renderer.setViewport(padding.left, 0, width, surface.clientHeight);
   }
+
   const observer = new ResizeObserver(resize);
   observer.observe(surface);
   resize();
@@ -172,6 +183,7 @@ export function mountJourneyScene(surface, options) {
     camera.position.set(threeD ? 32 : 0, threeD ? 40 : 60, threeD ? 40 : 0.01);
     camera.lookAt(0, 0, 0);
   };
+
   setPerspective(options.threeD);
   renderer.setAnimationLoop(() => {
     const state = options.snapshot();
@@ -182,6 +194,7 @@ export function mountJourneyScene(surface, options) {
       const direction = route.getTangentAt(progress);
       car.rotation.y = Math.atan2(direction.x, direction.z);
     }
+
     const segment = Math.floor(progress * 200);
     routeGeometry.setDrawRange(segment * 6, (200 - segment) * 6);
     remainingRoute.visible = Boolean(state.name) && state.phase !== 'stale' && !state.hideRoute;
@@ -199,8 +212,10 @@ export function mountJourneyScene(surface, options) {
       );
       texture.needsUpdate = true;
     }
+
     renderer.render(scene, camera);
   });
+
   return {
     ready,
     setPerspective,
@@ -214,6 +229,7 @@ export function mountJourneyScene(surface, options) {
     },
   };
 }
+
 function release(scene) {
   scene.traverse((object) => {
     object.geometry?.dispose();

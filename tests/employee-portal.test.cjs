@@ -5,9 +5,11 @@ const vm = require('node:vm');
 const portal = require('../workspace/employee-portal.js');
 function seed() {
   const box = { window: {} };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/data.js'), 'utf8'), box);
   return structuredClone(box.window.OCD_DEMO_SEED);
 }
+
 test('employee demo records initialize once and preserve saved state across reload', () => {
   const state = seed(),
     data = portal.ensure(state);
@@ -23,6 +25,7 @@ test('employee demo records initialize once and preserve saved state across relo
   );
   assert.throws(() => portal.markRead(state, 'WRK-02', 'EMP-WRK-01-roster'), /not available/);
 });
+
 test('leave requests count weekdays and remain pending without changing balances or assigned visits', () => {
   const state = seed(),
     data = portal.ensure(state);
@@ -55,9 +58,11 @@ test('leave requests count weekdays and remain pending without changing balances
   );
   assert.deepEqual(restored.bookings, bookings);
 });
+
 test('invalid, past, weekend-only, excessive and overlapping requests are rejected', () => {
   const state = seed(),
     input = { type: 'Annual leave', from: '2099-11-02', to: '2099-11-03' };
+
   for (const value of [
     { ...input, type: 'Unknown' },
     { ...input, from: '2020-01-01' },
@@ -72,6 +77,7 @@ test('invalid, past, weekend-only, excessive and overlapping requests are reject
   assert.throws(() => portal.requestLeave(state, 'WRK-01', input, '2026-10-10'), /overlap/);
   assert.throws(() => portal.requestLeave(state, 'missing', input, '2026-10-10'), /employee/);
 });
+
 test('withdrawal requires the owning employee and a pending request', () => {
   const state = seed();
   portal.ensure(state);

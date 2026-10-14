@@ -8,6 +8,7 @@
       cache: 'no-store',
       signal: signal || AbortSignal.timeout(15000),
     });
+
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'Shared arrival update failed.');
     return result;
@@ -27,10 +28,12 @@
           area: ctx.area,
           id: ctx.area === 'worker' ? ctx.workerId : ctx.clientId || '',
         });
+
         const response = await fetch(`/api/journeys?${params}`, {
           cache: 'no-store',
           signal: abort.signal,
         });
+
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'Shared arrival updates unavailable.');
         if (disposed) return;
@@ -38,6 +41,7 @@
           journeys: ctx.state.journeys,
           bookings: ctx.state.bookings,
         });
+
         for (const b of result.bookings) {
           const local = ctx.state.bookings.find((item) => item.id === b.id);
           if (local && ctx.area !== 'office')
@@ -47,9 +51,11 @@
               date: b.date,
               start: b.start,
             });
+
           if (ctx.area === 'worker' && (b.visited || b.status !== 'Confirmed'))
             delete ctx.state.journeys[b.id];
         }
+
         // Never replace an active worker GPS session with an older polling response.
         if (ctx.area !== 'worker') {
           for (const [id, journey] of Object.entries(ctx.state.journeys))
@@ -60,6 +66,7 @@
             if (!ctx.state.journeys[id]?.backendShared) ctx.state.journeys[id] = journey;
           }
         }
+
         if (
           before !==
           JSON.stringify({
@@ -75,6 +82,7 @@
         pending = false;
       }
     }
+
     poll();
     const timer = setInterval(poll, 5000);
     return () => {
@@ -93,7 +101,9 @@
       status: b.status,
       visited: ctx.state.visits.some((v) => v.bookingId === b.id && v.clockIn),
     }));
+
     return request({ action: 'publish', bookings });
   }
+
   window.OCD_JOURNEY_API = { request, subscribe, publish };
 })();

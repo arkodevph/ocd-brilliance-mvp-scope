@@ -25,6 +25,7 @@ export async function workflow(
       'Cannot reach the server. Check your connection and retry. For local use, start this project with npm start.',
     );
   }
+
   if (!response.headers.get('content-type')?.includes('application/json'))
     throw new Error(
       'The workflow API is unavailable. Run npm start locally, or configure the backend functions on the host.',
@@ -34,7 +35,7 @@ export async function workflow(
   return result;
 }
 
-export async function uploadVideo(file, postcode, uploads, onProgress) {
+export async function uploadVideo(file, postcode, uploads, onProgress, room) {
   let upload = uploads.get(file);
   if (!upload) {
     upload = {
@@ -45,20 +46,25 @@ export async function uploadVideo(file, postcode, uploads, onProgress) {
           size: file.size,
           postcode,
           consent: true,
+          ...(room ? { room } : {}),
         },
       })),
       offset: 0,
     };
+
     uploads.set(file, upload);
   }
+
   while (upload.offset < file.size) {
     const end = Math.min(upload.offset + Math.min(upload.chunkBytes, 1024 * 1024), file.size);
     const result = await workflow('video-upload', {
       query: { id: upload.id, offset: String(upload.offset) },
       body: file.slice(upload.offset, end),
     });
+
     upload.offset = result.received;
     onProgress(Math.round((upload.offset / file.size) * 100));
   }
+
   return { id: upload.id };
 }

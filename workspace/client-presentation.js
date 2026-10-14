@@ -413,6 +413,7 @@
     const n = Number(value);
     return Number.isFinite(n) && n >= 0 && n <= Number.MAX_SAFE_INTEGER ? n : null;
   };
+
   function estimate(input = {}) {
     const volume = number(input.volume),
       manual = number(input.manualMinutes),
@@ -420,10 +421,12 @@
       rate = number(input.hourlyRate);
     if ([volume, manual, assisted].includes(null))
       return { ready: false, hours: null, costEquivalent: null };
+
     const savedMinutes = (manual - assisted) * volume,
       hours = savedMinutes / 60;
     if (!Number.isFinite(savedMinutes) || Math.abs(savedMinutes) > Number.MAX_SAFE_INTEGER)
       return { ready: false, hours: null, costEquivalent: null };
+
     const cost = rate === null ? null : hours * rate;
     return {
       ready: true,
@@ -434,10 +437,12 @@
           : null,
     };
   }
+
   function comparison(baseline, pilot, direction = 'lower') {
     const before = number(baseline),
       after = number(pilot);
     if ([before, after].includes(null)) return { ready: false, change: null, improvement: null };
+
     const change = after - before;
     return {
       ready: true,
@@ -445,6 +450,7 @@
       improvement: direction === 'higher' ? change > 0 : change < 0,
     };
   }
+
   function evidenceSummary(response) {
     const c = response?.capture;
     const authenticated =
@@ -456,6 +462,7 @@
         nativeVerified: false,
         reason: c ? 'Only example or unverified data is loaded.' : 'No account evidence is loaded.',
       };
+
     const p = c.proof,
       rb = p?.readback,
       args = p?.proposal?.args;
@@ -496,6 +503,7 @@
       restConfigured: response.rest?.configured === true,
     };
   }
+
   const decimal = (n) => new Intl.NumberFormat('en-AU', { maximumFractionDigits: 2 }).format(n);
   const money = (n) =>
     new Intl.NumberFormat('en-AU', {
@@ -527,6 +535,7 @@
       calculated = estimate(e),
       proof = input.evidence || { available: false },
       score = input.score || {};
+
     const lines = [
       '# OCD Brilliance — Client automation presentation and pilot report',
       '',
@@ -648,6 +657,7 @@
     );
     return lines.join('\n');
   }
+
   const ui = {
     section: 'overview',
     scenario: 'onboarding',
@@ -662,6 +672,7 @@
     evidenceError: '',
     preparation: '',
   };
+
   let active = null;
   const tag = (label, tone = '') => `<span class="cp-tag ${tone}">${esc(label)}</span>`;
   const link = (route, text, primary = false) =>
@@ -671,39 +682,47 @@
   function banner() {
     return '<a class="cp-launch" href="#/office/presentation"><span><strong>Present the automation to the client</strong><small>Business benefits, working examples and a pilot report</small></span><span aria-hidden="true">Open walkthrough →</span></a>';
   }
+
   function overview() {
     return `<div class="cp-hero"><div><span class="eyebrow">LESS ADMIN. CLEARER FOLLOW-THROUGH.</span><h2>More time for people.<br>Less time chasing paperwork.</h2><p>Prepare the repetitive work, put exceptions in front of the right person, and check the result in ShiftCare.</p><div class="cp-hero-actions"><button class="btn primary" type="button" data-client-scenario="onboarding">Start with an intake →</button>${link('office/presentation/use-cases', 'Explore the use cases')}</div></div><aside class="cp-hero-note"><span class="cp-overline">THE CLIENT’S FIRST PRIORITY</span><blockquote>Move information from emailed forms and scans into the right records, with staff checking the result.</blockquote><p>Paraphrased from the 5 October meeting.</p><div class="cp-counts"><div><strong>7</strong><span>core areas</span></div><div><strong>14</strong><span>planned workflows</span></div></div></aside></div>
       <section class="cp-block"><div class="cp-section-line"><h3>A better way to handle the same work</h3>${tag('Expected benefits · to measure in a pilot', 'amber')}</div><div class="cp-before-after"><article><span class="cp-overline">CURRENT PROCESS</span><h4>Check, copy, chase, repeat</h4><ul><li>Copy details from forms into existing systems.</li><li>Revisit email and reminder replies to see what changed.</li><li>Call around for cover and gather bookkeeping information.</li><li>Follow up again when ownership or the result is unclear.</li></ul></article><article><span class="cp-overline">PROPOSED PROCESS</span><h4>Prepare, review, verify, follow through</h4><ul><li>Review prepared information beside its source.</li><li>Work from a queue with an owner and a next action.</li><li>Focus on incomplete, risky or exceptional cases.</li><li>Close work after the native result and handoff are checked.</li></ul></article></div></section>
       <section class="cp-block"><h3>Keep the systems that already run the business</h3><div class="cp-system-grid"><article><span class="cp-system-number">01</span><h4>ShiftCare</h4><p>The main record for participants, staff, rosters, care, documents and service billing.</p>${tag('Source of truth')}</article><article><span class="cp-system-number">02</span><h4>Automation + web app</h4><p>Prepare proposals, assign reviews, track exceptions and show checked outcomes.</p>${tag('Supporting layer', 'blue')}</article><article><span class="cp-system-number">03</span><h4>Staff + bookkeeper</h4><p>Approve decisions, resolve unclear cases and keep Xero/payroll release responsibilities.</p>${tag('Accountable people')}</article></div><p class="cp-caption">The planned path is: source → checked proposal → approval → supported ShiftCare action → independent result check → contact/accounting handoff. The prototype simulates operational changes; saved real evidence is shown separately.</p></section>
       <div class="cp-benefit-strip"><article><strong>Reduce manual effort</strong><span>Less re-entry and repeated checking.</span></article><article><strong>Reduce avoidable errors</strong><span>Exact matches, review and result checks.</span></article><article><strong>Improve follow-through</strong><span>One owner; failed steps stay visible.</span></article></div>`;
   }
+
   function useCases() {
     return `${heading('BASED ON THE CLIENT’S WORK', 'Seven automation areas, one supporting layer', 'Start with paperwork. Extend to other repeated tasks once the account, policies and connections are validated. Seven core areas cover W01–W13; booking and arrival support is W14.')}<div class="cp-use-grid">${areas.map((a, index) => `<article class="cp-use-card" id="cp-use-${a.id}"><div class="cp-card-top"><span class="cp-card-index">${String(index + 1).padStart(2, '0')}</span>${tag(a.workflows.join(' · '), 'blue')}</div><h3>${esc(a.title)}</h3><p class="cp-pain">${esc(a.pain)}</p><dl><div><dt>Trigger</dt><dd>${esc(a.trigger)}</dd></div><div><dt>What we handle</dt><dd>${esc(a.handles)}</dd></div><div><dt>Checked outcome</dt><dd>${esc(a.outcome)}</dd></div><div><dt>Staff / ShiftCare step</dt><dd>${esc(a.human)}</dd></div><div class="cp-benefit"><dt>Expected business benefit</dt><dd>${esc(a.benefit)}</dd></div><div><dt>How to measure it</dt><dd>${esc(a.metric)}</dd></div></dl><button class="btn" data-client-scenario="${a.demo}" type="button">Show this example →</button></article>`).join('')}</div><section class="cp-block"><div class="cp-section-line"><h3>What the supporting subsystem adds</h3>${tag('Booking / arrival · W14', 'blue')}</div><div class="cp-support-grid"><article><h4>Office control</h4><p>An owned queue, source comparison, review history and recovery steps make the work visible.</p></article><article><h4>Worker workflow</h4><p>Offers, availability and document follow-up support workers. Care entry and real offer acceptance stay in ShiftCare.</p></article><article><h4>Participant experience</h4><p>Bookings, requests, shared documents and privacy-aware arrival information can reduce avoidable calls.</p></article></div><p class="cp-caption">The three workspaces use sample personas. The Mapbox map renders, while journeys and ETA are simulated. Mailbox connections, permissions, sending, unattended jobs and device updates need pilot implementation.</p>${link('office/presentation/walkthrough', 'Walk through the examples', true)}</section>`;
   }
+
   function scenarioRoute(context, scenario) {
     const job = context.state.automation?.jobs.find((j) => j.kind === scenario.kind);
     return job ? `office/automation/${job.id}` : scenario.route || 'office/automation';
   }
+
   function walkthrough(context) {
     const s = scenarios.find((s) => s.id === ui.scenario) || scenarios[0],
       step = s.steps[Math.min(ui.step, s.steps.length - 1)];
     return `${heading('A PRACTICAL CLIENT DEMO', 'Follow one piece of work from start to finish', 'These steps explain the story. Open the working example to perform the sample approvals and checks; moving through this guide does not execute an automation.')}<div class="cp-demo-layout"><nav class="cp-scenarios" aria-label="Demo scenarios">${scenarios.map((scenario) => `<button type="button" data-client-scenario="${scenario.id}" ${s.id === scenario.id ? 'aria-current="true"' : ''}><strong>${esc(scenario.name)}</strong>${scenario.label ? `<small>${scenario.label}</small>` : ''}</button>`).join('')}</nav><section class="cp-demo-stage"><div class="cp-section-line"><span class="cp-overline">${esc(s.name)}</span>${tag('Fictional sample · no ShiftCare write', 'blue')}</div><p class="cp-demo-why">${esc(s.why)}</p><ol class="cp-step-list" aria-label="Walkthrough steps">${s.steps.map((v, i) => `<li><button type="button" data-client-step="${i}" ${ui.step === i ? 'aria-current="step"' : ''}><span>${i + 1}</span>${esc(v[0])}</button></li>`).join('')}</ol><div class="cp-step-content" aria-live="polite"><span class="eyebrow">STEP ${ui.step + 1} OF ${s.steps.length}</span><h3>${esc(step[0])}</h3><p>${esc(step[1])}</p><aside><strong>What to show and explain</strong><p>${esc(step[2])}</p></aside></div><div class="cp-step-actions"><button class="btn" data-client-action="previous" type="button" ${ui.step === 0 ? 'disabled' : ''}>← Previous</button><span>${ui.step + 1} / ${s.steps.length}</span><button class="btn primary" data-client-action="next" type="button" ${ui.step === s.steps.length - 1 ? 'disabled' : ''}>Next step →</button></div><div class="cp-demo-open">${link(scenarioRoute(context, s), 'Open working example', true)}<button class="btn" data-client-action="prepare" type="button">Prepare sample cases</button><p data-client-preparation role="status">${esc(ui.preparation || 'Prepares fictional inbox cases once. It keeps existing case history and never touches native ShiftCare data.')}</p></div></section></div><div class="cp-failure"><div><span class="eyebrow">SHOW A FAILURE, TOO</span><h3>A visible exception is better than a hidden mistake</h3><p>Demonstrate a missing field, an unclear reply or a lost response. The case keeps its owner and explains the next action. An unknown write is checked before another attempt.</p></div>${link('office/automation', 'Open the exception queue')}</div>`;
   }
+
   function estimateResult() {
     const result = estimate(ui.estimate);
     if (!result.ready)
       return '<span class="cp-overline">MONTHLY CAPACITY ESTIMATE</span><strong class="cp-value-number">Not calculated</strong><p>Enter case volume and both handling times. Empty fields are unknown, not zero.</p>';
     return `<span class="cp-overline">${result.hours < 0 ? 'MONTHLY ADDITIONAL EFFORT' : 'MONTHLY CAPACITY RELEASED'}</span><strong class="cp-value-number">${decimal(Math.abs(result.hours))}<small>staff hours</small></strong><p>${result.hours < 0 ? 'This assumption uses more staff time. Review the process before claiming a benefit.' : 'Staff time potentially available for other work. This is an estimate, not a measured result.'}</p><div class="cp-value-cost"><strong>${result.costEquivalent === null ? 'Cost equivalent not entered' : money(result.costEquivalent)}</strong><span>Gross staff-time cost equivalent / month. Capacity value, not a cash saving; project and operating costs are excluded.</span></div>`;
   }
+
   function scoreChange(metric) {
     const input = ui.score[metric.id] || {},
       c = comparison(input.baseline, input.pilot, metric.direction);
     if (!c.ready) return '<span class="cp-muted">Not compared</span>';
     return `<strong class="${c.change === 0 ? 'cp-neutral' : c.improvement ? 'cp-positive' : 'cp-negative'}">${c.change > 0 ? '+' : ''}${decimal(c.change)}</strong><small>${c.change === 0 ? 'No change' : c.improvement ? 'Favourable direction' : 'Needs review'}${ui.baselinePeriod.trim() && ui.pilotPeriod.trim() ? ' · verify comparable work' : ' · periods missing'}</small>`;
   }
+
   function value() {
     return `${heading('A BUSINESS CASE YOU CAN CHECK', 'Measure effort, accuracy and follow-through', 'Agree a baseline before the pilot. Compare similar work, include review and exception time, and report what is still manual. No client savings are pre-filled.')}<section class="cp-block"><div class="cp-section-line"><h3>Estimate potential capacity</h3>${tag(ui.estimateBasis === 'illustrative' ? 'Illustrative example · not client data' : 'Assumptions · not measured savings', 'amber')}</div><div class="cp-value-grid"><form id="client-value-form" class="cp-value-form"><label>Cases per month<input type="number" name="volume" min="0" step="1" inputmode="numeric" value="${esc(ui.estimate.volume ?? '')}" placeholder="e.g. monthly intakes"></label><label>Manual minutes per case<input type="number" name="manualMinutes" min="0" step="any" inputmode="decimal" value="${esc(ui.estimate.manualMinutes ?? '')}" placeholder="Before automation"></label><label>Assisted minutes per case<input type="number" name="assistedMinutes" min="0" step="any" inputmode="decimal" value="${esc(ui.estimate.assistedMinutes ?? '')}" placeholder="Include review + exceptions"></label><label>Hourly staff cost · AUD · optional<input type="number" name="hourlyRate" min="0" step="any" inputmode="decimal" value="${esc(ui.estimate.hourlyRate ?? '')}" placeholder="For a cost equivalent"></label><p class="cp-caption">Capacity = cases × (manual − assisted minutes) ÷ 60. Savings must include the staff work left in the process.</p><div class="cp-form-actions"><button class="btn" data-client-action="illustrate" type="button">Try illustrative example</button><button class="btn" data-client-action="clear-estimate" type="button">Clear estimate</button></div></form><aside class="cp-value-result" data-client-estimate aria-live="polite">${estimateResult()}</aside></div></section><section class="cp-block"><div class="cp-section-line"><h3>Baseline and pilot scorecard</h3>${tag('Presenter-entered observations', 'blue')}</div><p class="cp-caption">These entries are not independently verified. Keep the source log and underlying case counts. A raw change is not sufficient to prove that automation caused the result.</p><div class="cp-periods"><label>Baseline period<input data-client-period="baselinePeriod" value="${esc(ui.baselinePeriod)}" maxlength="100" placeholder="Dates + case counts"></label><label>Pilot period<input data-client-period="pilotPeriod" value="${esc(ui.pilotPeriod)}" maxlength="100" placeholder="Dates + case counts"></label></div><div class="cp-score-wrap"><table class="cp-score"><thead><tr><th>Measure / unit</th><th>Baseline</th><th>Pilot</th><th>Raw change</th></tr></thead><tbody>${metrics.map((m) => `<tr><th scope="row"><strong>${m.label}</strong><small>${m.unit} · ${m.direction === 'lower' ? 'lower' : 'higher'} is favourable</small><span>${m.evidence}</span></th><td><input type="number" data-client-metric="${m.id}" data-client-observation="baseline" aria-label="${m.label} baseline" min="0" ${m.unit.startsWith('per 100') ? 'max="100"' : ''} step="any" value="${esc(ui.score[m.id]?.baseline ?? '')}" placeholder="—"></td><td><input type="number" data-client-metric="${m.id}" data-client-observation="pilot" aria-label="${m.label} pilot" min="0" ${m.unit.startsWith('per 100') ? 'max="100"' : ''} step="any" value="${esc(ui.score[m.id]?.pilot ?? '')}" placeholder="—"></td><td data-client-change="${m.id}">${scoreChange(m)}</td></tr>`).join('')}</tbody></table></div></section><section class="cp-report-callout"><div><h3>A report the client can take away</h3><p>Download the scope, expected benefits, saved proof status, assumptions and scorecard as Markdown. Entries stay in this page’s memory until reload; save the report to keep them. Record details and credentials are excluded.</p></div><button class="btn primary" data-client-action="report" type="button">Download client report .md</button></section>`;
   }
+
   function formatDate(value, timeZone) {
     if (!value) return 'Not recorded';
     try {
@@ -716,6 +735,7 @@
       return value;
     }
   }
+
   function proofBlock() {
     const e = ui.evidence;
     if (!e)
@@ -724,9 +744,11 @@
       return `<div class="cp-proof-empty"><strong>${esc(e.reason)}</strong><p>Use the fictional walkthrough to explain the design. Open Integration proof to load and check authorised evidence; this screen cannot establish native success from sample data.</p>${link('office/verification', 'Open Integration proof')}</div>`;
     return `<div class="cp-proof-summary"><article><span>Saved ${e.method === 'mcp' ? 'authenticated assistant reads' : 'authenticated website reads'}</span><strong>${e.reads} read receipts</strong><p>${e.shifts} visible shifts · ${e.participants} participants · ${e.staff} staff</p><small>Captured ${esc(formatDate(e.capturedAt, e.timeZone))} · ${esc(e.timeZone)}. ${e.complete ? 'The requested shift scope is marked complete.' : 'The visible scope requires review.'} Not a live connection check.</small></article><article><span>Matching saved checks</span><strong>${e.findings === null ? 'No saved run selected' : `${e.findings} review signals`}</strong><p>${e.findings === null ? 'Run captured-data checks in Integration proof, then refresh this saved summary.' : 'Items for a person to investigate. These are not confirmed missed services or financial mistakes.'}</p><small>Clicking this presentation does not re-read ShiftCare or execute a check run.</small></article><article><span>Native action proof</span><strong>${e.nativeVerified ? 'One follow-up checked' : 'No verified write loaded'}</strong><p>${e.nativeVerified ? `Administrative action ${esc(e.actionId)} was independently read back. This is one supervised test, not the whole automation.` : 'Sample approvals are separate from native ShiftCare proof.'}</p><small>${e.nativeVerified ? `Read back ${esc(formatDate(e.verifiedAt, e.timeZone))} · status at that read: ${esc(e.statusAtRead)}. Current completion is not polled.` : 'Native actions need exact approval, supported account access and an independent result check.'}</small></article></div><div class="cp-form-actions">${link('office/verification', 'Inspect the saved evidence')}<button class="btn" type="button" data-client-action="refresh-proof">Refresh saved summary</button></div>`;
   }
+
   function pilot() {
     return `${heading('START SMALL, THEN MEASURE', 'A supervised pilot before a wider rollout', 'Begin with the strongest client need. Validate access and exact actions in the intended account, measure total handling effort, and expand only when the results justify it.')}<section class="cp-block"><div class="cp-section-line"><h3>What we can honestly show today</h3>${tag('Prototype + dated evidence', 'blue')}</div><div class="cp-status-grid"><article><span class="cp-status-dot sample"></span><h4>Interactive sample</h4><p>Field review, approvals, duplicate checks, cover acceptance, separate handoffs and failure recovery work with fictional records.</p></article><article><span class="cp-status-dot recorded"></span><h4>Recorded native proof</h4><p>Saved authenticated trial reads and a checked administrative task can be shown when the private evidence is loaded below.</p></article><article><span class="cp-status-dot planned"></span><h4>Production pilot work</h4><p>Connect the actual sources and supported actions, add secure identities and background jobs, and validate sending, recovery and reporting.</p></article></div><div data-client-proof aria-live="polite">${proofBlock()}</div></section><section class="cp-block"><h3>A practical rollout</h3><ol class="cp-pilot-list"><li><span>01</span><div><h4>Agree the baseline and rules</h4><p>Choose a representative intake form, case volume, reviewer, required fields and success thresholds. Confirm consent and the intended ShiftCare account.</p></div></li><li><span>02</span><div><h4>Pilot reviewed onboarding</h4><p>Validate the chosen reads, writes and result checks. Run a limited set of real cases with staff approval, an exception owner and a separate accounting handoff.</p></div></li><li><span>03</span><div><h4>Review time and accuracy</h4><p>Compare equivalent cases, including review and recovery time. Report corrections, remaining manual work and total operating costs.</p></div></li><li><span>04</span><div><h4>Extend the workflows that earn their place</h4><p>Add reply/cancellation handling, then cover, documents and bookkeeping once policies and connections are confirmed. Validate live arrival information separately.</p></div></li></ol></section><div class="cp-pilot-bottom"><article class="cp-block"><h3>Decisions to agree with the client</h3><ul><li>Which forms, messages and periods are in the first pilot?</li><li>Who approves each change and owns a failed step?</li><li>Which cancellation, availability and communication rules apply?</li><li>What counts as success, and where will the evidence be logged?</li><li>Which existing exports and native tools should be retained?</li></ul></article><article class="cp-block"><h3>Explain the advantage plainly</h3><p>“Your team keeps working in ShiftCare. We prepare repetitive work and show what needs a decision. You should spend less time copying and chasing, and have a clearer record of what was checked. We will measure those benefits in a small pilot before expanding.”</p>${link('office/presentation/value', 'Set up the value report', true)}</article></div>`;
   }
+
   function body(context) {
     return {
       overview,
@@ -736,40 +758,48 @@
       pilot,
     }[ui.section]();
   }
+
   function page(context, section) {
     ui.section = sections.some((s) => s[0] === section) ? section : 'overview';
     return `<section class="client-presentation" id="client-presentation"><header class="cp-header"><div><span class="eyebrow">OCD BRILLIANCE · CLIENT WALKTHROUGH</span><h1>Automation, explained through your work.</h1><p>A proposed workflow, a practical prototype and a measurable pilot.</p></div><div class="cp-header-actions"><button class="btn" data-client-action="presentation" type="button" aria-pressed="${ui.presentation}">${ui.presentation ? 'Exit presentation' : 'Presentation view'}</button><button class="btn" data-client-action="report" type="button">Download report .md</button><button class="btn" data-client-action="print" type="button">Print view</button></div></header><nav class="cp-tabs" aria-label="Client walkthrough sections">${sections.map(([id, label], i) => `<a href="#/office/presentation/${id}" ${ui.section === id ? 'aria-current="page"' : ''}><span>${i + 1}</span>${label}</a>`).join('')}</nav><div data-client-content>${body(context)}</div><footer class="cp-footer"><span>Designed from the 5 October client workflow. Expected benefits must be measured in a pilot.</span><a href="#/office/overview">Return to office →</a></footer></section>`;
   }
+
   function unmount() {
     active?.controller.abort();
     active = null;
     root.document?.body.classList.remove('client-presentation-mode');
   }
+
   function mount(element, context) {
     unmount();
     const controller = new AbortController(),
       ctx = { element, context, controller };
+
     active = ctx;
     const alive = () => active === ctx && element.isConnected;
     const redraw = () => {
       if (alive()) element.querySelector('[data-client-content]').innerHTML = body(context);
     };
+
     const mode = () => {
       root.document.body.classList.toggle('client-presentation-mode', ui.presentation);
       const button = element.querySelector('[data-client-action="presentation"]');
       button.textContent = ui.presentation ? 'Exit presentation' : 'Presentation view';
       button.setAttribute('aria-pressed', String(ui.presentation));
     };
+
     const loadEvidence = async () => {
       try {
         const response = await root.fetch('/api/integration-proof', {
           cache: 'no-store',
           signal: controller.signal,
         });
+
         if (response.status === 401) {
           root.dispatchEvent(new Event('ocd-session-expired'));
           return;
         }
+
         if (!response.ok)
           throw new Error(
             'Saved evidence is unavailable. Open Integration proof to check the connection.',
@@ -784,9 +814,11 @@
         ui.evidenceError =
           'Saved evidence is unavailable. Open Integration proof to check the connection.';
       }
+
       const box = element.querySelector('[data-client-proof]');
       if (box && alive()) box.innerHTML = proofBlock();
     };
+
     element.addEventListener(
       'click',
       (event) => {
@@ -799,11 +831,13 @@
           else redraw();
           return;
         }
+
         if (target.dataset.clientStep !== undefined) {
           ui.step = Number(target.dataset.clientStep);
           redraw();
           return;
         }
+
         switch (target.dataset.clientAction) {
           case 'presentation':
             ui.presentation = !ui.presentation;
@@ -841,11 +875,13 @@
               assistedMinutes: '8',
               hourlyRate: '35',
             };
+
             ui.estimateBasis = 'illustrative';
             redraw();
             break;
           case 'clear-estimate':
             ui.estimate = {};
+
             ui.estimateBasis = 'assumptions';
             redraw();
             break;
@@ -863,6 +899,7 @@
               pilotPeriod: ui.pilotPeriod,
               evidence: ui.evidence,
             });
+
             const url = root.URL.createObjectURL(
               new Blob([report], { type: 'text/markdown;charset=utf-8' }),
             );
@@ -892,12 +929,14 @@
             .closest('.cp-block')
             .querySelector('.cp-tag').textContent = 'Assumptions · not measured savings';
         }
+
         if (target.dataset.clientMetric) {
           (ui.score[target.dataset.clientMetric] ||= {})[target.dataset.clientObservation] = target
             .validity.valid
             ? target.value
             : '';
         }
+
         if (target.dataset.clientPeriod) ui[target.dataset.clientPeriod] = target.value;
         if (target.dataset.clientMetric || target.dataset.clientPeriod)
           for (const metric of metrics) {
@@ -910,6 +949,7 @@
     element.addEventListener('submit', (event) => event.preventDefault(), {
       signal: controller.signal,
     });
+
     root.document.addEventListener(
       'keydown',
       (event) => {
@@ -923,6 +963,7 @@
     mode();
     loadEvidence();
   }
+
   return {
     sections,
     areas,

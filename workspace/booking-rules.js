@@ -12,11 +12,13 @@
     Transport: ['client-transport'],
     'Support coordination': ['support-coordination'],
   };
+
   function requiredSkills(booking) {
     return [
       ...new Set([...(serviceSkills[booking.service] || []), ...(booking.requiredSkills || [])]),
     ];
   }
+
   function assignmentIssue(worker, booking, bookings = []) {
     if (!worker?.approved) return 'Worker approval is required.';
     if (!worker.services?.includes(booking.service))
@@ -48,6 +50,7 @@
       return 'Worker has another booking at this time.';
     return '';
   }
+
   function distanceKm(origin, destination) {
     const valid = (value) =>
       Array.isArray(value) &&
@@ -64,6 +67,7 @@
         Math.sin(rad(destination[0] - origin[0]) / 2) ** 2;
     return 6371 * 2 * Math.asin(Math.sqrt(Math.min(1, a)));
   }
+
   function candidates(workers, booking, participant, bookings = []) {
     return workers
       .filter((worker) => !assignmentIssue(worker, booking, bookings))
@@ -80,6 +84,7 @@
           a.worker.name.localeCompare(b.worker.name),
       );
   }
+
   function previousBooking(bookings, participantId) {
     return (
       bookings
@@ -89,6 +94,7 @@
         .sort((a, b) => `${b.date}${b.start}`.localeCompare(`${a.date}${a.start}`))[0] || null
     );
   }
+
   return {
     requiredSkills,
     assignmentIssue,

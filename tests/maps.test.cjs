@@ -36,6 +36,7 @@ async function setup(area = 'worker', options = {}) {
     removeEventListener() {},
     getBoundingClientRect: () => ({ top: 0, bottom: 600, left: 0, right: 350 }),
   });
+
   const root = {
     ...node(),
     addEventListener(event, handler) {
@@ -46,21 +47,27 @@ async function setup(area = 'worker', options = {}) {
       return nodes.get(selector);
     },
   };
+
   class MapboxMap {
     constructor(config) {
       this.config = config;
       this.sources = new Map();
       this.layers = new Map();
       this.events = {};
+
       maps.push(this);
     }
+
     on(event, handler) {
       this.events[event] = handler;
     }
+
     addControl() {}
+
     addModel(id, url) {
       this.model = { id, url };
     }
+
     addSource(id, source) {
       this.sources.set(id, {
         data: source.data,
@@ -69,37 +76,48 @@ async function setup(area = 'worker', options = {}) {
         },
       });
     }
+
     getSource(id) {
       return this.sources.get(id);
     }
+
     addLayer(layer) {
       this.layers.set(layer.id, layer);
     }
+
     setPaintProperty(id, property, value) {
       this.layers.get(id).paint[property] = value;
     }
+
     fitBounds() {}
+
     resize() {}
+
     remove() {
       this.removed = true;
     }
   }
+
   class Marker {
     constructor(options) {
       this.options = options;
       markers.push(this);
     }
+
     setLngLat(position) {
       this.position = position;
       return this;
     }
+
     addTo() {
       return this;
     }
+
     remove() {
       this.removed = true;
     }
   }
+
   const box = {
     window: {
       isSecureContext: true,
@@ -137,6 +155,7 @@ async function setup(area = 'worker', options = {}) {
     clearTimeout() {},
     ResizeObserver: class {
       observe() {}
+
       disconnect() {}
     },
     AbortController,
@@ -149,6 +168,7 @@ async function setup(area = 'worker', options = {}) {
       throw new Error('Directions offline');
     },
   };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/data.js'), 'utf8'), box);
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/maps.js'), 'utf8'), box);
   const state = structuredClone(box.window.OCD_DEMO_SEED);
@@ -161,6 +181,7 @@ async function setup(area = 'worker', options = {}) {
     bookingId: 'BKG-501',
     save: () => saves++,
   });
+
   await new Promise((resolve) => setImmediate(resolve));
   if (maps[0] && options.load !== false) maps[0].events.load();
   return {
@@ -239,6 +260,7 @@ async function locationFixture(area = 'worker', fetchEta) {
       this.cleared.push(id);
     },
   };
+
   let duration = 1200;
   const requests = [];
   const f = await setup(area, {
@@ -253,11 +275,13 @@ async function locationFixture(area = 'worker', fetchEta) {
         };
       }),
   });
+
   const b = f.state.bookings.find((b) => b.id === 'BKG-501');
   const fix = {
     timestamp: 1000000,
     coords: { longitude: 115.123456, latitude: -31.123456, accuracy: 15 },
   };
+
   return {
     ...f,
     gps,
@@ -298,6 +322,7 @@ test('location ETA needs its own consent, persists no origin, and shows the car 
   f.advance(15000);
   f.setDuration(300);
   await f.emit({ ...f.fix, timestamp: 1015000 });
+
   assert.match(f.root.querySelector('[data-map-detail]').innerHTML, /Worker is nearby/);
   assert.equal(f.maps[0].getSource('booking-vehicle').data.geometry.type, 'Point');
   assert.equal(f.maps[0].getSource('booking-travelled').data.features.length, 0);
@@ -316,14 +341,17 @@ test('denied location withdraws ETA; fresh fixes can recover; arrival stops watc
   f.setDuration(120);
   await f.emit();
   f.gps.error({ code: 1 });
+
   assert.equal(f.access.snapshot(f.state, f.b, 1000000).remainingMinutes, null);
   assert.equal(f.maps[0].getSource('booking-vehicle').data.features.length, 0);
   f.advance(15000);
   await f.emit({ ...f.fix, timestamp: 1015000 });
+
   assert.equal(f.access.snapshot(f.state, f.b, 1015000).nearby, true);
   f.click('arrive');
   assert.deepEqual(f.gps.cleared, [7]);
   await f.emit({ ...f.fix, timestamp: 1015000 });
+
   assert.equal(f.state.journeys[f.b.id].phase, 'arrived');
 });
 
@@ -340,6 +368,7 @@ test('old, inaccurate and future fixes never produce a fresh ETA', async (t) => 
     await f.emit(fix);
     assert.equal(f.access.snapshot(f.state, f.b, 1000000).phase, 'stale');
   }
+
   assert.equal(f.requests.length, 0);
 });
 
@@ -365,6 +394,7 @@ test('late ETA responses cannot restart stopped, cancelled or unmounted sharing'
       ok: true,
       json: async () => ({ code: 'Ok', routes: [{ duration: 120 }] }),
     });
+
     await new Promise((done) => setImmediate(done));
     assert.deepEqual(f.gps.cleared, [7]);
     assert.equal(f.access.snapshot(f.state, f.b, 1000000).remainingMinutes, null);
@@ -392,6 +422,7 @@ test('client sees ETA first and an approximate nearby car without requesting emp
     updatedAt: 1000000,
     remainingMinutes: 20,
   };
+
   f.advance(100);
   assert.equal(f.maps[0].getSource('booking-vehicle').data.features.length, 0);
   f.state.journeys[f.b.id].remainingMinutes = 5;
@@ -424,6 +455,7 @@ test('missing GPS or Mapbox configuration offers manual arrival without a fabric
 
 test('directions failures and GPS errors during a request cannot leave a live estimate', async (t) => {
   const f = await locationFixture('worker', async () => ({ ok: false }));
+
   t.after(() => f.access.unmount());
   f.root.querySelector('[data-journey-consent]').checked = true;
   f.click('location');
@@ -442,10 +474,12 @@ test('directions failures and GPS errors during a request cannot leave a live es
   g.click('location');
   g.gps.success(g.fix);
   g.gps.error({ code: 2 });
+
   resolve({
     ok: true,
     json: async () => ({ code: 'Ok', routes: [{ duration: 120 }] }),
   });
+
   await new Promise((done) => setImmediate(done));
   assert.equal(g.state.journeys[g.b.id].phase, 'stale');
 });
@@ -487,6 +521,7 @@ test('the sedan nose faces its direction of travel on both legs of the route', a
       (-Math.sin(rotation) * east - Math.cos(rotation) * north) / Math.hypot(east, north);
     assert.ok(alignment > 0.99, `Car nose must face forward, alignment was ${alignment}`);
   }
+
   f.access.unmount();
 });
 
@@ -524,6 +559,7 @@ test('client view cannot start a worker journey and does not expose the worker r
     running: true,
     playbackMs: 60000,
   };
+
   f.advance(10000);
   const clientCar = f.maps[0].getSource('booking-vehicle');
   assert.equal(clientCar.data.features.length, 0, 'ETA only until nearby');
@@ -538,18 +574,24 @@ test('client view cannot start a worker journey and does not expose the worker r
 
 test('missing Mapbox configuration shows connection guidance without an illustrated scene', async (t) => {
   const f = await setup('worker', { token: '' });
+
   t.after(() => f.access.unmount());
   assert.equal(f.maps.length, 0);
   assert.equal(f.root.querySelector('[data-map-fallback]').hidden, false);
-  assert.match(f.root.querySelector('[data-map-fallback]').innerHTML, /configure a Mapbox public token/);
+  assert.match(
+    f.root.querySelector('[data-map-fallback]').innerHTML,
+    /configure a Mapbox public token/,
+  );
   assert.equal(f.root.querySelector('[data-map-connection]').textContent, 'Mapbox unavailable');
 });
 
 test('Mapbox rejection removes the map and exposes a retry instead of a fictional scene', async (t) => {
   const f = await setup('worker', { load: false });
+
   t.after(() => f.access.unmount());
   assert.equal(f.maps[0].config.style, 'mapbox://styles/mapbox/standard');
   f.maps[0].events.error({ error: { status: 403 } });
+
   assert.equal(f.maps[0].removed, true);
   assert.equal(f.root.querySelector('[data-map-fallback]').hidden, false);
   assert.match(f.root.querySelector('[data-map-fallback]').innerHTML, /allowed URLs/);
@@ -560,6 +602,7 @@ test('Mapbox rejection removes the map and exposes a retry instead of a fictiona
 
 test('unsupported WebGL reports Mapbox unavailable', async (t) => {
   const f = await setup('worker', { supported: false });
+
   t.after(() => f.access.unmount());
   assert.equal(f.maps.length, 0);
   assert.match(f.root.querySelector('[data-map-fallback]').innerHTML, /WebGL support/);

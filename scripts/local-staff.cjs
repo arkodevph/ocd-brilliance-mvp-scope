@@ -14,6 +14,7 @@ async function seedLocalStaff() {
   const dir = process.env.WORKFLOW_DATA_DIR || path.join(__dirname, '..', '.local');
   const file = path.join(dir, 'seeded-staff.json');
   await fs.mkdir(dir, { recursive: true });
+
   let account;
   try {
     account = JSON.parse(await fs.readFile(file, 'utf8'));
@@ -24,6 +25,7 @@ async function seedLocalStaff() {
       password: crypto.randomBytes(18).toString('base64url'),
       sessionSecret: crypto.randomBytes(32).toString('hex'),
     };
+
     try {
       await fs.writeFile(file, JSON.stringify(account, null, 2), {
         mode: 0o600,
@@ -34,6 +36,7 @@ async function seedLocalStaff() {
       account = JSON.parse(await fs.readFile(file, 'utf8'));
     }
   }
+
   if (
     !account.email ||
     !account.password ||
@@ -42,6 +45,7 @@ async function seedLocalStaff() {
   ) {
     throw new Error(`Invalid local staff account in ${file}`);
   }
+
   process.env.WORKFLOW_STAFF_EMAIL = account.email;
   process.env.WORKFLOW_STAFF_PASSWORD = account.password;
   process.env.WORKFLOW_SESSION_SECRET = account.sessionSecret;

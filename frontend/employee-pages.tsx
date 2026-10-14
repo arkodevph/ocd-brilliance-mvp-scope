@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { PageHeading, Panel, Field, PageList, Status } from './portal-pages';
+import { PageHeading, Panel, Field, PageList, Status, dateLabel } from './portal-pages';
 import {
   ArrowRight,
   CalendarDays,
@@ -10,13 +10,6 @@ import {
   ShieldCheck,
   Users,
 } from './solar-icons';
-const dateLabel = (date: string) =>
-  new Intl.DateTimeFormat('en-AU', {
-    timeZone: 'UTC',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(`${date}T12:00:00Z`));
 export type EmployeePageModel = {
   page: 'personal' | 'home' | 'leave';
   today: string;
@@ -59,6 +52,7 @@ export type EmployeePageModel = {
     events: { date: string; to?: string; title: string; href?: string }[];
   };
 };
+
 function LeaveBalances({ profile }: { profile: EmployeePageModel['profile'] }) {
   return (
     <div className="portal-balances">
@@ -75,6 +69,7 @@ function LeaveBalances({ profile }: { profile: EmployeePageModel['profile'] }) {
     </div>
   );
 }
+
 function LeaveRequests({ requests }: { requests: EmployeePageModel['requests'] }) {
   if (!requests.length)
     return (
@@ -117,6 +112,7 @@ function LeaveRequests({ requests }: { requests: EmployeePageModel['requests'] }
     </div>
   );
 }
+
 function EmployeeHomeCalendar({ model }: { model: EmployeePageModel }) {
   const { month, date, events } = model.calendar;
   const first = new Date(`${month}-01T12:00:00Z`);

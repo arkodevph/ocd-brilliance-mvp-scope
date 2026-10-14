@@ -4,7 +4,9 @@ Checked 10 October 2026. This document connects public ShiftCare evidence to the
 
 ## Implemented backend
 
-All five application endpoints now dispatch through the same NestJS application: workflow/intake, push, ShiftCare reads, integration proof and shared arrivals. HTTP handlers and the ShiftCare client are strict TypeScript under `backend/`. Nest classes provide routing; application logic remains procedural. Existing CommonJS domain/storage helpers under `lib/` remain in place. Small CommonJS adapters retain local-server, Vercel and existing import compatibility.
+All five application endpoints now dispatch through the same Hono application: workflow/intake, push, ShiftCare reads, integration proof and shared arrivals. HTTP handlers and the ShiftCare client are strict TypeScript under `backend/`. Hono provides routing through its Node adapter; application logic remains procedural. Existing CommonJS domain/storage helpers under `lib/` remain in place. Small CommonJS adapters retain local-server, Vercel and existing import compatibility.
+
+The migration keeps Node request/response streams using Hono's supported `RESPONSE_ALREADY_SENT` bridge. This preserves chunked video uploads, range streaming, pre-parsed Vercel bodies and socket-based local push checks. It is a routing migration, not a conversion to Fetch-native handlers or edge deployment. DRY is the implementation rule: routes are defined once in `backend/application.ts`, all entry points use the same listener, and JSON response headers/serialization live in `backend/http.ts`. Workflow response redaction remains explicit; endpoint-specific validation and permission rules retain their existing behavior. Backend builds clear `.backend` before compiling so deleted Nest controllers are excluded from deployment artifacts.
 
 Run `npm start` from the repository root; this compiles the backend before starting the existing system. Use `PORT=8002 npm start` for port 8002. `npm run build` compiles TypeScript and prepares the static workspace; Vercel includes the compiled backend and required domain helpers in each API function. No new login system was introduced.
 
@@ -86,7 +88,7 @@ These are vendor-published customer accounts, not independent research or eviden
 
 ## Verification and remaining work
 
-`npm test` exercises the Nest adapters, existing workflow/push/intake contracts, ShiftCare authentication, minimized responses, pagination, time zones, errors and readiness. Tests use fixtures; they do not write to ShiftCare.
+`npm test` exercises the Hono adapters, existing workflow/push/intake contracts, ShiftCare authentication, minimized responses, pagination, time zones, errors and readiness. Tests use fixtures; they do not write to ShiftCare.
 
 This change passed all 88 tests, the production build and whitespace checks. The focused ShiftCare screen test passed. Full browser acceptance could not finish: the default Chrome executable is absent; rerunning with installed Chromium reached Automation but failed at the missing `[data-auto-action="ingest"]` selector. That unrelated interface/script mismatch was left intact.
 

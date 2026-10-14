@@ -1,3 +1,4 @@
+import intakeRooms from '../lib/intake-rooms.json';
 /* Full operations workspace. ShiftCare remains authoritative for delivered services. */
 import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-intake.mjs';
 (async () => {
@@ -12,10 +13,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const response = await fetch('/api/workflow?action=session', {
       cache: 'no-store',
     });
+
     if (response.ok) sessionEmail = (await response.json()).email || '';
   } catch (_) {
     /* the public journey remains available if office access is offline */
   }
+
   const demoWeek = ['2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09'];
   const serviceTypes = [
     'Domestic assistance',
@@ -54,6 +57,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     workerId: 'WRK-01',
     clientId: 'PAR-101',
   };
+
   let state = load();
   const demoAccount = new URLSearchParams(location.search);
   if (state.workers.some((person) => person.id === demoAccount.get('demoWorker')))
@@ -72,6 +76,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     month: '',
     confirmation: null,
   };
+
   const intakeLabels = {
     name: 'Full name',
     email: 'Email',
@@ -81,6 +86,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     postcode: 'Postcode',
     notes: 'Intake notes',
   };
+
   let intakeText = '';
   let intakePreview = null;
   let intakeLoadError = '';
@@ -89,9 +95,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     extractionAllowed: false,
     documentAllowed: true,
   };
+
   let intakeQueue = [];
   let intakeOwners = [];
   let intakeSection = { id: '', value: '' };
+
   let intakeDocument = null;
   let serviceVideoPreviewUrls = [];
   let serviceVideoFiles = [];
@@ -111,6 +119,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     );
     return `<option value="">${matches.length ? 'Select a staff member' : 'No matching staff'}</option>${matches.map((owner) => `<option value="${attr(owner.email)}" ${owner.email === selected ? 'selected' : ''}>${esc(owner.name)}${owner.name !== owner.email ? ' · ' + esc(owner.email) : ''} · ${esc(owner.role)}</option>`).join('')}`;
   }
+
   function ownerPicker(selected) {
     return `<div data-owner-picker><label>Search staff<input type="search" data-owner-search placeholder="Name or email" autocomplete="off"></label><label>Owner<select name="owner" required>${ownerOptionsMarkup(selected)}</select></label><small>Select an office staff member from the results.</small></div>`;
   }
@@ -127,6 +136,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       }[serverStatus] || 'New'
     );
   }
+
   function localHandoff(serverStatus) {
     return (
       {
@@ -139,6 +149,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       }[serverStatus] || 'Needs review'
     );
   }
+
   function serverEnquiry(record) {
     const notes = record.notes || 'No support notes were supplied.';
     return {
@@ -191,22 +202,29 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       serverRecord: true,
     };
   }
+
   async function syncServerIntakes() {
     if (!sessionEmail) {
       state.enquiries = [
-        ...readDemoIntakes(localStorage).map(record => ({ ...serverEnquiry(record), demoCached: true })),
-        ...state.enquiries.filter(enquiry => !enquiry.demoCached),
+        ...readDemoIntakes(localStorage).map((record) => ({
+          ...serverEnquiry(record),
+          demoCached: true,
+        })),
+        ...state.enquiries.filter((enquiry) => !enquiry.demoCached),
       ];
       return;
     }
+
     try {
       const response = await fetch('/api/workflow?action=intakes', {
         cache: 'no-store',
       });
+
       if (response.status === 401) {
         sessionEmail = '';
         return;
       }
+
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Requests could not be loaded.');
       state.enquiries = [
@@ -233,8 +251,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     } catch (_) {
       /* corrupt local demo data is replaced by the seed */
     }
+
     return migrateMapData(structuredClone(window.OCD_DEMO_SEED));
   }
+
   function migrateMapData(data) {
     if (!sessionEmail) data.enquiries = data.enquiries.filter((enquiry) => !enquiry.serverRecord);
     [...(data.workers || []), ...(data.automation?.remote?.workers || [])].forEach((w) => {
@@ -253,6 +273,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           w.services = structuredClone(seed.services);
       }
     });
+
     if (!data.journeys || typeof data.journeys !== 'object' || Array.isArray(data.journeys))
       data.journeys = structuredClone(window.OCD_DEMO_SEED.journeys);
     if (!data.mapOffice) data.mapOffice = structuredClone(window.OCD_DEMO_SEED.mapOffice);
@@ -270,6 +291,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       if (!p.location && seed?.location && p.address === seed.address && p.suburb === seed.suburb)
         p.location = structuredClone(seed.location);
     });
+
     data.coverOffers ||= [];
     data.employeeReviews ||= [];
     data.updates ||= structuredClone(window.OCD_DEMO_SEED.updates);
@@ -280,17 +302,20 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     data.enquiries?.forEach((e) => {
       if (e.intake && !e.handoff) e.handoff = { status: 'Needs review' };
     });
+
     window.OCD_MAPS.reconcileJourneys(data);
     window.OCD_AUTOMATION_ENGINE.ensure(data);
     window.OCD_AUTOMATION_ENGINE.sync(data);
     return data;
   }
+
   function save() {
     window.OCD_MAPS.reconcileJourneys(state);
     const localState = structuredClone(state);
     localState.enquiries = localState.enquiries.filter((enquiry) => !enquiry.serverRecord);
     localStorage.setItem(STORE, JSON.stringify(localState));
   }
+
   function reset() {
     const serverEnquiries = state.enquiries.filter((e) => e.serverRecord);
     state = migrateMapData(structuredClone(window.OCD_DEMO_SEED));
@@ -315,6 +340,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     render();
     toast('Sample records restored; server enquiries retained.');
   }
+
   function esc(value) {
     return String(value ?? '').replace(
       /[&<>"']/g,
@@ -328,36 +354,47 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         })[char],
     );
   }
+
   function attr(value) {
     return esc(value);
   }
+
   function val(form, name) {
     return String(new FormData(form).get(name) ?? '').trim();
   }
+
   function id(prefix, items) {
     return `${prefix}-${Math.max(0, ...items.map((x) => Number(x.id.split('-').pop()) || 0)) + 1}`;
   }
+
   function find(items, idValue) {
     return items.find((x) => x.id === idValue);
   }
+
   function participant(idValue) {
     return find(state.participants, idValue);
   }
+
   function worker(idValue) {
     return find(state.workers, idValue);
   }
+
   function booking(idValue) {
     return find(state.bookings, idValue);
   }
+
   function visitForBooking(bookingId) {
     return state.visits.find((v) => v.bookingId === bookingId);
   }
+
   function agreementFor(participantId) {
     return [...state.agreements].reverse().find((x) => x.participantId === participantId);
   }
+
   function dateObj(value) {
     return new Date(`${value}T12:00:00Z`);
   }
+
   function dateLabel(value, options = { weekday: 'short', day: 'numeric', month: 'short' }) {
     return value
       ? new Intl.DateTimeFormat('en-AU', {
@@ -366,20 +403,24 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         }).format(dateObj(value))
       : '—';
   }
+
   function clockLabel(value) {
     const match = /^(\d{1,2}):(\d{2})$/.exec(value || '');
     if (!match) return value || '—';
     const hour = Number(match[1]);
     return `${hour % 12 || 12}:${match[2]} ${hour < 12 ? 'AM' : 'PM'}`;
   }
+
   function clockRange(start, end) {
     const from = clockLabel(start),
       to = clockLabel(end);
     return `${from.slice(-2) === to.slice(-2) ? from.slice(0, -3) : from}–${to}`;
   }
+
   function weekday(value) {
     return new Date(`${value}T12:00:00Z`).getUTCDay();
   }
+
   function todayPerth() {
     return new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Australia/Perth',
@@ -388,6 +429,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       day: '2-digit',
     }).format(new Date());
   }
+
   function timePerth() {
     return new Intl.DateTimeFormat('en-AU', {
       timeZone: 'Australia/Perth',
@@ -396,6 +438,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       hour12: false,
     }).format(new Date());
   }
+
   function statusClass(status) {
     if (
       [
@@ -433,20 +476,38 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     if (['Closed', 'Not drafted', 'Not started'].includes(status)) return 'gray';
     return 'dark';
   }
+
   function pill(status) {
     return `<span class="status ${statusClass(status)}">${esc(status)}</span>`;
   }
+
   function icon(name) {
     const solarNames = {
-      overview: 'widget-4-linear', inbox: 'letter-linear', calendar: 'calendar-linear',
-      people: 'users-group-rounded-linear', file: 'file-text-linear', clock: 'clock-circle-linear',
-      route: 'routing-2-linear', map: 'map-linear', search: 'magnifier-linear', plus: 'add-linear',
-      arrow: 'arrow-right-linear', check: 'check-linear', heart: 'heart-linear', star: 'star-linear',
-      alert: 'danger-circle-linear', activity: 'pulse-2-linear', shield: 'shield-check-linear',
-      bell: 'bell-linear', layers: 'layers-linear', home: 'home-linear',
+      overview: 'widget-4-linear',
+      inbox: 'letter-linear',
+      calendar: 'calendar-linear',
+      people: 'users-group-rounded-linear',
+      file: 'file-text-linear',
+      clock: 'clock-circle-linear',
+      route: 'routing-2-linear',
+      map: 'map-linear',
+      search: 'magnifier-linear',
+      plus: 'add-linear',
+      arrow: 'arrow-right-linear',
+      check: 'check-linear',
+      heart: 'heart-linear',
+      star: 'star-linear',
+      alert: 'danger-circle-linear',
+      activity: 'pulse-2-linear',
+      shield: 'shield-check-linear',
+      bell: 'bell-linear',
+      layers: 'layers-linear',
+      home: 'home-linear',
     };
+
     return `<i class="solar-icon" data-solar="${solarNames[name] || 'file-text-linear'}" aria-hidden="true"></i>`;
   }
+
   function activity(text, detail) {
     state.activity.unshift({
       id: id('ACT', state.activity),
@@ -454,8 +515,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       detail,
       date: todayPerth(),
     });
+
     state.activity = state.activity.slice(0, 35);
   }
+
   function addUpdate(to, title, detail, href) {
     state.updates.unshift({
       id: id('UPD', state.updates),
@@ -467,36 +530,44 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       read: false,
     });
   }
+
   function updateFeed(to) {
     const rows = state.updates.filter((u) => u.to === to);
     return `<section class="panel update-feed"><div class="section-heading"><div><h2>Updates</h2><span class="muted tiny">Demo · in-app only</span></div><span class="status blue">${rows.filter((u) => !u.read).length} unread</span></div>${rows.length ? rows.map((u) => `<div class="update-item ${u.read ? 'read' : ''}"><span class="priority-icon">${icon('bell')}</span><span class="body"><strong>${esc(u.title)}</strong><small>${esc(u.detail)}</small><small>${dateLabel(u.date)} · ${u.read ? 'Read' : 'New'}</small></span><span class="update-actions"><a class="btn small" href="#/${attr(u.href)}">View</a>${u.read ? '' : `<button class="btn small" data-action="read-update" data-id="${attr(u.id)}" type="button">Mark read</button>`}</span></div>`).join('') : empty('No updates', 'Service updates will appear here.')}</section>`;
   }
+
   function toast(message) {
     clearTimeout(toastTimer);
     toastNode.textContent = message;
     toastNode.classList.add('show');
     toastTimer = setTimeout(() => toastNode.classList.remove('show'), 3500);
   }
+
   function go(route) {
     location.hash = `#/${route}`;
     render();
     window.scrollTo(0, 0);
   }
+
   function routeParts() {
     return (location.hash.replace(/^#\/?/, '') || 'office/overview').split('/').filter(Boolean);
   }
+
   function help(text, label = 'Help') {
     return `<details class="context-help"><summary>${esc(label)}</summary><p>${esc(text)}</p></details>`;
   }
+
   function pageHeader(eyebrow, title, subtitle = '', actions = '') {
     const [, , detail] = routeParts();
     const model = { title, subtitle, eyebrow: detail ? eyebrow : '' };
+
     return `<div data-react-page-heading="${attr(JSON.stringify(model))}">${actions}</div>`;
   }
 
   function crumb(label, parent, parentLabel) {
     return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/${parent}">${esc(parentLabel)}</a><span class="chev">/</span><span>${esc(label)}</span></nav>`;
   }
+
   function routeBreadcrumbs(area, section, detail) {
     if (area === 'office' && section === 'staff' && detail) return '';
     if (area === 'public' || !detail || (section === 'intake' && detail === 'new')) return '';
@@ -520,29 +591,37 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         pilot: 'Pilot & proof',
       }[detail],
     };
+
     const items = [{ label: homeLabel, href: home }];
     if (section !== home.split('/')[1])
       items.push({ label: sectionLabel, href: `${area}/${section}` });
+
     if (detail) items.push({ label: detailNames[section] || detail, current: true });
     else if (items.length === 1) items[0].current = true;
     else items[items.length - 1].current = true;
     return `<nav class="breadcrumbs app-breadcrumbs" aria-label="Breadcrumb"><ol>${items.map((item) => `<li>${item.current ? `<span aria-current="page">${esc(item.label)}</span>` : `<a href="#/${item.href}">${esc(item.label)}</a>`}</li>`).join('')}</ol></nav>`;
   }
+
   function inspector(detail, closeHref, label) {
     return `<article class="record-page"><a href="#/${closeHref}" class="record-back">${icon('arrow')} Back to ${esc(label.toLowerCase())}</a>${detail}</article>`;
   }
+
   function pair(label, value) {
     return `<div class="data-pair"><span>${esc(label)}</span><strong>${esc(value || '—')}</strong></div>`;
   }
+
   function empty(title, detail) {
     return `<div class="empty"><strong>${esc(title)}</strong>${esc(detail)}</div>`;
   }
+
   function option(value, selected = '') {
     return `<option value="${attr(value)}" ${selected === value ? 'selected' : ''}>${esc(value)}</option>`;
   }
+
   function serviceOptions(selected = '') {
     return serviceTypes.map((s) => option(s, selected)).join('');
   }
+
   function participantOptions(selected = '') {
     return state.participants
       .map(
@@ -551,6 +630,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .join('');
   }
+
   function workerOptions(selected = '') {
     return state.workers
       .map(
@@ -559,6 +639,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .join('');
   }
+
   function bookingOptions(selected = '', includeCompleted = true) {
     return state.bookings
       .filter((b) => includeCompleted || b.status !== 'Completed')
@@ -568,6 +649,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .join('');
   }
+
   function completedBookingOptions(selected = '') {
     return state.bookings
       .filter((b) => b.status === 'Completed')
@@ -577,6 +659,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .join('');
   }
+
   function cancelledBookingOptions(selected = '') {
     return state.bookings
       .filter((b) => b.status === 'Cancelled' && b.cancellation)
@@ -586,6 +669,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .join('');
   }
+
   function viewSelect(current) {
     return `<label class="view-select"><span>View</span><select id="view-switch" aria-label="Explore a demo view">${[
       ['office', 'Office'],
@@ -599,6 +683,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .join('')}</select></label>`;
   }
+
   function appToolsButton() {
     const [area] = routeParts();
     const recipient =
@@ -646,6 +731,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       ['intake', 'My details', 'people'],
     ],
   };
+
   nav.office.push(['shiftcare', 'ShiftCare', 'layers']);
   nav.office.splice(3, 0, ['automation', 'Automation', 'activity']);
   nav.office.push(['finance', 'Bookkeeping', 'file']);
@@ -675,6 +761,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       enquiries: state.enquiries.filter((e) => e.status === 'New').length,
       schedule: state.bookings.filter((b) => b.status === 'Needs cover').length,
     };
+
     const navigationIcon = (glyph, count = 0) =>
       `<span class="nav-icon">${icon(glyph)}${count ? '<i class="nav-notification" aria-hidden="true"></i>' : ''}</span>`;
     const primaryMobile = ['overview', 'intake', 'work', 'participants'];
@@ -728,9 +815,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const [, , detail] = routeParts();
     return `<a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><div class="app-shell crm-shell ${area}-portal ${section === 'calendar' ? 'calendar-shell' : area === 'office' && section === 'schedule' && !detail ? 'schedule-shell' : ''}"><aside class="sidebar"><div class="brand"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></div><span class="sidebar-brand-mark" aria-hidden="true">OCD</span><span class="brand-caption">Operations platform</span><button class="sidebar-search" data-action="workspace-search" type="button" aria-label="Search pages and records" title="Search pages and records">${icon('search')}<span>Search</span></button>${area === 'office' ? '' : `<p class="nav-section-label">${area === 'worker' ? 'Worker workspace' : 'Client portal'}</p>`}<nav class="nav-list" aria-label="Main navigation">${links}${more}</nav><div class="sidebar-bottom"><a href="#/office/shiftcare" title="ShiftCare connection" aria-label="ShiftCare connection">${icon('layers')}<span class="nav-label">ShiftCare connection</span></a><small>Intake checks run automatically</small><button class="sidebar-account" data-action="account-settings" type="button" title="Account and workspace view" aria-label="Account and workspace view">${profileImage(avatarName)}<span class="sidebar-account-label"><strong>${esc(avatarName)}</strong><small>Account settings</small></span></button></div></aside><div class="workspace"><header class="topbar"><div class="topbar-left"><span class="topbar-workspace">${esc(area === 'office' ? activeGroup[0] : area === 'worker' ? 'Worker workspace' : 'Client portal')}</span><span class="topbar-divider">/</span><span class="topbar-title">${esc(title)}</span></div><div class="topbar-actions"><button class="workspace-search-trigger" data-action="workspace-search" type="button">${icon('search')}<span>Find a page or record</span></button>${appToolsButton()}<button class="account-trigger" data-action="account-settings" type="button" aria-label="Account and workspace view">${profileImage(avatarName)}<span>Account</span></button></div></header>${portalAccount}${workerAccount}<main class="page" id="main-content" tabindex="-1">${routeBreadcrumbs(area, section, detail)}${content}</main></div></div>`;
   }
+
   function publicShell(section, content) {
     return `<div class="public-shell"><header class="public-top"><a href="#/public/book" aria-label="OCD Brilliance public demo"><img src="assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></a><nav class="public-nav" aria-label="Public navigation"><a class="${section === 'book' ? 'active' : ''}" href="#/public/book">Book a call</a><a class="${section === 'intake' ? 'active' : ''}" href="#/public/intake">Intake form</a><span class="back-demo">${viewSelect('public')}</span></nav><div class="public-tools">${appToolsButton()}</div></header><main class="public-main">${content}</main></div>`;
   }
+
   function mapContext(area, bookingId = '') {
     return {
       area,
@@ -742,6 +831,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       sharedArrivals: true,
     };
   }
+
   function automationContext() {
     const a = window.OCD_AUTOMATION_ENGINE.ensure(state);
     if (!a.messageFlow) {
@@ -751,10 +841,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       a.messageFlow = true;
       save();
     }
+
     if (a.pendingExamples !== 1) {
       window.OCD_AUTOMATION_ENGINE.pendingExamples(state);
       save();
     }
+
     return {
       state,
       workerId: ui.workerId,
@@ -765,11 +857,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast,
     };
   }
+
   function openAutomation(job) {
     save();
     closeModal();
     go(`office/automation/${job.id}`);
   }
+
   function employeeContext() {
     return {
       state,
@@ -786,12 +880,15 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       openModal,
     };
   }
+
   function bookingMap(area, bookingId) {
     return window.OCD_MAPS.page(mapContext(area, bookingId));
   }
+
   function shiftCarePage() {
     return `${pageHeader('Connection', 'ShiftCare', 'Check the account connection and read the current roster, clients and staff.')}<div class="notice">Live reads are available to the office. Booking changes and intake handoff remain in ShiftCare.</div><div class="spacer"></div><section class="panel shiftcare-panel" id="shiftcare-connection" aria-live="polite"></section>`;
   }
+
   function render() {
     clearServiceVideoPreview();
     serviceVideoFiles = [];
@@ -847,6 +944,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       },
       public: { book: publicBook, intake: publicIntake },
     };
+
     pages.worker.review = workerReview;
     pages.worker.reviews = workerFeedback;
     pages.worker.home = () => window.OCD_EMPLOYEE.home(employeeContext());
@@ -1037,12 +1135,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       ...c,
       count: bookings.filter((b) => category(b) === c).length,
     }));
+
     const daily = weekDays.map((date) => ({
       date,
       counts: categories.map(
         (c) => bookings.filter((b) => b.date === date && category(b) === c).length,
       ),
     }));
+
     const active = bookings.filter((b) => b.status !== 'Cancelled');
     const records = state.visits.filter((v) => bookings.some((b) => b.id === v.bookingId));
     const reviewed = records.filter((v) => v.status === 'Reviewed').length;
@@ -1099,14 +1199,49 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     ];
     const model = {
       period: `${dateLabel(weekDays[0], { day: 'numeric', month: 'short' })}–${dateLabel(weekDays[6], { day: 'numeric', month: 'short', year: 'numeric' })}`,
-      scheduledHours: hourLabel(scheduledHours), completedHours: hourLabel(completedHours), reviewed, records: records.length,
-      metrics: metrics.map((metric, index) => ({ ...metric, delta: metric.value - previousValues[index] })),
+      scheduledHours: hourLabel(scheduledHours),
+      completedHours: hourLabel(completedHours),
+      reviewed,
+      records: records.length,
+      metrics: metrics.map((metric, index) => ({
+        ...metric,
+        delta: metric.value - previousValues[index],
+      })),
       categories: totals,
-      daily: daily.map((day) => ({ ...day, label: dateLabel(day.date, { weekday: 'short' }), title: dateLabel(day.date, { weekday: 'long', day: 'numeric', month: 'short' }), hours: hourLabel(bookings.filter((b) => b.date === day.date && b.status !== 'Cancelled').reduce((sum, b) => sum + hours(b), 0)) })),
+      daily: daily.map((day) => ({
+        ...day,
+        label: dateLabel(day.date, { weekday: 'short' }),
+        title: dateLabel(day.date, { weekday: 'long', day: 'numeric', month: 'short' }),
+        hours: hourLabel(
+          bookings
+            .filter((b) => b.date === day.date && b.status !== 'Cancelled')
+            .reduce((sum, b) => sum + hours(b), 0),
+        ),
+      })),
       priorities,
-      workers: state.workers.map((w) => ({ id: w.id, name: w.name, count: active.filter((b) => b.workerId === w.id).length, hours: hourLabel(active.filter((b) => b.workerId === w.id).reduce((sum, b) => sum + hours(b), 0)) })).sort((a, b) => b.count - a.count),
-      recent: recentRecords.map((v) => { const b = booking(v.bookingId); return { id: v.id, worker: worker(b.workerId)?.name || 'Unassigned', participant: participant(b.participantId)?.name || 'Participant', date: dateLabel(b.date), clockIn: clockLabel(v.clockIn), clockOut: clockLabel(v.clockOut) }; }),
+      workers: state.workers
+        .map((w) => ({
+          id: w.id,
+          name: w.name,
+          count: active.filter((b) => b.workerId === w.id).length,
+          hours: hourLabel(
+            active.filter((b) => b.workerId === w.id).reduce((sum, b) => sum + hours(b), 0),
+          ),
+        }))
+        .sort((a, b) => b.count - a.count),
+      recent: recentRecords.map((v) => {
+        const b = booking(v.bookingId);
+        return {
+          id: v.id,
+          worker: worker(b.workerId)?.name || 'Unassigned',
+          participant: participant(b.participantId)?.name || 'Participant',
+          date: dateLabel(b.date),
+          clockIn: clockLabel(v.clockIn),
+          clockOut: clockLabel(v.clockOut),
+        };
+      }),
     };
+
     return `${window.OCD_CLIENT_PRESENTATION.banner()}<div data-react-office-overview="${attr(JSON.stringify(model))}"></div>`;
   }
 
@@ -1114,6 +1249,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const tasks = [];
     const add = (type, title, detail, status, action, reference, owner = 'Office') =>
       tasks.push({ type, title, detail, status, action, reference, owner });
+
     intakeQueue.forEach((e) =>
       add(
         'Intake',
@@ -1160,6 +1296,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           b.id,
         );
       });
+
     state.requests
       .filter((r) => r.status === 'Pending')
       .forEach((r) =>
@@ -1253,6 +1390,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   function intakeSteps(current) {
     return `<ol class="intake-steps" aria-label="Intake progress">${['Capture', 'Review', 'Enter in ShiftCare', 'Verify'].map((label, index) => `<li class="${index < current ? 'complete' : index === current ? 'current' : ''}" ${index === current ? 'aria-current="step"' : ''}><span>${index < current ? '✓' : index + 1}</span><strong>${label}</strong><small>${index < current ? 'Complete' : index === current ? 'Current step' : ''}</small></li>`).join('')}</ol>`;
   }
+
   function intakeInputs(fields, evidence = {}) {
     return `<div class="form-grid">${Object.entries(intakeLabels)
       .map(
@@ -1263,6 +1401,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         '',
       )}</div><p class="form-note">* Required for handoff. Supply at least one contact method: email or phone.</p>`;
   }
+
   function intakeIssues(fields) {
     const issues = [];
     for (const key of ['name', 'service', 'suburb', 'postcode'])
@@ -1274,10 +1413,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       issues.push('Enter a four-digit postcode');
     return issues;
   }
+
   function intakeWarnings(issues, duplicate) {
     if (!issues.length && !duplicate) return '';
     return `<div class="intake-warning" role="status"><strong>Check before continuing</strong>${issues.length ? `<ul>${issues.map((issue) => `<li>${esc(issue)}</li>`).join('')}</ul>` : ''}${duplicate ? `<p>A matching enquiry exists: <a href="#/office/enquiries/${attr(duplicate.id)}">${esc(duplicate.name)} · ${esc(duplicate.id)}</a>. Open it before creating another draft.</p>` : ''}</div>`;
   }
+
   function intakePage() {
     const capture = routeParts()[2] === 'new';
     const records = state.enquiries.filter((e) => e.serverRecord && e.serverStatus !== 'Closed');
@@ -1293,15 +1434,18 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       <div class="intake-auto-guide" ${capture ? '' : 'hidden'}>${icon('check')}<span>Paste request → Automatic extraction &amp; validation → Review result</span></div><div class="intake-layout intake-capture-layout" ${capture ? '' : 'hidden'}><section class="panel"><div class="section-heading"><div><h2>Paste the request</h2></div></div><form data-form="intake-extract"><label>Original enquiry<textarea id="intake-source" name="text" rows="6" maxlength="12000" required placeholder="Full name: …&#10;Email: …&#10;Service: …&#10;Suburb: …&#10;Postcode: …&#10;Notes: …">${esc(intakeText)}</textarea></label><label>PDF or scan<input id="intake-document" type="file" accept="application/pdf,image/png,image/jpeg" ${intakeConfig.documentAllowed ? '' : 'disabled'}></label><p class="form-note"><a href="/assets/samples/fictional-intake.pdf" download="OCD-fictional-intake.pdf">Download sample PDF</a> · Fictional details for testing</p><div id="intake-original">${originalDocumentPanel(intakeDocument)}</div>${intakeConfig.aiDemo && intakeConfig.aiAllowed ? `<p class="form-note"><strong>AI showcase</strong> · Try a fictional request written in ordinary sentences.</p>` : ''}<p class="form-note">${intakeConfig.documentAllowed ? 'PDFs and scans are processed on this device.' : 'Document import is unavailable until extraction setup is complete. Text requests can be checked automatically.'} ${intakeConfig.aiConfigured ? `AI runs when you select Extract with AI, sending this text to ${esc(intakeConfig.aiProvider || 'the configured provider')}. Use fictional details for the showcase.` : ''}</p><div class="form-actions"><span class="intake-auto-caption">Checks run automatically as you type.</span><button class="btn ${intakeConfig.aiAllowed ? 'primary' : ''}" type="submit">${intakeConfig.aiAllowed ? 'Extract with AI' : 'Recheck'}</button></div></form></section><section class="panel" id="intake-preview" aria-live="polite">${intakePreviewPanel()}</section></div>
       <section class="panel tight intake-queue" ${capture ? 'hidden' : ''}><div class="section-heading"><div><h2>Saved intakes</h2></div><a href="#/office/enquiries">All enquiries ${icon('arrow')}</a></div>${records.length ? `<div class="crm-list-toolbar"><label class="search">${icon('search')}<input type="search" data-list-search aria-label="Search saved intakes" placeholder="Search saved intakes"></label><span class="muted">${records.length} requests</span></div><div class="table-wrap"><table><thead><tr><th>Person</th><th>Service</th><th>Stage</th><th>Owner</th><th>Next step</th></tr></thead><tbody>${records.map((e) => `<tr><td><div class="participant-person">${profileImage(e.name)}<div><a href="#/office/enquiries/${attr(e.id)}">${esc(e.name || 'Unnamed intake')}</a><span class="cell-sub">${esc(e.id)}</span></div></div></td><td>${esc(e.service || 'To confirm')}</td><td>${pill(e.serverStatus)}</td><td>${esc(e.owner)}</td><td><a class="btn small" href="#/office/enquiries/${attr(e.id)}">${e.serverStatus === 'Ready for ShiftCare' ? 'Open handoff' : e.serverStatus === 'Entered in ShiftCare' ? 'View verification' : 'Review details'}</a></td></tr>`).join('')}</tbody></table></div><p class="crm-search-empty" role="status" hidden>No matching requests. Clear the search or try another name.</p>` : empty('No saved intakes yet', 'Choose New intake to paste a request, or load the sample.')}</section>${capture ? intakeRulesPanel() : ''}`;
   }
+
   function intakeRulesPanel() {
     const policy = intakeConfig.rules;
     return `<section class="panel intake-checks"><div class="section-heading"><h2>What is checked automatically</h2></div><p>Required details: ${esc((policy.requiredFields || []).map((key) => intakeLabels[key] || key).join(', '))}. Contact format, postcode coverage and possible duplicate requests are checked before saving.</p><p>Service postcodes: ${esc((policy.servicePostcodes || []).join(', ') || 'Not configured')}${policy.requiredDocuments.length ? `. Documents to confirm: ${esc(policy.requiredDocuments.join(', '))}` : ''}.</p><p class="form-note">${policy.approvedBy ? `Rules approved by ${esc(policy.approvedBy)}.` : 'Service handoff rules are awaiting configuration approval.'} Source comparison and ShiftCare entry remain separate from these automatic checks.</p></section>`;
   }
+
   function originalDocumentPanel(document) {
     if (!document) return '';
     const src = `data:${document.type};base64,${document.data}`;
     return `<p>${esc(document.name)}</p>${document.type === 'application/pdf' ? `<div aria-label="Original PDF" data-document-pdf="${document.data}" style="max-height:480px;overflow:auto"><p>Loading original PDF…</p></div>` : `<img src="${src}" alt="Original intake document" style="max-width:100%">`}`;
   }
+
   function intakePreviewPanel() {
     if (intakePreviewError)
       return `<div class="intake-empty"><h2>Could not check this request</h2><p role="alert">${esc(intakePreviewError)}</p><button class="btn" data-action="retry-intake-preview" type="button">Retry checks</button></div>`;
@@ -1320,6 +1464,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         '',
       )}</dl>${draft.ai ? `<p class="form-note">${esc(draft.ai.provider)} · ${esc(draft.ai.model)}${draft.ai.demo ? ' · Showcase' : ''}</p>` : ''}${draft.explanation ? `<p>${esc(draft.explanation)}</p>` : ''}${(draft.explanations || []).map((item) => `<p><strong>${esc(item.finding)}</strong>: ${esc(item.explanation)}<small>Approved source: ${esc(item.source)} · AI explanation; staff check required</small></p>`).join('')}<form data-form="intake-save"><p class="form-note">Saving a draft does not approve the details or create a ShiftCare profile.</p><div class="form-actions"><button class="btn primary" type="submit" ${duplicate ? 'disabled' : ''}>Save draft &amp; review</button></div></form>`;
   }
+
   async function runIntakePreview(form, focusResult = false) {
     clearTimeout(intakePreviewTimer);
     if (!form?.isConnected) return;
@@ -1344,6 +1489,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         text,
         ai: focusResult && intakeConfig.aiAllowed === true,
       });
+
       if (!current()) return;
       intakeText = text;
       intakePreview = result;
@@ -1363,6 +1509,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       }
     }
   }
+
   function scheduleIntakePreview(form) {
     clearTimeout(intakePreviewTimer);
     documentGeneration++;
@@ -1378,15 +1525,18 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   function selectIntakeSection(id, value) {
     intakeSection = { id, value };
+
     document.querySelectorAll('[data-intake-section]').forEach((panel) => {
       panel.hidden = panel.dataset.intakeSection !== value;
     });
+
     document.querySelectorAll('[data-action="intake-section"]').forEach((button) => {
       const selected = button.dataset.value === value;
       button.classList.toggle('active', selected);
       button.setAttribute('aria-pressed', String(selected));
     });
   }
+
   function serverIntakeDetail(e) {
     const ready = e.serverStatus === 'Ready for ShiftCare';
     const entered = e.serverStatus === 'Entered in ShiftCare';
@@ -1463,10 +1613,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   function emailComposer(draft, recipient = '') {
     return `<form data-form="ai-email-copy"><p class="form-note">${draft.ai?.provider === 'Demo' ? 'Demo suggestion generated locally' : 'AI suggestion'} · edit and review before use. No email is sent. Copy the draft before leaving this page.</p><label>Subject<input name="subject" maxlength="200" value="${attr(draft.subject || 'Your enquiry with OCD Brilliance')}"></label><label>Message${recipient ? ' to ' + esc(recipient) : ''}<textarea name="message" rows="8" required>${esc(draft.message)}</textarea></label><p class="form-note">${esc(draft.ai?.provider || 'AI')} · ${esc(draft.ai?.model || '')}</p><div class="form-actions"><button class="btn primary" data-action="copy-ai-email" type="button">Copy email draft</button></div></form>`;
   }
+
   function emailDraftPanel(e) {
     const demo = !sessionEmail;
-    return `<section class="panel ai-email-panel"><div class="section-heading"><div><h2>Email draft</h2><p>Prepare a follow-up from this enquiry.</p></div><span class="status">${e.emailDraft ? 'Unsent draft' : demo ? 'Demo assistant' : 'AI assistant'}</span></div>${e.emailDraft ? emailComposer({ subject: e.emailSubject, message: e.emailDraft, ai: e.emailAI }, e.email) : `<p class="muted">${demo ? 'Create a local sample draft from the enquiry. Demo drafts are cached in this browser.' : 'AI uses the request to acknowledge the enquiry and ask for missing details.'} Staff review the wording.</p>`}<div class="ai-email-secondary"><button class="btn ${e.emailDraft ? '' : 'primary'}" data-action="draft-email" data-id="${attr(e.id)}" type="button">${demo ? (e.emailDraft ? 'Regenerate demo draft' : 'Draft demo email') : (e.emailDraft ? 'Regenerate with AI' : 'Draft email with AI')}</button></div></section>`;
+    return `<section class="panel ai-email-panel"><div class="section-heading"><div><h2>Email draft</h2><p>Prepare a follow-up from this enquiry.</p></div><span class="status">${e.emailDraft ? 'Unsent draft' : demo ? 'Demo assistant' : 'AI assistant'}</span></div>${e.emailDraft ? emailComposer({ subject: e.emailSubject, message: e.emailDraft, ai: e.emailAI }, e.email) : `<p class="muted">${demo ? 'Create a local sample draft from the enquiry. Demo drafts are cached in this browser.' : 'AI uses the request to acknowledge the enquiry and ask for missing details.'} Staff review the wording.</p>`}<div class="ai-email-secondary"><button class="btn ${e.emailDraft ? '' : 'primary'}" data-action="draft-email" data-id="${attr(e.id)}" type="button">${demo ? (e.emailDraft ? 'Regenerate demo draft' : 'Draft demo email') : e.emailDraft ? 'Regenerate with AI' : 'Draft email with AI'}</button></div></section>`;
   }
+
   function showEmailReview(source) {
     const review = source.aiReview;
     openModal(
@@ -1592,10 +1744,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       employeeRecordWorker = workerId;
       employeeRecordPage = 0;
     }
+
     const alerts = window.OCD_ALERTS?.get(workerId) || {
       status: 'Not checked',
       detail: 'No alert status has been reported on this demo browser.',
     };
+
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const bookings = state.bookings
       .filter((b) => b.workerId === w.id)
@@ -1628,11 +1782,17 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       pages > 1
         ? `<nav class="employee-record-pagination" aria-label="Employee record pages"><button class="btn small" type="button" data-action="employee-record-page" data-value="-1" ${employeeRecordPage === 0 ? 'disabled' : ''}>Previous</button><span>${employeeRecordPage + 1} / ${pages}</span><button class="btn small" type="button" data-action="employee-record-page" data-value="1" ${employeeRecordPage === pages - 1 ? 'disabled' : ''}>Next</button></nav>`
         : '';
-    const feedbackModel = { worker: { id: w.id, name: w.name }, completed: bookings.filter(booking => booking.status === 'Completed').length, alerts };
+    const feedbackModel = {
+      worker: { id: w.id, name: w.name },
+      completed: bookings.filter((booking) => booking.status === 'Completed').length,
+      alerts,
+    };
+
     let content = '';
     if (employeeTab === 'Overview')
       content = `<div class="grid-half"><section class="panel"><h2>Availability & eligibility</h2><div class="spacer"></div>${pair('Regular days', w.days.map((d) => days[d]).join(', ') || 'None recorded')}${pair('Office approval', w.approved ? 'Approved' : 'Pending')}${pair('Eligibility review', /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(w.review) ? dateLabel(w.review) : w.review || 'Not recorded')}<p class="form-note">Regular days are preferences. Check the roster before arranging a meeting.</p><button class="btn small" data-action="schedule-worker" data-id="${attr(w.id)}" type="button">View employee schedule</button></section><section class="panel"><h2>Clients supported</h2>${shown.map((p) => `<div class="visit-row">${profileImage(p.name)}<span class="body"><a href="#/office/participants/${attr(p.id)}">${esc(p.name)}</a><small>${esc(p.service)} · ${esc(p.suburb)}</small></span></div>`).join('') || empty('No linked clients', 'Clients appear here when assigned or listed as a preferred worker.')}</section></div><div class="spacer"></div><section class="panel"><div class="section-heading"><h2>Next client review</h2><button class="btn small" data-action="employee-tab" data-value="Client reviews" type="button">View all reviews</button></div>${scheduled.length ? reviewRows(scheduled.slice(0, 1)) : empty('No client review scheduled', 'Arrange a conversation with the employee and client to review their support.')}</section>`;
-    if (employeeTab === 'Demo reviews') content = `<div data-react-employee-feedback="${attr(JSON.stringify({ ...feedbackModel, mode: 'reviews' }))}"></div>`;
+    if (employeeTab === 'Demo reviews')
+      content = `<div data-react-employee-feedback="${attr(JSON.stringify({ ...feedbackModel, mode: 'reviews' }))}"></div>`;
     if (employeeTab === 'Visits')
       content = `<section class="panel tight"><div class="table-wrap"><table><thead><tr><th>Date & time</th><th>Client</th><th>Service</th><th>Status</th></tr></thead><tbody>${shown.map((b) => `<tr><td><a href="#/office/schedule/${attr(b.id)}">${dateLabel(b.date)} · ${clockRange(b.start, b.end)}</a></td><td>${esc(participant(b.participantId)?.name)}</td><td>${esc(b.service)}</td><td>${pill(b.status)}</td></tr>`).join('') || `<tr><td colspan="4">No visits recorded.</td></tr>`}</tbody></table></div></section>`;
     if (employeeTab === 'Documents')
@@ -1747,6 +1907,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         status: b.status,
         href: `#/${area === 'office' ? 'office/schedule' : 'worker/today'}/${b.id}`,
       }));
+
     const calls =
       area === 'office'
         ? state.calls
@@ -1797,16 +1958,19 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       const [h, m] = time.split(':').map(Number);
       return h * 60 + m;
     };
+
     const timed = events.map((e) => ({
       ...e,
       startMinute: minutes(e.time),
       endMinute: e.end ? minutes(e.end) : minutes(e.time) + (e.duration || 30),
     }));
+
     const startHour = Math.min(7, ...timed.map((e) => Math.floor(e.startMinute / 60)));
     const endHour = Math.max(18, ...timed.map((e) => Math.ceil(e.endMinute / 60)));
     const height = (endHour - startHour) * 88;
     const timeLabel = (hour) => `${hour % 12 || 12} ${hour < 12 ? 'AM' : 'PM'}`;
     const fullDate = (date) => dateLabel(date, { weekday: 'long', day: 'numeric', month: 'long' });
+
     const columns = days
       .map((date) => {
         const dayEvents = timed
@@ -1817,14 +1981,17 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           let group = groups[groups.length - 1];
           if (!group || e.startMinute >= group.end) {
             group = { end: e.endMinute, events: [], lanes: [] };
+
             groups.push(group);
           }
+
           let lane = group.lanes.findIndex((end) => end <= e.startMinute);
           if (lane < 0) lane = group.lanes.length;
           group.lanes[lane] = e.endMinute;
           group.end = Math.max(group.end, e.endMinute);
           group.events.push({ ...e, lane });
         }
+
         const cards = groups
           .flatMap((g) =>
             g.events.map((e) => {
@@ -1873,7 +2040,9 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const month = ui[office ? 'officeCalendarMonth' : 'workerCalendarMonth'];
     const selected = ui[office ? 'officeCalendarDate' : 'workerCalendarDate'];
     const query = ui.calendarQuery.trim().toLowerCase();
-    const events = calendarEvents(area).filter(e => `${e.title} ${e.detail} ${e.status}`.toLowerCase().includes(query));
+    const events = calendarEvents(area).filter((e) =>
+      `${e.title} ${e.detail} ${e.status}`.toLowerCase().includes(query),
+    );
     const monthEvents = events.filter((e) => e.date.slice(0, 7) === month.slice(0, 7));
     const firstOffset = (weekday(month) + 6) % 7;
     const daysInMonth = new Date(
@@ -1888,6 +2057,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         month: 'long',
         year: 'numeric',
       });
+
     const cells = Array.from({ length: cellCount }, (_, index) => {
       const date = addDays(gridStart, index);
       const dayEvents = events.filter((e) => e.date === date);
@@ -1921,9 +2091,9 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .join('');
     return `<div class="calendar-screen"><section class="week-calendar month-calendar" aria-label="${office ? 'Office' : 'My'} monthly calendar">${calendarChrome(area, month, 'Month overview · Perth time', 'month', monthEvents.length)}
-      <div class="week-scroll month-scroll" tabindex="0" role="region" aria-label="Monthly calendar"><div class="month-navigation week-arrows"><button data-action="calendar-prev" type="button" aria-label="Previous month">‹</button><button data-action="calendar-next" type="button" aria-label="Next month">›</button></div><div class="calendar-weekdays" aria-hidden="true">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => `<span>${day}</span>`).join('')}</div><div class="calendar-grid">${cells}</div></div>
+      <div class="week-scroll month-scroll" tabindex="0" role="region" aria-label="Monthly calendar"><div class="month-navigation week-arrows"><button data-action="calendar-prev" type="button" aria-label="Previous month">‹</button><button data-action="calendar-next" type="button" aria-label="Next month">›</button></div><div class="calendar-weekdays" aria-hidden="true">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => `<span>${day}</span>`).join('')}</div><div class="calendar-grid">${cells}</div></div>
       <footer class="week-footer"><span>${office ? 'Service visits & discovery calls' : 'Your assigned visits'}</span><button class="link-button" data-action="calendar-demo" type="button">Sample month · October</button></footer></section>
-      <aside class="calendar-agenda week-agenda" tabindex="-1" aria-label="Selected day details"><div class="week-agenda-heading"><div><span class="eyebrow">Day at a glance</span><h2>${fullDate(selected)}</h2></div>${office ? '<a class="btn" href="#/office/calls">Manage calls</a>' : '<a class="btn" href="#/worker/availability">View availability</a>'}</div><p class="muted tiny">${selectedEvents.length ? `${selectedEvents.length} calendar item${selectedEvents.length === 1 ? '' : 's'}` : office ? 'No service visits or booked calls' : 'No assigned visits'}</p><div class="calendar-agenda-list">${eventRows || `<p class="calendar-agenda-empty">${office ? 'No service visits or booked calls on this day.' : 'No confirmed or completed visits on this day.'}</p>`}</div>${office ? `<div class="calendar-open-slots"><h3>Published call times still open</h3>${openSlots.length ? `<p>${openSlots.map(s => `${esc(clockLabel(s.time))} · ${s.duration} min`).join('<br>')}</p>` : '<p>None for this day.</p>'}<button class="btn small" data-action="add-slot" type="button">Add call slot</button></div>` : ''}</aside></div>`;
+      <aside class="calendar-agenda week-agenda" tabindex="-1" aria-label="Selected day details"><div class="week-agenda-heading"><div><span class="eyebrow">Day at a glance</span><h2>${fullDate(selected)}</h2></div>${office ? '<a class="btn" href="#/office/calls">Manage calls</a>' : '<a class="btn" href="#/worker/availability">View availability</a>'}</div><p class="muted tiny">${selectedEvents.length ? `${selectedEvents.length} calendar item${selectedEvents.length === 1 ? '' : 's'}` : office ? 'No service visits or booked calls' : 'No assigned visits'}</p><div class="calendar-agenda-list">${eventRows || `<p class="calendar-agenda-empty">${office ? 'No service visits or booked calls on this day.' : 'No confirmed or completed visits on this day.'}</p>`}</div>${office ? `<div class="calendar-open-slots"><h3>Published call times still open</h3>${openSlots.length ? `<p>${openSlots.map((s) => `${esc(clockLabel(s.time))} · ${s.duration} min`).join('<br>')}</p>` : '<p>None for this day.</p>'}<button class="btn small" data-action="add-slot" type="button">Add call slot</button></div>` : ''}</aside></div>`;
   }
 
   function scheduleEmployeeCard(w, className) {
@@ -1938,6 +2108,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       const [hour, minute] = time.split(':').map(Number);
       return hour * 60 + minute;
     };
+
     const from = Math.floor(Math.min(8 * 60, ...bookings.map((b) => minutes(b.start))) / 60) * 60;
     const to = Math.ceil(Math.max(16 * 60, ...bookings.map((b) => minutes(b.end))) / 60) * 60;
     const range = to - from;
@@ -2145,6 +2316,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       const estimate = [...state.routeEstimates].reverse().find((r) => r.bookingId === b.id);
       content = `<div class="grid-two"><section class="panel"><div class="section-heading"><div><h2>Route estimate</h2><p>Plan or quote from a map result; keep separate from actual kilometres.</p></div></div><label>Service booking<select id="route-booking">${bookingOptions(b.id)}</select></label><div class="route-line"><div class="route-stop"><small>Origin</small><strong>Joondalup office</strong></div><span class="route-connector"></span><div class="route-stop"><small>Destination</small><strong>${esc(p?.address)}</strong></div></div><button class="btn primary" data-action="estimate-route" data-id="${attr(b.id)}" type="button">Show sample estimate</button>${estimate ? `<div class="calculation"><div><span>Illustrative map response</span><strong>${estimate.distance.toFixed(1)} km</strong></div><span>${estimate.duration} min estimated drive</span></div><p class="form-note">Source: ${esc(estimate.source)} · ${dateLabel(estimate.created)}. This is not measured travel.</p>` : ''}</section><aside class="panel"><h2>For the final system</h2><div class="spacer"></div><p class="muted">A selected map service will provide a route and distance. The platform will retain the origin, destination and response used.</p><div class="notice warning">${icon('alert')} A route estimate must never be substituted for verified actual kilometres on a transport charge.</div></aside></div>`;
     }
+
     if (tab === 'Transport')
       content = `<div class="grid-two"><section class="panel"><div class="section-heading"><div><h2>Transport fee proposal</h2><p>Use verified actual distance and an approved rate.</p></div></div><form data-form="transport-preview"><div class="form-grid"><label class="full">Completed service<select name="bookingId" required>${completedBookingOptions('BKG-499')}</select></label><label>Verified actual distance (km)<input type="number" name="actualKm" min="0" step="0.1" required placeholder="Enter actual kilometres"></label><label>Approved rate (AUD / km)<input type="number" name="rate" min="0" step="0.01" required placeholder="Enter approved rate"></label><label>Rate version / reference<input name="rateVersion" required placeholder="Enter approved rate reference"></label><label class="full">Source of actual distance<input name="source" required placeholder="e.g. approved mileage record"></label></div><div class="form-actions"><button class="btn primary" type="submit">Calculate proposal</button></div></form>${ui.feePreview?.type === 'Transport' ? feePreview() : ''}</section><aside class="panel"><h2>Calculation record</h2><div class="spacer"></div><p class="muted">The final platform keeps the input distance, source, rate version and result so staff can reproduce the proposal.</p><div class="notice">${icon('shield')} No invoice is created here. Final invoicing remains in the current system during the pilot.</div></aside></div>`;
     if (tab === 'Cancellation') content = cancellationPanel();
@@ -2202,6 +2374,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         end = minutes(v.clockOut);
       return start !== null && end !== null && end >= start ? end - start : null;
     };
+
     const total = rows.reduce((sum, { v }) => sum + (actual(v) ?? 0), 0);
     return `${pageHeader('Worker / Review', 'Hours & documents', 'Recorded sample attendance and your document follow-up. Pay totals are provisional until the native payroll review.')}<div class="notice">${icon('shield')} ${Math.floor(total / 60)} h ${total % 60} min recorded across the visible sample visits. Incomplete times are excluded. Kilometres, travel, pay rules and release stay with the bookkeeper.</div><div class="spacer"></div><div class="grid-two"><section class="panel"><h2>My recorded visits</h2>${rows.map(({ v, b }) => `<a class="visit-row" href="#/worker/today/${attr(b.id)}"><span class="body"><strong>${esc(b.id)} · ${dateLabel(b.date)}</strong><small>${esc(v.clockIn || 'Unknown')}–${esc(v.clockOut || 'Unknown')} · ${actual(v) === null ? 'Incomplete; needs native review' : actual(v) + ' recorded min'}</small><small>${v.note ? 'Note recorded' : 'Note missing'} · ${v.tasks && v.goals ? 'Tasks/goals recorded' : 'Task/goal evidence to check'}</small></span>${pill(v.status)}</a>`).join('') || empty('No recorded visits', 'Native sample attendance will appear here.')}</section><aside class="panel"><h2>My documents</h2>${
       state.workerDocs
@@ -2250,27 +2423,78 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const previous = window.OCD_BOOKING_RULES.previousBooking(state.bookings, p.id);
     const confirmation = clientBooking.confirmation;
     const model = {
-      workers: state.workers.filter(w => w.approved).map(w => ({ id: w.id, name: w.name, role: w.role || 'Support worker', specialties: w.services.join(' · ') })),
+      workers: state.workers
+        .filter((w) => w.approved)
+        .map((w) => ({
+          id: w.id,
+          name: w.name,
+          role: w.role || 'Support worker',
+          specialties: w.services.join(' · '),
+        })),
       preferredWorkerId: p.preferredWorker,
-      name: p.name, representative, today, homeView: ui.clientHomeView || 'book', services: serviceTypes,
-      selection: { service: clientBooking.service || '', date: clientBooking.date || '', month: clientBooking.month || `${today.slice(0, 7)}-01` },
-      previous: previous ? { id: previous.id, service: previous.service, date: previous.date, time: clockRange(previous.start, previous.end) } : undefined,
-      confirmation: confirmation ? { service: confirmation.fields.service, date: confirmation.fields.date, reference: confirmation.serverId || confirmation.id } : undefined,
-      upcoming: upcoming.map((b) => ({ id: b.id, service: b.service, date: b.date, time: clockRange(b.start, b.end), worker: worker(b.workerId)?.name || 'Worker to be confirmed', status: b.status })),
-      requests: pending.map((r) => ({ id: r.id, service: r.fields?.service || r.type, message: r.message, status: r.status })),
-      calendarBookings: state.bookings.filter((b) => b.participantId === p.id && ['Confirmed', 'Needs cover'].includes(b.status)).map((b) => ({ date: b.date, service: b.service })),
+      name: p.name,
+      representative,
+      today,
+      homeView: ui.clientHomeView || 'book',
+      services: serviceTypes,
+      selection: {
+        service: clientBooking.service || '',
+        date: clientBooking.date || '',
+        month: clientBooking.month || `${today.slice(0, 7)}-01`,
+      },
+      previous: previous
+        ? {
+            id: previous.id,
+            service: previous.service,
+            date: previous.date,
+            time: clockRange(previous.start, previous.end),
+          }
+        : undefined,
+      confirmation: confirmation
+        ? {
+            service: confirmation.fields.service,
+            date: confirmation.fields.date,
+            reference: confirmation.serverId || confirmation.id,
+          }
+        : undefined,
+      upcoming: upcoming.map((b) => ({
+        id: b.id,
+        service: b.service,
+        date: b.date,
+        time: clockRange(b.start, b.end),
+        worker: worker(b.workerId)?.name || 'Worker to be confirmed',
+        status: b.status,
+      })),
+      requests: pending.map((r) => ({
+        id: r.id,
+        service: r.fields?.service || r.type,
+        message: r.message,
+        status: r.status,
+      })),
+      calendarBookings: state.bookings
+        .filter((b) => b.participantId === p.id && ['Confirmed', 'Needs cover'].includes(b.status))
+        .map((b) => ({ date: b.date, service: b.service })),
       agreementPending: !!agreement && agreement.status !== 'Signed',
     };
+
     return `<div data-react-client-home="${attr(JSON.stringify(model))}"></div>`;
   }
 
   function portalWorkerFeedback(w, employee = false) {
     const model = {
-      mode: 'profile', worker: { id: w.id, name: w.name },
-      completed: state.bookings.filter(b => b.workerId === w.id && b.status === 'Completed').length,
+      mode: 'profile',
+      worker: { id: w.id, name: w.name },
+      completed: state.bookings.filter((b) => b.workerId === w.id && b.status === 'Completed')
+        .length,
       hideAlerts: !employee,
-      alerts: employee ? window.OCD_ALERTS?.get(w.id) || { status: 'Not checked', detail: 'No device check recorded.' } : { status: '', detail: '' },
+      alerts: employee
+        ? window.OCD_ALERTS?.get(w.id) || {
+            status: 'Not checked',
+            detail: 'No device check recorded.',
+          }
+        : { status: '', detail: '' },
     };
+
     return `<div data-react-employee-feedback="${attr(JSON.stringify(model))}"></div>`;
   }
 
@@ -2281,11 +2505,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   function clientWorkerProfile(workerId) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const available = state.workers.filter(w => w.approved);
-    if (!workerId) return `<div class="portal-page client-worker-directory">${pageHeader('Your care / Our team', 'Support workers', 'Meet the team, explore their services and read sample client feedback.')}<div class="worker-directory-intro"><span>${available.length} office-approved worker${available.length === 1 ? '' : 's'}</span><p>Regular days are preferences. The office confirms availability for your booking.</p></div><div class="worker-directory-grid">${available.map(w => `<article class="worker-directory-card"><header class="worker-directory-card-head"><a href="#/client/workers/${attr(w.id)}" aria-label="View ${attr(w.name)}'s profile">${window.OCD_AUTOMATION.profileImage(w.name, 'worker-directory-avatar')}</a><span class="worker-directory-approval">${icon('shield')} Office approved</span></header><div class="worker-directory-identity"><h2><a href="#/client/workers/${attr(w.id)}">${esc(w.name)}</a></h2><p>${esc(w.role || 'Support worker')}</p></div><div data-react-worker-rating="${attr(JSON.stringify({ name: w.name }))}"></div><div class="worker-directory-services"><h3>Support services</h3><ul>${w.services.map(service => `<li>${esc(service)}</li>`).join('')}</ul></div><div class="worker-directory-days">${icon('calendar')}<div><span>Regular days</span><p>${esc(w.days.map(day => days[day].slice(0, 3)).join(' · ') || 'Ask the office')}</p></div></div><footer><a class="btn primary" href="#/client/workers/${attr(w.id)}">View profile &amp; reviews ${icon('arrow')}</a></footer></article>`).join('') || `<section class="worker-directory-empty">${empty('No workers available', 'Ask the office for help choosing a support worker.')}<button class="btn" type="button" data-action="client-feedback">Ask the office</button></section>`}</div></div>`;
-    const w = available.find(w => w.id === workerId);
-    if (!w) return `${pageHeader('Client portal / Workers', 'Employee not available')}<a class="btn" href="#/client/workers">Back to support workers</a>`;
-    return `<a class="record-back" href="#/client/workers">${icon('arrow')} Back to support workers</a>${pageHeader('Client portal / Employee profile', w.name, w.role || 'Support worker')}<section class="panel"><div class="visit-row">${profileImage(w.name)}<span class="body"><h2>Employee profile</h2><p>${esc(w.services.join(' · '))}</p><small>Regular days: ${esc(w.days.map(d => days[d]).join(', ') || 'Ask the office')}</small></span>${pill('Approved')}</div><p class="form-note">The office confirms availability for each booking.</p></section><div class="spacer"></div>${portalWorkerFeedback(w)}`;
+    const available = state.workers.filter((w) => w.approved);
+    if (!workerId)
+      return `<div class="portal-page client-worker-directory">${pageHeader('Your care / Our team', 'Support workers', 'Meet the team, explore their services and read sample client feedback.')}<div class="worker-directory-intro"><span>${available.length} office-approved worker${available.length === 1 ? '' : 's'}</span><p>Regular days are preferences. The office confirms availability for your booking.</p></div><div class="worker-directory-grid">${available.map((w) => `<article class="worker-directory-card"><header class="worker-directory-card-head"><a href="#/client/workers/${attr(w.id)}" aria-label="View ${attr(w.name)}'s profile">${window.OCD_AUTOMATION.profileImage(w.name, 'worker-directory-avatar')}</a><span class="worker-directory-approval">${icon('shield')} Office approved</span></header><div class="worker-directory-identity"><h2><a href="#/client/workers/${attr(w.id)}">${esc(w.name)}</a></h2><p>${esc(w.role || 'Support worker')}</p></div><div data-react-worker-rating="${attr(JSON.stringify({ name: w.name }))}"></div><div class="worker-directory-services"><h3>Support services</h3><ul>${w.services.map((service) => `<li>${esc(service)}</li>`).join('')}</ul></div><div class="worker-directory-days">${icon('calendar')}<div><span>Regular days</span><p>${esc(w.days.map((day) => days[day].slice(0, 3)).join(' · ') || 'Ask the office')}</p></div></div><footer><a class="btn primary" href="#/client/workers/${attr(w.id)}">View profile &amp; reviews ${icon('arrow')}</a></footer></article>`).join('') || `<section class="worker-directory-empty">${empty('No workers available', 'Ask the office for help choosing a support worker.')}<button class="btn" type="button" data-action="client-feedback">Ask the office</button></section>`}</div></div>`;
+    const w = available.find((w) => w.id === workerId);
+    if (!w)
+      return `${pageHeader('Client portal / Workers', 'Employee not available')}<a class="btn" href="#/client/workers">Back to support workers</a>`;
+    return `<a class="record-back" href="#/client/workers">${icon('arrow')} Back to support workers</a>${pageHeader('Client portal / Employee profile', w.name, w.role || 'Support worker')}<section class="panel"><div class="visit-row">${profileImage(w.name)}<span class="body"><h2>Employee profile</h2><p>${esc(w.services.join(' · '))}</p><small>Regular days: ${esc(w.days.map((d) => days[d]).join(', ') || 'Ask the office')}</small></span>${pill('Approved')}</div><p class="form-note">The office confirms availability for each booking.</p></section><div class="spacer"></div>${portalWorkerFeedback(w)}`;
   }
 
   function reviewClientBooking() {
@@ -2327,11 +2553,29 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       .slice(-5)
       .reverse();
     const model = {
-      title: ui.clientId === 'PAR-103' ? "Farah's bookings" : 'My bookings', history,
-      page: ui.clientBookingsPage, pageCount, offset, total: rows.length,
-      bookings: shown.map((b) => ({ id: b.id, service: b.service, date: b.date, time: clockRange(b.start, b.end), worker: worker(b.workerId)?.name || 'Worker to be confirmed', status: b.status })),
-      requests: requests.map((r) => ({ id: r.id, service: r.fields?.service || r.type, message: r.message, status: r.status, outcome: r.outcome })),
+      title: ui.clientId === 'PAR-103' ? "Farah's bookings" : 'My bookings',
+      history,
+      page: ui.clientBookingsPage,
+      pageCount,
+      offset,
+      total: rows.length,
+      bookings: shown.map((b) => ({
+        id: b.id,
+        service: b.service,
+        date: b.date,
+        time: clockRange(b.start, b.end),
+        worker: worker(b.workerId)?.name || 'Worker to be confirmed',
+        status: b.status,
+      })),
+      requests: requests.map((r) => ({
+        id: r.id,
+        service: r.fields?.service || r.type,
+        message: r.message,
+        status: r.status,
+        outcome: r.outcome,
+      })),
     };
+
     return `<div data-react-client-bookings="${attr(JSON.stringify(model))}"></div>`;
   }
 
@@ -2355,7 +2599,15 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   function clientIntake() {
     const p = participant(ui.clientId);
-    const model = { name: p.name, email: p.email, phone: p.phone, preference: p.intakeUpdate, service: p.service, representative: p.representative };
+    const model = {
+      name: p.name,
+      email: p.email,
+      phone: p.phone,
+      preference: p.intakeUpdate,
+      service: p.service,
+      representative: p.representative,
+    };
+
     return `<div data-react-client-account="${attr(JSON.stringify(model))}">${appToolsButton()}</div>`;
   }
 
@@ -2369,11 +2621,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       )
       .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
   }
+
   function publicBook() {
     if (ui.publicConfirmation) {
       const c = ui.publicConfirmation;
       return `<div class="panel confirmation"><div class="check">✓</div><h1>Discovery call booked</h1><p>${esc(c.name)}, your demo call is reserved for <strong>${dateLabel(c.date, { weekday: 'long', day: 'numeric', month: 'long' })} at ${esc(clockLabel(c.time))}</strong>.</p><p>Reference <strong>${esc(c.id)}</strong> · Demo only, no email sent.</p><div class="button-row" style="justify-content:center;margin-top:20px"><a class="btn primary" href="#/public/intake">Continue to intake form</a><button class="btn" data-action="book-another" type="button">Book another call</button></div></div>`;
     }
+
     const slots = availableSlots();
     if (!slots.some((s) => s.id === ui.selectedSlot)) ui.selectedSlot = slots[0]?.id || '';
     const grouped = [...new Set(slots.map((s) => s.date))];
@@ -2431,6 +2685,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         )
           files.push(file);
       }
+
       if (files.length > 5) throw new Error('Attach up to 5 service videos.');
       serviceVideoFiles = files;
       panel.innerHTML = files
@@ -2448,13 +2703,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<p class="field-error" role="alert">${esc(error.message)}</p>`,
       );
     }
+
     input.value = '';
   }
 
   function serviceVideosPanel(enquiry, stamp) {
     const videos = enquiry.onboarding?.serviceVideos || [];
     if (!videos.length) return '';
-    return `<div class="service-video-review"><h3>Requested service videos (${videos.length})</h3>${videos.map((video, index) => `<video controls playsinline preload="metadata" aria-label="Service video ${index + 1}" src="/api/workflow?action=video&amp;recordId=${attr(enquiry.id)}&amp;id=${attr(video.id)}"></video><p>${esc(video.name)} · ${(video.size / (1024 * 1024)).toFixed(1)} MB</p>`).join('')}<p class="form-note">Review all rooms, tasks and scope before preparing pricing. MOV playback depends on the phone's video codec.</p>${enquiry.onboarding.serviceVideoReviewedAt ? `<p class="review-stamp">Videos reviewed by ${esc(enquiry.onboarding.serviceVideoReviewedBy)} · ${stamp(enquiry.onboarding.serviceVideoReviewedAt)}</p>` : ''}</div>`;
+    return `<div class="service-video-review"><h3>Requested service videos (${videos.length})</h3>${videos.map((video, index) => `<video controls playsinline preload="metadata" aria-label="Service video ${index + 1}" src="/api/workflow?action=video&amp;recordId=${attr(enquiry.id)}&amp;id=${attr(video.id)}"></video><p><strong>${esc(intakeRooms[video.room] || 'Service video')}</strong> · ${esc(video.name)} · ${(video.size / (1024 * 1024)).toFixed(1)} MB</p>`).join('')}<p class="form-note">Review all rooms, tasks and scope before preparing pricing. MOV playback depends on the phone's video codec.</p>${enquiry.onboarding.serviceVideoReviewedAt ? `<p class="review-stamp">Videos reviewed by ${esc(enquiry.onboarding.serviceVideoReviewedBy)} · ${stamp(enquiry.onboarding.serviceVideoReviewedAt)}</p>` : ''}</div>`;
   }
 
   async function uploadServiceVideo(file, postcode, consent, progress) {
@@ -2465,6 +2721,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       if (!response.ok) throw new Error(result.error || 'The video upload failed.');
       return result;
     }
+
     if (!upload) {
       const result = await request('/api/workflow?action=video-start', {
         method: 'POST',
@@ -2477,9 +2734,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           consent,
         }),
       });
+
       upload = { ...result, received: 0 };
+
       serviceVideoUploads.set(file, upload);
     }
+
     while (upload.received < file.size) {
       const result = await request(
         `/api/workflow?action=video-upload&id=${upload.id}&offset=${upload.received}`,
@@ -2492,6 +2752,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       upload.received = result.received;
       progress(Math.round((upload.received * 100) / file.size));
     }
+
     return { id: upload.id };
   }
 
@@ -2517,23 +2778,28 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     window.OCD_UI.enhance(modal);
     modal.querySelector('input:not([hidden]), textarea, button')?.focus();
   }
+
   function closeModal() {
     if (modal.querySelector('form[aria-busy="true"]')) return;
     if (modal.open) modal.close();
   }
+
   modal.addEventListener('cancel', (event) => {
     if (modal.querySelector('form[aria-busy="true"]')) event.preventDefault();
   });
+
   modal.addEventListener('close', () => {
     clearServiceVideoPreview();
     serviceVideoFiles = [];
     serviceVideoUploads.clear();
   });
+
   document.addEventListener('input', (event) => {
     if (event.target.matches('[data-owner-search]')) {
       const select = event.target.closest('[data-owner-picker]').querySelector('[name="owner"]');
       select.innerHTML = ownerOptionsMarkup(select.value, event.target.value);
     }
+
     if (event.target.matches('[data-workspace-search]')) {
       const query = event.target.value.toLowerCase().trim();
       modal
@@ -2544,9 +2810,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       );
     }
   });
+
   modal.addEventListener('click', (event) => {
     if (event.target.closest('.workspace-search-results a')) closeModal();
   });
+
   function formError(form, message) {
     form.querySelector('.field-error')?.remove();
     const note = document.createElement('p');
@@ -2558,6 +2826,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     else form.append(note);
     note.scrollIntoView({ block: 'nearest' });
   }
+
   async function intakeRequest(action, method = 'GET', payload) {
     if (!sessionEmail && ['draft-preview', 'draft', 'draft-review', 'ai-email'].includes(action))
       return demoIntakeRequest(action, payload, localStorage, () => crypto.randomUUID());
@@ -2571,6 +2840,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           }
         : {}),
     });
+
     const result = await response.json();
     if (!response.ok) {
       const error = new Error(result.error || 'The intake request could not be completed.');
@@ -2578,8 +2848,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       error.issues = result.issues;
       throw error;
     }
+
     return result;
   }
+
   async function copyIntake(text, label) {
     try {
       await navigator.clipboard.writeText(text);
@@ -2595,6 +2867,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       field.select();
     }
   }
+
   function workerCheck(workerId, service, date, start, end, excludeId = '') {
     return window.OCD_BOOKING_RULES.assignmentIssue(
       worker(workerId),
@@ -2610,6 +2883,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       start: val(form, 'start'),
       end: val(form, 'end'),
     };
+
     const matches = window.OCD_BOOKING_RULES.candidates(
       state.workers,
       occurrence,
@@ -2629,21 +2903,26 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     d.setUTCDate(d.getUTCDate() + count);
     return d.toISOString().slice(0, 10);
   }
+
   function mondayOf(dateString) {
     return addDays(dateString, -((weekday(dateString) + 6) % 7));
   }
+
   function clearWorkingDays(noticeDate, serviceDate, holidays) {
     let days = 0;
     for (let d = addDays(noticeDate, 1); d < serviceDate; d = addDays(d, 1)) {
       if (![0, 6].includes(weekday(d)) && !holidays.includes(d)) days++;
     }
+
     return days;
   }
+
   function csvDownload(filename, headers, rows) {
     const cell = (x) => `"${String(x ?? '').replace(/"/g, '""')}"`;
     const csv = [headers, ...rows].map((row) => row.map(cell).join(',')).join('\r\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+
     a.download = filename;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
@@ -2662,6 +2941,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     tooltip.style.left = `${Math.max(0, Math.min(area.width - tooltip.offsetWidth, bounds.left - area.left + bounds.width / 2 - tooltip.offsetWidth / 2))}px`;
     tooltip.style.top = '0px';
   }
+
   function hideOverviewTooltip(event) {
     if (event.type === 'keydown' && event.key !== 'Escape') return;
     if (event.type !== 'keydown' && !event.target.closest?.('[data-chart-title]')) return;
@@ -2674,6 +2954,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const tooltip = document.getElementById('overview-chart-tooltip');
     if (tooltip) tooltip.hidden = true;
   }
+
   document.addEventListener('pointerover', showOverviewTooltip);
   document.addEventListener('focusin', showOverviewTooltip);
   document.addEventListener('pointerout', hideOverviewTooltip);
@@ -2688,6 +2969,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         window.OCD_AUTOMATION.click(automationContext(), autoButton);
       return;
     }
+
     const button = event.target.closest('[data-action]');
     if (!button) return;
     event.preventDefault();
@@ -2706,6 +2988,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       input.focus();
       return;
     }
+
     if (action.startsWith('client-') && routeParts()[0] === 'client') {
       if (action === 'client-home-view') {
         ui.clientHomeView = value;
@@ -2713,8 +2996,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         document
           .querySelector(`[data-action="client-home-view"][data-value="${value}"]`)
           ?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'client-bookings-view') {
         ui.clientBookingView = value;
         ui.clientBookingsPage = 1;
@@ -2722,16 +3007,20 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         document
           .querySelector(`[data-action="client-bookings-view"][data-value="${value}"]`)
           ?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'client-bookings-page') {
         ui.clientBookingsPage = Math.max(1, (ui.clientBookingsPage || 1) + Number(value));
         render();
         document
           .querySelector('.client-app .tabs button[aria-pressed="true"]')
           ?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'client-repeat') {
         const previous = window.OCD_BOOKING_RULES.previousBooking(state.bookings, ui.clientId);
         if (!previous || previous.id !== itemId) return;
@@ -2745,9 +3034,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           notes: previous.notes || participant(ui.clientId).intakeUpdate || '',
           confirmation: null,
         });
+
         render();
         return;
       }
+
       if (action === 'client-different') {
         Object.assign(clientBooking, {
           service: participant(ui.clientId).service,
@@ -2759,9 +3050,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           notes: '',
           confirmation: null,
         });
+
         render();
         return;
       }
+
       if (action === 'client-service') {
         Object.assign(clientBooking, {
           mode: 'different-services',
@@ -2770,26 +3063,33 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           end: '',
           notes: '',
         });
+
         clientBooking.service = value;
         clientBooking.confirmation = null;
         render();
         document.querySelector('#client-booking-date')?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'client-service-back') {
         clientBooking.service = '';
         render();
         document.querySelector('.client-service-tile')?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'client-date') {
         clientBooking.date = value;
         render();
         [...document.querySelectorAll(`[data-action="client-date"][data-value="${value}"]`)]
           .find((node) => node.getClientRects().length)
           ?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'client-month') {
         const date = dateObj(clientBooking.month || `${todayPerth().slice(0, 7)}-01`);
         date.setUTCMonth(date.getUTCMonth() + Number(value));
@@ -2798,27 +3098,34 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         [...document.querySelectorAll(`[data-action="client-month"][data-value="${value}"]`)]
           .find((node) => node.getClientRects().length)
           ?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'client-booking-review') {
         reviewClientBooking();
         return;
       }
+
       if (action === 'client-booking-dismiss') {
         clientBooking.confirmation = null;
         render();
         document.querySelector('.client-service-tile')?.focus({ preventScroll: true });
+
         return;
       }
     }
+
     if (action === 'skip-main') {
       document.getElementById('main-content')?.focus();
       return;
     }
+
     if (action === 'intake-section') {
       selectIntakeSection(itemId, value);
       return;
     }
+
     if (action === 'ready-intake') {
       const e = find(state.enquiries, itemId);
       button.disabled = true;
@@ -2834,8 +3141,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           postcode: e.intakeFields.postcode,
           shiftCareId: e.shiftCareId,
         });
+
         await syncServerIntakes();
         intakeSection = { id: e.id, value: 'handoff' };
+
         render();
         document.querySelector('[data-action="intake-section"][data-value="handoff"]')?.focus();
         toast('Ready for manual ShiftCare entry.');
@@ -2843,8 +3152,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         button.disabled = false;
         formError(document.querySelector('[data-form="intake-review"]'), reason.message);
       }
+
       return;
     }
+
     if (action === 'workspace-search') {
       const entries = [
         ...nav[routeParts()[0] || 'office'].map(([path, label]) => ({
@@ -2878,6 +3189,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<label>Search<input type="search" data-workspace-search placeholder="Try Olivia, intake or calendar"></label><nav class="workspace-search-results">${entries.map((e) => `<a href="#/${attr(e.href)}" data-search-text="${attr(`${e.label} ${e.kind}`.toLowerCase())}"><span>${esc(e.label)}</span><small>${esc(e.kind)}</small></a>`).join('')}</nav><p data-workspace-empty hidden>No matching pages or records.</p>`,
       );
     }
+
     if (action === 'account-settings')
       return openModal(
         'Demo account',
@@ -2901,10 +3213,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       runIntakePreview(document.querySelector('[data-form="intake-extract"]'));
       return;
     }
+
     if (action === 'retry-intake-preview') {
       runIntakePreview(document.querySelector('[data-form="intake-extract"]'), true);
       return;
     }
+
     if (action === 'refresh-intake') {
       button.disabled = true;
       try {
@@ -2917,8 +3231,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         if (button.closest('form')) formError(button.closest('form'), reason.message);
         else toast(reason.message);
       }
+
       return;
     }
+
     if (action === 'approve-intake-handoff') {
       const e = find(state.enquiries, itemId);
       if (!document.querySelector(`[data-native-match="${CSS.escape(e.id)}"]`)?.checked)
@@ -2931,6 +3247,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           approved: true,
           existingPeopleChecked: true,
         });
+
         await syncServerIntakes();
         render();
         toast('Exact manual handoff approved.');
@@ -2938,8 +3255,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         button.disabled = false;
         toast(reason.message);
       }
+
       return;
     }
+
     if (action === 'intake-transfer-failure') {
       const e = find(state.enquiries, itemId);
       return openModal(
@@ -2948,6 +3267,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="intake-failure" data-id="${attr(e.id)}" data-revision="${attr(e.revision)}"><label>Failure<textarea name="reason" required maxlength="500"></textarea></label>${ownerPicker(e.owner)}<label>Next action<input name="nextAction" required maxlength="250"></label><label>Due date<input name="followUp" type="date" required value="${attr(e.nextAction)}"></label><div class="form-actions"><button class="btn primary" type="submit">Save unresolved work</button></div></form>`,
       );
     }
+
     if (['copy-intake-field', 'copy-intake-handoff'].includes(action)) {
       const e = find(state.enquiries, itemId);
       if (
@@ -2969,20 +3289,24 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } finally {
         button.disabled = false;
       }
+
       return;
     }
+
     if (action === 'close-modal') return closeModal();
     if (action === 'employee-record-page') {
       employeeRecordPage = Math.max(0, employeeRecordPage + Number(value));
       render();
       return;
     }
+
     if (action === 'employee-tab') {
       employeeRecordPage = 0;
       employeeTab = value;
       render();
       return;
     }
+
     if (action === 'schedule-client-review') {
       const w = worker(itemId);
       if (!w || routeParts()[0] !== 'office') return;
@@ -2992,6 +3316,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="client-review" data-id="${attr(w.id)}"><div class="form-grid"><label class="full">Client<select name="participantId" required><option value="">Select a client</option>${participantOptions()}</select></label><label>Date (Perth)<input name="date" type="date" min="${todayPerth()}" value="${todayPerth()}" required></label><label>Location or meeting link<input name="location" maxlength="300" placeholder="Office, phone or meeting link" required></label><label>Starts (Perth)<input name="start" type="time" required></label><label>Ends (Perth)<input name="end" type="time" required></label><label class="full">Review agenda<textarea name="agenda" maxlength="2000" required placeholder="Support goals, client feedback and agreed next steps"></textarea></label></div><p class="form-note">Recorded by ${esc(workspaceIdentity())}. Confirm attendance with the employee and client separately.</p><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">Save scheduled review</button></div></form>`,
       );
     }
+
     if (action === 'complete-client-review' || action === 'cancel-client-review') {
       const r = find(state.employeeReviews, itemId);
       if (!r || r.status !== 'Scheduled' || routeParts()[0] !== 'office') return;
@@ -3002,6 +3327,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="client-review-outcome" data-id="${attr(r.id)}" data-status="${completing ? 'Completed' : 'Cancelled'}"><label>${completing ? 'Outcome and agreed next steps' : 'Cancellation reason'}<textarea name="outcome" maxlength="2000" required></textarea></label><div class="form-actions"><button class="btn primary" type="submit">${completing ? 'Save outcome' : 'Cancel review'}</button></div></form>`,
       );
     }
+
     if (action === 'read-update') {
       const u = find(state.updates, itemId);
       const [area] = routeParts();
@@ -3017,11 +3343,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       render();
       return;
     }
+
     if (action === 'refresh-arrival') {
       render();
       toast('Arrival status refreshed from the demo journey.');
       return;
     }
+
     if (action === 'triage-email') {
       const m = find(state.inbound, itemId);
       if (!m || m.status !== 'New') return;
@@ -3031,6 +3359,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<div class="review-box"><h3>${esc(m.subject)}</h3><p>${esc(m.body)}</p><p>From ${esc(m.from)}</p></div><div class="spacer"></div><form data-form="triage-email" data-id="${attr(m.id)}"><div class="form-grid"><label>Route to<select name="category">${['Enquiry', 'Finance query', 'Office follow-up'].map((x) => option(x, m.service ? 'Enquiry' : 'Finance query')).join('')}</select></label><label>Priority<select name="priority">${['Routine', 'Urgent'].map((x) => option(x, m.urgent ? 'Urgent' : 'Routine')).join('')}</select></label><label>Contact name<input name="contact" value="${attr(m.name)}" required></label><label>Suburb for new enquiry<input name="suburb" value="${attr(m.suburb)}"></label><label>Service for new enquiry<select name="service">${serviceOptions(m.service)}</select></label><label class="full">Office note<textarea name="note" required placeholder="Record the next step and owner."></textarea></label></div><div class="form-actions"><button class="btn primary" type="submit">Save triage decision</button></div></form>`,
       );
     }
+
     if (action === 'review-doc')
       return openAutomation(window.OCD_AUTOMATION_ENGINE.document(state, itemId));
     if (action === 'review-handoff') {
@@ -3042,14 +3371,17 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<div class="review-box"><h3>Original intake</h3><p>${esc(e.intake.support)}</p><p><strong>Preference:</strong> ${esc(e.intake.preference || 'Not provided')}</p></div><div class="spacer"></div><form data-form="handoff-review" data-id="${attr(e.id)}"><div class="form-grid"><label>Service<select name="service">${serviceOptions(e.handoff?.service || e.service)}</select></label><label>Suburb<input name="suburb" value="${attr(e.handoff?.suburb || e.suburb)}" required></label><label class="full">Support summary<textarea name="summary" required>${esc(e.handoff?.summary || e.intake.support)}</textarea></label><label class="full">Office follow-up or missing detail<textarea name="followUp" required>${esc(e.handoff?.followUp || 'Confirm service capacity and preferred schedule.')}</textarea></label></div><div class="form-actions"><button class="btn primary" type="submit">Approve draft for handoff</button></div></form>`,
       );
     }
+
     if (action === 'record-handoff') {
       const e = find(state.enquiries, itemId);
       if (e?.serverRecord) {
         go(`office/enquiries/${e.id}`);
         return toast('Verify the native ShiftCare ID in the shared request workflow.');
       }
+
       return openAutomation(window.OCD_AUTOMATION_ENGINE.intake(state, itemId));
     }
+
     if (action === 'offer-cover')
       return openAutomation(window.OCD_AUTOMATION_ENGINE.cover(state, itemId));
     if (action === 'respond-offer') {
@@ -3072,8 +3404,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } catch (error) {
         toast(error.message);
       }
+
       return;
     }
+
     if (action === 'confirm-offer') {
       const offer = find(state.coverOffers, itemId);
       const job = offer?.automationJobId
@@ -3081,6 +3415,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         : window.OCD_AUTOMATION_ENGINE.cover(state, offer.bookingId);
       return openAutomation(job);
     }
+
     if (action === 'mobile-menu')
       return openModal(
         'More office sections',
@@ -3105,20 +3440,25 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       document
         .querySelector(`[data-action="work-filter"][data-value="${value}"]`)
         ?.focus({ preventScroll: true });
+
       return;
     }
+
     if (action === 'schedule-worker') {
       ui.scheduleWorkerQuery = worker(itemId)?.name || '';
       go('office/schedule');
       return;
     }
+
     if (action === 'reset-demo') {
       if (window.confirm('Restore the original fictional demo records?')) {
         closeModal();
         reset();
       }
+
       return;
     }
+
     if (action === 'new-enquiry')
       return openModal(
         'Log an enquiry',
@@ -3131,8 +3471,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         go(`office/enquiries/${e.id}`);
         return toast('Use the verified native handoff for this shared request.');
       }
+
       return openAutomation(window.OCD_AUTOMATION_ENGINE.intake(state, itemId));
     }
+
     if (action === 'generate-ai') {
       const e = find(state.enquiries, itemId);
       if (!e?.intake) return toast('An intake is needed first.');
@@ -3144,12 +3486,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         match: `${e.service} — staff to verify suitability.`,
         reviewed: false,
       };
+
       activity(`Intake suggestion prepared for ${e.name}`, `${e.id} · awaiting staff review`);
       save();
       render();
       toast('Demo suggestion ready for review.');
       return;
     }
+
     if (action === 'edit-ai') {
       const e = find(state.enquiries, itemId);
       return openModal(
@@ -3158,6 +3502,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="edit-ai" data-id="${attr(e.id)}"><label>Summary<textarea name="summary" required>${esc(e.aiReview.summary)}</textarea></label><div class="spacer" style="height:12px"></div><label>Missing information<textarea name="missing" required>${esc(e.aiReview.missing)}</textarea></label><div class="spacer" style="height:12px"></div><label>Possible match<textarea name="match" required>${esc(e.aiReview.match)}</textarea></label><div class="form-actions"><button class="btn primary" type="submit">Save suggestion</button></div></form>`,
       );
     }
+
     if (action === 'approve-ai') {
       const e = find(state.enquiries, itemId);
       e.aiReview.reviewed = true;
@@ -3167,6 +3512,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Review recorded by Mia Roberts.');
       return;
     }
+
     if (action === 'copy-ai-email') {
       const form = button.closest('form');
       try {
@@ -3177,12 +3523,15 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } catch {
         toast('Could not copy. Select the draft text and copy it manually.');
       }
+
       return;
     }
+
     if (action === 'print-invoice') {
       window.print();
       return;
     }
+
     if (action === 'new-invoice')
       return openModal(
         'New invoice',
@@ -3206,6 +3555,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         source.aiReview = await intakeRequest('ai-email-review', 'POST', {
           sourceText: `From: ${source.sender || ''}\nSubject: ${source.title}\n${source.body}`,
         });
+
         save();
         render();
         showEmailReview(source);
@@ -3217,8 +3567,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           button.textContent = label;
         }
       }
+
       return;
     }
+
     if (action === 'draft-email' || action === 'draft-source-email') {
       const e = action === 'draft-email' ? find(state.enquiries, itemId) : null;
       const source =
@@ -3255,7 +3607,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           e.emailStatus = 'Needs review';
           save();
           render();
-          toast(result.ai?.provider === 'Demo' ? 'Demo draft ready. Review before copying.' : 'AI draft ready. Review before copying.');
+          toast(
+            result.ai?.provider === 'Demo'
+              ? 'Demo draft ready. Review before copying.'
+              : 'AI draft ready. Review before copying.',
+          );
         } else
           openModal(
             'AI email draft',
@@ -3270,8 +3626,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           button.textContent = label;
         }
       }
+
       return;
     }
+
     if (action === 'discard-email') {
       const e = find(state.enquiries, itemId);
       e.emailDraft = null;
@@ -3281,11 +3639,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Draft discarded.');
       return;
     }
+
     if (action === 'call-tab') {
       ui.callTab = value;
       render();
       return;
     }
+
     if (action === 'add-slot') {
       const date =
         routeParts().slice(0, 2).join('/') === 'office/calendar'
@@ -3297,6 +3657,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="add-slot"><div class="form-grid"><label>Date<input name="date" type="date" required value="${attr(date)}"></label><label>Start time<input name="time" type="time" required value="14:00"></label><label>Duration<select name="duration">${[30, 45, 60].map((x) => option(String(x))).join('')}</select></label></div><div class="form-actions"><button class="btn primary" type="submit">Publish slot</button></div></form>`,
       );
     }
+
     if (action === 'resolve-call') {
       const c = find(state.calls, itemId),
         slots = availableSlots();
@@ -3307,6 +3668,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="resolve-call" data-id="${attr(c.id)}"><p class="muted">${esc(c.name)} · ${esc(c.id)}</p><label>New call time<select name="slotId">${slots.map((s) => `<option value="${attr(s.id)}">${dateLabel(s.date)} · ${esc(clockLabel(s.time))}</option>`).join('')}</select></label><div class="spacer" style="height:12px"></div><label>Participant communication<textarea name="response" required placeholder="Record the new time and how it was confirmed."></textarea></label><div class="form-actions"><button class="btn primary" type="submit">Confirm new time</button></div></form>`,
       );
     }
+
     if (['call-transcript', 'edit-call-transcript'].includes(action)) {
       const c = find(state.calls, itemId);
       if (!c || c.status === 'Cancelled')
@@ -3318,6 +3680,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           `<form data-form="generate-call-summary" data-id="${attr(c.id)}"><p class="muted">${esc(c.name)} · ${esc(c.id)}</p><label>Call transcript<textarea name="transcript" rows="12" minlength="40" maxlength="20000" required placeholder="Paste the call transcript here…">${esc(c.transcript || '')}</textarea></label><p class="form-note">This browser-only prototype extracts important sentences locally. Check the source before approving the draft.</p><div class="form-actions"><button class="btn primary" type="submit">${c.transcriptSummary ? 'Regenerate draft' : 'Prepare summary'}</button></div></form>`,
         );
       }
+
       const draft = c.transcriptSummary;
       return openModal(
         'Review transcript summary',
@@ -3325,6 +3688,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<div class="review-box"><h3>Source transcript</h3><p style="white-space:pre-line;max-height:180px;overflow:auto">${esc(c.transcript)}</p></div><div class="spacer"></div><form data-form="review-call-summary" data-id="${attr(c.id)}"><label>Summary<textarea name="summary" rows="5" required>${esc(draft.summary)}</textarea></label><div class="spacer" style="height:12px"></div><label>Key points<textarea name="keyPoints" rows="5" required>${esc(draft.keyPoints)}</textarea></label><div class="spacer" style="height:12px"></div><label>Next steps<textarea name="nextSteps" rows="4" required>${esc(draft.nextSteps)}</textarea></label><div class="form-actions"><button class="btn" data-action="edit-call-transcript" data-id="${attr(c.id)}" type="button">Replace transcript</button><button class="btn primary" type="submit">${draft.reviewed ? 'Save reviewed summary' : 'Approve summary'}</button></div></form>`,
       );
     }
+
     if (action === 'remove-slot') {
       const slot = find(state.slots, itemId);
       if (state.calls.some((c) => c.slotId === itemId && c.status === 'Booked'))
@@ -3336,11 +3700,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Slot removed.');
       return;
     }
+
     if (action === 'participant-tab') {
       ui.participantTab = value;
       render();
       return;
     }
+
     if (action === 'review-request')
       return openAutomation(
         window.OCD_AUTOMATION_ENGINE.request(state, find(state.requests, itemId)),
@@ -3356,6 +3722,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Participant status updated.');
       return;
     }
+
     if (action === 'generate-agreement') {
       const selected = itemId || state.participants[0].id;
       const p = participant(selected);
@@ -3365,6 +3732,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="generate-agreement"><div class="form-grid"><label>Participant<select name="participantId">${participantOptions(selected)}</select></label><label>Service<select name="service">${serviceOptions(p.service)}</select></label><label class="full">Proposed schedule<input name="schedule" required value="${attr(p.schedulePreference)}"></label><label>Template version<input name="template" value="Demo template v1" required></label><label>Pricing wording<input name="pricing" value="Per approved service agreement" required></label><label class="full">Cancellation wording<input name="cancellation" value="Per approved service agreement" required></label></div><div class="form-actions"><button class="btn primary" type="submit">Generate draft</button></div></form>`,
       );
     }
+
     if (action === 'send-agreement') {
       const a = find(state.agreements, itemId);
       return openModal(
@@ -3373,12 +3741,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="send-agreement" data-id="${attr(a.id)}"><p><strong>${esc(participant(a.participantId)?.name)}</strong> · ${esc(a.service)} · ${esc(a.template)}</p><label class="checkbox"><input name="reviewed" type="checkbox" required><span>I reviewed the participant, service, schedule, pricing and cancellation wording in this demo draft.</span></label><div class="form-actions"><button class="btn primary" type="submit">Record approval &amp; send (demo)</button></div></form>`,
       );
     }
+
     if (action === 'record-signature')
       return openAutomation(window.OCD_AUTOMATION_ENGINE.signedFile(state, itemId));
     if (action === 'print-agreement') {
       window.print();
       return;
     }
+
     if (action === 'new-booking') {
       openModal(
         'New booking',
@@ -3388,14 +3758,17 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       updateBookingMatches(modal.querySelector('form'));
       return;
     }
+
     if (action === 'schedule-status') {
       ui.scheduleStatus = value;
       render();
       document
         .querySelector(`[data-action="schedule-status"][data-value="${value}"]`)
         ?.focus({ preventScroll: true });
+
       return;
     }
+
     if (action === 'overview-week') {
       overviewWeekStart =
         value === 'sample'
@@ -3404,6 +3777,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       render();
       return;
     }
+
     if (action === 'overview-day') {
       ui.scheduleView = 'day';
       ui.scheduleDate = button.dataset.date;
@@ -3413,11 +3787,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       go('office/schedule');
       return;
     }
+
     if (action === 'schedule-view') {
       ui.scheduleView = value;
       render();
       return;
     }
+
     if (action === 'schedule-prev' || action === 'schedule-next') {
       const direction = action === 'schedule-prev' ? -1 : 1;
       ui.scheduleDate = addDays(ui.scheduleDate, direction * (ui.scheduleView === 'day' ? 1 : 7));
@@ -3425,12 +3801,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       render();
       return;
     }
+
     if (action === 'schedule-demo-week') {
       ui.scheduleWeekStart = '2026-10-05';
       ui.scheduleDate = '2026-10-05';
       render();
       return;
     }
+
     if (
       [
         'calendar-prev',
@@ -3468,10 +3846,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           calendarEvents(area).find((e) => e.date.slice(0, 7) === ui[monthKey].slice(0, 7))?.date ||
           ui[monthKey];
       }
+
       render();
       if (action === 'calendar-day' && window.innerWidth <= 760) {
         const agenda = document.querySelector('.calendar-agenda');
         agenda?.focus({ preventScroll: true });
+
         agenda?.scrollIntoView({ block: 'start' });
       } else
         document
@@ -3481,8 +3861,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
               : `[data-action="${action}"]`,
           )
           ?.focus({ preventScroll: true });
+
       return;
     }
+
     if (action === 'mark-cover') {
       const b = booking(itemId);
       if (b.status !== 'Confirmed') return;
@@ -3503,6 +3885,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Booking marked Needs cover.');
       return;
     }
+
     if (action === 'cancel-booking')
       return openAutomation(window.OCD_AUTOMATION_ENGINE.cancellation(state, itemId, ''));
     if (action === 'correct-visit') {
@@ -3513,6 +3896,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="correct-visit" data-id="${attr(v.id)}"><div class="form-grid"><label>Field<select name="field">${option('Clock in')}${option('Clock out')}</select></label><label>Corrected time<input name="time" type="time" required></label><label class="full">Reason<textarea name="reason" required placeholder="Why is this correction needed?"></textarea></label></div><div class="form-actions"><button class="btn primary" type="submit">Save correction</button></div></form>`,
       );
     }
+
     if (action === 'review-visit') {
       const v = find(state.visits, itemId);
       if (!v.note || !v.clockIn || !v.clockOut)
@@ -3525,6 +3909,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Visit review recorded.');
       return;
     }
+
     if (action === 'open-cancellation') {
       ui.feeTab = 'Cancellation';
       ui.cancellationBooking = itemId;
@@ -3532,12 +3917,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       go('office/fees');
       return;
     }
+
     if (action === 'fee-tab') {
       ui.feeTab = value;
       ui.feePreview = null;
       render();
       return;
     }
+
     if (action === 'estimate-route') {
       const b = booking(itemId);
       const p = participant(b.participantId);
@@ -3546,6 +3933,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         Kingsley: [13.6, 21],
         Ellenbrook: [35.4, 38],
       };
+
       const [distance, duration] = fixtures[p.suburb] || [12.0, 20];
       const record = {
         id: id('RTE', state.routeEstimates),
@@ -3557,6 +3945,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         created: todayPerth(),
         source: 'Illustrative map response',
       };
+
       state.routeEstimates.push(record);
       activity('Route estimate displayed', `${b.id} · illustrative map response`);
       save();
@@ -3564,6 +3953,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Sample estimate saved; actual distance remains separate.');
       return;
     }
+
     if (action === 'save-fee') {
       if (!ui.feePreview) return;
       const f = {
@@ -3572,6 +3962,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         status: 'Proposed',
         created: todayPerth(),
       };
+
       state.feeProposals.push(f);
       activity(`${f.type} fee proposed`, `${f.id} · awaiting office approval`);
       ui.feePreview = null;
@@ -3580,6 +3971,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Proposed fee saved for office approval.');
       return;
     }
+
     if (action === 'approve-fee') {
       const f = find(state.feeProposals, itemId);
       return openModal(
@@ -3588,6 +3980,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="approve-fee" data-id="${attr(f.id)}"><p class="muted">${esc(f.type)} · ${esc(f.rule)}</p><div class="form-grid"><label>Approved amount (AUD)<input name="amount" type="number" min="0" step="0.01" value="${f.amount.toFixed(2)}" required></label><label class="full">Review note / override reason<textarea name="reason" required placeholder="Record the evidence reviewed, and a reason if the amount changes."></textarea></label></div><div class="form-actions"><button class="btn primary" type="submit">Approve proposal</button></div></form>`,
       );
     }
+
     if (action === 'worker-absent') {
       const b = booking(itemId);
       return openModal(
@@ -3596,6 +3989,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="worker-absent" data-id="${attr(b.id)}"><label>Reason / message to office<textarea name="reason" required placeholder="Briefly explain that you cannot attend."></textarea></label><div class="notice warning" style="margin-top:13px">${icon('alert')} For a same-day or essential service, also phone the office.</div><div class="form-actions"><button class="btn danger" type="submit">Report to office</button></div></form>`,
       );
     }
+
     if (action === 'clock-in') {
       const b = booking(itemId);
       if (!b || b.workerId !== ui.workerId || b.status !== 'Confirmed')
@@ -3611,6 +4005,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         status: 'In progress',
         corrections: [],
       };
+
       state.visits.push(v);
       window.OCD_AUTOMATION_ENGINE.captureCare(state, b.id);
       activity('Visit clock-in recorded (demo)', `${v.id} · ${worker(ui.workerId)?.name}`);
@@ -3619,6 +4014,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Demo clock-in recorded in Perth time.');
       return;
     }
+
     if (action === 'clock-out') {
       const b = booking(itemId),
         v = state.visits.find((x) => x.bookingId === b?.id);
@@ -3637,6 +4033,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Clock-out saved. Complete the progress note.');
       return;
     }
+
     if (action === 'request-change') {
       const b = booking(itemId);
       return openModal(
@@ -3645,6 +4042,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         `<form data-form="request-change" data-id="${attr(b.id)}"><p class="muted">${dateLabel(b.date)} · ${clockRange(b.start, b.end)} · ${esc(b.service)}</p><label>Request type<select name="type">${option('Reschedule request')}${option('Cancellation request')}${option('Other booking change')}</select></label><div class="spacer" style="height:12px"></div><label>Reason and preferred next step<textarea name="message" required placeholder="Tell us what needs to change and when you would prefer."></textarea></label><p class="form-note">For an urgent or same-day change, phone the office as well.</p><div class="form-actions"><button class="btn primary" type="submit">Send request</button></div></form>`,
       );
     }
+
     if (action === 'client-feedback')
       return openModal(
         'Ask the office for help',
@@ -3659,22 +4057,26 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         documentPreview(a),
       );
     }
+
     if (action === 'select-slot') {
       ui.selectedSlot = itemId;
       render();
       return;
     }
+
     if (action === 'public-tab') {
       ui.publicTab = value;
       render();
       return;
     }
+
     if (action === 'book-another') {
       ui.publicConfirmation = null;
       ui.publicTab = 'Book';
       render();
       return;
     }
+
     if (action === 'export-enquiries')
       return csvDownload(
         'ocd-demo-enquiries.csv',
@@ -3716,6 +4118,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       if (routeParts()[0] === 'office') window.OCD_AUTOMATION.submit(automationContext(), autoForm);
       return;
     }
+
     const form = event.target.closest('form[data-form]');
     if (!form) return;
     event.preventDefault();
@@ -3742,8 +4145,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } catch (error) {
         formError(form, error.message);
       }
+
       return;
     }
+
     if (kind === 'client-review' || kind === 'client-review-outcome') {
       if (routeParts()[0] !== 'office') return;
       if (kind === 'client-review') {
@@ -3795,6 +4200,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           status: 'Scheduled',
           owner: workspaceIdentity(),
         };
+
         state.employeeReviews.push(review);
         activity(
           'Client review scheduled',
@@ -3821,6 +4227,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           outcome,
           reviewedBy: workspaceIdentity(),
         });
+
         activity(
           `Client review ${review.status.toLowerCase()}`,
           `${review.id} · ${workspaceIdentity()}`,
@@ -3830,8 +4237,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         render();
         toast('Review updated.');
       }
+
       return;
     }
+
     if (kind === 'new-invoice' || kind === 'invoice-review') {
       if (routeParts()[0] !== 'office') return;
       const I = window.OCD_INVOICES;
@@ -3845,6 +4254,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
             rate: val(form, 'rate'),
             rateSource: val(form, 'rateSource'),
           });
+
           state.invoices.push(invoice);
           save();
           closeModal();
@@ -3858,6 +4268,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
             line.hours = Number(val(form, `hours-${index}`));
             line.rate = Number(val(form, `rate-${index}`));
           });
+
           I.total(invoice);
           const reviewed = event.submitter?.value === 'reviewed';
           if (reviewed && !form.elements.checked.checked)
@@ -3871,6 +4282,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
             reviewedBy: reviewed ? workspaceIdentity() : '',
             reviewedAt: reviewed ? new Date().toLocaleString('en-AU', { hour12: true }) : '',
           });
+
           if (
             !invoice.billingName.trim() ||
             !/^\S+@\S+\.\S+$/.test(invoice.billingEmail) ||
@@ -3885,8 +4297,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } catch (reason) {
         formError(form, reason.message);
       }
+
       return;
     }
+
     if (kind === 'incoming-message') {
       if (!sessionEmail || routeParts()[0] !== 'office') return;
       const a = automationContext().state.automation;
@@ -3901,6 +4315,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         owner: 'Unassigned',
         workflow: 'W02',
       };
+
       if (!source.title.trim() || !source.body.trim() || !/^\S+@\S+\.\S+$/.test(source.sender))
         return formError(form, 'Add a sender, subject and message.');
       const button = form.querySelector('button[type=submit]');
@@ -3912,6 +4327,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         source.aiReview = await intakeRequest('ai-email-review', 'POST', {
           sourceText: `From: ${source.sender}\nSubject: ${source.title}\n${source.body}`,
         });
+
         save();
         render();
         showEmailReview(source);
@@ -3920,8 +4336,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         render();
         toast(`${reason.message} Message saved; select Review with AI to retry.`);
       }
+
       return;
     }
+
     if (kind === 'ai-route-email') {
       if (!sessionEmail || routeParts()[0] !== 'office') return;
       const source = state.automation.inbox.find((m) => m.id === itemId);
@@ -3930,6 +4348,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         closeModal();
         return go(`office/automation/${source.jobId}`);
       }
+
       const owner = val(form, 'team'),
         nextAction = val(form, 'nextAction').trim();
       if (
@@ -3954,6 +4373,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           },
         },
       });
+
       job.status = 'manual_action_required';
       job.stage = 'followup';
       job.history[0].by = sessionEmail;
@@ -3966,6 +4386,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       toast('Task created and assigned.');
       return;
     }
+
     if (kind === 'area-check') {
       const postcode = val(form, 'postcode');
       const button = form.querySelector('button[type=submit]');
@@ -3979,14 +4400,17 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'The service area could not be checked.');
         ui.areaCheck = { postcode, ...result };
+
         render();
       } catch (reason) {
         button.disabled = false;
         button.textContent = 'Check postcode';
         formError(form, reason.message);
       }
+
       return;
     }
+
     if (
       [
         'cancel-booking',
@@ -4004,6 +4428,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         'Open the Automation case for approval, native handoff and verified outcome. This older shortcut is disabled.',
       );
     }
+
     if (kind === 'triage-email') {
       const m = find(state.inbound, itemId);
       if (!m || m.status !== 'New') return formError(form, 'This email has already been triaged.');
@@ -4033,9 +4458,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           emailDraft: null,
           emailStatus: 'Not drafted',
         };
+
         state.enquiries.push(e);
         m.linkedEnquiry = e.id;
       }
+
       activity(
         `Incoming email routed to ${category.toLowerCase()}`,
         `${m.id} · ${m.priority} · ${m.officeNote}`,
@@ -4062,6 +4489,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         followUp: val(form, 'followUp'),
         reviewedBy: 'Mia Roberts',
       };
+
       activity(
         `Intake handoff reviewed for ${e.name}`,
         `${e.id} · ready for manual ShiftCare entry`,
@@ -4085,6 +4513,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         source: val(form, 'source'),
         notes: val(form, 'notes'),
       };
+
       const duplicate = state.enquiries.find(
         (enquiry) =>
           (payload.email && enquiry.email.toLowerCase() === payload.email) ||
@@ -4103,6 +4532,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
+
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'The enquiry could not be saved.');
         closeModal();
@@ -4112,6 +4542,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } catch (reason) {
         formError(form, reason.message);
       }
+
       return;
     }
 
@@ -4127,6 +4558,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'send-email') {
       const e = find(state.enquiries, itemId);
       e.emailDraft = val(form, 'message');
@@ -4136,6 +4568,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'intake-failure') {
       const button = event.submitter;
       button.disabled = true;
@@ -4145,6 +4578,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           revision: form.dataset.revision,
           ...Object.fromEntries(new FormData(form)),
         });
+
         await syncServerIntakes();
         closeModal();
         render();
@@ -4153,12 +4587,15 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         button.disabled = false;
         formError(form, reason.message);
       }
+
       return;
     }
+
     if (kind === 'intake-extract') {
       await runIntakePreview(form, true);
       return;
     }
+
     if (['intake-save', 'intake-review', 'intake-verify'].includes(kind)) {
       const button = event.submitter || form.querySelector('button[type=submit]');
       if (form.getAttribute('aria-busy') === 'true' || button.disabled) return;
@@ -4179,6 +4616,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
             sourceName: intakeDocument?.name,
             idempotencyKey: intakeSaveKey,
           });
+
           await syncServerIntakes();
           intakeText = '';
           intakePreview = null;
@@ -4190,6 +4628,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         } else {
           const e = find(state.enquiries, itemId);
           const payload = { id: itemId, revision: form.dataset.revision };
+
           if (kind === 'intake-review') {
             if (['Entered in ShiftCare', 'Closed'].includes(e.serverStatus))
               throw new Error('This request is already complete or closed.');
@@ -4217,6 +4656,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
               shiftCareId: val(form, 'shiftCareId'),
               profileChecked: form.elements.profileChecked.checked,
             });
+
           await intakeRequest(
             kind === 'intake-review' ? 'draft-review' : 'handoff-verify',
             'PATCH',
@@ -4225,6 +4665,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           await syncServerIntakes();
           if (kind === 'intake-review' && button.value === 'ready')
             intakeSection = { id: itemId, value: 'handoff' };
+
           render();
           document
             .querySelector(
@@ -4253,8 +4694,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         button.textContent = label;
         form.removeAttribute('aria-busy');
       }
+
       return;
     }
+
     if (kind === 'server-record') {
       const e = find(state.enquiries, itemId);
       const payload = {
@@ -4268,6 +4711,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         postcode: e.intakeFields.postcode,
         shiftCareId: e.shiftCareId,
       };
+
       const button = form.querySelector('button[type=submit]');
       button.disabled = true;
       button.textContent = 'Saving…';
@@ -4277,6 +4721,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
+
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'The request could not be updated.');
         await syncServerIntakes();
@@ -4287,8 +4732,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         button.textContent = 'Save request';
         formError(form, reason.message);
       }
+
       return;
     }
+
     if (kind === 'enquiry-status') {
       const e = find(state.enquiries, itemId),
         nextStatus = val(form, 'status');
@@ -4300,6 +4747,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
             'A linked participant and signed agreement are required before Active status.',
           );
       }
+
       e.status = nextStatus;
       e.nextAction = val(form, 'nextAction');
       activity(
@@ -4310,6 +4758,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'add-slot') {
       const date = val(form, 'date'),
         time = val(form, 'time');
@@ -4321,6 +4770,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         time,
         duration: Number(val(form, 'duration')),
       };
+
       state.slots.push(s);
       activity('Public call slot published', `${dateLabel(date)} · ${time}`);
       ui.callTab = 'Available slots';
@@ -4329,6 +4779,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'resolve-call') {
       const c = find(state.calls, itemId),
         slotId = val(form, 'slotId');
@@ -4362,6 +4813,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         sent: '',
         signed: '',
       };
+
       state.agreements.push(a);
       activity(`Agreement draft generated for ${p.name}`, `${a.id} · ${a.template}`);
       message = 'Draft generated for staff review.';
@@ -4369,6 +4821,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       go(`office/agreements/${a.id}`);
     }
+
     if (kind === 'send-agreement') {
       const a = find(state.agreements, itemId);
       if (!form.querySelector('[name="reviewed"]').checked)
@@ -4400,6 +4853,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         const error = workerCheck(workerId, service, d, start, end);
         if (error) return formError(form, `${dateLabel(d)}: ${error}`);
       }
+
       const records = dates.map((d) => {
         const b = {
           id: id('BKG', state.bookings),
@@ -4413,9 +4867,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           status: 'Proposed',
           participantAgreed: false,
         };
+
         state.bookings.push(b);
         return b;
       });
+
       activity(
         `${records.length} booking${records.length > 1 ? 's' : ''} proposed for ${p.name}`,
         `${records[0].id} · staff confirmation needed`,
@@ -4426,14 +4882,17 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       go(`office/schedule/${records[0].id}`);
     }
+
     if (kind === 'confirm-booking') {
       try {
         openAutomation(window.OCD_AUTOMATION_ENGINE.bookingProposal(state, itemId));
       } catch (error) {
         formError(form, error.message);
       }
+
       return;
     }
+
     if (kind === 'correct-visit') {
       const v = find(state.visits, itemId);
       const field = val(form, 'field') === 'Clock in' ? 'clockIn' : 'clockOut',
@@ -4448,6 +4907,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         reason: val(form, 'reason'),
         by: 'Mia Roberts',
       });
+
       v[field] = newValue;
       if (v.status === 'Reviewed') v.status = 'Ready for review';
       window.OCD_AUTOMATION_ENGINE.captureCare(state, v.bookingId);
@@ -4457,6 +4917,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'transport-preview') {
       const b = booking(val(form, 'bookingId'));
       if (b.status !== 'Completed')
@@ -4479,9 +4940,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           source: val(form, 'source'),
         },
       };
+
       render();
       return;
     }
+
     if (kind === 'cancellation-preview') {
       const b = booking(val(form, 'bookingId'));
       if (!b || b.status !== 'Cancelled' || !b.cancellation)
@@ -4524,9 +4987,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           clearDays,
         },
       };
+
       render();
       return;
     }
+
     if (kind === 'approve-fee') {
       const f = find(state.feeProposals, itemId);
       const amount = Number(val(form, 'amount'));
@@ -4547,6 +5012,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'worker-absent') {
       const b = booking(itemId);
       if (b.workerId !== ui.workerId || b.status !== 'Confirmed')
@@ -4569,6 +5035,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'worker-note') {
       const b = booking(itemId),
         v = state.visits.find((x) => x.bookingId === b.id);
@@ -4581,12 +5048,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         v.status = 'Ready for review';
         b.status = 'Completed';
       }
+
       window.OCD_AUTOMATION_ENGINE.captureCare(state, b.id);
       activity('Progress note saved', `${v.id} · ${worker(ui.workerId)?.name}`);
       message = 'Progress note saved.';
       save();
       render();
     }
+
     if (kind === 'availability') {
       const w = worker(ui.workerId);
       w.days = new FormData(form).getAll('day').map(Number);
@@ -4598,6 +5067,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'client-booking') {
       if (routeParts()[0] !== 'client' || form.dataset.participant !== ui.clientId)
         return formError(form, 'Return to your home screen to request a booking.');
@@ -4640,21 +5110,25 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         preferredStart: clientBooking.start || '',
         preferredEnd: clientBooking.end || '',
       };
+
       const fingerprint = JSON.stringify({
         request,
         notes,
         postcode,
         files: serviceVideoFiles.map((file) => [file.name, file.size, file.lastModified]),
       });
+
       if (form.dataset.requestFingerprint !== fingerprint) {
         form.dataset.operationKey = crypto.randomUUID();
         form.dataset.requestFingerprint = fingerprint;
       }
+
       const button = form.querySelector('button[type=submit]');
       form.setAttribute('aria-busy', 'true');
       form.querySelectorAll('input, textarea, button').forEach((input) => {
         input.disabled = true;
       });
+
       let result;
       try {
         const videos = [];
@@ -4690,10 +5164,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         form.querySelectorAll('input, textarea, button').forEach((input) => {
           input.disabled = false;
         });
+
         form.removeAttribute('aria-busy');
         button.textContent = 'Send booking request';
         return formError(form, error.message);
       }
+
       const r = {
         id: id('REQ', state.requests),
         participantId: ui.clientId,
@@ -4705,6 +5181,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         status: 'Pending',
         created: todayPerth(),
       };
+
       state.requests.push(r);
       window.OCD_AUTOMATION_ENGINE.request(state, r);
       activity('Booking request saved (demo)', `${r.id} · ${participant(ui.clientId)?.name}`);
@@ -4725,6 +5202,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
       document.querySelector('.client-confirmation button')?.focus({ preventScroll: true });
+
       toast('Request sent to the office for review. No booking is confirmed.');
       if (sessionEmail) {
         try {
@@ -4734,8 +5212,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           /* The request is saved; office records can be refreshed separately. */
         }
       }
+
       return;
     }
+
     if (kind === 'request-change') {
       const b = booking(itemId);
       if (b.participantId !== ui.clientId)
@@ -4749,6 +5229,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         status: 'Pending',
         created: todayPerth(),
       };
+
       state.requests.push(r);
       window.OCD_AUTOMATION_ENGINE.request(state, r);
       activity(`${participant(ui.clientId)?.name} requested a booking change`, `${r.id} · ${b.id}`);
@@ -4769,6 +5250,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'client-feedback') {
       const r = {
         id: id('REQ', state.requests),
@@ -4779,6 +5261,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         status: 'Pending',
         created: todayPerth(),
       };
+
       state.requests.push(r);
       window.OCD_AUTOMATION_ENGINE.request(state, r);
       activity(`${participant(ui.clientId)?.name} sent feedback`, `${r.id} · office review`);
@@ -4793,6 +5276,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'client-details') {
       const p = participant(ui.clientId);
       const r = {
@@ -4809,6 +5293,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         status: 'Pending',
         created: todayPerth(),
       };
+
       state.requests.push(r);
       window.OCD_AUTOMATION_ENGINE.request(state, r);
       message =
@@ -4816,6 +5301,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'public-book') {
       const slot = find(state.slots, ui.selectedSlot);
       if (
@@ -4846,8 +5332,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           emailDraft: null,
           emailStatus: 'Not drafted',
         };
+
         state.enquiries.push(e);
       }
+
       const c = {
         id: id('CALL', state.calls),
         slotId: slot.id,
@@ -4857,17 +5345,20 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         enquiryId: e.id,
         status: 'Booked',
       };
+
       state.calls.push(c);
       activity(
         `Discovery call booked for ${c.name}`,
         `${c.id} · ${dateLabel(slot.date)} ${slot.time}`,
       );
       ui.publicConfirmation = { ...c, date: slot.date, time: slot.time };
+
       ui.selectedSlot = '';
       message = 'Call booked in this demo.';
       save();
       render();
     }
+
     if (kind === 'manage-call') {
       const reference = val(form, 'reference').toUpperCase(),
         email = val(form, 'email').toLowerCase();
@@ -4885,6 +5376,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       save();
       render();
     }
+
     if (kind === 'public-intake') {
       if (form.getAttribute('aria-busy') === 'true') return;
       if (ui.areaCheck?.status !== 'covered' || val(form, 'postcode') !== ui.areaCheck.postcode)
@@ -4908,6 +5400,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         idempotencyKey: (form.dataset.operationKey ||= crypto.randomUUID()),
         consent: form.elements.consent.checked,
       };
+
       const button = form.querySelector('button[type=submit]');
       button.disabled = true;
       button.textContent = 'Sending…';
@@ -4916,6 +5409,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       form.querySelectorAll('[data-action="remove-service-video"]').forEach((remove) => {
         remove.disabled = true;
       });
+
       try {
         const files = [...serviceVideoFiles];
         if (files.length > 5) throw new Error('Attach up to 5 service videos.');
@@ -4928,12 +5422,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
             }),
           );
         }
+
         button.textContent = 'Sending request…';
         const response = await fetch('/api/workflow?action=intake', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
+
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'The request could not be sent.');
         form.reset();
@@ -4955,10 +5451,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         form.querySelectorAll('[data-action="remove-service-video"]').forEach((remove) => {
           remove.disabled = false;
         });
+
         formError(form, reason.message);
       }
+
       return;
     }
+
     if (message) toast(message);
   });
 
@@ -4976,6 +5475,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       previewServiceVideo(target);
       return;
     }
+
     if (target.id === 'intake-document') {
       if (!target.files?.length) return;
       clearTimeout(intakePreviewTimer);
@@ -4994,6 +5494,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           if (form.isConnected && generation === documentGeneration)
             document.getElementById('intake-preview').textContent = progress;
         });
+
         if (!form.isConnected || generation !== documentGeneration) return;
         intakeDocument = result.originalDocument;
         intakeText = result.text;
@@ -5006,8 +5507,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       } finally {
         if (generation === documentGeneration) button.disabled = false;
       }
+
       return;
     }
+
     if (target.id === 'view-switch') {
       const routes = {
         office: 'office/overview',
@@ -5015,13 +5518,16 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         client: 'client/home',
         public: 'public/book',
       };
+
       closeModal();
       go(routes[target.value]);
     }
+
     if (target.id === 'worker-persona') {
       ui.workerId = target.value;
       render();
     }
+
     if (target.id === 'client-persona') {
       ui.clientId = target.value;
       ui.clientHomeView = 'book';
@@ -5036,8 +5542,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         notes: '',
         confirmation: null,
       });
+
       render();
     }
+
     if (target.id === 'client-booking-date') {
       const date = target.value;
       clientBooking.date = date;
@@ -5045,20 +5553,24 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       render();
       document.getElementById('client-booking-date')?.focus({ preventScroll: true });
     }
+
     if (target.id === 'enquiry-status') {
       ui.enquiryStatus = target.value;
       render();
     }
+
     if (target.id === 'route-booking') {
       ui.routeBooking = target.value;
       render();
     }
+
     if (target.id === 'cancellation-booking') {
       ui.cancellationBooking = target.value;
       ui.feePreview = null;
       render();
     }
   });
+
   document.addEventListener('input', (event) => {
     const target = event.target;
     if (target.id === 'schedule-worker-search') {
@@ -5067,25 +5579,31 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       render();
       const replacement = document.getElementById('schedule-worker-search');
       replacement.focus({ preventScroll: true });
+
       replacement.setSelectionRange(caret, caret);
       return;
     }
+
     if (target.id === 'calendar-search') {
       const caret = target.selectionStart;
       const scroll = document.querySelector('.week-scroll');
       const position = { top: scroll.scrollTop, left: scroll.scrollLeft };
+
       ui.calendarQuery = target.value;
       render();
       const replacement = document.getElementById('calendar-search');
       replacement.focus({ preventScroll: true });
+
       replacement.setSelectionRange(caret, caret);
       document.querySelector('.week-scroll').scrollTo(position);
       return;
     }
+
     if (target.id === 'intake-source') {
       scheduleIntakePreview(target.closest('form'));
       return;
     }
+
     if (target.closest('[data-form="intake-review"]')) {
       const form = target.closest('form');
       const e = find(state.enquiries, form.dataset.id);
@@ -5102,6 +5620,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       if (target.name !== 'sourceReviewed')
         form.elements.sourceReviewed && (form.elements.sourceReviewed.checked = false);
     }
+
     if (!target || !['enquiry-search', 'participant-search'].includes(target.id)) return;
     const caret = target.selectionStart;
     if (target.id === 'enquiry-search') ui.enquiryQuery = target.value;
@@ -5111,9 +5630,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     replacement?.focus();
     replacement?.setSelectionRange(caret, caret);
   });
+
   document.addEventListener('click', (event) => {
     if (event.target === modal || event.target.closest("#modal a[href^='#/']")) closeModal();
   });
+
   window.addEventListener('hashchange', () => {
     render();
     window.scrollTo(0, 0);
@@ -5122,6 +5643,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       : document.getElementById('main-content')
     )?.focus({ preventScroll: true });
   });
+
   window.addEventListener('ocd-session-expired', () => {
     if (!sessionEmail) return;
     sessionEmail = '';
@@ -5130,6 +5652,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     intakeOwners = [];
     render();
   });
+
   window.addEventListener('storage', (event) => {
     if (event.key === STORE) {
       state = load();
@@ -5142,5 +5665,6 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   } catch (reason) {
     console.error('Request sync failed:', reason);
   }
+
   render();
 })();

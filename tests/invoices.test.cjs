@@ -5,9 +5,11 @@ const vm = require('node:vm');
 const I = require('../workspace/invoices.js');
 function seed() {
   const box = { window: {} };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/data.js'), 'utf8'), box);
   return structuredClone(box.window.OCD_DEMO_SEED);
 }
+
 test('invoice arithmetic rounds cents and rejects invalid amounts', () => {
   assert.equal(I.lineTotal({ hours: 2, rate: 19.99 }), 3998);
   assert.equal(
@@ -20,8 +22,10 @@ test('invoice arithmetic rounds cents and rejects invalid amounts', () => {
     13748,
   );
   for (const hours of [0, -1, 25, NaN]) assert.throws(() => I.lineTotal({ hours, rate: 65 }));
+
   for (const rate of [0, -1, Infinity, 10001]) assert.throws(() => I.lineTotal({ hours: 1, rate }));
 });
+
 test('invoice drafts include only uninvoiced completed visits and retain source references', () => {
   const state = seed();
   I.ensure(state);
@@ -34,6 +38,7 @@ test('invoice drafts include only uninvoiced completed visits and retain source 
     rate: 65,
     rateSource: 'Test agreement',
   });
+
   assert.deepEqual(
     draft.lines.map((l) => l.bookingId),
     ['BKG-500'],

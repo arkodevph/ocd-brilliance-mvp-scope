@@ -111,6 +111,7 @@ function capture() {
     },
   };
 }
+
 function verified(c) {
   const args = c.proof.proposal.args;
   c.proof.status = 'verified';
@@ -127,14 +128,18 @@ function verified(c) {
     status: 'open',
     verifiedAt: '2026-10-07T06:01:00Z',
   };
+
   return c;
 }
+
 async function directory(t, data = capture()) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'ocd-evidence-test-'));
   t.after(() => fs.rm(dir, { recursive: true, force: true }));
+
   await fs.writeFile(path.join(dir, 'shiftcare-evidence.json'), JSON.stringify(data), {
     mode: 0o600,
   });
+
   return dir;
 }
 
@@ -199,6 +204,7 @@ test('cancelled occurrences are excluded and differing actual duration goes to r
     clockIn: '2026-10-05T09:00:00+11:00',
     clockOut: '2026-10-05T16:00:00+11:00',
   });
+
   const findings = analyse(c).findings;
   assert.ok(!findings.some((f) => f.shiftId === '101'));
   assert.ok(findings.some((f) => f.code === 'DURATION_22'));
@@ -223,6 +229,7 @@ test('native proof requires a separate matching get_action_item read and authent
     wrong.proof.readback[key] = 'different';
     assert.equal(sanitizeCapture(wrong).proof.status, 'awaiting_approval', key);
   }
+
   c.source.method = 'fixture';
   assert.equal(sanitizeCapture(c).proof.status, 'awaiting_approval');
   c.source.method = 'mcp';
@@ -236,10 +243,12 @@ test('bounded evidence and mismatched receipt counts cannot certify complete sou
     ...c.data.shifts[0],
     id: String(1000 + i),
   }));
+
   c.data.notes = Array.from({ length: 201 }, (_, i) => ({
     id: String(i + 1),
     shiftId: String(1000 + i),
   }));
+
   for (const r of c.receipts) r.count = r.total = 201;
   const clean = sanitizeCapture(c);
   assert.equal(clean.data.shifts.length, 200);
@@ -278,17 +287,20 @@ test('source identity includes the capture time and account time zone', () => {
 test('concurrent identical runs reuse one private persisted review across reloads', async (t) => {
   const dir = await directory(t),
     env = { WORKFLOW_DATA_DIR: dir, SHIFTCARE_ACCOUNT_ID: '12345' };
+
   const store = createProofStore({
     env,
     fetchImpl: () => {
       throw new Error('No native call expected');
     },
   });
+
   const [a, b] = await Promise.all([store.run({ source: 'mcp' }), store.run({ source: 'mcp' })]);
   assert.equal(a.run.id, b.run.id);
   // Concurrent capture reads may finish in either order; exactly one creates the run.
   assert.deepEqual([a.reused, b.reused].sort(), [false, true]);
   const reloaded = createProofStore({ env });
+
   assert.equal((await reloaded.status()).runs.length, 1);
   assert.equal((await reloaded.run({ source: 'mcp' })).run.id, a.run.id);
   assert.equal((await fs.stat(path.join(dir, 'integration-runs.json'))).mode & 0o777, 0o600);
@@ -297,12 +309,15 @@ test('concurrent identical runs reuse one private persisted review across reload
 test('later native read-back updates the original run without duplicate cases', async (t) => {
   const dir = await directory(t),
     store = createProofStore({ env: { WORKFLOW_DATA_DIR: dir } });
+
   const first = await store.run({ source: 'mcp' });
+
   await fs.writeFile(
     path.join(dir, 'shiftcare-evidence.json'),
     JSON.stringify(verified(capture())),
   );
   const next = await store.run({ source: 'mcp' });
+
   assert.equal(next.run.id, first.run.id);
   assert.equal(next.reused, true);
   assert.equal(next.run.steps.at(-1).state, 'passed');
@@ -313,7 +328,9 @@ test('later native read-back updates the original run without duplicate cases', 
 test('invalidated native proof removes saved success on reload and replay', async (t) => {
   const dir = await directory(t, verified(capture())),
     store = createProofStore({ env: { WORKFLOW_DATA_DIR: dir } });
+
   const first = await store.run({ source: 'mcp' });
+
   assert.equal(first.run.steps.at(-1).state, 'passed');
   const changed = verified(capture());
   changed.proof.readback.description = 'A different native task';
@@ -324,6 +341,7 @@ test('invalidated native proof removes saved success on reload and replay', asyn
   assert.equal(status.capture.proof.status, 'awaiting_approval');
   assert.notEqual(status.runs[0].steps.at(-1).state, 'passed');
   const next = await store.run({ source: 'mcp' });
+
   assert.equal(next.run.id, first.run.id);
   assert.notEqual(next.run.steps.at(-1).state, 'passed');
 });
@@ -367,10 +385,12 @@ test('REST evidence is labelled separately, bounded to five pages and never writ
     SHIFTCARE_TIME_ZONE: 'Australia/Sydney',
     SHIFTCARE_API_REGION: 'au',
   };
+
   const store = createProofStore({
     env,
     fetchImpl: async (url, options) => {
       calls.push({ url, options });
+
       const resource = url.pathname.split('/').at(-1);
       const records = Array.from({ length: 20 }, (_, i) =>
         resource === 'shifts'
@@ -396,6 +416,7 @@ test('REST evidence is labelled separately, bounded to five pages and never writ
       );
     },
   });
+
   await assert.rejects(
     store.run({ source: 'rest', from: '2026-10-01', to: '2026-12-01' }),
     (e) => e.code === 'INVALID_QUERY',
@@ -406,6 +427,7 @@ test('REST evidence is labelled separately, bounded to five pages and never writ
     from: '2026-10-01',
     to: '2026-10-14',
   });
+
   assert.equal(calls.length, 15);
   assert.ok(calls.every((c) => c.options.method === 'GET'));
   assert.ok(result.capture.receipts.every((r) => r.pages === 5 && !r.complete));
@@ -426,6 +448,7 @@ test('REST review survives reload without replacing the separately captured MCP 
     SHIFTCARE_TIME_ZONE: 'Australia/Sydney',
     SHIFTCARE_API_REGION: 'au',
   };
+
   const fetchImpl = async (url) => {
     calls.push(url.pathname);
     const resource = url.pathname.split('/').at(-1);
@@ -433,18 +456,22 @@ test('REST review survives reload without replacing the separately captured MCP 
       headers: { 'Content-Type': 'application/json' },
     });
   };
+
   const store = createProofStore({ env, fetchImpl });
+
   const result = await store.run({
     source: 'rest',
     from: '2026-10-01',
     to: '2026-10-14',
   });
+
   const reloaded = await createProofStore({ env, fetchImpl }).status();
   assert.equal(reloaded.capture.source.method, 'rest');
   assert.equal(reloaded.captureHash, result.run.sourceHash);
   assert.equal(reloaded.runs[0].id, result.run.id);
   assert.equal(calls.length, 3, 'Reload must not silently contact ShiftCare.');
   const mcp = await store.run({ source: 'mcp' });
+
   assert.equal(mcp.capture.source.method, 'mcp');
   assert.equal((await store.status()).capture.source.method, 'mcp');
   assert.equal(
@@ -458,6 +485,7 @@ test('unverified and fixture captures cannot pass as authenticated MCP reads', a
   c.source.authenticated = false;
   const dir = await directory(t, c),
     store = createProofStore({ env: { WORKFLOW_DATA_DIR: dir } });
+
   await assert.rejects(store.run({ source: 'mcp' }), (e) => e.code === 'UNAUTHENTICATED_EVIDENCE');
   c.source.authenticated = true;
   c.source.method = 'fixture';
@@ -474,7 +502,9 @@ test('private evidence API requires office authentication and origin, and reject
     WORKFLOW_STAFF_PASSWORD: 'fixture',
     WORKFLOW_SESSION_SECRET: 'test-evidence-session-secret-longer-than-32-chars',
   });
+
   const handler = createHandler({ env: { WORKFLOW_DATA_DIR: dir } });
+
   const server = http.createServer(handler);
   server.listen(0, '127.0.0.1');
   await new Promise((resolve) => server.once('listening', resolve));
@@ -483,6 +513,7 @@ test('private evidence API requires office authentication and origin, and reject
     for (const k of keys)
       previous[k] === undefined ? delete process.env[k] : (process.env[k] = previous[k]);
   });
+
   const base = `http://127.0.0.1:${server.address().port}`;
   const cookie = sessionCookie('office@example.test', { headers: {} }).split(';')[0];
   const call = (body, headers = {}, method = body === undefined ? 'GET' : 'POST') =>
@@ -496,6 +527,7 @@ test('private evidence API requires office authentication and origin, and reject
       },
       ...(method === 'POST' ? { body: JSON.stringify(body) } : {}),
     });
+
   assert.equal((await call(undefined, { Cookie: '' })).status, 401);
   assert.equal((await call(undefined, { Cookie: 'ocd_staff=forged.cookie' })).status, 401);
   assert.equal((await call(undefined, { Origin: 'https://evil.example' })).status, 403);

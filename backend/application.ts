@@ -1,22 +1,42 @@
-import 'reflect-metadata';
-import { Module } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { JourneysController } from './journeys/journeys.controller';
-import { OperationsController } from './operations/operations.controller';
+import { Hono } from 'hono';
+import { getRequestListener, type HttpBindings } from '@hono/node-server';
+import { RESPONSE_ALREADY_SENT } from '@hono/node-server/utils/response';
+import type { ApiHandler } from './http';
+import { handleJourneyRequest } from './journeys/journeys.handler';
+import { handleWorkflow } from './operations/workflow.handler';
+import { handlePush } from './operations/push.handler';
+import { createProofHandler } from './operations/proof.handler';
+import { createShiftCareHandler } from './shiftcare/shiftcare.handler';
 
-@Module({ controllers: [JourneysController, OperationsController] })
-class OperationsModule {}
+export const application = new Hono<{ Bindings: HttpBindings }>({ strict: false });
 
-let application: Promise<NestExpressApplication> | undefined;
+const routes: Record<string, ApiHandler> = {
+  '/api/workflow': handleWorkflow,
+  '/api/push': handlePush,
+  '/api/shiftcare': createShiftCareHandler(),
+  '/api/integration-proof': createProofHandler(),
+  '/api/journeys': handleJourneyRequest,
+};
 
-async function bootstrap(): Promise<NestExpressApplication> {
-  const app = await NestFactory.create<NestExpressApplication>(OperationsModule, { logger: false, abortOnError: false, bodyParser: false });
-  await app.init();
-  return app;
+for (const [path, handler] of Object.entries(routes)) {
+  application.all(path, async (context) => {
+    // Keep raw streams, pre-parsed Vercel bodies and socket-based push checks intact.
+    await handler(context.env.incoming, context.env.outgoing);
+    return RESPONSE_ALREADY_SENT;
+  });
 }
 
-export function getApplication(): Promise<NestExpressApplication> {
-  application ||= bootstrap().catch(error => { application = undefined; throw error; });
-  return application;
-}
+application.onError((_error, context) => {
+  if (context.env.outgoing.headersSent) {
+    context.env.outgoing.destroy();
+    return RESPONSE_ALREADY_SENT;
+  }
+
+  return context.json({ error: 'The backend service is unavailable.' }, 503, {
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+  });
+});
+
+// One listener serves both the local Node server and the existing Vercel functions.
+export const dispatch = getRequestListener(application.fetch, { overrideGlobalObjects: false });

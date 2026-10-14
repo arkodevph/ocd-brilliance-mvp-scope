@@ -3,15 +3,18 @@
   const pages = new Map();
   const views = new Map();
   const panels = { navigation: true, cases: true, details: false };
+
   const navigationMedia = matchMedia('(max-width: 760px)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const activeReveals = new Set();
   reducedMotion.addEventListener('change', () => {
     if (reducedMotion.matches) activeReveals.forEach((animation) => animation.cancel());
   });
+
   try {
     Object.assign(panels, JSON.parse(sessionStorage.getItem('ocd-workspace-panels') || '{}'));
   } catch {}
+
   const panelIcon = (side) =>
     `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M${side === 'right' ? 15 : 9} 4v16"/></svg>`;
   function reveal(element) {
@@ -66,9 +69,11 @@
         reveal(desk.querySelector('.automation-case-detail'));
         if (panels[key]) reveal(region);
       });
+
       controls.append(button);
       buttons.push({ key, region, label, button });
     }
+
     if (!desk?.classList.contains('automation-pipeline')) add('cases', queue, 'Cases');
     add('details', context, 'Details');
     if (buttons.length) desk.querySelector('.automation-case-layout').before(controls);
@@ -88,16 +93,19 @@
         button.setAttribute('aria-pressed', String(panels[key]));
         button.setAttribute('aria-expanded', String(panels[key]));
       });
+
       try {
         sessionStorage.setItem('ocd-workspace-panels', JSON.stringify(panels));
       } catch {}
     }
+
     navigation.addEventListener('click', () => {
       panels.navigation = !panels.navigation;
       update();
       reveal(shell.querySelector('main'));
       if (panels.navigation) reveal(sidebar);
     });
+
     navigationMedia.onchange = update;
     update();
   }
@@ -113,6 +121,7 @@
           button.setAttribute('aria-pressed', String(button.classList.contains('active'))),
         );
     });
+
     root.querySelectorAll('details').forEach((details) => {
       if (details.classList.contains('client-onboarding-guide')) return;
       const section = document.createElement('section');
@@ -126,9 +135,11 @@
         section.append(title);
         summary.remove();
       }
+
       section.append(...details.childNodes);
       details.replaceWith(section);
     });
+
     root.querySelectorAll('select').forEach((select) => {
       if (select.closest('[data-owner-picker]') || select.hasAttribute('data-native-select'))
         return;
@@ -136,6 +147,7 @@
         select.refreshChoices?.();
         return;
       }
+
       select.dataset.visibleChoices = 'true';
       select.hidden = true;
       select.tabIndex = -1;
@@ -176,14 +188,18 @@
               .toLowerCase()
               .includes(search.value.trim().toLowerCase());
           });
+
           empty.hidden = !!group.querySelector('button:not([hidden])');
         });
+
         group.append(search);
       }
+
       if (profiles || bookings) {
         group.append(results, empty);
         empty.setAttribute('role', 'status');
       }
+
       const choices = [...select.options].map((option) => {
         const button = document.createElement('button');
         button.type = 'button';
@@ -213,6 +229,7 @@
           indicator.setAttribute('aria-hidden', 'true');
           button.prepend(indicator);
         }
+
         button.addEventListener('click', () => {
           if (select.matches(':disabled') || option.disabled) return;
           if (select.multiple) option.selected = !option.selected;
@@ -221,9 +238,11 @@
           update();
           select.dispatchEvent(new Event('change', { bubbles: true }));
         });
+
         (profiles || bookings ? results : group).append(button);
         return { option, button };
       });
+
       function update() {
         choices.forEach(({ option, button }) => {
           button.setAttribute('aria-pressed', String(option.selected));
@@ -231,6 +250,7 @@
           if (button.disabled !== disabled) button.disabled = disabled;
         });
       }
+
       select.refreshChoices = update;
       select.addEventListener('change', update);
       select.addEventListener('invalid', (event) => {
@@ -243,6 +263,7 @@
           group.append(error);
         }
       });
+
       select.after(group);
       update();
       if (bookings)
@@ -251,6 +272,7 @@
           if (selected) results.scrollTop = selected.offsetTop;
         });
     });
+
     root
       .querySelectorAll(
         '.header-actions, .button-row, .work-item-actions, .update-actions, .form-actions',
@@ -267,6 +289,7 @@
         if (title) title.append(line);
         else actions.before(line);
       });
+
     root.querySelectorAll('.visit-row, .document-item').forEach((row) => {
       if (row.classList.contains('action-record')) return;
       const actions = [...row.children].filter((child) =>
@@ -283,6 +306,7 @@
             line.append(status);
             body.append(line);
           });
+
       const footer = document.createElement('div');
       footer.className = 'record-actions';
       footer.append(...actions);
@@ -316,16 +340,19 @@
       navigation.append(button);
       return button;
     });
+
     function select(index) {
       views.set(key, index);
       panels.forEach((panel, position) => {
         panel.hidden = position !== index;
         if (position === index) reveal(panel);
       });
+
       buttons.forEach((button, position) =>
         button.setAttribute('aria-pressed', String(position === index)),
       );
     }
+
     root.classList.add('sectioned-page');
     const anchor = root.querySelector(':scope > .page-header, :scope > .queue-filter-group');
     if (root.querySelector(':scope > .queue-filter-group'))
@@ -341,6 +368,7 @@
     let current = pages.get(key);
     if (!current || current.signature !== signature)
       current = { page: 1, size: current?.size || size, signature };
+
     pages.set(key, current);
     const footer = document.createElement('nav');
     footer.className = 'pagination';
@@ -360,6 +388,7 @@
       option.textContent = count;
       select.append(option);
     }
+
     select.value = current.size;
     label.append(select);
     const previous = document.createElement('button');
@@ -388,6 +417,7 @@
         const index = matching.indexOf(row);
         row.hidden = index < start || index >= start + current.size;
       });
+
       summary.textContent = matching.length
         ? `${start + 1}–${Math.min(start + current.size, matching.length)} of ${matching.length}`
         : '0 records';
@@ -398,6 +428,7 @@
       next.disabled = current.page === total;
       select.disabled = !rows.length;
     }
+
     function move(delta) {
       current.page += delta;
       update();
@@ -405,6 +436,7 @@
       if (previous.disabled || next.disabled)
         (delta > 0 ? previous : next).focus({ preventScroll: true });
     }
+
     previous.addEventListener('click', () => move(-1));
     next.addEventListener('click', () => move(1));
     select.addEventListener('change', () => {
@@ -412,12 +444,14 @@
       current.page = 1;
       update();
     });
+
     const search = container.closest('section')?.querySelector('[data-list-search]');
     search?.addEventListener('input', () => {
       searchQuery = search.value.toLowerCase().trim();
       current.page = 1;
       update();
     });
+
     update();
   }
 
@@ -454,6 +488,7 @@
         if (navigation && main) main.prepend(navigation);
       }
     }
+
     if (route === 'office/schedule') {
       const panels = [
         ...root.querySelectorAll(
@@ -462,6 +497,7 @@
       ];
       sections(root, panels, 'Schedule sections', route);
     }
+
     root.querySelectorAll('.table-wrap, .roster-scroll').forEach((container, index) => {
       if (container.closest('.invoice-sheet')) return;
       container.tabIndex = 0;
@@ -495,6 +531,7 @@
         true,
       );
     });
+
     const cards = root.querySelector('.enquiry-cards');
     if (cards) {
       const rows = [...cards.querySelectorAll(':scope > .enquiry-card')];
@@ -505,6 +542,7 @@
         8,
       );
     }
+
     const candidates = root.querySelectorAll(
       '.panel, .staff-list, .automation-inbox, .document-list, .automation-case-list, .proof-findings',
     );
@@ -526,6 +564,7 @@
   }
 
   window.OCD_UI = { mount, enhance };
+
   let pendingEnhancement = false;
   new MutationObserver(() => {
     if (pendingEnhancement) return;
@@ -540,5 +579,6 @@
     attributes: true,
     attributeFilter: ['disabled'],
   });
+
   enhance(document.body);
 })();

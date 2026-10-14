@@ -48,10 +48,12 @@ const icons = {
   mail: Mail,
   clock: Clock,
 };
+
 export function Icon({ name, ...props }) {
   const Component = icons[name] || Heart;
   return <Component size={24} strokeWidth={1.6} aria-hidden="true" {...props} />;
 }
+
 export function Arrow({ diagonal = false }) {
   return diagonal ? (
     <ArrowUpRight size={19} aria-hidden="true" />
@@ -59,6 +61,7 @@ export function Arrow({ diagonal = false }) {
     <ArrowRight size={18} aria-hidden="true" />
   );
 }
+
 export function Button({ to = '/contact', children, secondary = false, className = '', ...props }) {
   return (
     <Link
@@ -71,6 +74,7 @@ export function Button({ to = '/contact', children, secondary = false, className
     </Link>
   );
 }
+
 export function TextLink({ to, children, ...props }) {
   return (
     <Link className="text-link" to={to} {...props}>
@@ -79,6 +83,7 @@ export function TextLink({ to, children, ...props }) {
     </Link>
   );
 }
+
 export function Eyebrow({ children, light = false }) {
   return (
     <p className={`eyebrow ${light ? 'eyebrow-light' : ''}`}>
@@ -131,14 +136,17 @@ export function PageEffects() {
   useEffect(() => {
     if (hash.startsWith('#pg-') && legacyRoutes[hash.slice(4)]) {
       navigate(legacyRoutes[hash.slice(4)], { replace: true });
+
       return;
     }
+
     const [title, description] = routeMeta[pathname] || routeMeta['/404'];
     document.title = `${title} | OCD Brilliance`;
     const setMeta = (selector, attribute, value) => {
       const node = document.querySelector(selector);
       if (node) node.setAttribute(attribute, value);
     };
+
     setMeta('meta[name="description"]', 'content', description);
     setMeta('meta[property="og:title"]', 'content', title);
     setMeta('meta[property="og:description"]', 'content', description);
@@ -148,8 +156,10 @@ export function PageEffects() {
     if (schema) schema.textContent = JSON.stringify(schemaFor(pathname));
     if (!first.current) {
       window.scrollTo({ top: 0, behavior: 'instant' });
+
       document.getElementById('main')?.focus({ preventScroll: true });
     }
+
     first.current = false;
   }, [pathname, hash, navigate]);
   return null;
@@ -166,6 +176,7 @@ export function schemaFor(pathname) {
       name: 'OCD Brilliance — local design presentation',
     },
   };
+
   if (pathname.startsWith('/services/'))
     return {
       ...base,
@@ -180,6 +191,7 @@ export function schemaFor(pathname) {
         },
       },
     };
+
   if (pathname === '/faq')
     return {
       ...base,
@@ -190,6 +202,7 @@ export function schemaFor(pathname) {
         acceptedAnswer: { '@type': 'Answer', text: answer },
       })),
     };
+
   return base;
 }
 
@@ -210,6 +223,7 @@ export function Header() {
         trigger.current?.focus();
       }
     };
+
     document.addEventListener('keydown', escape);
     return () => document.removeEventListener('keydown', escape);
   }, [open]);
@@ -221,6 +235,9 @@ export function Header() {
       <div className="utility">
         <div className="container utility-inner">
           <Link to="/portal">Open demo</Link>
+          <button type="button" className="install-trigger" data-app-tools-open>
+            Install app
+          </button>
           <span>
             <MapPin size={13} aria-hidden="true" /> A little support. A brighter everyday.{' '}
             <span className="utility-location">Perth, Western Australia</span>
@@ -274,6 +291,10 @@ export function Header() {
             Open demo
             <Arrow />
           </Link>
+          <button type="button" className="install-trigger" data-app-tools-open>
+            Add to Home Screen
+            <Plus size={18} aria-hidden="true" />
+          </button>
           <a href="tel:0428820059">
             Call {phone}
             <Phone size={18} aria-hidden="true" />

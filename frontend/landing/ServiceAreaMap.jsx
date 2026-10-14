@@ -24,6 +24,7 @@ export default function ServiceAreaMap({ query: controlledQuery = '', onQueryCha
         scrollWheelZoom: false,
         zoomControl: false,
       });
+
       map.current = instance;
       L.tileLayer('https://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
         attribution:
@@ -49,6 +50,7 @@ export default function ServiceAreaMap({ query: controlledQuery = '', onQueryCha
           iconAnchor: [width / 2, height],
         });
       };
+
       draw.current = (value) => {
         markers.clearLayers();
         const matches = serviceAreas.filter(([name]) =>
@@ -63,6 +65,7 @@ export default function ServiceAreaMap({ query: controlledQuery = '', onQueryCha
             zIndexOffset: selected ? 1000 : 0,
           }).addTo(markers);
         }
+
         if (matches.length === 1) instance.setView([matches[0][1], matches[0][2]], 12);
         else
           instance.fitBounds(
@@ -72,8 +75,10 @@ export default function ServiceAreaMap({ query: controlledQuery = '', onQueryCha
             { padding: [25, 25], maxZoom: 11 },
           );
       };
+
       draw.current(currentQuery.current);
     });
+
     return () => {
       cancelled = true;
       draw.current = null;

@@ -10,9 +10,12 @@ async function build() {
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
+
   const output = path.join(root, 'dist');
   await fs.rm(output, { recursive: true, force: true });
+
   await fs.mkdir(path.join(output, 'workspace'), { recursive: true });
+
   await fs.copyFile(
     path.join(root, 'frontend/landing/index.html'),
     path.join(output, 'index.html'),
@@ -25,6 +28,7 @@ async function build() {
   await fs.cp(path.join(root, 'workspace/generated'), path.join(output, 'workspace/generated'), {
     recursive: true,
   });
+
   await fs.copyFile(
     path.join(root, 'workspace/ui-layout.js'),
     path.join(output, 'workspace/ui-layout.js'),
@@ -47,6 +51,7 @@ async function build() {
       { recursive: true },
     );
   }
+
   for (const file of [
     'build/three.module.js',
     'build/three.core.js',
@@ -57,8 +62,10 @@ async function build() {
   ]) {
     const destination = path.join(output, 'vendor/three', file);
     await fs.mkdir(path.dirname(destination), { recursive: true });
+
     await fs.copyFile(path.join(root, 'node_modules/three', file), destination);
   }
+
   await fs.copyFile(
     path.join(root, 'workspace/journey-scene.js'),
     path.join(output, 'workspace/journey-scene.js'),
@@ -108,6 +115,7 @@ async function build() {
   await fs.cp(path.join(root, 'assets'), path.join(output, 'assets'), {
     recursive: true,
   });
+
   console.log('Built the operations workspace in dist.');
 }
 

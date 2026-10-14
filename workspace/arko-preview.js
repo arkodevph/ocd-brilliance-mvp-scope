@@ -13,6 +13,7 @@
   function report(type = 'arko-preview-ready') {
     if (parentOrigin) parent.postMessage({ type, href: location.href, hmr }, parentOrigin);
   }
+
   function selector(element) {
     if (element === document.documentElement) return 'html';
     if (element.id) return '#' + CSS.escape(element.id);
@@ -28,14 +29,17 @@
       );
       element = parent;
     }
+
     return parts.join(' > ');
   }
+
   function safeInput(element) {
     return (
       element.matches('input,textarea,select') &&
       !['password', 'file', 'hidden'].includes(element.type)
     );
   }
+
   document.addEventListener(
     'input',
     (event) => {
@@ -72,15 +76,18 @@
           inputType: element.type,
         })),
     };
+
     try {
       sessionStorage.setItem(key, JSON.stringify(state));
     } catch {}
   }
+
   let restored;
   try {
     restored = JSON.parse(sessionStorage.getItem(key) || 'null');
     sessionStorage.removeItem(key);
   } catch {}
+
   if (restored?.href === location.href) {
     const restore = () => {
       for (const field of restored.fields) {
@@ -96,6 +103,7 @@
           drafts.add(element);
         }
       }
+
       for (const saved of restored.scroll) {
         const element = document.querySelector(saved.selector);
         if (element) {
@@ -103,20 +111,27 @@
           element.scrollTop = saved.y;
         }
       }
+
       scrollTo(restored.x, restored.y);
     };
+
     const observer = new MutationObserver(restore);
     observer.observe(document.documentElement, {
       childList: true,
       subtree: true,
     });
+
     addEventListener('DOMContentLoaded', restore, { once: true });
+
     requestAnimationFrame(restore);
     const stop = () => observer.disconnect();
     document.addEventListener('pointerdown', stop, { once: true });
+
     document.addEventListener('keydown', stop, { once: true });
+
     setTimeout(stop, 2000);
   }
+
   function assets() {
     return [...document.querySelectorAll('script[src],link[rel="stylesheet"][href]')]
       .map((element) => {
@@ -129,6 +144,7 @@
           new URL(asset.url).origin === location.origin && !asset.url.includes('arko-preview.js'),
       );
   }
+
   async function check() {
     if (checking || hmr) return;
     checking = true;
@@ -144,6 +160,7 @@
         files.map(async (asset) => {
           try {
             const response = await fetch(asset.url, { cache: 'no-store' });
+
             if (!response.ok) return null;
             return { ...asset, content: await response.text() };
           } catch {
@@ -157,6 +174,7 @@
           changed.push(result);
         versions.set(result.url, result.content);
       }
+
       if (!enabled || !changed.length) return;
       if (changed.every((asset) => asset.css)) {
         for (const asset of changed) {
@@ -176,6 +194,7 @@
       checking = false;
     }
   }
+
   addEventListener('message', (event) => {
     if (
       event.source !== parent ||
@@ -189,17 +208,21 @@
       report();
       check();
     }
+
     if (event.origin !== parentOrigin) return;
     if (event.data?.type === 'arko-preview-live') {
       enabled = Boolean(event.data.live);
       if (enabled) check();
     }
+
     if (event.data?.type === 'arko-preview-refresh') {
       remember();
       location.reload();
     }
+
     if (event.data?.type === 'arko-preview-update' && enabled) check();
   });
+
   addEventListener('hashchange', () => report('arko-preview-location'));
   addEventListener('popstate', () => report('arko-preview-location'));
   let previousHref = location.href;
@@ -208,6 +231,7 @@
       previousHref = location.href;
       report('arko-preview-location');
     }
+
     if (enabled) check();
   }, 1000);
 })();

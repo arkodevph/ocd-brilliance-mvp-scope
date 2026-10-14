@@ -117,25 +117,32 @@
     native,
     pain,
   }));
+
   const terminal = (job) => ['completed', 'rejected'].includes(job.status);
   function log(job, event, by = 'Demo automation') {
     job.history.push({ at: now(), by, event });
+
     job.updatedAt = now();
   }
+
   function set(job, status, stage, event, by) {
     job.status = status;
     job.stage = stage;
     log(job, event, by);
   }
+
   function record(state, kind, id) {
     return state.automation.remote[kind]?.find((row) => row.id === id);
   }
+
   function nextId(prefix, rows) {
     return `${prefix}-${Math.max(0, ...rows.map((r) => Number(r.id.split('-').pop()) || 0)) + 1}`;
   }
+
   function fingerprint(row) {
     return JSON.stringify(row || null);
   }
+
   function validDate(value) {
     return (
       /^\d{4}-\d{2}-\d{2}$/.test(value || '') &&
@@ -143,6 +150,7 @@
       new Date(value).toISOString().slice(0, 10) === value
     );
   }
+
   function ensure(state) {
     state.coverOffers ||= [];
     if (state.automation?.version === 1) return state.automation;
@@ -165,9 +173,11 @@
         offers: clone(state.coverOffers || []),
       },
     };
+
     receiveSamples(state);
     return state.automation;
   }
+
   function receiveSamples(state) {
     const a = state.automation;
     const samples = [
@@ -274,10 +284,13 @@
           state: 'received',
           receivedAt: now(),
         });
+
         count++;
       }
+
     return count;
   }
+
   function pendingExamples(state) {
     const a = ensure(state);
     if (a.pendingExamples === 1) return;
@@ -295,14 +308,17 @@
         state: 'received',
         receivedAt: now(),
       };
+
       delete source.jobId;
       if (!a.inbox.some((m) => m.id === source.id)) a.inbox.push(source);
       if (source.workflow !== 'W02') {
         const job = create(state, { ...source, source });
+
         source.state = 'routed';
         source.jobId = job.id;
       }
     }
+
     const doc = state.workerDocs.find((d) => d.id === 'WDC-04');
     if (doc)
       create(state, {
@@ -322,8 +338,10 @@
           },
         },
       });
+
     a.pendingExamples = 1;
   }
+
   function create(state, input) {
     const a = ensure(state);
     const existing = a.jobs.find((j) => j.source.id === input.source.id && j.kind === input.kind);
@@ -331,6 +349,7 @@
       if (existing.kind === 'finance' && existing.source.body !== input.source.body) {
         existing.source = clone(input.source);
         existing.draft = clone(input.source.fields || {});
+
         delete existing.approvedAt;
         set(
           existing,
@@ -339,8 +358,10 @@
           'Updated native evidence invalidated the earlier checklist; review the refreshed findings.',
         );
       }
+
       return existing;
     }
+
     const job = {
       id: nextId('AUTO', a.jobs),
       workflow: input.workflow,
@@ -358,6 +379,7 @@
       attempts: 0,
       priority: input.urgent ? 'Urgent' : 'Routine',
     };
+
     a.jobs.push(job);
     log(job, 'Received source; classified and assigned for review.');
     if (job.kind === 'ambiguous')
@@ -369,6 +391,7 @@
       );
     return job;
   }
+
   function ingest(state) {
     const a = ensure(state);
     let created = 0,
@@ -376,6 +399,7 @@
     for (const source of a.inbox) {
       const before = a.jobs.length;
       const job = create(state, { ...source, source });
+
       if (a.jobs.length === before) duplicates++;
       else created++;
       source.state = 'routed';
@@ -386,13 +410,16 @@
         mail.automationJobId = job.id;
       }
     }
+
     a.runs.unshift({
       at: now(),
       type: 'Inbox triage',
       result: `${created} new owned cases; ${duplicates} repeated sources skipped.`,
     });
+
     return { created, duplicates };
   }
+
   function intake(state, enquiryId) {
     ensure(state);
     const e = state.enquiries.find((e) => e.id === enquiryId && !e.serverRecord);
@@ -422,11 +449,13 @@
       },
     });
   }
+
   function sync(state) {
     ensure(state);
     for (const r of state.requests.filter((r) => r.status === 'Pending')) request(state, r);
     for (const b of state.bookings.filter((b) => b.status === 'Needs cover')) cover(state, b.id);
   }
+
   function request(state, r) {
     const kind =
       r.type === 'Booking request'
@@ -468,6 +497,7 @@
       },
     });
   }
+
   function cancellation(state, bookingId, reason) {
     ensure(state);
     const b = record(state, 'bookings', bookingId);
@@ -490,6 +520,7 @@
       },
     });
   }
+
   function cover(state, bookingId) {
     ensure(state);
     const b = state.bookings.find((b) => b.id === bookingId);
@@ -510,6 +541,7 @@
       },
     });
   }
+
   function document(state, docId) {
     ensure(state);
     const d = record(state, 'documents', docId);
@@ -528,6 +560,7 @@
       },
     });
   }
+
   function signedFile(state, agreementId) {
     ensure(state);
     const agreement = state.agreements.find((a) => a.id === agreementId);
@@ -553,6 +586,7 @@
       },
     });
   }
+
   function bookingProposal(state, bookingId) {
     ensure(state);
     const b = state.bookings.find((b) => b.id === bookingId);
@@ -571,6 +605,7 @@
       },
     });
   }
+
   function run(state, type, options = {}) {
     const a = ensure(state);
     if (type === 'documents') {
@@ -598,6 +633,7 @@
         from: options.from || '2026-09-28',
         to: options.to || '2026-10-05',
       };
+
       if (!validDate(period.from) || !validDate(period.to) || period.from > period.to)
         throw new Error('Set a valid inclusive review period.');
       if (options.partial)
@@ -612,6 +648,7 @@
             body: 'Some source pages/notes were unavailable. A clean report cannot be produced. Review the missing scope in ShiftCare.',
           },
         });
+
       for (const v of a.remote.visits) {
         const b = a.remote.bookings.find((b) => b.id === v.bookingId);
         if (!b || b.date < period.from || b.date > period.to || b.status !== 'Completed') continue;
@@ -632,6 +669,7 @@
           },
         });
       }
+
       a.lastReport = { type, period, at: now(), complete: !options.partial };
     } else if (type === 'areas') {
       for (const e of state.enquiries.filter(
@@ -654,16 +692,19 @@
           },
         });
     }
+
     a.runs.unshift({
       at: now(),
       type: `${type} check`,
       result: 'Existing source IDs reused; no external messages, invoices or pay runs created.',
     });
   }
+
   function minutes(time) {
     const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(time || ''));
     return match ? Number(match[1]) * 60 + Number(match[2]) : null;
   }
+
   function captureCare(state, bookingId) {
     const a = ensure(state),
       b = state.bookings.find((b) => b.id === bookingId),
@@ -675,6 +716,7 @@
     const nativeBooking = a.remote.bookings.find((row) => row.id === b.id);
     if (nativeBooking) nativeBooking.status = b.status;
   }
+
   function financeIssues(state, b, v, type) {
     const issues = [];
     const duration = (start, end) => {
@@ -682,6 +724,7 @@
         y = minutes(end);
       return x === null || y === null || y < x ? null : y - x;
     };
+
     const scheduled = duration(b.start, b.end),
       actual = duration(v.clockIn, v.clockOut);
     if (scheduled === null)
@@ -715,11 +758,13 @@
       );
     return issues;
   }
+
   function get(state, id) {
     const job = ensure(state).jobs.find((j) => j.id === id);
     if (!job) throw new Error('Automation case not found.');
     return job;
   }
+
   function targetCollection(job) {
     return ['cancel', 'cover', 'change', 'new-booking'].includes(job.kind)
       ? 'bookings'
@@ -731,6 +776,7 @@
             ? 'participants'
             : null;
   }
+
   function assignmentIssue(state, occurrence, workerId, replacement = false) {
     const w = record(state, 'workers', workerId);
     if (
@@ -769,6 +815,7 @@
       return 'The proposed worker overlaps another sample native visit. Review the current roster.';
     return '';
   }
+
   function approve(state, id, input) {
     const job = get(state, id);
     if (
@@ -779,6 +826,7 @@
     if (input.sourceReviewed !== true)
       throw new Error('Compare the proposal with the source and confirm your review.');
     const draft = { ...job.draft, ...clone(input) };
+
     delete draft.sourceReviewed;
     const collection = targetCollection(job),
       remote = collection ? record(state, collection, job.targetId) : null;
@@ -803,6 +851,7 @@
       if (draft.matchId && !people.some((p) => p.id === draft.matchId))
         throw new Error('Choose an existing record from the reviewed sample list.');
     }
+
     if (job.kind === 'cancel') {
       if (!remote || !['Confirmed', 'Needs cover'].includes(remote.status))
         throw new Error(
@@ -818,6 +867,7 @@
         );
         return job;
       }
+
       if (
         !draft.reason ||
         !['with-charge', 'native-policy'].includes(draft.charge) ||
@@ -830,6 +880,7 @@
       if (draft.charge === 'with-charge' && !['NSDH', 'NSDF', 'NSDT', 'NSDO'].includes(draft.code))
         throw new Error('Choose the reviewed NDIS reason code. Free text is retained separately.');
     }
+
     if (job.kind === 'cover') {
       if (!remote || !['Needs cover', 'Confirmed'].includes(remote.status))
         throw new Error('The sample occurrence is no longer available for cover.');
@@ -852,6 +903,7 @@
           );
       }
     }
+
     if (job.kind === 'new-booking') {
       const b = state.bookings.find((b) => b.id === job.targetId);
       if (!b || b.status !== 'Proposed' || b.workerId !== draft.workerId)
@@ -870,6 +922,7 @@
         );
       job.proposalSnapshot = fingerprint(b);
     }
+
     if (
       job.kind === 'profile-update' &&
       (!remote || !/^\S+@\S+\.\S+$/.test(draft.email || '') || !draft.phone || !draft.preference)
@@ -903,13 +956,16 @@
         if (e) {
           e.owner = draft.owner;
           e.handoff ||= {};
+
           e.handoff.followUp = draft.nextAction;
         }
       }
+
       if (job.kind === 'yes') {
         const b = state.bookings.find((b) => b.id === job.targetId);
         if (b) b.participantResponse = 'Yes (demo)';
       }
+
       if (['finance-query', 'enquiry', 'feedback', 'reminder'].includes(job.kind)) {
         set(
           job,
@@ -933,6 +989,7 @@
         );
       return job;
     }
+
     if (
       ['finance', 'partial-report', 'ambiguous', 'change', 'booking-request'].includes(job.kind)
     ) {
@@ -944,6 +1001,7 @@
       );
       return job;
     }
+
     set(
       job,
       'approved',
@@ -952,6 +1010,7 @@
     );
     return job;
   }
+
   function native(state, id, failure = 'success') {
     const job = get(state, id);
     if (
@@ -974,6 +1033,7 @@
       );
       return job;
     }
+
     if (['cover', 'new-booking'].includes(job.kind)) {
       const occurrence = remote || state.bookings.find((b) => b.id === job.targetId);
       const issue =
@@ -993,6 +1053,7 @@
         return job;
       }
     }
+
     if (failure === 'stale') {
       if (remote) remote.externalEdit = now();
       delete job.approvedAt;
@@ -1004,6 +1065,7 @@
       );
       return job;
     }
+
     job.attempts++;
     if (failure === 'denied') {
       set(
@@ -1014,6 +1076,7 @@
       );
       return job;
     }
+
     if (failure === 'network') {
       set(
         job,
@@ -1025,6 +1088,7 @@
       );
       return job;
     }
+
     if (job.kind === 'cover' && job.stage === 'offer') {
       const offers = (state.automation.remote.offers ||= clone(state.coverOffers));
       let offer = offers.find(
@@ -1042,8 +1106,10 @@
           status: 'Pending',
           created: state.automation.date,
         };
+
         offers.push(offer);
       }
+
       job.expected = {
         collection: 'offers',
         id: offer.id,
@@ -1053,6 +1119,7 @@
           status: 'Pending',
         },
       };
+
       set(
         job,
         failure === 'timeout' ? 'reconciliation_required' : 'verifying',
@@ -1063,6 +1130,7 @@
       );
       return job;
     }
+
     if (
       job.kind === 'cover' &&
       !state.coverOffers.some(
@@ -1090,6 +1158,7 @@
     );
     return job;
   }
+
   function applyRemote(state, job) {
     const a = state.automation,
       d = job.draft;
@@ -1128,8 +1197,10 @@
                 review: 'Pending screening',
                 days: [],
               };
+
         rows.push(p);
       }
+
       job.expected = {
         collection: key,
         id: p.id,
@@ -1141,6 +1212,7 @@
         b = clone(state.bookings.find((b) => b.id === job.targetId));
         a.remote.bookings.push(b);
       }
+
       b.status = 'Confirmed';
       b.workerAccepted = true;
       b.participantAgreed = true;
@@ -1170,6 +1242,7 @@
         code: d.code,
         source: 'Sample native action',
       };
+
       job.expected = {
         collection: 'bookings',
         id: b.id,
@@ -1233,6 +1306,7 @@
         phone: d.phone,
         intakeUpdate: d.preference,
       });
+
       job.expected = {
         collection: 'participants',
         id: p.id,
@@ -1247,6 +1321,7 @@
         'This operation needs a manual native outcome; no simulated write adapter is defined.',
       );
   }
+
   function verify(state, id) {
     const job = get(state, id);
     if (!['verifying', 'reconciliation_required'].includes(job.status))
@@ -1265,6 +1340,7 @@
       );
       return job;
     }
+
     const key =
       expected.collection === 'documents'
         ? 'workerDocs'
@@ -1299,6 +1375,7 @@
           demo: true,
         };
       }
+
       set(
         job,
         'manual_action_required',
@@ -1319,10 +1396,13 @@
           .forEach((o) => {
             o.status = o.automationJobId === job.id ? 'Confirmed' : 'Closed';
           });
+
       queueMessage(state, job);
     }
+
     return job;
   }
+
   function accounting(state, id, input) {
     const job = get(state, id);
     if (job.stage !== 'accounting' || job.status !== 'manual_action_required')
@@ -1335,6 +1415,7 @@
       verifiedAt: now(),
       demo: true,
     };
+
     set(
       job,
       'completed',
@@ -1344,6 +1425,7 @@
     );
     return job;
   }
+
   function workerResponse(state, offerId, workerId, accepted) {
     const offer = state.coverOffers.find((o) => o.id === offerId);
     if (!offer || offer.workerId !== workerId || offer.status !== 'Pending')
@@ -1369,6 +1451,7 @@
         'Worker declined. Office needs another reviewed offer or an agreed alternative.',
       );
   }
+
   function resolveRequest(state, job) {
     const r = state.requests.find((r) => r.id === job.source.requestId);
     if (r) {
@@ -1376,6 +1459,7 @@
       r.outcome = 'Verified sample native outcome; no real system was changed.';
     }
   }
+
   function manual(state, id, input) {
     const job = get(state, id);
     if (
@@ -1391,6 +1475,7 @@
       at: now(),
       demo: true,
     };
+
     set(
       job,
       'completed',
@@ -1401,6 +1486,7 @@
     resolveRequest(state, job);
     return job;
   }
+
   function reopen(state, id) {
     const job = get(state, id);
     if (
@@ -1420,6 +1506,7 @@
     );
     return job;
   }
+
   function queueMessage(state, job) {
     if (!['cancel', 'cover', 'profile-update'].includes(job.kind)) return;
     if (state.automation.messages.some((m) => m.jobId === job.id)) return;
@@ -1447,6 +1534,7 @@
       attempts: 0,
     });
   }
+
   function deliver(state, messageId, fail = false) {
     const m = ensure(state).messages.find((m) => m.id === messageId);
     if (!m || m.status === 'delivered')
@@ -1471,8 +1559,10 @@
         date: state.automation.date,
         read: false,
       });
+
     return m;
   }
+
   return {
     catalog,
     ensure,

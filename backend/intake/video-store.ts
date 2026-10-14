@@ -2,8 +2,9 @@ import fs from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import type { Request, Response } from 'express';
+import type { Request, Response } from '../http';
 const { WorkflowError, clean } = require('../../lib/intake-domain.cjs');
+const rooms: Record<string, string> = require('../../lib/intake-rooms.json');
 
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 export const MAX_VIDEOS = 5;
@@ -14,11 +15,14 @@ export interface ServiceVideo {
   name: string;
   type: string;
   size: number;
+  room?: string;
 }
+
 interface Upload extends ServiceVideo {
   complete: boolean;
   expires: number;
 }
+
 let writes: Promise<unknown> = Promise.resolve();
 
 function directory() {
@@ -32,10 +36,12 @@ function directory() {
     'intake-videos',
   );
 }
+
 function file(id: string, suffix: string) {
   if (!/^[a-f0-9]{48}$/.test(id)) throw new WorkflowError(422, 'Invalid video reference.');
   return path.join(directory(), id + suffix);
 }
+
 async function upload(id: string): Promise<Upload> {
   try {
     return JSON.parse(await fs.readFile(file(id, '.json'), 'utf8'));
@@ -45,6 +51,7 @@ async function upload(id: string): Promise<Upload> {
     throw error;
   }
 }
+
 export async function startVideo(
   input: Record<string, unknown>,
 ): Promise<ServiceVideo & { chunkBytes: number }> {
@@ -56,28 +63,42 @@ export async function startVideo(
   ) {
     throw new WorkflowError(422, 'Choose an MP4, MOV or WebM video of up to 100 MB.');
   }
+
+  if (
+    input.room !== undefined &&
+    (typeof input.room !== 'string' || !Object.hasOwn(rooms, input.room))
+  )
+    throw new WorkflowError(422, 'Choose a valid room for this video.');
+
   const item: Upload = {
     id: crypto.randomBytes(24).toString('hex'),
     name: clean(input.name, 120) || 'Service video',
     type: String(input.type),
     size: Number(input.size),
+    ...(typeof input.room === 'string' ? { room: input.room } : {}),
     complete: false,
     expires: Date.now() + 24 * 60 * 60 * 1000,
   };
+
   await fs.mkdir(directory(), { recursive: true, mode: 0o700 });
+
   await fs.writeFile(file(item.id, '.part'), '', { mode: 0o600, flag: 'wx' });
+
   await fs.writeFile(file(item.id, '.json'), JSON.stringify(item), {
     mode: 0o600,
     flag: 'wx',
   });
+
   return {
     id: item.id,
     name: item.name,
     type: item.type,
     size: item.size,
+    ...(item.room ? { room: item.room } : {}),
     chunkBytes: CHUNK_BYTES,
   };
 }
+
 export async function appendVideo(req: Request, id: string, offset: number) {
   if (!Number.isSafeInteger(offset) || offset < 0)
     throw new WorkflowError(422, 'Invalid upload offset.');
@@ -93,6 +114,7 @@ export async function appendVideo(req: Request, id: string, offset: number) {
       if (size > CHUNK_BYTES) throw new WorkflowError(413, 'Upload chunks must be at most 1 MB.');
       chunks.push(bytes);
     }
+
   if (!size || size > CHUNK_BYTES)
     throw new WorkflowError(413, 'Send a video chunk of up to 1 MB.');
   const bytes = Buffer.concat(chunks);
@@ -113,8 +135,10 @@ export async function appendVideo(req: Request, id: string, offset: number) {
       } finally {
         await handle.close();
       }
+
       return { received: current, complete: item.complete };
     }
+
     if (offset !== current || item.complete)
       throw new WorkflowError(409, 'Video upload offset changed.');
     await fs.appendFile(target, bytes);
@@ -127,6 +151,7 @@ export async function appendVideo(req: Request, id: string, offset: number) {
       } finally {
         await handle.close();
       }
+
       const valid =
         item.type === 'video/webm'
           ? header.subarray(0, 4).equals(Buffer.from('1a45dfa3', 'hex'))
@@ -138,11 +163,15 @@ export async function appendVideo(req: Request, id: string, offset: number) {
         mode: 0o600,
       });
     }
+
     return { received, complete: item.complete };
   });
+
   writes = operation.catch(() => {});
+
   return operation;
 }
+
 export async function resolveServiceVideos(value: unknown): Promise<ServiceVideo[]> {
   if (value == null) return [];
   if (!Array.isArray(value) || value.length > MAX_VIDEOS)
@@ -160,10 +189,13 @@ export async function resolveServiceVideos(value: unknown): Promise<ServiceVideo
       name: item.name,
       type: item.type,
       size: item.size,
+      ...(item.room ? { room: item.room } : {}),
     });
   }
+
   return result;
 }
+
 export async function streamVideo(req: Request, res: Response, video: ServiceVideo) {
   const item = await upload(video.id);
   if (!item.complete) throw new WorkflowError(404, 'Video is not available.');
@@ -174,18 +206,23 @@ export async function streamVideo(req: Request, res: Response, video: ServiceVid
     const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
     if (!range || (!range[1] && !range[2])) {
       res.writeHead(416, { 'Content-Range': `bytes */${item.size}` });
+
       res.end();
       return;
     }
+
     start = range[1] ? Number(range[1]) : Math.max(0, item.size - Number(range[2]));
     end = range[1] && range[2] ? Math.min(Number(range[2]), end) : end;
     if (start > end || start >= item.size) {
       res.writeHead(416, { 'Content-Range': `bytes */${item.size}` });
+
       res.end();
       return;
     }
+
     status = 206;
   }
+
   res.writeHead(status, {
     'Content-Type': item.type,
     'Content-Length': end - start + 1,
@@ -194,7 +231,9 @@ export async function streamVideo(req: Request, res: Response, video: ServiceVid
     'X-Content-Type-Options': 'nosniff',
     ...(status === 206 ? { 'Content-Range': `bytes ${start}-${end}/${item.size}` } : {}),
   });
+
   const stream = createReadStream(file(video.id, '.video'), { start, end });
+
   stream.on('error', () => res.destroy());
   res.on('close', () => stream.destroy());
   stream.pipe(res);

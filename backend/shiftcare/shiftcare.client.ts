@@ -4,16 +4,19 @@ export interface ShiftCareOptions {
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
 }
+
 export interface ShiftCarePerson {
   id: string;
   name: string;
 }
+
 export interface ShiftCareShift extends ShiftCarePerson {
   startAt: string;
   endAt: string;
   clients: ShiftCarePerson[] | null;
   staff: ShiftCarePerson[] | null;
 }
+
 export type ShiftCareRecord = ShiftCarePerson | ShiftCareShift;
 const REGIONS: Readonly<Record<string, string>> = Object.freeze({
   au: 'https://api.shiftcare.com/api/v3/',
@@ -58,6 +61,7 @@ export function configuration(env: ShiftCareEnvironment = process.env) {
       error = 'Set a valid IANA time zone for the ShiftCare account.';
     }
   }
+
   return {
     configured: missing.length === 0 && !error,
     missing,
@@ -71,6 +75,7 @@ export function configuration(env: ShiftCareEnvironment = process.env) {
 function invalid(message: string): never {
   throw new ShiftCareError(422, 'INVALID_QUERY', message);
 }
+
 function positiveInteger(value: unknown, name: string, max: number) {
   if (
     !/^\d+$/.test(String(value)) ||
@@ -101,6 +106,7 @@ function midnight(date: string, timeZone: string): number {
     second: '2-digit',
     hourCycle: 'h23',
   });
+
   let instant = expected;
   for (let attempt = 0; attempt < 4; attempt++) {
     const p = Object.fromEntries(
@@ -111,6 +117,7 @@ function midnight(date: string, timeZone: string): number {
     if (!delta) return instant;
     instant += delta;
   }
+
   invalid('This date has no midnight in the account time zone. Choose another date.');
 }
 
@@ -130,6 +137,7 @@ export function shiftWindow(from: string, to: string, timeZone: string) {
 function text(value: unknown): string {
   return typeof value === 'string' || typeof value === 'number' ? String(value) : '';
 }
+
 function person(record: unknown): ShiftCarePerson {
   if (!record || typeof record !== 'object')
     throw new ShiftCareError(502, 'INVALID_RESPONSE', 'ShiftCare returned an unsupported record.');
@@ -143,6 +151,7 @@ function person(record: unknown): ShiftCarePerson {
       .join(' ');
   return { id: text(item.id || fields.id), name };
 }
+
 function shift(record: unknown): ShiftCareShift {
   if (!record || typeof record !== 'object')
     throw new ShiftCareError(502, 'INVALID_RESPONSE', 'ShiftCare returned an unsupported record.');
@@ -203,7 +212,9 @@ export function createShiftCareClient({
     const page = positiveInteger(params.page ?? 1, 'page', 10000);
     const perPage = positiveInteger(params.per_page ?? 20, 'per_page', 20);
     const query = { page, per_page: perPage, include_metadata: true };
+
     if (resource !== 'staff') Object.assign(query, { time_zone: 'account' });
+
     if (resource === 'shifts')
       Object.assign(
         query,
@@ -229,6 +240,7 @@ export function createShiftCareClient({
           Authorization: `Basic ${Buffer.from(`${config.accountId}:${env.SHIFTCARE_API_KEY!.trim()}`).toString('base64')}`,
         },
       });
+
       if (!response.ok) {
         if (response.status === 401)
           throw new ShiftCareError(
@@ -251,12 +263,14 @@ export function createShiftCareClient({
             Number.isSafeInteger(delay) && delay > 0 && delay <= 3600 ? delay : undefined,
           );
         }
+
         throw new ShiftCareError(
           502,
           'SHIFTCARE_UNAVAILABLE',
           'ShiftCare could not complete the read. Try again later.',
         );
       }
+
       // Bound the response as well as the time spent waiting for it.
       if (!response.body)
         throw new ShiftCareError(502, 'INVALID_RESPONSE', 'ShiftCare returned an empty response.');
@@ -279,6 +293,7 @@ export function createShiftCareClient({
       } finally {
         await reader.cancel().catch(() => {});
       }
+
       try {
         payload = JSON.parse(Buffer.concat(chunks).toString('utf8'));
       } catch (_) {
@@ -302,6 +317,7 @@ export function createShiftCareClient({
         'The server could not reach ShiftCare. Try again later.',
       );
     }
+
     return {
       ...pageRecords(payload, resource, page, perPage),
       accountId: config.accountId,
@@ -309,5 +325,6 @@ export function createShiftCareClient({
       fetchedAt: new Date().toISOString(),
     };
   }
+
   return { configuration: config, list };
 }

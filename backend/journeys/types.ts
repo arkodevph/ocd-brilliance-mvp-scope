@@ -9,6 +9,7 @@ export interface Booking {
   visited: boolean;
   destination: Coordinates | null;
 }
+
 export interface Journey {
   workerId: string;
   date: string;
@@ -23,11 +24,13 @@ export interface Journey {
   running: false;
   sessionId: string;
 }
+
 export interface ArrivalData {
   revision: string;
   bookings: Booking[];
   journeys: Record<string, Journey>;
 }
+
 export interface JourneyInput {
   action: string;
   bookingId: string;
@@ -40,6 +43,7 @@ export interface JourneyInput {
   token?: string;
   bookings?: Array<Omit<Booking, 'destination' | 'participantId'>>;
 }
+
 export interface SeedData {
   bookings: Array<Omit<Booking, 'destination' | 'visited'>>;
   visits: Array<{ bookingId: string; clockIn?: string }>;

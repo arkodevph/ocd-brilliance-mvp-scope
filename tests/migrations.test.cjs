@@ -26,6 +26,7 @@ test(
       user: 'ocd_test',
       database: 'postgres',
     });
+
     let started = false;
     try {
       const init = spawnSync(
@@ -54,6 +55,7 @@ test(
       await fs.cp(path.join(__dirname, '../backend/database/migrations'), migrations, {
         recursive: true,
       });
+
       assert.deepEqual(await migrate(client, migrations), ['001_initial_schema.sql']);
       assert.deepEqual(await migrate(client, migrations), []);
 
@@ -96,12 +98,14 @@ test(
       await assert.rejects(client.query('UPDATE journeys SET progress = 2'), {
         code: '23514',
       });
+
       const record = {
         id: 'REQ-1',
         creationKey: 'owner:request',
         onboarding: { serviceVideos: [{ id: 'private-reference' }] },
         history: [{ event: 'Reviewed' }],
       };
+
       await client.query('INSERT INTO intakes VALUES ($1, $2, $3)', [
         record.id,
         'revision',
@@ -130,6 +134,7 @@ test(
         'CREATE TABLE rolled_back (id text); SELECT * FROM missing_table;',
       );
       await assert.rejects(migrate(client, migrations), { code: '42P01' });
+
       assert.equal(
         (await client.query("SELECT to_regclass('rolled_back') AS name")).rows[0].name,
         null,
@@ -161,6 +166,7 @@ test(
         spawnSync('pg_ctl', ['-D', data, '-m', 'fast', '-w', 'stop'], {
           encoding: 'utf8',
         });
+
       await fs.rm(directory, { recursive: true, force: true });
     }
   },

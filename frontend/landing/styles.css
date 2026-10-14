@@ -89,3 +89,13 @@
 .landing-form-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:3rem;align-items:start}
 .landing-form{min-width:0}.landing-form fieldset{border:0;padding:0;margin:0;display:grid;gap:1.2rem;min-width:0}.landing-form label{display:grid;gap:.5rem;margin-block:1rem}.landing-form input,.landing-form select,.landing-form textarea{width:100%;min-width:0;padding:.8rem;border:1px solid var(--border);border-radius:6px;background:var(--paper)}.landing-form button{justify-self:start}.landing-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 1rem}.landing-form .landing-consent{display:flex;align-items:flex-start;gap:.8rem}.landing-consent input{width:auto;margin-top:.3rem}.landing-video-list{display:grid;gap:1rem}.landing-video-list video{width:100%;max-height:240px}.landing-video-list p{overflow-wrap:anywhere}.landing-form .form-error{padding:1rem;background:#f6e5df;color:#853b29;border-radius:6px}.landing-form fieldset:disabled{opacity:.7}
 @media(max-width:760px){.landing-form-layout,.landing-fields{grid-template-columns:1fr}.landing-form-layout{gap:2rem}}
+
+/* Room intake and installation controls share the existing form palette. */
+.install-trigger{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left;padding:.5rem 0;min-height:44px}
+.mobile-nav .install-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:1rem 0;border-bottom:1px solid var(--border)}
+.room-videos{display:grid;gap:1rem;min-width:0}.room-videos h3,.room-videos h4{margin:0}.room-video-count{font-weight:600}
+.room-video-card{border:1px solid var(--border);border-radius:10px;padding:1.2rem;display:grid;gap:1rem;min-width:0;background:var(--paper)}
+.room-video-actions{display:flex;flex-wrap:wrap;gap:1rem;align-items:start}.room-video-actions button{min-height:44px}.room-video-actions .button:disabled{opacity:.55;cursor:not-allowed}
+.landing-form .room-video-picker{margin:0;flex:1 1 230px}.room-video-picker input{max-width:100%;font:inherit}
+.room-camera{display:grid;gap:.75rem}.room-camera video{width:100%;max-height:360px;aspect-ratio:16/9;object-fit:contain;background:#152a23;border-radius:8px}.room-camera p{margin:0}
+@media(max-width:600px){.room-video-actions{display:grid;grid-template-columns:1fr}.room-video-actions .button{width:100%;justify-content:center}.room-video-card{padding:1rem}}

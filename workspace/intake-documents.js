@@ -20,8 +20,10 @@ window.OCD_DOCUMENTS = {
             onProgress(`Reading scanned text… ${Math.round(progress.progress * 100)}%`);
         },
       });
+
       return (await worker.recognize(image)).data.text;
     };
+
     let text = '';
     let pdf;
     let loadingTask;
@@ -36,6 +38,7 @@ window.OCD_DOCUMENTS = {
           cMapPacked: true,
           standardFontDataUrl: '/vendor/pdfjs-dist/standard_fonts/',
         });
+
         pdf = await loadingTask.promise;
         if (pdf.numPages > 20) throw new Error('Use a document of at most 20 pages.');
         for (let number = 1; number <= pdf.numPages; number++) {
@@ -47,6 +50,7 @@ window.OCD_DOCUMENTS = {
             .join('');
           if (!pageText.trim()) {
             const viewport = page.getViewport({ scale: 1.5 });
+
             if (viewport.width * viewport.height > 16000000)
               throw new Error('The scanned page is too large to process.');
             const canvas = document.createElement('canvas');
@@ -58,6 +62,7 @@ window.OCD_DOCUMENTS = {
             }).promise;
             pageText = await recognize(canvas);
           }
+
           text += pageText + '\n';
           if (text.length > 12000)
             throw new Error('Extract a smaller document; text is limited to 12,000 characters.');
@@ -72,6 +77,7 @@ window.OCD_DOCUMENTS = {
           bitmap.close();
         }
       }
+
       if (!text.trim() || text.length > 12000)
         throw new Error('No usable text found, or text exceeds 12,000 characters.');
       const data = await new Promise((resolve, reject) => {
@@ -80,6 +86,7 @@ window.OCD_DOCUMENTS = {
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
+
       onProgress(
         scannedPages
           ? 'Scanned text read. Check names and numbers against the original.'
@@ -110,15 +117,18 @@ async function renderOriginalPdf(element) {
       cMapPacked: true,
       standardFontDataUrl: '/vendor/pdfjs-dist/standard_fonts/',
     });
+
     const pdf = await loadingTask.promise;
     element.replaceChildren();
     for (let number = 1; number <= Math.min(pdf.numPages, 20); number++) {
       if (!element.isConnected) break;
       const page = await pdf.getPage(number);
       const base = page.getViewport({ scale: 1 });
+
       const viewport = page.getViewport({
         scale: Math.min((element.clientWidth || 400) / base.width, 1600 / base.height, 1.5),
       });
+
       const canvas = document.createElement('canvas');
       canvas.width = viewport.width;
       canvas.height = viewport.height;
@@ -127,6 +137,7 @@ async function renderOriginalPdf(element) {
       element.append(canvas);
       await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
     }
+
     element.dataset.rendered = 'true';
   } catch (error) {
     element.textContent = `Original PDF could not be displayed: ${error.message}`;
@@ -134,10 +145,12 @@ async function renderOriginalPdf(element) {
     await loadingTask?.destroy();
   }
 }
+
 const previewOriginals = () =>
   document.querySelectorAll('[data-document-pdf]:not([data-rendering])').forEach(renderOriginalPdf);
 new MutationObserver(previewOriginals).observe(document.body, {
   childList: true,
   subtree: true,
 });
+
 previewOriginals();

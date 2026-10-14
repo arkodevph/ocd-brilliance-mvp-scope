@@ -314,6 +314,7 @@ export const routeMeta = {
   ],
   '/404': ['Let’s get you back on track', 'Find a service or contact the OCD Brilliance team.'],
 };
+
 for (const service of services)
   routeMeta[`/services/${service.slug}`] = [service.title, service.intro];
 for (const article of articles)

@@ -13,6 +13,7 @@ test('intake is area-gated, office-owned, and requires verified handoff', async 
     approvedBy: 'Test office',
     source: 'Fictional test policy',
   });
+
   process.env.WORKFLOW_STAFF_EMAIL = 'office@example.test';
   process.env.WORKFLOW_STAFF_PASSWORD = 'test-password';
   process.env.WORKFLOW_SESSION_SECRET = 'a-test-session-secret-longer-than-32-characters';
@@ -39,12 +40,14 @@ test('intake is area-gated, office-owned, and requires verified handoff', async 
   t.after(() => {
     delete process.env.WORKFLOW_STAFF_ACCOUNTS;
   });
+
   const server = http.createServer(require('../api/workflow.js')).listen(0, '127.0.0.1');
   await new Promise((resolve) => server.once('listening', resolve));
   t.after(async () => {
     await new Promise((resolve) => server.close(resolve));
     await fs.rm(process.env.WORKFLOW_DATA_DIR, { recursive: true });
   });
+
   const base = `http://127.0.0.1:${server.address().port}/api/workflow`;
   const call = async (action, method = 'GET', data, cookie) => {
     const response = await fetch(`${base}?action=${action}`, {
@@ -56,12 +59,14 @@ test('intake is area-gated, office-owned, and requires verified handoff', async 
       },
       body: data ? JSON.stringify(data) : undefined,
     });
+
     return {
       status: response.status,
       body: await response.json(),
       cookie: response.headers.get('set-cookie'),
     };
   };
+
   assert.equal((await call('area&postcode=6000')).body.status, 'covered');
   assert.equal((await call('area&postcode=6999')).body.status, 'outside');
   const intake = {
@@ -74,6 +79,7 @@ test('intake is area-gated, office-owned, and requires verified handoff', async 
     notes: '',
     consent: true,
   };
+
   assert.equal((await call('intake', 'POST', intake)).status, 422);
   intake.postcode = '6000';
   const video = {
@@ -81,6 +87,7 @@ test('intake is area-gated, office-owned, and requires verified handoff', async 
     type: 'video/mp4',
     data: Buffer.from('0000ftypisom0000').toString('base64'),
   };
+
   assert.equal(
     (
       await call('intake', 'POST', {
@@ -121,6 +128,7 @@ test('intake is area-gated, office-owned, and requires verified handoff', async 
     email: 'office@example.test',
     password: 'test-password',
   });
+
   assert.equal(login.status, 200);
   const cookie = login.cookie.split(';')[0];
   assert.equal((await call('owners')).status, 401);
@@ -174,6 +182,7 @@ test('intake is area-gated, office-owned, and requires verified handoff', async 
     postcode: '6000',
     suburb: 'Perth',
   };
+
   assert.equal(
     (
       await call(

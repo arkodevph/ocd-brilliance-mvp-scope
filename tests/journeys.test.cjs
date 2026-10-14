@@ -5,7 +5,7 @@ const path = require('node:path');
 const http = require('node:http');
 const test = require('node:test');
 
-test('Nest arrival backend persists shared ETA, protects origins and rejects late updates', async (t) => {
+test('Hono arrival backend persists shared ETA, protects origins and rejects late updates', async (t) => {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'ocd-arrivals-'));
   const keys = [
     'WORKFLOW_DATA_DIR',
@@ -27,6 +27,7 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
     ]),
     MAPBOX_PUBLIC_TOKEN: 'pk.test',
   });
+
   const realFetch = global.fetch;
   let duration = 1200,
     routeCalls = 0,
@@ -39,8 +40,10 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
       return new Promise((resolve) => {
         pendingRoute.resolve = resolve;
       });
+
     return new Response(JSON.stringify({ code: 'Ok', routes: [{ duration }] }));
   };
+
   const { sessionCookie } = require('../lib/staff-auth.cjs');
   const cookie = (email) => sessionCookie(email, { headers: {} }).split(';')[0];
   let server = http.createServer(require('../api/journeys.js'));
@@ -48,16 +51,17 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
     server.listen(0, '127.0.0.1');
     await new Promise((resolve) => server.once('listening', resolve));
   }
+
   await listen();
   t.after(async () => {
     global.fetch = realFetch;
     await new Promise((resolve) => server.close(resolve));
-    const { getApplication } = require('../.backend/application.js');
-    await (await getApplication()).close();
     await fs.rm(directory, { recursive: true, force: true });
+
     for (const key of keys)
       original[key] === undefined ? delete process.env[key] : (process.env[key] = original[key]);
   });
+
   const call = async (data, query = '', email = 'office@example.test', origin) => {
     const base = `http://127.0.0.1:${server.address().port}`;
     const response = await realFetch(`${base}/api/journeys${query}`, {
@@ -69,11 +73,14 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
       },
       body: data ? JSON.stringify(data) : undefined,
     });
+
     assert.match(response.headers.get('cache-control') || '', /no-store/);
     return { status: response.status, body: await response.json() };
   };
+
   const start = async (bookingId = 'BKG-501', workerId = 'WRK-01') =>
     call({ action: 'start', bookingId, workerId, consent: true });
+
   const eta = (journey) => ({
     action: 'eta',
     bookingId: 'BKG-501',
@@ -83,6 +90,7 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
     accuracy: 10,
     observedAt: Date.now(),
   });
+
   assert.equal((await call(null, '?area=office', '')).status, 401);
   assert.equal((await call({ action: 'start' }, '', 'reader@example.test')).status, 403);
   assert.equal(
@@ -147,6 +155,7 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
   );
   journey = (await start()).body.journey;
   pendingRoute = {};
+
   const delayed = call(eta(journey));
   for (let i = 0; !pendingRoute.resolve && i < 100; i++)
     await new Promise((resolve) => setTimeout(resolve, 5));
@@ -163,6 +172,7 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
     200,
   );
   pendingRoute.resolve(new Response(JSON.stringify({ code: 'Ok', routes: [{ duration: 120 }] })));
+
   assert.equal((await delayed).status, 409);
   pendingRoute = null;
   assert.equal((await call(eta(journey))).status, 409);
@@ -206,8 +216,10 @@ test('Nest arrival backend persists shared ETA, protects origins and rejects lat
       remainingMinutes: 2,
       updatedAt: Date.now() - 130000,
     });
+
     return j;
   });
+
   assert.equal(
     (await call(null, '?area=client&id=PAR-101')).body.journeys['BKG-503'].phase,
     'stale',
@@ -230,18 +242,23 @@ test('procedural store retries Redis revision conflicts without dropping another
             revision: 'changed',
             journeys: { other: { phase: 'arrived' } },
           };
+
           return 0;
         }
+
         assert.equal(args[0], record.revision);
         record = JSON.parse(args[1]);
         return 1;
       },
     },
   };
+
   await update(store, (data) => {
     data.journeys.new = { phase: 'locating' };
+
     return 'done';
   });
+
   assert.equal((await read(store)).journeys.other.phase, 'arrived');
   assert.equal((await read(store)).journeys.new.phase, 'locating');
   assert.equal(calls, 2);

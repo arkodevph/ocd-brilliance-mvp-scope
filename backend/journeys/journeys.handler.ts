@@ -1,5 +1,6 @@
+import { readRequestText, sendJson } from '../http';
 import crypto from 'node:crypto';
-import type { Request, Response } from 'express';
+import type { Request, Response } from '../http';
 import type { ArrivalData, Journey, JourneyInput, Coordinates } from './types';
 import { storage, read, update } from './journey-store';
 const { staffSession, permits, originAllowed } = require('../../lib/staff-auth.cjs');
@@ -7,6 +8,7 @@ const { staffSession, permits, originAllowed } = require('../../lib/staff-auth.c
 function fail(status: number, message: string): never {
   throw Object.assign(new Error(message), { status });
 }
+
 function coordinates(value: unknown): value is Coordinates {
   return (
     Array.isArray(value) &&
@@ -16,6 +18,7 @@ function coordinates(value: unknown): value is Coordinates {
     Math.abs(value[1]) < 85
   );
 }
+
 function booking(data: ArrivalData, id: string, workerId: string) {
   const b = data.bookings.find((b) => b.id === id);
   if (!b || b.workerId !== workerId)
@@ -24,6 +27,7 @@ function booking(data: ArrivalData, id: string, workerId: string) {
     fail(409, 'Arrival sharing is not available for this booking.');
   return b;
 }
+
 function current(data: ArrivalData, input: JourneyInput) {
   booking(data, input.bookingId, input.workerId);
   const journey = data.journeys[input.bookingId];
@@ -36,14 +40,14 @@ function current(data: ArrivalData, input: JourneyInput) {
     fail(409, 'Journey sharing ended or changed.');
   return journey;
 }
+
 async function body(req: Request): Promise<JourneyInput> {
   let text = '';
   if (req.body) text = JSON.stringify(req.body);
   else
-    for await (const part of req) {
-      text += part;
-      if (Buffer.byteLength(text) > 50000) fail(413, 'Request too large.');
-    }
+    text = await readRequestText(req, 50000, () =>
+      Object.assign(new Error('Request too large.'), { status: 413 }),
+    );
   if (Buffer.byteLength(text) > 50000) fail(413, 'Request too large.');
   let value;
   try {
@@ -51,6 +55,7 @@ async function body(req: Request): Promise<JourneyInput> {
   } catch (_) {
     fail(400, 'Invalid JSON.');
   }
+
   if (!value || typeof value !== 'object' || Array.isArray(value))
     fail(400, 'Request must be an object.');
   return value as JourneyInput;
@@ -59,16 +64,13 @@ async function body(req: Request): Promise<JourneyInput> {
 // Only status/ETA fields leave the API. Worker coordinates exist only during the route request.
 export async function handleJourneyRequest(req: Request, res: Response): Promise<void> {
   function send(status: number, value: unknown): void {
-    res.writeHead(status, {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store',
-      'X-Content-Type-Options': 'nosniff',
-    });
-    res.end(JSON.stringify(value));
+    sendJson(res, status, value, { 'Content-Type': 'application/json' });
   }
+
   try {
     if (!['GET', 'POST'].includes(req.method || ''))
       return send(405, { error: 'Method not allowed.' });
+
     if (!originAllowed(req)) fail(403, 'Request origin is not allowed.');
     const staff = staffSession(req);
     if (!staff) fail(401, 'Use the existing office session to test shared arrivals.');
@@ -77,7 +79,7 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
     const store = storage();
     if (!store) fail(503, 'Shared arrival storage is not configured.');
     if (req.method === 'GET') {
-      const url = new URL(req.url, 'http://localhost'),
+      const url = new URL(req.url || '/', 'http://localhost'),
         area = url.searchParams.get('area'),
         id = url.searchParams.get('id');
       if (!['office', 'worker', 'client'].includes(area || '') || (area !== 'office' && !id))
@@ -90,6 +92,7 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
           (area === 'client' && b.participantId === id),
       );
       const journeys: Record<string, Omit<Journey, 'sessionId'> & { sessionId?: string }> = {};
+
       for (const b of bookings) {
         const journey = data.journeys[b.id];
         if (journey && b.status === 'Confirmed' && !b.visited) {
@@ -103,12 +106,14 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
             };
         }
       }
+
       return send(200, {
         journeys,
         bookings: bookings.map(({ destination, ...b }) => b),
         prototype: true,
       });
     }
+
     const input = await body(req);
     if (input.action === 'publish') {
       if (!Array.isArray(input.bookings) || input.bookings.length > 500)
@@ -150,8 +155,10 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
           });
         }
       });
+
       return send(200, { ok: true });
     }
+
     if (input.action === 'start') {
       if (input.consent !== true) fail(422, 'Journey consent is required.');
       const journey = await update(store, (data) => {
@@ -171,8 +178,10 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
           sessionId: crypto.randomUUID(),
         });
       });
+
       return send(200, { journey });
     }
+
     if (input.action === 'eta') {
       const data = await read(store);
       current(data, input);
@@ -207,6 +216,7 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
           signal: AbortSignal.timeout(10000),
           cache: 'no-store',
         });
+
         const result = await response.json();
         if (
           !response.ok ||
@@ -219,6 +229,7 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
       } catch (_) {
         fail(503, 'Driving estimate unavailable.');
       }
+
       const observedAt = input.observedAt;
       const journey = await update(store, (data) => {
         const j = current(data, input);
@@ -233,10 +244,13 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
           updatedAt: observedAt,
           remainingMinutes: Math.max(1, Math.ceil(duration / 60)),
         });
+
         return j;
       });
+
       return send(200, { journey });
     }
+
     if (!['stop', 'arrive', 'unavailable'].includes(input.action))
       fail(400, 'Unknown journey action.');
     const journey = await update(store, (data) => {
@@ -248,12 +262,15 @@ export async function handleJourneyRequest(req: Request, res: Response): Promise
         updatedAt: Date.now(),
         progress: input.action === 'arrive' ? 1 : 0,
       });
+
       if (input.action === 'stop') j.consent = false;
       return j;
     });
+
     return send(200, { journey });
   } catch (error) {
     const failure = error as Error & { status?: number };
+
     send(failure.status || 500, {
       error: failure.status ? failure.message : 'Shared arrival service unavailable.',
     });

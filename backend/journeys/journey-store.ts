@@ -5,11 +5,13 @@ import vm from 'node:vm';
 import { Redis } from '@upstash/redis';
 import type { ArrivalData, SeedData } from './types';
 export type ArrivalStore = { redis: Redis; file?: never } | { file: string; redis?: never };
+
 let writes: Promise<unknown> = Promise.resolve();
 const root = path.resolve(__dirname, '../..');
 
 async function seed(): Promise<ArrivalData> {
   const context: { window: { OCD_DEMO_SEED?: SeedData } } = { window: {} };
+
   vm.runInNewContext(await fs.readFile(path.join(root, 'workspace/data.js'), 'utf8'), context);
   const data = context.window.OCD_DEMO_SEED;
   if (!data) throw new Error('Prototype bookings are unavailable.');
@@ -33,6 +35,7 @@ async function seed(): Promise<ArrivalData> {
 export function storage(): ArrivalStore | null {
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
     return { redis: Redis.fromEnv() };
+
   if (process.env.VERCEL) return null;
   return {
     file: path.join(process.env.WORKFLOW_DATA_DIR || path.join(root, '.local'), 'journeys.json'),
@@ -44,6 +47,7 @@ export async function read(store: ArrivalStore): Promise<ArrivalData> {
     const value = await store.redis.get<ArrivalData | string>('ocd:journeys');
     return value ? (typeof value === 'string' ? JSON.parse(value) : value) : seed();
   }
+
   try {
     return JSON.parse(await fs.readFile(store.file, 'utf8'));
   } catch (error) {
@@ -73,18 +77,24 @@ export async function update<T>(store: ArrivalStore, change: (data: ArrivalData)
         if (!saved) continue;
       } else {
         await fs.mkdir(path.dirname(store.file), { recursive: true });
+
         const temporary = `${store.file}.${crypto.randomUUID()}.tmp`;
         await fs.writeFile(temporary, JSON.stringify(data), { mode: 0o600 });
+
         await fs.rename(temporary, store.file);
       }
+
       return result;
     }
+
     throw Object.assign(new Error('Arrival data changed. Retry the update.'), {
       status: 409,
     });
   }
+
   if (store.redis) return commit();
   const next = writes.then(commit);
   writes = next.catch(() => {});
+
   return next;
 }

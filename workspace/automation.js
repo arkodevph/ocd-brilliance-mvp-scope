@@ -3,6 +3,7 @@
   'use strict';
   const E = window.OCD_AUTOMATION_ENGINE;
   const ui = { tab: 'cases', filter: 'open', query: '', page: 1 };
+
   const pageSize = 5;
   const esc = (value) =>
     String(value ?? '').replace(
@@ -28,6 +29,7 @@
     retry_scheduled: 'Retry available',
     rejected: 'Rejected',
   };
+
   const status = (job) =>
     `<span class="status ${['reconciliation_required', 'retry_scheduled'].includes(job.status) ? 'red' : job.status === 'completed' ? 'dark' : 'amber'}">${esc(job.kind === 'email-review' ? (job.status === 'completed' ? 'Completed' : 'Assigned') : titles[job.status] || job.status)}</span>`;
   const dateTime = (value) =>
@@ -46,16 +48,20 @@
   function boundary() {
     return `<div class="automation-boundary"><span class="status blue">Prototype</span><p>Messages and tasks save in this browser · Gmail is not connected.</p><a href="#/office/shiftcare">Live read connection</a></div>`;
   }
+
   function header(title, subtitle) {
     return `<header class="page-header"><div><span class="eyebrow">Office / Workflow</span><h1>${esc(title)}</h1><details class="context-help"><summary>About this workflow</summary><p>${esc(subtitle)}</p></details></div><a class="btn" href="#/office/finance">Bookkeeping review</a></header>`;
   }
+
   function banner(c) {
     const a = E.ensure(c.state),
       open = a.jobs.filter((j) => j.status !== 'completed').length;
     return `<a class="automation-home-link" href="#/office/automation"><span><span class="eyebrow">From incoming request to verified outcome</span><strong>Follow the automation workflow</strong><small>${open} assigned tasks · review, native handoff, read-back and exceptions</small></span><span class="btn primary">Open automation →</span></a>`;
   }
+
   function casePerson(state, job) {
     const draft = job.draft || {};
+
     const booking = state.bookings.find((row) => row.id === job.targetId);
     const document = state.workerDocs.find((row) => row.id === job.targetId);
     const agreement = state.agreements.find((row) => row.id === job.targetId);
@@ -78,6 +84,7 @@
       booking,
     };
   }
+
   function nextAction(job) {
     if (job.status === 'completed') return 'Outcome recorded';
     if (job.status === 'reconciliation_required')
@@ -90,16 +97,19 @@
     if (job.status === 'manual_action_required') return 'Record the checked human outcome';
     return job.draft.nextAction || 'Review the source and confirm the next step';
   }
+
   function caseSearch(state, job) {
     const person = casePerson(state, job);
     return `${person.name} ${person.email} ${person.detail} ${job.title} ${job.id} ${job.owner} ${job.source.body}`.toLowerCase();
   }
+
   function profileImage(name, className = 'automation-source-avatar') {
     if (!name || ['Person needs confirmation', 'Unassigned'].includes(name))
       return `<span class="${esc(className)}" aria-hidden="true">?</span>`;
     const hash = [...name].reduce((value, char) => (value * 31 + char.codePointAt(0)) >>> 0, 0);
     return `<span class="${esc(className)} profile-image"><img src="/assets/profiles/profile-${(hash % 6) + 1}.svg" alt="" width="80" height="80" loading="lazy"></span>`;
   }
+
   function caseCard(c, job, selected, matches) {
     const person = casePerson(c.state, job);
     const workflow = E.catalog.find((row) => row.id === job.workflow)?.title || job.workflow;
@@ -112,6 +122,7 @@
       ${selected ? `<section id="case-${esc(job.id)}" class="automation-case-detail" aria-label="Case for ${esc(person.name)}">${caseDetail(c, job)}</section>` : ''}
     </article>`;
   }
+
   function page(c, detailId) {
     const a = E.ensure(c.state);
     const selected = detailId ? a.jobs.find((j) => j.id === detailId) : null;
@@ -124,6 +135,7 @@
         ['verifying', 'reconciliation_required'].includes(j.status),
       ).length,
     };
+
     let body;
     if (tab === 'inbox') body = inbox(c);
     else if (tab === 'readiness') body = readiness(c);
@@ -174,6 +186,7 @@
           '',
         )}</div></header><div class="automation-case-list">${ordered.map((j) => caseCard(c, j, selected?.id === j.id, visible.includes(j))).join('')}<div class="empty automation-no-cases" ${jobs.some(matches) ? 'hidden' : ''}><strong>No matching cases</strong><p>${jobs.length ? 'Try another search.' : 'Add a message to start a follow-up.'}</p></div></div><nav class="automation-pagination" aria-label="Case pages"><button type="button" class="btn small" data-auto-action="case-page" data-id="previous" ${ui.page === 1 ? 'disabled' : ''}>← Previous</button><span data-page-summary role="status">${matching.length ? (ui.page - 1) * pageSize + 1 : 0}–${Math.min(ui.page * pageSize, matching.length)} of ${matching.length} cases · Page ${ui.page} of ${pages}</span><button type="button" class="btn small" data-auto-action="case-page" data-id="next" ${ui.page === pages ? 'disabled' : ''}>Next →</button></nav></section></div></div>`;
     }
+
     return `${header('Automation', 'Turn repeated checks into owned cases, then verify each outcome.')}${boundary()}<div class="automation-metrics">${[
       [counts.inbox, 'Incoming sources'],
       [counts.review, 'Need review'],
@@ -194,6 +207,7 @@
         '',
       )}</nav>${tab === 'cases' ? `<div class="automation-checks"><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button>${button('check', 'Check enquiry ownership', 'areas')}${button('check', 'Run three-day check', 'reminders')}${button('check', 'Check documents', 'documents')}<small>Scenario date: 5 October 2026 · demo Perth time</small></div>` : ''}${body}`;
   }
+
   function inbox(c) {
     const a = c.state.automation;
     return `<section class="panel tight email-review"><header class="crm-list-toolbar"><div><h2>Email review</h2><p class="muted tiny">Add a message → AI review → Confirm team → Assigned task</p></div><div class="button-row"><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button></div></header><ol class="email-flow" aria-label="Email processing steps"><li>1. Add message</li><li>2. Review AI suggestion</li><li>3. Confirm responsible team</li><li>4. Follow assigned task</li></ol><div class="automation-inbox">${
@@ -206,6 +220,7 @@
       '<div class="empty"><strong>No messages yet</strong><p>Add an email message. AI prepares a summary and reply; you confirm who follows up.</p></div>'
     }</div></section>`;
   }
+
   function steps(job) {
     if (job.kind === 'email-review')
       return `<ol class="automation-progress" aria-label="Workflow stages">${['Message added', 'AI reviewed', 'Team assigned', 'Completed'].map((name, i) => `<li class="${i === (job.status === 'completed' ? 3 : 2) ? 'current' : i < (job.status === 'completed' ? 3 : 2) ? 'past' : ''}"><span>${i + 1}</span>${name}</li>`).join('')}</ol>`;
@@ -229,9 +244,11 @@
               : 1;
     return `<ol class="automation-progress" aria-label="Workflow stages">${names.map((name, i) => `<li class="${i === current ? 'current' : i < current ? 'past' : ''}"><span>${i + 1}</span>${name}</li>`).join('')}</ol>`;
   }
+
   function field(name, label, value, type = 'text', required = true) {
     return `<label>${esc(label)}<input name="${name}" type="${type}" value="${esc(value || '')}" ${required ? 'required' : ''}></label>`;
   }
+
   function reviewForm(c, job) {
     const d = job.draft,
       state = c.state;
@@ -275,6 +292,7 @@
       fields = `<p class="form-note full">This creates/confirms one proposed occurrence through the simulated native workflow. A recurring proposal does not confirm other occurrences.</p><label class="checkbox full"><input name="participantAgreed" type="checkbox" required><span>The participant agreed to this occurrence and a signed agreement is on file.</span></label><label class="checkbox full"><input name="workerAccepted" type="checkbox" required><span>The worker accepted this exact occurrence in ShiftCare (demo native evidence).</span></label>`;
     return `<form data-auto-form="approve" data-id="${esc(job.id)}"><div class="form-grid">${fields}</div><div class="spacer"></div>${guard}<p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">${['yes', 'area'].includes(job.kind) ? 'Record reviewed outcome' : 'Approve next step'}</button></div></form>`;
   }
+
   function caseDetail(c, job) {
     const a = c.state.automation;
     let actions = '';
@@ -304,6 +322,7 @@
     if (job.kind === 'email-review') {
       actions = `<p><strong>Responsible team: ${esc(job.owner)}</strong></p><p>${esc(job.draft.nextAction)}</p>${job.status === 'completed' ? `<div class="notice"><strong>Follow-up completed</strong><p>${esc(job.resolution?.note)}</p></div>` : `<form data-auto-form="manual" data-id="${esc(job.id)}">${field('reference', 'Contact or record reference', '')}<label>Outcome<textarea name="note" rows="3" required placeholder="Record what was checked or communicated."></textarea></label><label class="checkbox"><input name="checked" type="checkbox" required><span>I checked the follow-up outcome.</span></label><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">Complete follow-up</button></div></form>`}`;
     }
+
     const msgs = a.messages.filter((m) => m.jobId === job.id);
     return `<section class="automation-case-view"><header class="automation-case-heading"><div><span class="eyebrow">${esc(job.id)} · ${esc(job.workflow)}</span><h2>${esc(job.title)}</h2></div>${status(job)}<a class="automation-back" href="#/office/automation">← Cases</a></header><div class="automation-case-content"><div class="automation-thread"><section class="automation-evidence"><header class="automation-message-heading"><span class="automation-source-avatar" aria-hidden="true">${esc((job.draft.name || job.draft.firstName || job.owner).slice(0, 1).toUpperCase())}</span><div><h3>Original source</h3><small>${esc(job.source.label || 'Sample source')} · ${esc(job.source.id)}</small></div><time>${dateTime(job.createdAt)}</time></header><p class="automation-source-text">${esc(job.source.body)}</p></section><section class="automation-next"><h3>${job.status === 'completed' ? 'Outcome' : 'Next action'}</h3>${actions}</section>${msgs.length ? `<section class="automation-outbox"><h3>Participant update</h3>${msgs.map((m) => `<article><strong>${esc(m.title)}</strong><p>${esc(m.detail)}</p><span class="status ${m.status === 'failed' ? 'red' : m.status === 'delivered' ? 'dark' : 'amber'}">${esc(m.status)} (demo)</span><small>Recipient: ${esc(m.to)} · attempts ${m.attempts}</small>${m.status !== 'delivered' ? `<div class="button-row">${button('deliver', m.status === 'failed' ? 'Retry delivery (demo)' : 'Deliver update (demo)', m.id)}${button('delivery-fail', 'Simulate delivery failure', m.id)}</div>` : ''}</article>`).join('')}</section>` : ''}<section class="automation-history automation-context-section"><h3>Activity <span>${job.history.length}</span></h3><ol class="timeline">${[
       ...job.history,
@@ -344,6 +363,7 @@
         : '<p class="muted tiny">No proposed field changes.</p>'
     }</section><section class="automation-context-section"><h3>Workflow progress</h3>${steps(job)}</section></aside></div></section>`;
   }
+
   function finance(c) {
     const a = E.ensure(c.state),
       report = a.lastReport;
@@ -354,6 +374,7 @@
     );
     return `${header('Bookkeeping review', 'Gather visit exceptions before the existing Tuesday invoice and fortnightly pay checks.')}${boundary()}<div class="invoice-entry-link"><div><strong>Invoices</strong><p>Open invoice drafts, check line items and print a preview.</p></div><a class="btn primary" href="#/office/invoices">Open invoices →</a></div><div class="grid-two"><section class="panel"><h2>Run a review</h2><p class="muted">Use the agreed period and sample native visits. Findings are a checklist; they do not approve billing or calculate payroll.</p><form data-auto-form="report"><div class="form-grid">${field('from', 'Period starts', report?.period.from || '2026-09-28', 'date')}${field('to', 'Period ends (inclusive)', report?.period.to || '2026-10-05', 'date')}<label class="full">Review<select name="type">${option('invoices', 'Tuesday invoice review', report?.type || 'invoices')}${option('payroll', 'Fortnightly payroll review', report?.type)}${option('care', 'Visit / major-note review', report?.type)}</select></label><label class="checkbox full"><input type="checkbox" name="partial"><span>Try missing source pages/notes to show an incomplete report.</span></label></div><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary">Prepare exception checklist</button></div></form></section><aside class="panel"><h2>Keep the current financial process</h2><ol class="automation-tour"><li>Workers enter actual time, tasks and goals in ShiftCare.</li><li>OCD brings missing notes, duration and recipient/travel questions together.</li><li>The office checks major/private issues; the bookkeeper verifies financial treatment.</li><li>Approval, the existing Excel/Xero export and pay-run release stay native/manual.</li></ol><p class="muted tiny">No unverified rates, automated claim or duplicate export is created. Worker totals remain provisional.</p></aside></div><div class="spacer"></div>${report ? `<div class="notice ${report.complete ? '' : 'warning'}"><strong>${report.complete ? 'Sample scope read' : 'Incomplete source scope — do not treat this as a clean report'}</strong> ${esc(report.period.from)} to ${esc(report.period.to)} · ${dateTime(report.at)} · ${esc(a.timeZone)} (scenario only)</div>` : ''}<div class="spacer"></div><section class="panel"><div class="section-heading"><div><h2>Exceptions &amp; native handoffs</h2><p>${cases.filter((j) => j.status !== 'completed').length} open checks · rerunning the same scope reuses the existing cases</p></div>${cases.length ? button('export', 'Download review evidence') : ''}</div>${cases.length ? `<div class="table-wrap"><table><thead><tr><th>Visit / workflow</th><th>Finding</th><th>Owner</th><th>State</th><th>Review</th></tr></thead><tbody>${cases.map((j) => `<tr><td><strong>${esc(j.targetId || 'Source scope')}</strong><span class="cell-sub">${esc(j.workflow)}</span></td><td class="automation-finding">${esc(j.source.body)}</td><td>${esc(j.owner)}</td><td>${status(j)}</td><td><a class="btn small" href="#/office/automation/${esc(j.id)}">Open case</a></td></tr>`).join('')}</tbody></table></div>` : `<div class="empty"><strong>Prepare the first checklist</strong>Missing notes, overtime explanations, task/goal evidence, payer and travel checks will appear here.</div>`}</section>`;
   }
+
   function readiness(c) {
     const demonstrated = {
       W01: 'Owned area review',
@@ -371,8 +392,10 @@
       W13: 'Own delivery history + failure/retry',
       W14: 'Worker consent + stale ETA + own booking map',
     };
+
     return `<section class="panel"><div class="section-heading"><div><h2>What this prototype demonstrates</h2><p>The fourteen researched workflows are represented below. Human checkpoints deliberately remain visible.</p></div></div><div class="table-wrap"><table><thead><tr><th>Workflow / client pain</th><th>Prototype behaviour</th><th>Native / human checkpoint</th></tr></thead><tbody>${E.catalog.map((w) => `<tr><td><strong>${esc(w.id)} · ${esc(w.title)}</strong><span class="cell-sub">${esc(w.pain)}</span></td><td>${esc(demonstrated[w.id])}</td><td>${esc(w.native)}</td></tr>`).join('')}</tbody></table></div><div class="spacer"></div><div class="grid-two"><div class="review-box"><h3>Before a live pilot</h3><ul><li>Validate OCD's production account, real forms, area, time zone and cancellation/finance rules.</li><li>Confirm native Inbox Signals, referral, portal and matching features.</li><li>Verify REST credentials and each exact operation contract; the live screen is read-only.</li></ul></div><div class="review-box"><h3>Integrations still to build</h3><ul><li>Authorised mailbox/OCR, server job storage, scheduling, reconciliation and real recipient delivery.</li><li>Worker/participant identities and permissions enforced by the server.</li><li>Consented device location and tested background behaviour. Public ShiftCare webhooks are unverified.</li></ul></div></div><p class="muted tiny">Demo cases and the fictional source snapshot persist in this browser. They are not a production job runner or a mirror of the connected live account.</p></section>`;
   }
+
   function click(c, element) {
     const action = element.dataset.autoAction,
       id = element.dataset.id;
@@ -384,20 +407,25 @@
         c.go('office/automation');
         return true;
       }
+
       if (action === 'filter') {
         ui.filter = id;
         ui.page = 1;
         c.go('office/automation');
         return true;
       }
+
       if (action === 'case-page') {
         ui.page += id === 'next' ? 1 : -1;
         const queue = element.closest('.automation-queue');
         paginate(queue);
         queue.scrollIntoView({ block: 'start' });
+
         queue.querySelector('#automation-case-search').focus({ preventScroll: true });
+
         return true;
       }
+
       if (action === 'ingest' || action === 'samples') return;
       if (action === 'check') E.run(c.state, id);
       if (action === 'verify') E.verify(c.state, id);
@@ -409,12 +437,14 @@
             ? 'Demo update delivered in the participant view. No real message sent.'
             : 'Delivery failed in the scenario. Use agreed fallback contact or retry delivery.';
       }
+
       if (action === 'export') {
         const evidence = {
           mode: 'fictional',
           report: c.state.automation.lastReport,
           cases: c.state.automation.jobs.filter((j) => ['W09', 'W10', 'W11'].includes(j.workflow)),
         };
+
         const url = URL.createObjectURL(
           new Blob([JSON.stringify(evidence, null, 2)], {
             type: 'application/json',
@@ -427,6 +457,7 @@
         setTimeout(() => URL.revokeObjectURL(url), 1000);
         return true;
       }
+
       c.save();
       c.render();
       c.toast(message);
@@ -434,8 +465,10 @@
       c.save();
       c.toast(error.message);
     }
+
     return true;
   }
+
   function submit(c, form) {
     if (!form.dataset.autoForm) return false;
     try {
@@ -477,14 +510,17 @@
         node.scrollIntoView({ block: 'nearest' });
       } else c.toast(error.message);
     }
+
     return true;
   }
+
   document.addEventListener('input', (event) => {
     if (event.target.id !== 'automation-case-search') return;
     ui.query = event.target.value;
     ui.page = 1;
     paginate(event.target.closest('.automation-queue'));
   });
+
   function paginate(queue) {
     const rows = [...queue.querySelectorAll('.automation-case')];
     const matching = rows.filter((row) => row.dataset.caseSearch.includes(ui.query.toLowerCase()));
@@ -495,6 +531,7 @@
     rows.forEach((row) => {
       row.hidden = !visible.includes(row);
     });
+
     queue.querySelector('[data-case-count]').textContent = matching.length;
     queue.querySelector('.automation-no-cases').hidden = matching.length > 0;
     queue.querySelector('[data-page-summary]').textContent =
@@ -504,6 +541,7 @@
     queue.querySelector('[data-auto-action="case-page"][data-id="next"]').disabled =
       ui.page === pages;
   }
+
   window.OCD_AUTOMATION = {
     page,
     finance,
