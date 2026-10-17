@@ -18,8 +18,10 @@ test('only subscribed devices receive demo pushes and can opt out', async (t) =>
       endpoint: subscription.endpoint,
       payload: JSON.parse(payload),
     });
+
     return { statusCode: 201 };
   };
+
   const handler = require('../api/push.js');
   const server = http.createServer(handler).listen(0, '127.0.0.1');
   await new Promise((resolve) => server.once('listening', resolve));
@@ -27,11 +29,13 @@ test('only subscribed devices receive demo pushes and can opt out', async (t) =>
     await new Promise((resolve) => server.close(resolve));
     await fs.rm(process.env.PUSH_DATA_DIR, { recursive: true });
   });
+
   const origin = `http://127.0.0.1:${server.address().port}`;
   const subscription = (name) => ({
     endpoint: `https://fcm.googleapis.com/fcm/send/${name}`,
     keys: { p256dh: 'abcdefghijklmnopqrs', auth: 'abcdefghijklmnopqrs' },
   });
+
   const post = async (body, headers = {}) => {
     const response = await fetch(`${origin}/api/push`, {
       method: 'POST',
@@ -42,6 +46,7 @@ test('only subscribed devices receive demo pushes and can opt out', async (t) =>
       },
       body: JSON.stringify(body),
     });
+
     return { status: response.status, body: await response.json() };
   };
 
@@ -83,6 +88,7 @@ test('only subscribed devices receive demo pushes and can opt out', async (t) =>
     sent: 2,
     subscribed: 2,
   });
+
   assert.equal((await post({ action: 'broadcast', kind: 'booking' })).status, 403);
   const broadcast = await post(
     { action: 'broadcast', kind: 'booking' },
@@ -90,6 +96,7 @@ test('only subscribed devices receive demo pushes and can opt out', async (t) =>
   );
   assert.equal(broadcast.status, 200);
   assert.deepEqual(broadcast.body, { sent: 2, subscribed: 2 });
+
   assert.equal(delivered.length, 5);
   assert(delivered.every((item) => !item.payload.body.includes('Olivia')));
 
@@ -107,5 +114,6 @@ test('only subscribed devices receive demo pushes and can opt out', async (t) =>
     { Authorization: 'Bearer test-sender-secret' },
   );
   assert.deepEqual(afterOptOut.body, { sent: 1, subscribed: 1 });
+
   assert.equal(delivered.at(-1).endpoint, subscription('b').endpoint);
 });

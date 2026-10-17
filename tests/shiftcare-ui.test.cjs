@@ -5,8 +5,10 @@ const test = require('node:test');
 
 test('office readiness checks entered dates and shows partial failures without a verified badge', async () => {
   const listeners = {};
+
   const requests = [];
   const window = {};
+
   const root = {
     isConnected: true,
     innerHTML: '',
@@ -19,6 +21,7 @@ test('office readiness checks entered dates and shows partial failures without a
       };
     },
   };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/shiftcare.js'), 'utf8'), {
     window,
     AbortController,
@@ -45,9 +48,11 @@ test('office readiness checks entered dates and shows partial failures without a
                 { resource: 'shifts', connected: true },
               ],
             };
+
       return { ok: true, json: async () => data };
     },
   });
+
   await window.OCD_SHIFTCARE.mount(root);
   assert.match(root.innerHTML, /Check clients, staff &amp; bookings/);
   assert.match(root.innerHTML, /Roster screenshots/);
@@ -56,6 +61,7 @@ test('office readiness checks entered dates and shows partial failures without a
       closest: () => ({ hasAttribute: (name) => name === 'data-readiness' }),
     },
   });
+
   await new Promise((resolve) => setImmediate(resolve));
   const request = requests.at(-1);
   assert.equal(request.get('action'), 'readiness');

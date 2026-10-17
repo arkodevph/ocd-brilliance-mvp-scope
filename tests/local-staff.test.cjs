@@ -21,8 +21,10 @@ test('creates one private local account and never seeds production', async (t) =
       if (previous[key] === undefined) delete process.env[key];
       else process.env[key] = previous[key];
     }
+
     await fs.rm(dir, { recursive: true });
   });
+
   for (const key of keys) delete process.env[key];
   process.env.WORKFLOW_DATA_DIR = dir;
 

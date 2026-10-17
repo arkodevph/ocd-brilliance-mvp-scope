@@ -1,4 +1,4 @@
-const CACHE = 'ocd-brilliance-operations-v62';
+const CACHE = 'ocd-brilliance-operations-v63';
 const SHELL = [
   '/',
   '/workspace/',
@@ -82,6 +82,7 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
+
   event.respondWith(
     fetch(request)
       .then(async (response) => {
@@ -90,6 +91,7 @@ self.addEventListener('fetch', (event) => {
             .open(CACHE)
             .then((cache) => cache.put(request, response.clone()))
             .catch(() => {});
+
         return response;
       })
       .catch(() => caches.match(request)),
@@ -98,11 +100,13 @@ self.addEventListener('fetch', (event) => {
 
 self.addEventListener('push', (event) => {
   let payload = {};
+
   try {
     payload = event.data?.json() || {};
   } catch (_) {
     /* use the generic demo message */
   }
+
   const title = typeof payload.title === 'string' ? payload.title : 'OCD Brilliance';
   const body = typeof payload.body === 'string' ? payload.body : 'An operations update is ready.';
   const route = ['office/overview', 'office/schedule', 'client/home', 'worker/today'].includes(
@@ -132,6 +136,7 @@ self.addEventListener('notificationclick', (event) => {
         await open.navigate(target);
         return open.focus();
       }
+
       return self.clients.openWindow(target);
     }),
   );

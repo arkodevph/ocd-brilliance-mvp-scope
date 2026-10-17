@@ -9,6 +9,7 @@ test('optional videos accept supported signatures and reject disguised or oversi
     type: 'video/webm',
     data: Buffer.from('1a45dfa30000', 'hex').toString('base64'),
   };
+
   assert.equal(intakeVideo(webm).size, 6);
   for (const value of [
     true,

@@ -21,15 +21,32 @@ import { LetterLinearIcon } from '@solar-icons/js/linear/letter';
 import { Widget4LinearIcon } from '@solar-icons/js/linear/widget-4';
 
 declare global {
-  interface Window { OCD_SOLAR_REFRESH?: () => void; }
+  interface Window {
+    OCD_SOLAR_REFRESH?: () => void;
+  }
 }
 
 const icons = {
-  HomeLinearIcon, UsersGroupRoundedLinearIcon, CalendarLinearIcon, FileTextLinearIcon,
-  ClockCircleLinearIcon, Routing2LinearIcon, MapLinearIcon, MagnifierLinearIcon,
-  AddLinearIcon, ArrowRightLinearIcon, CheckLinearIcon, HeartLinearIcon, StarLinearIcon,
-  DangerCircleLinearIcon, Pulse2LinearIcon, ShieldCheckLinearIcon, BellLinearIcon,
-  LayersLinearIcon, LetterLinearIcon, Widget4LinearIcon,
+  HomeLinearIcon,
+  UsersGroupRoundedLinearIcon,
+  CalendarLinearIcon,
+  FileTextLinearIcon,
+  ClockCircleLinearIcon,
+  Routing2LinearIcon,
+  MapLinearIcon,
+  MagnifierLinearIcon,
+  AddLinearIcon,
+  ArrowRightLinearIcon,
+  CheckLinearIcon,
+  HeartLinearIcon,
+  StarLinearIcon,
+  DangerCircleLinearIcon,
+  Pulse2LinearIcon,
+  ShieldCheckLinearIcon,
+  BellLinearIcon,
+  LayersLinearIcon,
+  LetterLinearIcon,
+  Widget4LinearIcon,
 };
 
 export function refreshSolarIcons() {

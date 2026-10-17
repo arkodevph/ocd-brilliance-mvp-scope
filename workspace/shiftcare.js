@@ -35,6 +35,7 @@
       from: '',
       to: '',
     };
+
     active = context;
     const alive = () => active === context && root.isConnected;
     async function request(params) {
@@ -42,13 +43,16 @@
         cache: 'no-store',
         signal: context.controller.signal,
       });
+
       const data = await response.json();
       if (!response.ok) {
         if (response.status === 401) window.dispatchEvent(new Event('ocd-session-expired'));
         throw new Error(data.error || 'The ShiftCare read failed.');
       }
+
       return data;
     }
+
     function dateTime(value) {
       if (!value) return 'Not provided';
       const date = new Date(value);
@@ -59,12 +63,14 @@
         timeStyle: 'short',
       }).format(date);
     }
+
     function names(records, empty) {
       if (records === null) return 'Details not returned';
       return records.length
         ? records.map((record) => record.name || `ID ${record.id}`).join(', ')
         : empty;
     }
+
     function results() {
       const result = context.result;
       if (!result) return '<p class="muted">Choose what to read, then select Load records.</p>';
@@ -81,6 +87,7 @@
         <div class="form-actions"><button class="btn small" data-page="previous" type="button" ${context.busy || pagination.page === 1 ? 'disabled' : ''}>Previous</button><span class="muted tiny">Page ${pagination.page}</span><button class="btn small" data-page="next" type="button" ${context.busy || !pagination.hasNext ? 'disabled' : ''}>Next page</button></div>
         <p class="form-note">Read ${esc(dateTime(result.fetchedAt))} · times shown in ${esc(result.timeZone)}. These records are a snapshot; refresh to check for changes.</p>`;
     }
+
     function render() {
       if (!alive()) return;
       const config = context.config;
@@ -90,6 +97,7 @@
           : '<p class="muted">Checking connection settings…</p>';
         return;
       }
+
       root.innerHTML = `<div class="section-heading"><div><h2>ShiftCare connection</h2><p>Current account and connection status</p></div><span class="status ${context.checkedAt ? '' : 'amber'}">${context.checkedAt ? 'Verified' : config.configured ? 'Ready to check' : 'Awaiting setup'}</span></div>
         <p class="muted">Account ${esc(config.accountId || 'not set')} · ${esc(config.region.toUpperCase())} · ${esc(config.timeZone || 'time zone not set')}</p>
         ${config.configured ? `<button class="btn" data-check type="button" ${context.busy ? 'disabled' : ''}>${context.busy ? 'Reading…' : 'Check connection'}</button>${context.checkedAt ? `<p class="form-note">Last successful read: ${esc(dateTime(context.checkedAt))}</p>` : ''}` : `<div class="notice warning">${esc(config.error || 'The office administrator needs to finish the account connection before live records can be read.')}</div>`}
@@ -114,6 +122,7 @@
             : ''
         }`;
     }
+
     async function read(check = false, page = 1) {
       context.busy = true;
       context.error = '';
@@ -149,6 +158,7 @@
         }
       }
     }
+
     root.addEventListener(
       'submit',
       (event) => {
@@ -161,6 +171,7 @@
           context.from = values.get('from');
           context.to = values.get('to');
         }
+
         context.result = null;
         read();
       },
@@ -198,6 +209,7 @@
     render();
     try {
       context.config = await request({ action: 'status' });
+
       if (!alive()) return;
       if (context.config.configured) {
         const parts = Object.fromEntries(

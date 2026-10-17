@@ -11,6 +11,7 @@ const credentials = {
   SHIFTCARE_API_KEY: 'sk_test_fixture',
   SHIFTCARE_TIME_ZONE: 'Australia/Sydney',
 };
+
 const json = (value, options) =>
   new Response(JSON.stringify(value), {
     headers: { 'Content-Type': 'application/json' },
@@ -38,14 +39,18 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
         },
       ],
     });
+
   const env = { ...credentials };
+
   const handler = createHandler({
     env,
     fetchImpl: async (url, options) => {
       requests.push({ url, options });
+
       return reply(url);
     },
   });
+
   const workflow = require('../api/workflow.js');
   const server = http.createServer((req, res) =>
     new URL(req.url, 'http://localhost').pathname === '/api/workflow'
@@ -61,18 +66,21 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
       else process.env[key] = previous[key];
     }
   });
+
   const base = `http://127.0.0.1:${server.address().port}`;
   async function call(query = 'action=status', cookie, method = 'GET', origin = base) {
     const response = await fetch(`${base}/api/shiftcare?${query}`, {
       method,
       headers: { Origin: origin, ...(cookie ? { Cookie: cookie } : {}) },
     });
+
     return {
       status: response.status,
       body: await response.json(),
       headers: response.headers,
     };
   }
+
   const signedCookie = (session) => {
     const value = Buffer.from(JSON.stringify(session)).toString('base64url');
     return `ocd_staff=${value}.${crypto.createHmac('sha256', process.env.WORKFLOW_SESSION_SECRET).update(value).digest('base64url')}`;
@@ -96,6 +104,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
       ]) {
         assert.equal((await call('action=clients', cookie)).status, 401);
       }
+
       assert.equal(requests.length, 0);
     },
   );
@@ -107,6 +116,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
       password: 'fixture-password',
     }),
   });
+
   assert.equal(login.status, 200);
   const cookie = login.headers.get('set-cookie').split(';')[0];
 
@@ -137,9 +147,11 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
       assert.equal(response.status, 405);
       assert.equal(response.headers.get('allow'), 'GET');
     }
+
     assert.equal((await call('action=create_client', cookie)).status, 404);
     assert.equal(requests.length, 0);
   });
+
   await t.test(
     'readiness verifies each resource separately and never exposes records or enables writes',
     async () => {
@@ -147,6 +159,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
       assert.equal((await call('action=readiness', cookie)).status, 422);
       assert.equal(requests.length, before);
       reply = () => json({ clients: [], staff: [], shifts: [] });
+
       const ready = await call('action=readiness&from=2026-10-04&to=2026-10-04', cookie);
       assert.equal(ready.status, 200);
       assert.equal(ready.body.readsReady, true);
@@ -173,6 +186,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
         url.pathname.endsWith('/staff')
           ? json({ error: credentials.SHIFTCARE_API_KEY }, { status: 403 })
           : json({ clients: [], shifts: [] });
+
       const partial = await call('action=readiness&from=2026-10-04&to=2026-10-04', cookie);
       assert.equal(partial.body.readsReady, false);
       assert.deepEqual(
@@ -184,6 +198,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
         ],
       );
       reply = () => json({ error: credentials.SHIFTCARE_API_KEY }, { status: 403 });
+
       const denied = await call('action=readiness&from=2026-10-04&to=2026-10-04', cookie);
       assert.equal(denied.body.readsReady, false);
       assert.ok(denied.body.reads.every((item) => item.code === 'SHIFTCARE_FORBIDDEN'));
@@ -219,6 +234,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
         total: 2,
         hasNext: false,
       });
+
       assert.equal(result.headers.get('cache-control'), 'no-store');
       assert.ok(!JSON.stringify(result.body).includes('private'));
       const request = requests.at(-1);
@@ -249,6 +265,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
       ]) {
         assert.equal((await call(query, cookie)).status, 422);
       }
+
       assert.equal(requests.length, before);
       reply = () =>
         json({
@@ -275,6 +292,7 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
             },
           ],
         });
+
       const result = await call('action=shifts&from=2026-10-04&to=2026-10-04', cookie);
       assert.equal(result.status, 200);
       assert.deepEqual(result.body.records[0].clients, [{ id: '101', name: 'Alex Example' }]);
@@ -291,11 +309,13 @@ test('office authentication protects ShiftCare credentials and reads', async (t)
     'reports credential failures and rate limits without forwarding sensitive upstream errors',
     async () => {
       reply = () => json({ error: credentials.SHIFTCARE_API_KEY }, { status: 401 });
+
       const denied = await call('action=clients', cookie);
       assert.equal(denied.status, 502);
       assert.equal(denied.body.code, 'SHIFTCARE_UNAUTHORIZED');
       assert.ok(!JSON.stringify(denied.body).includes(credentials.SHIFTCARE_API_KEY));
       reply = () => json({ error: 'limited' }, { status: 429, headers: { 'Retry-After': '60' } });
+
       const limited = await call('action=clients', cookie);
       assert.equal(limited.status, 503);
       assert.equal(limited.headers.get('retry-after'), '60');
@@ -309,10 +329,12 @@ test('account day windows include daylight saving and leap years', () => {
     from_date: '2026-10-03T14:00:00.000Z',
     to_date: '2026-10-04T12:59:59.999Z',
   });
+
   assert.deepEqual(shiftWindow('2026-04-05', '2026-04-05', 'Australia/Sydney'), {
     from_date: '2026-04-04T13:00:00.000Z',
     to_date: '2026-04-05T13:59:59.999Z',
   });
+
   assert.deepEqual(shiftWindow('2024-02-29', '2024-02-29', 'Australia/Perth'), {
     from_date: '2024-02-28T16:00:00.000Z',
     to_date: '2024-02-29T15:59:59.999Z',
@@ -325,6 +347,7 @@ test('rejects arbitrary regions, paths and invalid upstream payloads', async () 
     calls++;
     return json({ unexpected: [] });
   };
+
   assert.equal(
     configuration({
       ...credentials,
@@ -337,6 +360,7 @@ test('rejects arbitrary regions, paths and invalid upstream payloads', async () 
     false,
   );
   const client = createShiftCareClient({ env: credentials, fetchImpl });
+
   await assert.rejects(client.list('../clients'), (error) => error.status === 422);
   assert.equal(calls, 0);
   await assert.rejects(client.list('clients'), (error) => error.code === 'INVALID_RESPONSE');
@@ -344,6 +368,7 @@ test('rejects arbitrary regions, paths and invalid upstream payloads', async () 
     env: credentials,
     fetchImpl: async () => new Response('<html>not JSON</html>'),
   });
+
   await assert.rejects(html.list('clients'), (error) => error.code === 'INVALID_RESPONSE');
 });
 
@@ -352,17 +377,20 @@ test('aborts a slow read and does not persist or retry the request', async (t) =
   const server = http.createServer((_req, _res) => {
     calls++;
   });
+
   server.listen(0, '127.0.0.1');
   await new Promise((resolve) => server.once('listening', resolve));
   t.after(() => {
     server.closeAllConnections();
     server.close();
   });
+
   const client = createShiftCareClient({
     env: credentials,
     timeoutMs: 30,
     fetchImpl: (_url, options) => fetch(`http://127.0.0.1:${server.address().port}`, options),
   });
+
   await assert.rejects(
     client.list('clients'),
     (error) => error.status === 504 && error.code === 'SHIFTCARE_TIMEOUT',

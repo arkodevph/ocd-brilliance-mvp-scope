@@ -18,6 +18,7 @@ export async function checkShiftCareReadiness(client: Client, from: string, to: 
       client.configuration.error || 'The ShiftCare connection is awaiting account credentials.',
     );
   }
+
   shiftWindow(from, to, client.configuration.timeZone);
   const reads = await Promise.all(
     (['clients', 'staff', 'shifts'] as const).map(async (resource): Promise<ReadCheck> => {
@@ -26,6 +27,7 @@ export async function checkShiftCareReadiness(client: Client, from: string, to: 
           per_page: 1,
           ...(resource === 'shifts' ? { from, to } : {}),
         });
+
         return { resource, connected: true, checkedAt: result.fetchedAt };
       } catch (error) {
         if (!(error instanceof ShiftCareError)) throw error;

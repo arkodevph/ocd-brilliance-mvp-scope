@@ -11,10 +11,12 @@ const policyInput = {
   approvedBy: 'Test coordinator',
   source: 'Fictional test policy',
 };
+
 const policy = rules({
   OCD_INTAKE_RULES: JSON.stringify(policyInput),
   SERVICE_POSTCODES: '6027',
 });
+
 const approve = (service, record) =>
   service.approve(
     {
@@ -32,16 +34,20 @@ const source =
 const covered = (postcode) => ({
   status: postcode === '6027' ? 'covered' : 'outside',
 });
+
 async function setup(t) {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'ocd-intake-check-'));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
+
   const repository = new IntakeRepository({ directory });
+
   return {
     service: new IntakeService(repository, covered, structuredClone(policy)),
     repository,
     directory,
   };
 }
+
 async function draft(service, text = source) {
   const preview = await service.previewText(text);
   return service.createDraft(
@@ -53,11 +59,13 @@ async function draft(service, text = source) {
     staff,
   );
 }
+
 const review = (record) => ({
   ...record,
   status: 'Reviewing',
   sourceReviewed: true,
 });
+
 const rejects = (promise, status, message) =>
   assert.rejects(
     promise,
@@ -122,6 +130,7 @@ test('review and readiness save together while preserving coverage and source ch
     status: 'Ready for ShiftCare',
     name: 'Alex Reviewed',
   };
+
   await rejects(service.update({ ...input, sourceReviewed: false }, staff, true), 422);
   await rejects(service.update({ ...input, postcode: '6999' }, staff, true), 422);
   assert.equal((await repository.get(original.id)).onboarding.reviewedAt, null);
@@ -192,6 +201,7 @@ test('authenticated API contract completes the intake without opening a network 
     UPSTASH_REDIS_REST_URL: '',
     UPSTASH_REDIS_REST_TOKEN: '',
   };
+
   const previous = Object.fromEntries(
     Object.keys(environment).map((key) => [key, process.env[key]]),
   );
@@ -202,15 +212,18 @@ test('authenticated API contract completes the intake without opening a network 
     if (previousPolicy === undefined) delete process.env.OCD_INTAKE_RULES;
     else process.env.OCD_INTAKE_RULES = previousPolicy;
   });
+
   t.after(() => {
     for (const [key, value] of Object.entries(previous))
       if (value === undefined) delete process.env[key];
       else process.env[key] = value;
   });
+
   const { handleWorkflow: handler } = require('../.backend/operations/workflow.handler.js');
   let cookie = '';
   async function call(action, method = 'GET', body) {
     const result = {};
+
     await handler(
       {
         url: `/api/workflow?action=${action}`,
@@ -229,20 +242,24 @@ test('authenticated API contract completes the intake without opening a network 
     );
     return result;
   }
+
   assert.equal((await call('draft-preview', 'POST', { text: source })).status, 401);
   const login = await call('login', 'POST', {
     email: staff,
     password: 'test-password',
   });
+
   assert.equal(login.status, 200);
   cookie = login.headers['Set-Cookie'].split(';')[0];
   const preview = await call('draft-preview', 'POST', { text: source });
+
   assert.deepEqual(preview.body.issues, []);
   let result = await call('draft', 'POST', {
     ...preview.body.draft.fields,
     source: 'Text upload',
     sourceText: source,
   });
+
   assert.equal(result.status, 201);
   result = await call('draft-review', 'PATCH', review(result.body.record));
   assert.equal(result.status, 200);
@@ -250,6 +267,7 @@ test('authenticated API contract completes the intake without opening a network 
     ...result.body.record,
     status: 'Ready for ShiftCare',
   });
+
   assert.equal(result.status, 200);
   result = await call('handoff-approve', 'POST', {
     id: result.body.record.id,
@@ -257,6 +275,7 @@ test('authenticated API contract completes the intake without opening a network 
     approved: true,
     existingPeopleChecked: true,
   });
+
   assert.equal(result.status, 200);
   const handoff = await call(
     `handoff&id=${result.body.record.id}&revision=${result.body.record.revision}`,
@@ -269,6 +288,7 @@ test('authenticated API contract completes the intake without opening a network 
     shiftCareId: 'SC-DEMO',
     profileChecked: true,
   });
+
   assert.equal(result.status, 200);
   assert.equal(result.body.record.shiftCareVerification.checkedBy, staff);
   const saved = await call('intakes');
@@ -284,6 +304,7 @@ test('concurrent creation and retries preserve one request and the original resu
     sourceText: source,
     idempotencyKey: 'submission-001',
   };
+
   const [first, retry] = await Promise.all([
     service.createDraft(input, staff),
     service.createDraft(input, staff),
@@ -341,6 +362,7 @@ test('required documents, approval source and Inbox Signals gate are enforced', 
     422,
   );
   const unapproved = new IntakeService(repository, covered, rules({ SERVICE_POSTCODES: '6027' }));
+
   await rejects(unapproved.previewText(source, true), 422, /Inbox Signals/);
   await rejects(unapproved.handoff(ready.id, ready.revision), 422, /OCD must approve/);
 });
@@ -380,6 +402,7 @@ test('approval and verification replay exactly, and corrections invalidate appro
     approved: true,
     existingPeopleChecked: true,
   };
+
   const approvals = await Promise.all([
     service.approve(input, staff),
     service.approve(input, staff),
@@ -392,6 +415,7 @@ test('approval and verification replay exactly, and corrections invalidate appro
     shiftCareId: 'SC-DEMO',
     profileChecked: true,
   };
+
   const verified = await service.verify(verification, staff);
   assert.equal((await service.verify(verification, staff)).revision, verified.revision);
   assert.equal((await service.approve(input, staff)).revision, record.revision);
@@ -441,6 +465,7 @@ test('roles are enforced on API actions using server identities', async (t) => {
     UPSTASH_REDIS_REST_TOKEN: '',
     OCD_INTAKE_RULES: JSON.stringify(policyInput),
   };
+
   const previous = Object.fromEntries(Object.keys(env).map((key) => [key, process.env[key]]));
   Object.assign(process.env, env);
   t.after(() => {
@@ -448,10 +473,12 @@ test('roles are enforced on API actions using server identities', async (t) => {
       if (value === undefined) delete process.env[key];
       else process.env[key] = value;
   });
+
   const { handleWorkflow: handler } = require('../.backend/operations/workflow.handler.js');
   const { sessionCookie } = require('../lib/staff-auth.cjs');
   async function call(action, method, email, body) {
     const result = {};
+
     await handler(
       {
         url: `/api/workflow?action=${action}`,
@@ -473,6 +500,7 @@ test('roles are enforced on API actions using server identities', async (t) => {
     );
     return result;
   }
+
   assert.equal((await call('queue', 'GET', 'reader@example.test')).status, 200);
   assert.equal((await call('draft', 'POST', 'reader@example.test', { role: 'admin' })).status, 403);
   assert.equal((await call('handoff-approve', 'POST', staff, { role: 'admin' })).status, 403);
@@ -489,6 +517,7 @@ test('AI arrangement rejects unsupported values and retains literal evidence', a
     if (previous === undefined) delete process.env.OCD_AI_API_KEY;
     else process.env.OCD_AI_API_KEY = previous;
   });
+
   let request;
   const result = await arrange(source, policy, ['Missing consent'], async (url, options) => {
     request = JSON.parse(options.body);
@@ -515,6 +544,7 @@ test('AI arrangement rejects unsupported values and retains literal evidence', a
       }),
     };
   });
+
   assert.equal(result.fields.name, 'Alex Demo');
   assert.equal(result.evidence.email, 'Email: alex@example.test');
   assert.ok(request.messages[1].content.includes('Fictional test policy'));

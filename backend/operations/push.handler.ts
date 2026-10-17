@@ -1,31 +1,35 @@
-import type { Request, Response } from 'express';
+import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import webpush from 'web-push';
+import { Redis } from '@upstash/redis';
+import { readRequestText, sendJson as respond } from '../http';
+import type { Request, Response, ErrorDetails } from '../http';
 import type { PushSubscription } from 'web-push';
-import type { ErrorDetails } from '../http';
+
 interface SubscriptionRecord {
   subscription: PushSubscription;
   lastTest: number;
 }
+
 interface VapidKeys {
   publicKey: string;
   privateKey: string;
   adminToken: string;
 }
+
 interface PushInput {
   action: string;
   kind: keyof typeof messages;
   subscription: PushSubscription;
   endpoint: string;
 }
+
 interface PushMessage {
   title: string;
   body: string;
   route: string;
 }
-import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import webpush from 'web-push';
-import { Redis } from '@upstash/redis';
 
 const root = path.resolve(__dirname, '../..');
 const localDir = process.env.PUSH_DATA_DIR || path.join(root, '.local');
@@ -49,6 +53,7 @@ const messages = {
     route: 'office/schedule',
   },
 };
+
 let lastLocalBroadcast = 0;
 let localMutation = Promise.resolve();
 
@@ -60,17 +65,21 @@ async function keys(): Promise<VapidKeys | null> {
       adminToken: process.env.PUSH_DEMO_ADMIN_TOKEN || '',
     };
   }
+
   if (process.env.VERCEL) return null;
   await fs.mkdir(localDir, { recursive: true });
+
   try {
     return JSON.parse(await fs.readFile(keysFile, 'utf8'));
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
   }
+
   const generated = {
     ...webpush.generateVAPIDKeys(),
     adminToken: crypto.randomBytes(24).toString('base64url'),
   };
+
   try {
     await fs.writeFile(keysFile, JSON.stringify(generated, null, 2), {
       mode: 0o600,
@@ -81,6 +90,7 @@ async function keys(): Promise<VapidKeys | null> {
       return JSON.parse(await fs.readFile(keysFile, 'utf8'));
     throw error;
   }
+
   return generated;
 }
 
@@ -89,6 +99,7 @@ async function readLocal(): Promise<Record<string, SubscriptionRecord>> {
     return JSON.parse(await fs.readFile(subscriptionsFile, 'utf8'));
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') return {};
+
     throw error;
   }
 }
@@ -101,9 +112,12 @@ function mutateLocal(change: (records: Record<string, SubscriptionRecord>) => vo
     await fs.writeFile(temporary, JSON.stringify(records, null, 2), {
       mode: 0o600,
     });
+
     await fs.rename(temporary, subscriptionsFile);
   });
+
   localMutation = operation.catch(() => {});
+
   return operation;
 }
 
@@ -125,6 +139,7 @@ function storage() {
           ),
     };
   }
+
   if (process.env.VERCEL) return null;
   return {
     get: async (id: string) => {
@@ -174,6 +189,7 @@ function validSubscription(subscription: PushSubscription) {
   } catch (_) {
     return false;
   }
+
   if (
     url.protocol !== 'https:' ||
     url.port ||
@@ -191,23 +207,15 @@ function validSubscription(subscription: PushSubscription) {
   );
 }
 
-function respond(res: Response, status: number, body: unknown): void {
-  res.writeHead(status, {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store',
-    'X-Content-Type-Options': 'nosniff',
-  });
-  res.end(JSON.stringify(body));
-}
-
 async function bodyOf(req: Request): Promise<PushInput> {
-  if (req.body && typeof req.body === 'object') return req.body;
+  if (req.body && typeof req.body === 'object') return req.body as PushInput;
   if (typeof req.body === 'string') return JSON.parse(req.body);
-  let body = '';
-  for await (const chunk of req) {
-    body += chunk;
-    if (body.length > 16384) throw new Error('Request too large.');
-  }
+  const body = await readRequestText(
+    req,
+    16384,
+    () => new Error('Request too large.'),
+    'characters',
+  );
   return JSON.parse(body || '{}');
 }
 
@@ -250,7 +258,9 @@ export async function handlePush(req: Request, res: Response): Promise<void> {
         publicKey: vapid?.publicKey || '',
         localDemo: !process.env.VERCEL && isLoopback(req),
       });
+
     if (req.method !== 'POST') return respond(res, 405, { error: 'Method not allowed.' });
+
     const body = await bodyOf(req);
     const action = body.action;
     const suppliedToken = Buffer.from(req.headers.authorization || '');
@@ -265,6 +275,7 @@ export async function handlePush(req: Request, res: Response): Promise<void> {
       return respond(res, 403, {
         error: 'This request must come from the app.',
       });
+
     if (!vapid || !store)
       return respond(res, 503, {
         error: 'Push is not configured on this server.',
@@ -272,12 +283,15 @@ export async function handlePush(req: Request, res: Response): Promise<void> {
 
     if (action === 'broadcast' || action === 'broadcast-demo') {
       if (!admin && !localDemo) return respond(res, 403, { error: 'Demo sender token required.' });
+
       if (localDemo && Date.now() - lastLocalBroadcast < 30000)
         return respond(res, 429, {
           error: 'Wait 30 seconds before another demo update.',
         });
+
       const message = messages[localDemo ? 'update' : body.kind];
       if (!message) return respond(res, 400, { error: 'Unknown demo update.' });
+
       if (localDemo) lastLocalBroadcast = Date.now();
       const records = await store.all();
       let sent = 0;
@@ -290,35 +304,42 @@ export async function handlePush(req: Request, res: Response): Promise<void> {
             await store.delete(subscriptionId(record.subscription.endpoint));
         }
       }
+
       return respond(res, 200, { sent, subscribed: records.length });
     }
 
     if (action === 'subscribe') {
       if (!validSubscription(body.subscription))
         return respond(res, 400, { error: 'Invalid push subscription.' });
+
       const id = subscriptionId(body.subscription.endpoint);
       const previous = await store.get(id);
       await store.set(id, {
         subscription: body.subscription,
         lastTest: previous?.lastTest || 0,
       });
+
       return respond(res, 200, { subscribed: true });
     }
 
     if (typeof body.endpoint !== 'string' || body.endpoint.length > 2048)
       return respond(res, 400, { error: 'Subscription endpoint required.' });
+
     const id = subscriptionId(body.endpoint);
     const record = await store.get(id);
     if (action === 'unsubscribe') {
       await store.delete(id);
       return respond(res, 200, { subscribed: false });
     }
+
     if (action === 'test') {
       if (!record) return respond(res, 404, { error: 'Subscribe to alerts first.' });
+
       if (Date.now() - record.lastTest < 30000)
         return respond(res, 429, {
           error: 'Wait 30 seconds before sending another test.',
         });
+
       record.lastTest = Date.now();
       await store.set(id, record);
       try {
@@ -337,12 +358,15 @@ export async function handlePush(req: Request, res: Response): Promise<void> {
           record.lastTest = 0;
           await store.set(id, record);
         }
+
         return respond(res, 502, {
           error: 'The push service did not accept the test. Try subscribing again.',
         });
       }
+
       return respond(res, 200, { sent: true });
     }
+
     return respond(res, 400, { error: 'Unknown action.' });
   } catch (error) {
     console.error('Push request failed:', (error as Error).message);

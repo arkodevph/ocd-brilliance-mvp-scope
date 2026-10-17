@@ -77,6 +77,7 @@
   }
 
   const api = { summarizeTranscript };
+
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (global) global.OCD_TRANSCRIPT = api;
 })(typeof window !== 'undefined' ? window : globalThis);

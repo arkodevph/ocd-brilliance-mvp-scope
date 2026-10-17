@@ -18,6 +18,7 @@ test('large multiple videos upload in chunks, persist as references and stream o
     UPSTASH_REDIS_REST_URL: '',
     UPSTASH_REDIS_REST_TOKEN: '',
   };
+
   const previous = Object.fromEntries(Object.keys(settings).map((key) => [key, process.env[key]]));
   Object.assign(process.env, settings);
   const server = http.createServer(require('../api/workflow.js')).listen(0, '127.0.0.1');
@@ -26,9 +27,11 @@ test('large multiple videos upload in chunks, persist as references and stream o
     server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));
     await fs.rm(directory, { recursive: true, force: true });
+
     for (const key of Object.keys(settings))
       previous[key] === undefined ? delete process.env[key] : (process.env[key] = previous[key]);
   });
+
   const base = `http://127.0.0.1:${server.address().port}/api/workflow`;
   async function call(action, body, cookie, headers = {}) {
     const raw = Buffer.isBuffer(body);
@@ -46,8 +49,10 @@ test('large multiple videos upload in chunks, persist as references and stream o
       },
       body: body === undefined ? undefined : raw ? body : JSON.stringify(body),
     });
+
     return response;
   }
+
   const start = {
     name: 'room.mp4',
     type: 'video/mp4',
@@ -55,7 +60,9 @@ test('large multiple videos upload in chunks, persist as references and stream o
     postcode: '6027',
     consent: true,
   };
+
   assert.equal((await call('video-start', { ...start, consent: false })).status, 422);
+  assert.equal((await call('video-start', { ...start, room: 'unknown-room' })).status, 422);
   assert.equal((await call('video-start', { ...start, size: 100 * 1024 * 1024 + 1 })).status, 422);
   assert.equal(
     (
@@ -68,9 +75,11 @@ test('large multiple videos upload in chunks, persist as references and stream o
   const bytes = Buffer.alloc(start.size, 7);
   bytes.write('ftyp', 4);
   const refs = [];
-  for (const type of ['video/mp4', 'video/quicktime']) {
-    const upload = await (await call('video-start', { ...start, type })).json();
+  for (const [index, type] of ['video/mp4', 'video/quicktime'].entries()) {
+    const room = index === 0 ? 'living-room' : 'master-bedroom';
+    const upload = await (await call('video-start', { ...start, type, room })).json();
     assert.equal(upload.chunkBytes, 1024 * 1024);
+    assert.equal(upload.room, room);
     assert.equal(
       (await call(`video-upload&id=${upload.id}&offset=1`, bytes.subarray(0, 12))).status,
       409,
@@ -90,9 +99,11 @@ test('large multiple videos upload in chunks, persist as references and stream o
         );
       }
     }
+
     assert.equal(result.complete, true);
     refs.push({ id: upload.id });
   }
+
   const pending = await (await call('video-start', start)).json();
   const intake = {
     name: 'Video Client',
@@ -104,6 +115,7 @@ test('large multiple videos upload in chunks, persist as references and stream o
     consent: true,
     idempotencyKey: 'large-video-intake',
   };
+
   assert.equal(
     (await call('intake', { ...intake, serviceVideos: [{ id: pending.id }] })).status,
     422,
@@ -124,10 +136,13 @@ test('large multiple videos upload in chunks, persist as references and stream o
     email: settings.WORKFLOW_STAFF_EMAIL,
     password: settings.WORKFLOW_STAFF_PASSWORD,
   });
+
   const cookie = login.headers.get('set-cookie').split(';')[0];
   const record = (await (await call('intakes', undefined, cookie)).json()).records[0];
   assert.equal(record.onboarding.serviceVideos.length, 2);
   assert.equal(record.onboarding.serviceVideos[0].size, bytes.length);
+  assert.equal(record.onboarding.serviceVideos[0].room, 'living-room');
+  assert.equal(record.onboarding.serviceVideos[1].room, 'master-bedroom');
   assert.equal(record.onboarding.serviceVideos[0].data, undefined);
   assert.ok((await fs.stat(path.join(directory, 'intakes.json'))).size < 20000);
   const reviewed = await fetch(`${base}?action=draft-review`, {
@@ -144,6 +159,7 @@ test('large multiple videos upload in chunks, persist as references and stream o
       serviceVideoReviewed: true,
     }),
   });
+
   assert.equal(reviewed.status, 200);
   assert.equal(
     (await reviewed.json()).record.onboarding.serviceVideoReviewedBy,
@@ -156,6 +172,7 @@ test('large multiple videos upload in chunks, persist as references and stream o
     404,
   );
   const range = await call(media, undefined, cookie, { Range: 'bytes=0-11' });
+
   assert.equal(range.status, 206);
   assert.equal(range.headers.get('cache-control'), 'no-store');
   assert.deepEqual(Buffer.from(await range.arrayBuffer()), bytes.subarray(0, 12));

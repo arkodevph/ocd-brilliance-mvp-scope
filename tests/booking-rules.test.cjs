@@ -6,15 +6,18 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 function seed() {
   const box = { window: {} };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/data.js'), 'utf8'), box);
   return structuredClone(box.window.OCD_DEMO_SEED);
 }
+
 const visit = {
   service: 'Nursing',
   date: '2026-10-12',
   start: '10:00',
   end: '12:00',
 };
+
 test('skills filter before distance, and unknown distances remain eligible but rank last', () => {
   const s = seed(),
     p = s.participants[0];
@@ -24,18 +27,21 @@ test('skills filter before distance, and unknown distances remain eligible but r
     services: ['Nursing'],
     dispatchLocation: p.location,
   };
+
   const unknown = {
     ...nurse,
     id: 'unknown',
     name: 'Unknown distance',
     dispatchLocation: undefined,
   };
+
   const near = {
     ...nurse,
     id: 'near',
     name: 'Near nurse',
     dispatchLocation: p.location,
   };
+
   const matches = rules.candidates([cleaner, unknown, nurse, near], visit, p);
   assert.deepEqual(
     matches.map((match) => match.worker.id),
@@ -46,6 +52,7 @@ test('skills filter before distance, and unknown distances remain eligible but r
   assert.match(rules.assignmentIssue(cleaner, visit), /skills/);
   assert.equal(rules.distanceKm([181, 0], [0, 0]), null);
 });
+
 test('assignment checks approval, days, additional skills, clocks and overlap', () => {
   const nurse = seed().workers[2];
   assert.match(rules.assignmentIssue({ ...nurse, approved: false }, visit), /approval/);
@@ -62,6 +69,7 @@ test('assignment checks approval, days, additional skills, clocks and overlap', 
     workerId: nurse.id,
     status: 'Confirmed',
   };
+
   assert.match(rules.assignmentIssue(nurse, visit, [existing]), /another booking/);
   assert.equal(
     rules.assignmentIssue(nurse, { ...visit, start: '12:00', end: '13:00' }, [existing]),
@@ -69,6 +77,7 @@ test('assignment checks approval, days, additional skills, clocks and overlap', 
   );
   assert.equal(rules.assignmentIssue(nurse, visit, [{ ...existing, status: 'Cancelled' }]), '');
 });
+
 test('same as before uses only the latest completed booking belonging to that client', () => {
   const bookings = [
     {
@@ -105,6 +114,7 @@ test('same as before uses only the latest completed booking belonging to that cl
   assert.equal(rules.previousBooking(bookings, 'none'), null);
   assert.equal(JSON.stringify(bookings), snapshot);
 });
+
 test('native assignment review cannot bypass required skills with a modified selection', () => {
   const s = seed();
   E.ensure(s);

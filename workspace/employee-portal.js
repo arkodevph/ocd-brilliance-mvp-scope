@@ -23,6 +23,7 @@
       requests: [],
       events: [],
     };
+
     const data = state.employeePortal;
     for (const worker of state.workers) {
       if (data.profiles[worker.id]) continue;
@@ -41,6 +42,7 @@
           { type: 'Study leave', available: 3, entitlement: 5 },
         ],
       };
+
       data.notifications.push(
         {
           id: `EMP-${worker.id}-roster`,
@@ -111,8 +113,10 @@
         },
       );
     }
+
     return data;
   }
+
   function view(workerId) {
     if (!views.has(workerId))
       views.set(workerId, {
@@ -121,8 +125,10 @@
         category: 'All',
         tab: 'updates',
       });
+
     return views.get(workerId);
   }
+
   function validDate(date) {
     return (
       /^\d{4}-\d{2}-\d{2}$/.test(date || '') &&
@@ -130,6 +136,7 @@
       new Date(date).toISOString().slice(0, 10) === date
     );
   }
+
   function requestLeave(state, workerId, input, today) {
     const data = ensure(state);
     if (!state.workers.some((worker) => worker.id === workerId))
@@ -170,6 +177,7 @@
       note,
       status: 'Pending',
     };
+
     data.requests.push(request);
     data.notifications.unshift({
       id: `EMP-${request.id}`,
@@ -180,8 +188,10 @@
       href: 'worker/leave',
       read: false,
     });
+
     return request;
   }
+
   function withdrawLeave(state, workerId, requestId) {
     const request = ensure(state).requests.find(
       (request) => request.id === requestId && request.workerId === workerId,
@@ -190,6 +200,7 @@
       throw new Error('Only your own pending requests can be withdrawn.');
     request.status = 'Withdrawn';
   }
+
   function markRead(state, workerId, notificationId) {
     const notification = ensure(state).notifications.find(
       (notification) => notification.id === notificationId && notification.workerId === workerId,
@@ -197,6 +208,7 @@
     if (!notification) throw new Error('This notification is not available to this employee.');
     notification.read = true;
   }
+
   function shell(context, section, content) {
     const { state, workerId, esc, profileImage, icon } = context;
     const worker = state.workers.find((worker) => worker.id === workerId),
@@ -213,6 +225,7 @@
         '',
       )}<button type="button" data-action="employee-help">${icon('people')} Contact the office</button></section><p class="employee-sidebar-note">Sample week: 5–9 October 2026. Leave, notifications and training are fictional records for this demonstration.</p></aside><main class="employee-main" id="main-content" tabindex="-1">${content}</main></div><footer class="employee-footer"><span>OCD Brilliance · Employee workspace</span><span>Demo only · changes are saved in this browser</span></footer></div>`;
   }
+
   function calendar(context) {
     const { state, workerId, esc, dateLabel, clockRange } = context,
       selected = view(workerId),
@@ -233,6 +246,7 @@
         kind: 'visit',
         href: `worker/today/${booking.id}`,
       }));
+
     const events = [
       ...visits,
       ...data.events.filter((event) => event.workerId === workerId),
@@ -261,6 +275,7 @@
       month: 'long',
       year: 'numeric',
     });
+
     return `<div class="employee-calendar"><div class="employee-agenda"><p>${selected.date ? dateLabel(selected.date) : 'This month'}</p>${
       agenda
         .slice(0, 3)
@@ -282,35 +297,72 @@
       '',
     )}</div><button class="employee-month-reset" type="button" data-action="employee-date" data-value="">Show month overview</button></div></div>`;
   }
+
   function pageModel(context, page) {
     const { state, workerId, todayPerth } = context;
-    const data = ensure(state), worker = state.workers.find((person) => person.id === workerId);
+    const data = ensure(state),
+      worker = state.workers.find((person) => person.id === workerId);
     return {
-      page, today: todayPerth(),
-      worker: { id: worker.id, name: worker.name, role: worker.role || 'Employee', services: worker.services, skills: worker.skills || [], approved: worker.approved },
+      page,
+      today: todayPerth(),
+      worker: {
+        id: worker.id,
+        name: worker.name,
+        role: worker.role || 'Employee',
+        services: worker.services,
+        skills: worker.skills || [],
+        approved: worker.approved,
+      },
       profile: data.profiles[workerId],
       notices: data.notifications.filter((notice) => notice.workerId === workerId),
-      requests: data.requests.filter((request) => request.workerId === workerId).slice().reverse(),
+      requests: data.requests
+        .filter((request) => request.workerId === workerId)
+        .slice()
+        .reverse(),
       selected: { tab: view(workerId).tab, category: view(workerId).category },
       calendar: {
-        month: view(workerId).month, date: view(workerId).date,
+        month: view(workerId).month,
+        date: view(workerId).date,
         events: [
-          ...state.bookings.filter((booking) => booking.workerId === workerId && !['Cancelled', 'Needs cover', 'Proposed'].includes(booking.status)).map((booking) => ({ date: booking.date, title: state.participants.find((person) => person.id === booking.participantId)?.name || 'Assigned visit', href: `worker/today/${booking.id}` })),
+          ...state.bookings
+            .filter(
+              (booking) =>
+                booking.workerId === workerId &&
+                !['Cancelled', 'Needs cover', 'Proposed'].includes(booking.status),
+            )
+            .map((booking) => ({
+              date: booking.date,
+              title:
+                state.participants.find((person) => person.id === booking.participantId)?.name ||
+                'Assigned visit',
+              href: `worker/today/${booking.id}`,
+            })),
           ...data.events.filter((event) => event.workerId === workerId),
-          ...data.requests.filter((request) => request.workerId === workerId && request.status === 'Approved').map((request) => ({ date: request.from, to: request.to, title: request.type, href: 'worker/leave' })),
+          ...data.requests
+            .filter((request) => request.workerId === workerId && request.status === 'Approved')
+            .map((request) => ({
+              date: request.from,
+              to: request.to,
+              title: request.type,
+              href: 'worker/leave',
+            })),
         ],
       },
     };
   }
+
   function home(context) {
     return `<div data-react-employee-page="${context.esc(JSON.stringify(pageModel(context, 'home')))}"></div>`;
   }
+
   function personal(context) {
     return `<div data-react-employee-page="${context.esc(JSON.stringify(pageModel(context, 'personal')))}"></div>`;
   }
+
   function leave(context) {
     return `<div data-react-employee-page="${context.esc(JSON.stringify(pageModel(context, 'leave')))}"></div>`;
   }
+
   function action(context, button) {
     const { state, workerId, save, render, toast, openModal } = context,
       selected = view(workerId);
@@ -320,16 +372,19 @@
         markRead(state, workerId, button.dataset.id);
         save();
       }
+
       if (action === 'employee-withdraw') {
         withdrawLeave(state, workerId, button.dataset.id);
         save();
         toast('Demo request withdrawn. Your roster is unchanged.');
       }
+
       if (action === 'employee-tab') selected.tab = button.dataset.value;
       if (action === 'employee-category') {
         selected.category = button.dataset.value;
         selected.tab = 'updates';
       }
+
       if (action === 'employee-date') selected.date = button.dataset.value;
       if (action === 'employee-month') {
         const date = new Date(`${selected.month}-01T00:00:00Z`);
@@ -337,6 +392,7 @@
         selected.month = date.toISOString().slice(0, 7);
         selected.date = '';
       }
+
       if (action === 'employee-help')
         return openModal(
           'Contact your coordinator',
@@ -352,6 +408,7 @@
       toast(error.message);
     }
   }
+
   return {
     ensure,
     requestLeave,

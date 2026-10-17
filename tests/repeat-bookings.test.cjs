@@ -14,6 +14,7 @@ const repeat = {
   preferredStart: '09:00',
   preferredEnd: '11:00',
 };
+
 test('booking request validates dates, service choices, reference and paired times', () => {
   assert.equal(bookingRequest(undefined), null);
   assert.deepEqual(bookingRequest(repeat), repeat);
@@ -44,11 +45,15 @@ test('booking request validates dates, service choices, reference and paired tim
     ['Cleaning', 'Nursing'],
   );
 });
+
 test('repeat requests persist for office review, and changed details invalidate an idempotency key', async (t) => {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'ocd-repeat-test-'));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
+
   const repository = new IntakeRepository({ directory });
+
   const service = new IntakeService(repository, () => ({ status: 'covered' }));
+
   const input = {
     name: 'Returning client',
     email: 'client@example.test',
@@ -61,6 +66,7 @@ test('repeat requests persist for office review, and changed details invalidate 
     bookingRequest: repeat,
     idempotencyKey: 'repeat-request-test',
   };
+
   const record = await service.createDraft(input, 'office@example.test');
   assert.equal(record.status, 'New');
   assert.equal(record.onboarding.reviewedAt, null);
@@ -94,6 +100,7 @@ test('repeat requests persist for office review, and changed details invalidate 
       preferredEnd: '',
     },
   };
+
   assert.deepEqual(
     (await service.createDraft(changed, 'office@example.test')).bookingRequest.services,
     ['Cleaning', 'Nursing'],
@@ -110,6 +117,7 @@ test('repeat requests persist for office review, and changed details invalidate 
     idempotencyKey: 'next-date-request-test',
     bookingRequest: { ...repeat, preferredDate: '2099-11-03' },
   };
+
   assert.equal(
     (await service.createDraft(nextDate, 'office@example.test')).bookingRequest.preferredDate,
     '2099-11-03',

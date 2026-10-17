@@ -5,6 +5,7 @@ const test = require('node:test');
 const E = require('../workspace/automation-engine.js');
 function seed() {
   const box = { window: {} };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/data.js'), 'utf8'), box);
   const state = structuredClone(box.window.OCD_DEMO_SEED);
   E.ensure(state);
@@ -12,6 +13,7 @@ function seed() {
   E.ingest(state);
   return state;
 }
+
 const jobOf = (s, kind) => s.automation.jobs.find((j) => j.kind === kind);
 const reviewed = (job, extra = {}) => ({
   ...job.draft,
@@ -19,6 +21,7 @@ const reviewed = (job, extra = {}) => ({
   areaReviewed: true,
   ...extra,
 });
+
 const cancelReview = (j) =>
   reviewed(j, { charge: 'with-charge', code: 'NSDH', policyReviewed: true });
 
@@ -38,6 +41,7 @@ test('a client booking request needs manual follow-up and never creates a confir
     },
     status: 'Pending',
   };
+
   s.requests.push(r);
   const job = E.request(s, r);
   assert.equal(job.kind, 'booking-request');
@@ -53,6 +57,7 @@ test('a client booking request needs manual follow-up and never creates a confir
     reference: 'DEMO-contact',
     note: 'Discussed availability; no booking agreed',
   });
+
   assert.equal(r.status, 'Handled');
   assert.deepEqual(s.bookings, before);
 });
@@ -108,6 +113,7 @@ test('native creation cannot update projections or close onboarding before read-
     reference: 'DEMO-XERO-CONTACT',
     note: 'Linked sample contact reviewed',
   });
+
   assert.equal(j.status, 'completed');
   assert.equal(j.accounting.demo, true);
 });
@@ -131,6 +137,7 @@ test('existing email forces a reviewed match instead of duplicate creation', () 
   s.automation.remote.participants[0].email = j.draft.email;
   assert.throws(() => E.approve(s, j.id, reviewed(j)), /existing record/);
   E.approve(s, j.id, reviewed(j, { matchId: 'PAR-101' }));
+
   E.native(s, j.id);
   E.verify(s, j.id);
   assert.equal(s.automation.remote.participants.length, 3);
@@ -216,6 +223,7 @@ test('pre-dispatch retries are bounded and never bypass native offer/worker acce
   const s = seed(),
     j = jobOf(s, 'cover');
   E.approve(s, j.id, reviewed(j, { workerId: 'WRK-01', availabilityReviewed: true }));
+
   E.native(s, j.id, 'network');
   assert.equal(j.stage, 'offer');
   assert.equal(j.status, 'retry_scheduled');
@@ -239,6 +247,7 @@ test('cover requires the selected worker response then native assignment read-ba
   const s = seed(),
     j = jobOf(s, 'cover');
   E.approve(s, j.id, reviewed(j, { workerId: 'WRK-01', availabilityReviewed: true }));
+
   E.native(s, j.id);
   E.verify(s, j.id);
   const offer = s.coverOffers.find((o) => o.automationJobId === j.id);
@@ -288,6 +297,7 @@ test('returned agreement stays unsigned until checked native filing is read back
     j = jobOf(s, 'file');
   assert.throws(() => E.approve(s, j.id, reviewed(j)), /signature/);
   E.approve(s, j.id, reviewed(j, { fileReviewed: true }));
+
   E.native(s, j.id);
   assert.equal(s.agreements.find((a) => a.id === j.targetId).status, 'Awaiting signature');
   E.verify(s, j.id);
@@ -298,6 +308,7 @@ test('returned agreement stays unsigned until checked native filing is read back
 test('bookkeeping exposes missing notes/scope and refreshes changed native evidence without duplicate cases', () => {
   const s = seed();
   E.run(s, 'invoices', { partial: true });
+
   assert.equal(s.automation.lastReport.complete, false);
   assert.equal(jobOf(s, 'partial-report').status, 'needs_review');
   const report = s.automation.jobs.find((j) => j.kind === 'finance' && j.targetId === 'BKG-498');
@@ -309,6 +320,7 @@ test('bookkeeping exposes missing notes/scope and refreshes changed native evide
   v.goals = 'Completed household tasks';
   E.captureCare(s, v.bookingId);
   E.run(s, 'invoices', { partial: true });
+
   assert.equal(s.automation.jobs.length, count);
   assert.doesNotMatch(report.source.body, /progress note missing/);
   assert.equal(s.feeProposals.length, 0);
@@ -345,12 +357,14 @@ test('new booking requires native worker acceptance and verification, not only p
     recurrence: 'One-off',
     status: 'Proposed',
   });
+
   const j = E.bookingProposal(s, 'BKG-900');
   assert.throws(
     () => E.approve(s, j.id, reviewed(j, { participantAgreed: true })),
     /worker acceptance/,
   );
   E.approve(s, j.id, reviewed(j, { participantAgreed: true, workerAccepted: true }));
+
   E.native(s, j.id);
   assert.equal(s.bookings.find((b) => b.id === 'BKG-900').status, 'Proposed');
   E.verify(s, j.id);
@@ -362,6 +376,7 @@ test('fresh native eligibility and roster conflicts invalidate approval before d
     const s = seed(),
       j = jobOf(s, 'cover');
     E.approve(s, j.id, reviewed(j, { workerId: 'WRK-01', availabilityReviewed: true }));
+
     if (change === 'screening')
       s.automation.remote.workers.find((w) => w.id === 'WRK-01').approved = false;
     else
@@ -371,6 +386,7 @@ test('fresh native eligibility and roster conflicts invalidate approval before d
         workerId: 'WRK-01',
         status: 'Confirmed',
       });
+
     E.native(s, j.id);
     assert.equal(j.status, 'needs_review');
     assert.equal(s.automation.remote.offers.filter((o) => o.automationJobId === j.id).length, 0);
@@ -392,8 +408,10 @@ test('changed new-booking proposal invalidates approval and verification checks 
       recurrence: 'One-off',
       status: 'Proposed',
     });
+
     const j = E.bookingProposal(s, 'BKG-900');
     E.approve(s, j.id, reviewed(j, { participantAgreed: true, workerAccepted: true }));
+
     if (phase === 'before-dispatch') {
       s.bookings.find((b) => b.id === j.targetId).start = '09:30';
       E.native(s, j.id);
@@ -421,6 +439,7 @@ test('malformed attendance and impossible review dates stay visible as exception
       /Actual clock times are missing\/invalid/,
     );
   }
+
   assert.throws(
     () => E.run(s, 'payroll', { from: '2026-02-31', to: '2026-03-05' }),
     /valid inclusive/,
@@ -430,12 +449,14 @@ test('malformed attendance and impossible review dates stay visible as exception
 test('real server enquiries are excluded from the fictional ShiftCare adapter', () => {
   const s = seed();
   s.enquiries.push({ id: 'REAL-REQUEST', serverRecord: true });
+
   assert.throws(() => E.intake(s, 'REAL-REQUEST'), /fictional records/);
   assert.equal(E.catalog.length, 14);
 });
 
 test('arrival snapshots require consent and current assignment, and withdraw stale estimates', () => {
   const box = { window: {} };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/maps.js'), 'utf8'), box);
   const maps = box.window.OCD_MAPS,
     s = seed(),
@@ -450,6 +471,7 @@ test('arrival snapshots require consent and current assignment, and withdraw sta
     durationSeconds: 960,
     updatedAt: clock,
   };
+
   assert.equal(maps.snapshot(s, b, clock).phase, 'not-started');
   s.journeys[b.id].consent = true;
   assert.equal(maps.snapshot(s, b, clock).phase, 'en-route');
@@ -462,6 +484,7 @@ test('arrival snapshots require consent and current assignment, and withdraw sta
 
 test('participant home withdraws stale ETA instead of presenting the schedule as an arrival', () => {
   const box = { window: {} };
+
   vm.runInNewContext(fs.readFileSync(require.resolve('../workspace/maps.js'), 'utf8'), box);
   const s = seed(),
     b = s.bookings.find((b) => b.id === 'BKG-501');
@@ -475,6 +498,7 @@ test('participant home withdraws stale ETA instead of presenting the schedule as
     durationSeconds: 960,
     updatedAt: Date.now() - 120001,
   };
+
   const html = box.window.OCD_MAPS.summary(s, b);
   assert.match(html, /data-arrival-time>ETA unavailable</);
   assert.ok(!html.includes(`Scheduled ${b.start}`));

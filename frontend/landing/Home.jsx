@@ -103,6 +103,7 @@ function HeroServicesCard() {
     event.currentTarget.style.setProperty('--card-x', `${3 - y * 6}deg`);
     event.currentTarget.style.setProperty('--card-y', `${-7 + x * 10}deg`);
   };
+
   const reset = (event) => {
     event.currentTarget.style.removeProperty('--card-x');
     event.currentTarget.style.removeProperty('--card-y');

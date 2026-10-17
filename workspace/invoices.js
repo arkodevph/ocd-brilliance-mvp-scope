@@ -18,9 +18,11 @@
       throw new Error('Enter positive billable hours (up to 24) and an hourly rate.');
     return Math.round(hours * Math.round(rate * 100));
   }
+
   function total(invoice) {
     return invoice.lines.reduce((sum, line) => sum + lineTotal(line), 0);
   }
+
   function create(state, input) {
     const person = state.participants.find((p) => p.id === input.participantId);
     const validDate = (value) =>
@@ -30,6 +32,7 @@
     if (!person || !validDate(input.from) || !validDate(input.to) || input.from > input.to)
       throw new Error('Choose a participant and a valid service period.');
     lineTotal({ hours: 1, rate: input.rate });
+
     const used = new Set((state.invoices || []).flatMap((i) => i.lines.map((l) => l.bookingId)));
     const bookings = state.bookings.filter(
       (b) =>
@@ -53,6 +56,7 @@
         rate: Number(input.rate),
       };
     });
+
     const invoice = {
       id: `INV-${String((state.invoices || []).length + 1).padStart(4, '0')}`,
       participantId: person.id,
@@ -68,10 +72,12 @@
       reviewedBy: '',
       example: input.example === true,
     };
+
     if (!invoice.rateSource) throw new Error('Record the source of the hourly rate.');
     total(invoice);
     return invoice;
   }
+
   function ensure(state) {
     if (state.invoices) return state.invoices;
     state.invoices = [];
@@ -93,7 +99,9 @@
           }),
         );
     }
+
     return state.invoices;
   }
+
   return { lineTotal, total, create, ensure };
 });

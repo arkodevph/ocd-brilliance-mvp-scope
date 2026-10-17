@@ -15,6 +15,7 @@ export interface BookingRequest {
   preferredStart: string;
   preferredEnd: string;
 }
+
 export function bookingRequest(value: unknown): BookingRequest | null {
   if (value === undefined || value === null) return null;
   const invalid = (): never => {
@@ -23,6 +24,7 @@ export function bookingRequest(value: unknown): BookingRequest | null {
       'Choose valid services, a future preferred date and repeat booking details.',
     );
   };
+
   if (typeof value !== 'object' || Array.isArray(value)) return invalid();
   const input = value as Record<string, unknown>;
   if (

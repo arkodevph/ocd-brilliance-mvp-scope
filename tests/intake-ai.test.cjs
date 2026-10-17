@@ -11,6 +11,7 @@ function configure(t, demo = true) {
     OCD_AI_MODEL: 'openrouter/free',
     OCD_AI_DEMO: String(demo),
   };
+
   for (const [key, value] of Object.entries(values)) {
     const previous = process.env[key];
     process.env[key] = value;
@@ -20,8 +21,10 @@ function configure(t, demo = true) {
     });
   }
 }
+
 const source = 'Full name: Alex Demo\nEmail: alex@example.test\nService: Domestic assistance';
 const policy = rules({});
+
 const reply = (fields) => ({
   ok: true,
   json: async () => ({
@@ -43,6 +46,7 @@ test('OpenRouter request is bounded and missing or unsupported AI fields retain 
       evidence: { name: 'Invented Person' },
     });
   });
+
   assert.equal(result.fields.name, 'Alex Demo');
   assert.equal(result.fields.email, 'alex@example.test');
   assert.equal(result.evidence.email, 'Email: alex@example.test');
@@ -51,6 +55,7 @@ test('OpenRouter request is bounded and missing or unsupported AI fields retain 
     model: 'test/free',
     demo: true,
   });
+
   assert.ok(!JSON.stringify(result).includes('fictional-test-key'));
 });
 
@@ -78,6 +83,7 @@ test('showcase bypass is explicit and leaves production extraction approval inta
   configure(t, false);
   const service = new IntakeService({ all: async () => [] }, () => ({ status: 'covered' }), policy);
   await assert.rejects(service.previewText(source, true), { status: 422 });
+
   assert.equal(config().demo, false);
   const automatic = await service.previewText(source, false);
   assert.equal(automatic.draft.extractor, 'labelled-text-v1');
@@ -136,6 +142,7 @@ test('AI email review validates routing suggestions and treats original mail as 
     subject: 'Your invoice question',
     message: 'Thank you for your message. Which invoice should we review?\nOCD Brilliance team',
   };
+
   const result = await emailReview(
     { sourceText: 'Please check the hours on my invoice.' },
     async (url, options) => {
@@ -152,6 +159,7 @@ test('AI email review validates routing suggestions and treats original mail as 
   assert.equal(result.team, 'Bookkeeper');
   assert.equal(result.ai.provider, 'OpenRouter');
   await assert.rejects(emailReview({ sourceText: '' }), { status: 422 });
+
   await assert.rejects(
     emailReview({ sourceText: 'Invoice question' }, async () =>
       reply({ ...draft, team: 'Invented person' }),

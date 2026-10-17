@@ -3,7 +3,7 @@
   "name": "OCD Brilliance Operations",
   "short_name": "OCD Brilliance",
   "description": "Operations workspace for office, worker and client journeys.",
-  "start_url": "/#/office/overview",
+  "start_url": "/portal",
   "scope": "/",
   "display": "standalone",
   "background_color": "#f6f8f5",

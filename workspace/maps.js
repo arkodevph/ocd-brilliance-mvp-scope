@@ -31,6 +31,7 @@
     pause: '<path d="M8 4v16M16 4v16"/>',
     check: '<path d="m5 12 4 4L19 6"/>',
   };
+
   const icon = (name) =>
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${glyphs[name] || glyphs.map}</svg>`;
   const clockLabel = (value) => {
@@ -39,6 +40,7 @@
     const hour = Number(match[1]);
     return `${hour % 12 || 12}:${match[2]} ${hour < 12 ? 'AM' : 'PM'}`;
   };
+
   const clamp = (value) => Math.max(0, Math.min(1, Number(value) || 0));
   const dateLabel = (date) =>
     new Intl.DateTimeFormat('en-AU', {
@@ -68,6 +70,7 @@
     } catch (_) {
       /* use the configured token if browser storage is unavailable */
     }
+
     const configured = window.OCD_MAPBOX_CONFIG?.accessToken?.trim() || '';
     return configured.startsWith('pk.') ? configured : '';
   }
@@ -97,6 +100,7 @@
         threeD: true,
       });
     }
+
     const pref = preferences.get(key);
     const requested = scopedBookings(ctx).find((b) => b.id === ctx.bookingId);
     if (requested && pref.requested !== requested.id) {
@@ -105,6 +109,7 @@
       pref.worker = '';
       pref.requested = requested.id;
     }
+
     return pref;
   }
 
@@ -132,6 +137,7 @@
         running: false,
         remainingMinutes: null,
       };
+
     if (journey.mode === 'location') {
       if (journey.phase === 'arrived')
         return {
@@ -142,6 +148,7 @@
           running: false,
           remainingMinutes: null,
         };
+
       const fresh =
         Number.isFinite(journey.updatedAt) &&
         now >= journey.updatedAt &&
@@ -160,6 +167,7 @@
           running: false,
           remainingMinutes: null,
         };
+
       const nearby = journey.remainingMinutes <= NEARBY_MINUTES;
       return {
         phase: 'en-route',
@@ -175,6 +183,7 @@
         }).format(new Date(journey.updatedAt + journey.remainingMinutes * 60000)),
       };
     }
+
     if (
       journey.phase === 'en-route' &&
       (!Number.isFinite(journey.updatedAt) || now - journey.updatedAt > 120000)
@@ -185,6 +194,7 @@
         running: false,
         remainingMinutes: null,
       };
+
     let progress = clamp(journey.progress);
     if (
       journey.running &&
@@ -196,6 +206,7 @@
         progress + ((1 - progress) * Math.max(0, now - journey.startedAt)) / journey.playbackMs,
       );
     }
+
     const phase =
       progress >= 1 || journey.phase === 'arrived'
         ? 'arrived'
@@ -229,6 +240,7 @@
         delete state.journeys[id];
         continue;
       }
+
       if (state.visits.some((v) => v.bookingId === id && v.clockIn)) {
         journey.phase = 'arrived';
         journey.progress = 1;
@@ -272,9 +284,18 @@
         'See your own service location and an arrival estimate, without a worker route or exact location.',
       ],
     };
+
     const [, title, subtitle] = titles[ctx.area];
-    const model = { area: ctx.area, title, subtitle, date: pref.date, threeD: pref.threeD,
-      worker: pref.worker, workers: ctx.state.workers.map(({ id, name }) => ({ id, name })) };
+    const model = {
+      area: ctx.area,
+      title,
+      subtitle,
+      date: pref.date,
+      threeD: pref.threeD,
+      worker: pref.worker,
+      workers: ctx.state.workers.map(({ id, name }) => ({ id, name })),
+    };
+
     return `<div data-react-booking-map="${esc(JSON.stringify(model))}"></div>`;
   }
 
@@ -308,6 +329,7 @@
         link.href = `https://api.mapbox.com/mapbox-gl-js/v${SDK_VERSION}/mapbox-gl.css`;
         document.head.append(link);
       }
+
       const script = document.createElement('script');
       script.src = `https://api.mapbox.com/mapbox-gl-js/v${SDK_VERSION}/mapbox-gl.js`;
       let settled = false;
@@ -321,20 +343,24 @@
         sdkPromise = undefined;
         reject(new Error('Map SDK unavailable'));
       };
+
       const timeout = setTimeout(fail, 15000);
       script.onload = () => {
         if (!window.mapboxgl) {
           fail();
           return;
         }
+
         if (settled) return;
         settled = true;
         clearTimeout(timeout);
         resolve(window.mapboxgl);
       };
+
       script.onerror = fail;
       document.head.append(script);
     });
+
     return sdkPromise;
   }
 
@@ -362,10 +388,13 @@
         );
         return { position, travelled: [...points.slice(0, i + 1), position] };
       }
+
       covered += lengths[i];
     }
+
     return { position: points[0], travelled: [] };
   }
+
   const lineData = (points) =>
     points?.length >= 2
       ? {
@@ -424,12 +453,15 @@
           },
         );
     }
+
     get bookings() {
       return visibleBookings(this.ctx, this.pref);
     }
+
     get selected() {
       return this.bookings.find((b) => b.id === this.pref.selected);
     }
+
     query(selector) {
       return this.root.querySelector(selector);
     }
@@ -442,19 +474,35 @@
       window.OCD_REACT?.renderMapOverview(this.root, {
         services: rows.length,
         travelling: rows.filter((b) => snapshot(this.ctx.state, b).phase === 'en-route').length,
-        thirdLabel: this.ctx.area === 'client' ? 'Participant' : this.ctx.area === 'worker' ? 'Assigned worker' : 'Cover needed',
-        thirdValue: this.ctx.area === 'client' ? this.ctx.state.participants.find((p) => p.id === this.ctx.clientId)?.name || 'Participant' : this.ctx.area === 'worker' ? this.ctx.state.workers.find((w) => w.id === this.ctx.workerId)?.name || 'Worker' : rows.filter((b) => b.status === 'Needs cover').length,
+        thirdLabel:
+          this.ctx.area === 'client'
+            ? 'Participant'
+            : this.ctx.area === 'worker'
+              ? 'Assigned worker'
+              : 'Cover needed',
+        thirdValue:
+          this.ctx.area === 'client'
+            ? this.ctx.state.participants.find((p) => p.id === this.ctx.clientId)?.name ||
+              'Participant'
+            : this.ctx.area === 'worker'
+              ? this.ctx.state.workers.find((w) => w.id === this.ctx.workerId)?.name || 'Worker'
+              : rows.filter((b) => b.status === 'Needs cover').length,
         bookings: rows.map((b) => {
-          const p = locationFor(this.ctx, b), w = workerFor(this.ctx, b);
-          return { id: b.id, selected: this.pref.selected === b.id,
+          const p = locationFor(this.ctx, b),
+            w = workerFor(this.ctx, b);
+          return {
+            id: b.id,
+            selected: this.pref.selected === b.id,
             title: this.ctx.area === 'client' ? b.service : p?.name || 'Participant',
             time: `${clockLabel(b.start)}–${clockLabel(b.end)}`,
             suburb: p?.suburb || 'Location pending',
-            worker: b.status === 'Needs cover' ? 'Office arranging cover' : w?.name || 'Worker pending',
+            worker:
+              b.status === 'Needs cover' ? 'Office arranging cover' : w?.name || 'Worker pending',
             phase: phaseLabel(b, snapshot(this.ctx.state, b)),
           };
         }),
       });
+
       this.renderDetails();
       const selectedLabel = this.query('[data-map-selected-label]');
       const b = this.selected,
@@ -474,6 +522,7 @@
           '<div class="map-no-bookings"><strong>Select a service booking</strong><p>Your booking and arrival details will appear here.</p></div>';
         return;
       }
+
       const p = locationFor(this.ctx, b),
         w = workerFor(this.ctx, b),
         snap = snapshot(this.ctx.state, b);
@@ -529,6 +578,7 @@
           : '';
         playback = `<label class="journey-consent"><input type="checkbox" data-journey-consent ${this.ctx.state.journeys?.[b.id]?.consent ? 'checked' : ''}><span>I agree to use my location to calculate this booking’s ETA through Mapbox. My coordinates will not be saved or shown to clients. Sharing ends on arrival, stop or leaving this page.</span></label><p class="field-error" data-journey-error hidden role="alert"></p><div class="button-row"><button class="btn primary" type="button" data-map-action="location">${snap.mode === 'location' && enRoute ? 'Refresh location' : 'Start journey / retry location'}</button>${navigate}${snap.mode === 'location' && !arrived ? '<button class="btn" type="button" data-map-action="arrive">Mark arrived</button><button class="link-button" type="button" data-map-action="stop">Stop sharing</button>' : ''}</div><small>Keep this page open for updates. Navigation in another app can interrupt browser updates. Directions use the approximate demo service pin.</small><details><summary>Simulated journey controls</summary>${playback}</details>`;
       }
+
       this.query('[data-map-detail]').innerHTML =
         `<div class="map-worker-heading"><span class="avatar">${b.status === 'Needs cover' ? '?' : esc(w?.initials || '—')}</span><span><small>${b.status === 'Needs cover' ? 'Assignment pending' : this.ctx.area === 'client' ? 'Your assigned worker' : this.ctx.area === 'worker' ? 'Your journey' : 'Assigned worker'}</small><strong>${b.status === 'Needs cover' ? 'Awaiting cover' : esc(w?.name || 'To be assigned')}</strong></span><span class="map-location-indicator ${enRoute ? 'on' : ''}" aria-label="${enRoute ? (snap.mode === 'location' ? 'Fresh arrival estimate available' : 'Simulated arrival estimate available') : 'No current arrival estimate'}"></span></div>
         ${playback ? `<div class="map-detail-tabs" role="group" aria-label="Booking information"><button type="button" data-map-action="detail-summary" aria-pressed="${this.detailTab !== 'journey'}">Arrival details</button><button type="button" data-map-action="detail-journey" aria-pressed="${this.detailTab === 'journey'}">Journey controls</button></div>` : ''}
@@ -572,9 +622,14 @@
       this.ready = false;
       this.connectionError = false;
       if (!token()) {
-        this.failMap(version, 'Connect Mapbox', 'The office must configure a Mapbox public token to show service locations.');
+        this.failMap(
+          version,
+          'Connect Mapbox',
+          'The office must configure a Mapbox public token to show service locations.',
+        );
         return;
       }
+
       this.query('[data-map-fallback]').hidden = false;
       this.query('[data-map-fallback]').innerHTML =
         `<span class="map-fallback-symbol">${icon('map')}</span><h2>Loading your 3D map</h2><p>Preparing service locations around Perth.</p>`;
@@ -601,6 +656,7 @@
           attributionControl: false,
           cooperativeGestures: true,
         });
+
         this.map.addControl(new sdk.NavigationControl({ visualizePitch: true }), 'bottom-right');
         this.map.addControl(new sdk.AttributionControl({ compact: true }), 'bottom-left');
         this.map.addControl(
@@ -617,6 +673,7 @@
           this.query('[data-map-connection]').textContent = 'Mapbox · 3D buildings available';
           for (const source of ['booking-route', 'booking-travelled'])
             this.map.addSource(source, { type: 'geojson', data: lineData([]) });
+
           this.map.addModel(
             'ocd-sedan',
             new URL('/assets/vehicles/sedan.glb', window.location.href).href,
@@ -625,6 +682,7 @@
             type: 'geojson',
             data: { type: 'FeatureCollection', features: [] },
           });
+
           this.map.addLayer({
             id: 'booking-vehicle-model',
             type: 'model',
@@ -653,6 +711,7 @@
               'model-type': 'location-indicator',
             },
           });
+
           this.map.addLayer({
             id: 'route-casing',
             type: 'line',
@@ -665,6 +724,7 @@
               'line-opacity': 0.8,
             },
           });
+
           this.map.addLayer({
             id: 'route-line',
             type: 'line',
@@ -677,6 +737,7 @@
               'line-emissive-strength': 0.7,
             },
           });
+
           this.map.addLayer({
             id: 'travelled-line',
             type: 'line',
@@ -689,32 +750,48 @@
               'line-emissive-strength': 0.7,
             },
           });
+
           this.refreshMarkers();
           this.drawRoute();
           this.fitVisible();
         });
+
         this.map.on('error', (event) => {
           if (this.disposed || version !== this.mapVersion) return;
           const status = event.error?.status;
           if (status === 401 || status === 403 || (status === 404 && !this.ready)) {
             this.connectionError = true;
             this.query('[data-map-connection]').textContent = 'Mapbox connection needs attention';
-            this.failMap(version, 'Mapbox connection needs attention', 'The configured map connection was rejected. Check the public token and its allowed URLs, then retry.');
+            this.failMap(
+              version,
+              'Mapbox connection needs attention',
+              'The configured map connection was rejected. Check the public token and its allowed URLs, then retry.',
+            );
           }
         });
+
         this.mapTimeout = setTimeout(() => {
           if (!this.ready && !this.disposed)
-            this.failMap(version, 'Mapbox could not load', 'Check your internet connection and retry the map.');
+            this.failMap(
+              version,
+              'Mapbox could not load',
+              'Check your internet connection and retry the map.',
+            );
         }, 20000);
         this.resizeObserver?.disconnect();
         this.resizeObserver = new ResizeObserver(() => {
           this.map?.resize();
           this.fitVisible();
         });
+
         this.resizeObserver.observe(this.query('.booking-map-surface'));
       } catch (_) {
         if (!this.disposed && version === this.mapVersion) {
-          this.failMap(version, 'Mapbox could not load', 'Check your internet connection and WebGL support, then retry the map.');
+          this.failMap(
+            version,
+            'Mapbox could not load',
+            'Check your internet connection and WebGL support, then retry the map.',
+          );
         }
       }
     }
@@ -746,6 +823,7 @@
         if (!groups.has(key)) groups.set(key, []);
         groups.get(key).push({ b, p, i, coords });
       });
+
       groups.forEach((group) => {
         const item = group.find((item) => item.b.id === this.pref.selected) || group[0];
         const el = document.createElement('button');
@@ -785,6 +863,7 @@
         this.renderDetails();
         return;
       }
+
       const origin = officeFor(this.ctx).coordinates;
       this.route = sampleRoute(origin, coords);
       this.routeState = 'sample';
@@ -793,6 +872,7 @@
         this.drawRoute();
         return;
       }
+
       const key = origin.join(',') + ';' + coords.join(',');
       if (routeCache.has(key)) {
         this.route = routeCache.get(key);
@@ -802,6 +882,7 @@
         this.fitVisible();
         return;
       }
+
       this.routeState = 'loading';
       this.renderDetails();
       const abort = new AbortController();
@@ -817,6 +898,7 @@
           steps: 'false',
         }).toString();
         const response = await fetch(url, { signal: abort.signal });
+
         if (!response.ok) throw new Error('Route unavailable');
         const data = await response.json(),
           route = data.routes?.[0];
@@ -839,6 +921,7 @@
       } finally {
         clearTimeout(timeout);
       }
+
       if (this.disposed || version !== this.routeVersion) return;
       this.renderDetails();
       this.drawRoute();
@@ -869,9 +952,11 @@
         this.workerMarker?.remove();
         this.workerMarker = null;
         this.map.getSource('booking-vehicle')?.setData({ type: 'FeatureCollection', features: [] });
+
         this.map.getSource('booking-travelled')?.setData(lineData([]));
         return;
       }
+
       if (
         this.workerMarker &&
         this.lastDrawnRoute === this.route &&
@@ -913,6 +998,7 @@
         properties: {},
         geometry: { type: 'Point', coordinates: position.position },
       });
+
       if (!this.workerMarker) {
         const el = document.createElement('div');
         el.className = 'map-worker-pin map-vehicle-label';
@@ -934,6 +1020,7 @@
           .setLngLat(position.position)
           .addTo(this.map);
       }
+
       this.workerMarker.setLngLat(position.position);
       this.map
         .getSource('booking-travelled')
@@ -952,8 +1039,10 @@
           zoom: 12,
           duration: 600,
         });
+
         return;
       }
+
       const bounds = coords.reduce(
         (bounds, point) => bounds.extend(point),
         new window.mapboxgl.LngLatBounds(coords[0], coords[0]),
@@ -971,8 +1060,11 @@
     mapPadding() {
       const surface = this.query('.booking-map-surface').getBoundingClientRect();
       const panel = this.query('.map-side-panel').getBoundingClientRect();
-      const floating = panel.top < surface.bottom && panel.bottom > surface.top &&
-        panel.right > surface.left && panel.left < surface.right;
+      const floating =
+        panel.top < surface.bottom &&
+        panel.bottom > surface.top &&
+        panel.right > surface.left &&
+        panel.left < surface.right;
       return {
         top: 85,
         bottom: 85,
@@ -1004,6 +1096,7 @@
         delete journey.startedAt;
         this.ctx.save();
       }
+
       if (
         snap.phase !== this.lastPhase ||
         snap.running !== this.lastRunning ||
@@ -1017,6 +1110,7 @@
         if (overlay)
           overlay.textContent = `${snap.mode === 'location' ? 'Arrival estimate' : 'Demo arrival'} · ${snap.remainingMinutes} min away`;
       }
+
       this.updateWorkerPosition();
     }
 
@@ -1079,6 +1173,7 @@
         error.textContent = 'Check the journey consent before sharing an estimate.';
         return;
       }
+
       this.stopLocation();
       this.routeVersion++;
       this.routeAbort?.abort();
@@ -1095,8 +1190,10 @@
         running: false,
         remainingMinutes: null,
       };
+
       this.ctx.state.journeys[b.id] = journey;
       const session = { booking: b, journey, lastRequestAt: -Infinity };
+
       this.locationSession = session;
       this.route = null;
       this.ctx.save();
@@ -1124,6 +1221,7 @@
           }
         }
       };
+
       session.unavailable = unavailable;
       if (this.ctx.sharedArrivals) {
         try {
@@ -1133,6 +1231,7 @@
             workerId: this.ctx.workerId,
             consent: true,
           });
+
           if (!this.locationCurrent(session)) {
             await window.OCD_JOURNEY_API.request({
               action: 'stop',
@@ -1140,28 +1239,34 @@
               workerId: this.ctx.workerId,
               sessionId: result.journey.sessionId,
             });
+
             return;
           }
+
           Object.assign(journey, result.journey);
         } catch (error) {
           unavailable(error.message);
           return;
         }
       }
+
       if (!window.isSecureContext || !navigator.geolocation) {
         unavailable(
           'Location access needs HTTPS (or localhost) and a browser with location support.',
         );
         return;
       }
+
       if (!token()) {
         unavailable('The office must connect Mapbox before a driving ETA can be calculated.');
         return;
       }
+
       if (!validCoordinates(locationFor(this.ctx, b)?.location?.coordinates)) {
         unavailable('The service location has not been added. Contact the office.');
         return;
       }
+
       session.waitTimeout = setTimeout(unavailable, 20000);
       try {
         session.watchId = navigator.geolocation.watchPosition(
@@ -1191,6 +1296,7 @@
         session.unavailable();
         return;
       }
+
       if (session.pending || Date.now() - session.lastRequestAt < 15000) return;
       session.pending = true;
       session.lastRequestAt = Date.now();
@@ -1223,6 +1329,7 @@
           this.updateWorkerPosition();
           return;
         }
+
         const destination = locationFor(this.ctx, session.booking).location.coordinates;
         const url = new URL(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates.join(',')};${destination.join(',')}`,
@@ -1236,6 +1343,7 @@
           signal: abort.signal,
           cache: 'no-store',
         });
+
         if (!response.ok) throw new Error('ETA unavailable');
         const result = await response.json(),
           duration = result.routes?.[0]?.duration;
@@ -1254,6 +1362,7 @@
           updatedAt: position.timestamp,
           remainingMinutes: Math.max(1, Math.ceil(duration / 60)),
         });
+
         this.ctx.save();
         this.refresh();
         this.updateWorkerPosition();
@@ -1286,6 +1395,7 @@
             action === 'arrive' ? 'arrive' : 'stop',
           );
       }
+
       if (this.ctx.area === 'client' && snap.phase === 'not-started') return;
       if (['arrive', 'stop'].includes(action) && this.ctx.area !== 'worker') return;
       const journey = (this.ctx.state.journeys[b.id] ||= {
@@ -1298,6 +1408,7 @@
         arrivalTime: b.start,
         running: false,
       });
+
       if (journey.workerId !== b.workerId || journey.date !== b.date || journey.start !== b.start)
         Object.assign(journey, {
           workerId: b.workerId,
@@ -1308,6 +1419,7 @@
           running: false,
           arrivalTime: b.start,
         });
+
       if (action === 'play') {
         if (!this.query('[data-journey-consent]')?.checked) {
           const error = this.query('[data-journey-error]');
@@ -1315,8 +1427,10 @@
             error.hidden = false;
             error.textContent = 'Check the journey consent before sharing an estimate.';
           }
+
           return;
         }
+
         const wasLocation = journey.mode === 'location';
         delete journey.mode;
         delete journey.remainingMinutes;
@@ -1350,6 +1464,7 @@
         journey.running = false;
         delete journey.startedAt;
       }
+
       this.ctx.save();
       this.refresh();
       this.drawRoute();
@@ -1362,8 +1477,10 @@
         this.query(`[data-map-booking="${CSS.escape(bookingButton.dataset.mapBooking)}"]`)?.focus({
           preventScroll: true,
         });
+
         return;
       }
+
       const button = event.target.closest('[data-map-action]');
       if (!button) return;
       const action = button.dataset.mapAction;
@@ -1371,8 +1488,10 @@
         this.detailTab = action === 'detail-journey' ? 'journey' : 'summary';
         this.renderDetails();
         this.query(`[data-map-action="${action}"]`)?.focus({ preventScroll: true });
+
         return;
       }
+
       if (action === 'publish-bookings' && this.ctx.area === 'office') {
         window.OCD_JOURNEY_API.publish(this.ctx)
           .then(() => {
@@ -1384,8 +1503,10 @@
             if (!this.disposed)
               this.query('[data-shared-arrival-status]').textContent = error.message;
           });
+
         return;
       }
+
       if (action === 'location') return this.startLocation();
       if (['play', 'pause', 'arrive', 'stop', 'stale'].includes(action))
         return this.controlJourney(action);
@@ -1402,6 +1523,7 @@
           duration: 600,
         });
       }
+
       if (['previous-day', 'next-day'].includes(action)) {
         const date = new Date(`${this.pref.date}T12:00:00Z`);
         date.setUTCDate(date.getUTCDate() + (action === 'next-day' ? 1 : -1));
@@ -1413,6 +1535,7 @@
         this.loadRoute();
         this.fitVisible();
       }
+
       if (action === 'fit' || action === 'route') this.fitVisible();
       if (action === 'focus') {
         const coords = this.selected && locationFor(this.ctx, this.selected)?.location?.coordinates;
@@ -1426,18 +1549,22 @@
             duration: 900,
           });
       }
+
       if (action === 'connection' && this.ctx.area === 'office') {
         const settings = this.query('[data-map-settings]');
         settings.hidden = !settings.hidden;
         if (!settings.hidden) {
           settings.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
           this.query('#map-public-token').focus({ preventScroll: true });
         }
       }
+
       if (action === 'retry') {
         this.createMap();
         this.loadRoute();
       }
+
       if (action === 'clear-token' && this.ctx.area === 'office') {
         runtimeToken = '';
         try {
@@ -1445,6 +1572,7 @@
         } catch (_) {
           /* default connection still works */
         }
+
         routeCache.clear();
         this.createMap();
         this.loadRoute();
@@ -1456,6 +1584,7 @@
         this.controlJourney('stop');
         return;
       }
+
       if (event.target.id === 'map-service-date') {
         if (
           !/^\d{4}-\d{2}-\d{2}$/.test(event.target.value) ||
@@ -1464,6 +1593,7 @@
           event.target.value = this.pref.date;
           return;
         }
+
         this.pref.date = event.target.value;
       } else if (event.target.id === 'map-worker-filter' && this.ctx.area === 'office')
         this.pref.worker = event.target.value;
@@ -1486,6 +1616,7 @@
           'Use a Mapbox public token starting with pk. Secret tokens are not accepted.';
         return;
       }
+
       error.textContent = '';
       runtimeToken = value;
       try {
@@ -1493,6 +1624,7 @@
       } catch (_) {
         /* connection remains available for this page session */
       }
+
       form.reset();
       this.query('[data-map-settings]').hidden = true;
       routeCache.clear();
@@ -1523,6 +1655,7 @@
     active?.destroy();
     active = undefined;
   }
+
   function mount(ctx) {
     unmount();
     const root = document.getElementById('booking-map-workspace');
@@ -1530,6 +1663,7 @@
       active = new BookingMap(ctx, root);
       return;
     }
+
     const preview = document.querySelector('[data-arrival-preview]');
     if (preview) {
       const unsubscribe = ctx.sharedArrivals
@@ -1554,6 +1688,7 @@
       };
     }
   }
+
   window.OCD_MAPS = {
     page,
     mount,

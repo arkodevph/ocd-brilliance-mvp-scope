@@ -6,11 +6,8 @@ try {
 } catch (error) {
   if (error.code !== 'ENOENT') throw error;
 }
-const workflowHandler = require('./api/workflow.js');
-const pushHandler = require('./api/push.js');
-const shiftcareHandler = require('./api/shiftcare.js');
-const integrationProofHandler = require('./api/integration-proof.js');
-const journeyHandler = require('./api/journeys.js');
+
+const apiHandler = require('./api/_hono.cjs');
 const seedLocalStaff = require('./scripts/local-staff.cjs');
 const mapboxConfig = require('./lib/mapbox-config.cjs');
 
@@ -31,15 +28,12 @@ const mime = {
 
 const server = http.createServer(async (req, res) => {
   const pathname = new URL(req.url, `http://${req.headers.host}`).pathname;
-  if (pathname === '/api/workflow') return workflowHandler(req, res);
-  if (pathname === '/api/push') return pushHandler(req, res);
-  if (pathname === '/api/shiftcare') return shiftcareHandler(req, res);
-  if (pathname === '/api/integration-proof') return integrationProofHandler(req, res);
-  if (pathname === '/api/journeys') return journeyHandler(req, res);
+  if (pathname.startsWith('/api/')) return apiHandler(req, res);
   if (!['GET', 'HEAD'].includes(req.method)) {
     res.writeHead(405);
     return res.end();
   }
+
   const vendor = pathname.match(
     /^\/vendor\/(pdfjs-dist\/(?:build|cmaps|standard_fonts)|tesseract\.js\/dist|tesseract\.js-core|@tesseract\.js-data\/eng\/4\.0\.0_best_int|three\/(?:build|examples\/jsm\/(?:loaders|utils)))\/(.+)$/,
   );
@@ -50,20 +44,24 @@ const server = http.createServer(async (req, res) => {
         'Content-Type': mime[path.extname(vendor[2])] || 'application/octet-stream',
         'X-Content-Type-Options': 'nosniff',
       });
+
       return res.end(req.method === 'HEAD' ? undefined : content);
     } catch {
       res.writeHead(404);
       return res.end();
     }
   }
+
   if (pathname === '/workspace/map-config.js') {
     res.writeHead(200, {
       'Content-Type': 'application/javascript; charset=utf-8',
       'Cache-Control': 'no-store',
       'X-Content-Type-Options': 'nosniff',
     });
+
     return res.end(req.method === 'HEAD' ? undefined : mapboxConfig());
   }
+
   const landingRoute =
     /^\/(?:services(?:\/[a-z0-9-]+)?|resources(?:\/[a-z0-9-]+)?|funding|about|areas-we-serve|careers|intake|portal|login|contact|faq|participant-rights|complaints|privacy|terms)?\/?$/.test(
       pathname,
@@ -86,11 +84,13 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(404);
     return res.end();
   }
+
   const absolute = path.resolve(root, `.${file}`);
   if (!absolute.startsWith(`${root}${path.sep}`)) {
     res.writeHead(404);
     return res.end();
   }
+
   try {
     const content = await fs.readFile(absolute);
     res.writeHead(200, {
@@ -98,6 +98,7 @@ const server = http.createServer(async (req, res) => {
       'Cache-Control': 'no-store',
       'X-Content-Type-Options': 'nosniff',
     });
+
     res.end(req.method === 'HEAD' ? undefined : content);
   } catch (_) {
     res.writeHead(404);
