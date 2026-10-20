@@ -6,7 +6,7 @@ The application at `/` covers the complete presentation flow across office, work
 - selectable worker visits, calendar, availability, sample native time in/out, notes/tasks/goals, cover responses, recorded hours and document follow-up;
 - client bookings, requests, arrival status, shared documents, and permitted profile updates;
 - public service-area checking, intake requests, and discovery call booking;
-- Add to Home Screen and opt-in Web Push notifications.
+- Add to Home Screen and frontend-only demo notifications.
 
 The intake path follows the 5 October 2026 meeting:
 
@@ -235,7 +235,7 @@ Public intake at `/intake` groups videos into Living room, Bedroom, Master bedro
 
 Use **Install app** in the public page's top bar, or **Add to Home Screen** in its phone menu. Both public and workspace pages share the manifest and installation UI. Browsers that expose an install prompt can use it; other browsers show their manual steps, with Safari on iPhone and Chrome on Android as fallbacks. The installed app opens `/portal`, and its shell supports offline reopening.
 
-For a presentation, open **App & alerts → In-app notifications → Show sample notification**. This displays a dismissible sample booking banner inside the page, with a link to the demo workspace. It works without native push permission or server setup and is labelled **Presentation demo**. Real push remains a separate, optional flow. Embedded recording and playback can be demonstrated on Vercel; submitting videos there still needs durable private object storage, which this presentation change does not provision.
+For a presentation, open **App & alerts → Demo notifications → Turn on demo alerts → Show sample notification**. This displays a dismissible sample booking banner inside the page, with a link to the demo workspace. The preference is saved in this browser (separately for each selected employee). It works without notification permission, API requests, Redis or VAPID keys and is labelled **Presentation demo**. Turning demo alerts off removes the banner. The installed app uses the same frontend flow; alerts appear only while the app is open. The existing push backend is not used by this demo UI. Embedded recording and playback can be demonstrated on Vercel; submitting videos there still needs durable private object storage, which this presentation change does not provision.
 
 ## Code conventions
 
