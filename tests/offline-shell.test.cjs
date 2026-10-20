@@ -4,12 +4,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const { JSDOM } = require('jsdom');
 
-function installPage(
-  t,
-  userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave',
-  savedAlerts,
-  serviceWorkerSupported = true,
-) {
+function installPage(t, userAgent = 'Mozilla/5.0', savedAlerts, serviceWorkerSupported = true) {
   const html = fs.readFileSync(require.resolve('../frontend/landing/index.html'), 'utf8');
   const dom = new JSDOM(html, {
     url: 'https://ocd.example.test/intake',
@@ -67,7 +62,7 @@ test('public intake exposes the manifest, iPhone icon and installation runtime',
 });
 
 test('Brave without an install prompt shows actionable installation instructions', (t) => {
-  const { window, trigger } = installPage(t);
+  const { window, trigger } = installPage(t, 'Mozilla/5.0 (Linux; Android 14) Brave');
   trigger.click();
   const dialog = window.document.querySelector('#app-tools-dialog');
   assert.ok(dialog.hasAttribute('open'));
@@ -107,7 +102,10 @@ test('iPhone install fallback explains the Share menu and Safari fallback', (t) 
 });
 
 test('Android acceptance does not claim installation completed before app launch', async (t) => {
-  const { window, trigger } = installPage(t);
+  const { window, trigger } = installPage(
+    t,
+    'Mozilla/5.0 (Linux; Android 14) Chrome/130 Mobile Safari/537.36',
+  );
   const event = new window.Event('beforeinstallprompt', { cancelable: true });
   let finishPrompt;
   event.prompt = () =>
@@ -152,7 +150,25 @@ test('opening from the home screen confirms app mode without another install pro
   assert.equal(window.document.querySelector('#open-workspace').getAttribute('href'), '/portal');
 });
 
+test('iOS standalone launch is recognized through navigator.standalone', (t) => {
+  const { window, trigger } = installPage(
+    t,
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)',
+  );
+  window.navigator.standalone = true;
+  trigger.click();
+  assert.match(window.document.querySelector('#install-status').textContent, /running.*app/i);
+  assert.equal(window.document.querySelector('#install-app').hidden, true);
+  assert.equal(window.document.querySelector('#open-workspace').textContent, 'Open workspace');
+});
+
 for (const [browser, userAgent] of [
+  ['Android Brave', 'Mozilla/5.0 (Linux; Android 14) Brave'],
+  [
+    'iPhone Safari',
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Version/18 Mobile Safari/604.1',
+  ],
+  ['iPad Safari', 'Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) Version/18 Mobile Safari/604.1'],
   ['Android Chrome', 'Mozilla/5.0 (Linux; Android 14) Chrome/130 Mobile Safari/537.36'],
   ['Android Firefox', 'Mozilla/5.0 (Android 14; Mobile; rv:130.0) Gecko/130.0 Firefox/130.0'],
   ['Samsung Internet', 'Mozilla/5.0 (Linux; Android 14) SamsungBrowser/26 Chrome/130 Mobile'],
