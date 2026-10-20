@@ -4,7 +4,12 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const { JSDOM } = require('jsdom');
 
-function installPage(t, userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave', savedAlerts) {
+function installPage(
+  t,
+  userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave',
+  savedAlerts,
+  serviceWorkerSupported = true,
+) {
   const html = fs.readFileSync(require.resolve('../frontend/landing/index.html'), 'utf8');
   const dom = new JSDOM(html, {
     url: 'https://ocd.example.test/intake',
@@ -25,9 +30,10 @@ function installPage(t, userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave', sav
 
   Object.defineProperty(window, 'isSecureContext', { value: true });
 
-  Object.defineProperty(window.navigator, 'serviceWorker', {
-    value: { register: async () => ({}) },
-  });
+  if (serviceWorkerSupported)
+    Object.defineProperty(window.navigator, 'serviceWorker', {
+      value: { register: async () => ({}) },
+    });
 
   window.HTMLDialogElement.prototype.showModal = function () {
     this.setAttribute('open', '');
@@ -72,6 +78,19 @@ test('Brave without an install prompt shows actionable installation instructions
   assert.match(dialog.querySelector('#app-tools-feedback').textContent, /menu|Install|Home Screen/);
 });
 
+test('desktop Brave fallback includes its Save and Share menu', (t) => {
+  const { window, trigger } = installPage(
+    t,
+    'Mozilla/5.0 (X11; Linux x86_64) Chrome/130 Safari/537.36',
+  );
+  trigger.click();
+  window.document.querySelector('#install-app').click();
+  const steps = window.document.querySelector('#install-steps');
+  assert.equal(steps.hidden, false);
+  assert.match(steps.textContent, /Save and Share.*Install OCD Brilliance/);
+  assert.match(steps.textContent, /brave:\/\/apps/);
+});
+
 test('iPhone install fallback explains the Share menu and Safari fallback', (t) => {
   const { window, trigger } = installPage(
     t,
@@ -82,6 +101,99 @@ test('iPhone install fallback explains the Share menu and Safari fallback', (t) 
   dialog.querySelector('#install-app').click();
   assert.match(dialog.querySelector('#install-status').textContent, /Share.*Add to Home Screen/);
   assert.match(dialog.querySelector('#install-status').textContent, /Safari/);
+  const steps = dialog.querySelector('#install-steps');
+  assert.ok(steps && !steps.hidden, 'Manual install must reveal visible steps');
+  assert.match(steps.textContent, /Share.*Add to Home Screen.*Add.*icon/s);
+});
+
+test('Android acceptance does not claim installation completed before app launch', async (t) => {
+  const { window, trigger } = installPage(t);
+  const event = new window.Event('beforeinstallprompt', { cancelable: true });
+  let finishPrompt;
+  event.prompt = () =>
+    new Promise((resolve) => {
+      finishPrompt = resolve;
+    });
+  event.userChoice = Promise.resolve({ outcome: 'accepted' });
+  window.dispatchEvent(event);
+  trigger.click();
+  const status = window.document.querySelector('#install-status');
+  const button = window.document.querySelector('#install-app');
+  button.click();
+  assert.match(status.textContent, /confirm.*browser/i);
+  assert.equal(button.disabled, true);
+  finishPrompt();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.match(status.textContent, /installation requested/i);
+  assert.match(status.textContent, /does not share download progress/i);
+  assert.equal(window.document.querySelector('#open-workspace').hidden, false);
+  assert.match(window.document.querySelector('#open-workspace').textContent, /Continue in browser/);
+  window.dispatchEvent(new window.Event('appinstalled'));
+  assert.match(status.textContent, /installation requested/i);
+  assert.equal(button.hidden, false);
+  assert.equal(window.document.querySelector('#open-workspace').hidden, false);
+  assert.match(window.document.querySelector('#open-workspace').textContent, /Continue in browser/);
+  const steps = window.document.querySelector('#install-steps');
+  assert.equal(steps.hidden, false);
+  assert.match(steps.textContent, /Installing.*Chrome/);
+  window.matchMedia = () => ({ matches: true });
+  trigger.click();
+  assert.match(status.textContent, /running.*app/i);
+  assert.equal(button.hidden, true);
+  assert.equal(window.document.querySelector('#open-workspace').hidden, false);
+});
+
+test('opening from the home screen confirms app mode without another install prompt', (t) => {
+  const { window, trigger } = installPage(t);
+  window.matchMedia = () => ({ matches: true });
+  trigger.click();
+  assert.match(window.document.querySelector('#install-status').textContent, /running.*app/i);
+  assert.equal(window.document.querySelector('#install-app').hidden, true);
+  assert.equal(window.document.querySelector('#open-workspace').getAttribute('href'), '/portal');
+});
+
+for (const [browser, userAgent] of [
+  ['Android Chrome', 'Mozilla/5.0 (Linux; Android 14) Chrome/130 Mobile Safari/537.36'],
+  ['Android Firefox', 'Mozilla/5.0 (Android 14; Mobile; rv:130.0) Gecko/130.0 Firefox/130.0'],
+  ['Samsung Internet', 'Mozilla/5.0 (Linux; Android 14) SamsungBrowser/26 Chrome/130 Mobile'],
+  [
+    'iPhone Chrome',
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) CriOS/130 Mobile Safari/604.1',
+  ],
+  ['Mac Safari', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) Version/18.0 Safari/605.1.15'],
+  ['desktop Firefox', 'Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0'],
+]) {
+  test(`${browser} can open the workspace without installation or service worker support`, (t) => {
+    const { window, trigger } = installPage(t, userAgent, undefined, false);
+    assert.equal('serviceWorker' in window.navigator, false);
+    trigger.click();
+    const link = window.document.querySelector('#open-workspace');
+    assert.equal(link.hidden, false);
+    assert.equal(link.href, 'https://ocd.example.test/portal');
+    assert.equal(link.textContent, 'Continue in browser');
+    window.document.querySelector('#install-app').click();
+    assert.equal(window.document.querySelector('#install-steps').hidden, false);
+    assert.ok(window.document.querySelectorAll('#install-steps li').length >= 3);
+  });
+}
+
+test('a browser prompt failure preserves manual steps and direct workspace access', async (t) => {
+  const { window, trigger } = installPage(t);
+  const event = new window.Event('beforeinstallprompt', { cancelable: true });
+  event.prompt = async () => {
+    throw new Error('Browser install unavailable');
+  };
+  window.dispatchEvent(event);
+  trigger.click();
+  window.document.querySelector('#install-app').click();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.match(
+    window.document.querySelector('#app-tools-feedback').textContent,
+    /could not open installation/,
+  );
+  assert.equal(window.document.querySelector('#install-app').disabled, false);
+  assert.equal(window.document.querySelector('#install-steps').hidden, false);
+  assert.equal(window.document.querySelector('#open-workspace').hidden, false);
 });
 
 test('presentation notifications work in-app without push permission and can be dismissed', (t) => {
