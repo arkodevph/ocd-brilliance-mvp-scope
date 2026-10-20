@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const { JSDOM } = require('jsdom');
 
-function installPage(t, userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave') {
+function installPage(t, userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave', savedAlerts) {
   const html = fs.readFileSync(require.resolve('../frontend/landing/index.html'), 'utf8');
   const dom = new JSDOM(html, {
     url: 'https://ocd.example.test/intake',
@@ -13,6 +13,12 @@ function installPage(t, userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave') {
 
   t.after(() => dom.window.close());
   const { window } = dom;
+  const networkRequests = [];
+  window.fetch = async (...args) => {
+    networkRequests.push(args);
+    throw new Error('The presentation must work without a backend.');
+  };
+  if (savedAlerts) window.localStorage.setItem('ocd-demo-alert-status-v2', savedAlerts);
   window.matchMedia = () => ({ matches: false });
 
   Object.defineProperty(window.navigator, 'userAgent', { value: userAgent });
@@ -36,7 +42,7 @@ function installPage(t, userAgent = 'Mozilla/5.0 (Linux; Android 14) Brave') {
   trigger.setAttribute('data-app-tools-open', '');
   window.document.body.appendChild(trigger);
   window.eval(fs.readFileSync(require.resolve('../workspace/pwa.js'), 'utf8'));
-  return { window, trigger };
+  return { window, trigger, networkRequests };
 }
 
 test('public intake exposes the manifest, iPhone icon and installation runtime', () => {
@@ -79,8 +85,10 @@ test('iPhone install fallback explains the Share menu and Safari fallback', (t) 
 });
 
 test('presentation notifications work in-app without push permission and can be dismissed', (t) => {
-  const { window, trigger } = installPage(t);
+  const { window, trigger, networkRequests } = installPage(t);
   trigger.click();
+  assert.equal(window.document.querySelector('#preview-in-app-notification').hidden, true);
+  window.document.querySelector('#enable-alerts').click();
   window.document.querySelector('#preview-in-app-notification').click();
   const notification = window.document.querySelector('#in-app-notification');
   assert.ok(notification);
@@ -93,6 +101,47 @@ test('presentation notifications work in-app without push permission and can be 
   window.document.querySelector('#in-app-notification button').click();
   assert.equal(window.document.querySelector('#in-app-notification'), null);
   assert.equal(window.document.activeElement, trigger);
+  assert.deepEqual(networkRequests, []);
+});
+
+test('demo alert preferences survive reopening and stay separate for each employee', (t) => {
+  const { window, trigger, networkRequests } = installPage(t);
+  window.OCD_ALERTS.setWorker('WRK-01');
+  trigger.click();
+  window.document.querySelector('#enable-alerts').click();
+  assert.equal(window.OCD_ALERTS.get('WRK-01').status, 'Demo · on');
+  const saved = window.localStorage.getItem('ocd-demo-alert-status-v2');
+  const reopened = installPage(t, undefined, saved);
+  reopened.window.OCD_ALERTS.setWorker('WRK-01');
+  reopened.trigger.click();
+  assert.equal(
+    reopened.window.document.querySelector('#preview-in-app-notification').hidden,
+    false,
+  );
+  reopened.window.OCD_ALERTS.setWorker('WRK-02');
+  assert.equal(reopened.window.document.querySelector('#preview-in-app-notification').hidden, true);
+  assert.equal(reopened.window.OCD_ALERTS.get('WRK-02').status, 'Demo · off');
+  window.document.querySelector('#preview-in-app-notification').click();
+  trigger.click();
+  window.document.querySelector('#disable-alerts').click();
+  assert.equal(window.document.querySelector('#in-app-notification'), null);
+  assert.equal(window.OCD_ALERTS.get('WRK-01').status, 'Demo · off');
+  assert.equal(window.document.querySelector('#preview-in-app-notification').hidden, true);
+  assert.deepEqual(networkRequests, []);
+  assert.deepEqual(reopened.networkRequests, []);
+});
+
+test('iPhone demo alerts work before installation without browser push support', (t) => {
+  const { window, trigger, networkRequests } = installPage(
+    t,
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)',
+  );
+  trigger.click();
+  assert.equal(window.document.querySelector('#enable-alerts').hidden, false);
+  window.document.querySelector('#enable-alerts').click();
+  window.document.querySelector('#preview-in-app-notification').click();
+  assert.ok(window.document.querySelector('#in-app-notification'));
+  assert.deepEqual(networkRequests, []);
 });
 
 test('offline workspace serves every stylesheet linked by its cached shell', async () => {
