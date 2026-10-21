@@ -75,8 +75,8 @@ test('large multiple videos upload in chunks, persist as references and stream o
   const bytes = Buffer.alloc(start.size, 7);
   bytes.write('ftyp', 4);
   const refs = [];
-  for (const [index, type] of ['video/mp4', 'video/quicktime'].entries()) {
-    const room = index === 0 ? 'living-room' : 'master-bedroom';
+  for (const [index, type] of ['video/mp4', 'video/quicktime', 'video/mp4'].entries()) {
+    const room = ['living-room', 'master-bedroom', 'kitchen'][index];
     const upload = await (await call('video-start', { ...start, type, room })).json();
     assert.equal(upload.chunkBytes, 1024 * 1024);
     assert.equal(upload.room, room);
@@ -139,10 +139,11 @@ test('large multiple videos upload in chunks, persist as references and stream o
 
   const cookie = login.headers.get('set-cookie').split(';')[0];
   const record = (await (await call('intakes', undefined, cookie)).json()).records[0];
-  assert.equal(record.onboarding.serviceVideos.length, 2);
+  assert.equal(record.onboarding.serviceVideos.length, 3);
   assert.equal(record.onboarding.serviceVideos[0].size, bytes.length);
   assert.equal(record.onboarding.serviceVideos[0].room, 'living-room');
   assert.equal(record.onboarding.serviceVideos[1].room, 'master-bedroom');
+  assert.equal(record.onboarding.serviceVideos[2].room, 'kitchen');
   assert.equal(record.onboarding.serviceVideos[0].data, undefined);
   assert.ok((await fs.stat(path.join(directory, 'intakes.json'))).size < 20000);
   const reviewed = await fetch(`${base}?action=draft-review`, {

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T06:11:17.816Z",
+  "status": "fail",
+  "sourceMode": "fictional and isolated",
+  "checks": [],
+  "captures": [
+    {
+      "path": "docs/employee-macos-review-2026-10-21/references/failure-current-state.png",
+      "sha256": "a2aedb3a234729114d91491806e8c1a5c3ac9ffa7671e244e2b8bfbb2f6ca850",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

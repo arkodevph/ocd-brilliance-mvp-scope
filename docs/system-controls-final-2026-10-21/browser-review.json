@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:20:26.272Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Cancellation assistant",
+      "status": "pass",
+      "detail": "Travel and charge review, native read-back, two notifications, failed delivery, reload recovery, completion, recipient views and mobile layout passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/system-controls-final-2026-10-21/booking-dropdown.png",
+      "sha256": "cbfaf41cb5a2d657c69becbe51ceedfa8fbfa255423483e587bef01313ce44a0",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-controls-final-2026-10-21/cancellation-review-desktop.png",
+      "sha256": "a7730edae0cdeab48b7f754a40c3db974bac0a570e73cd78f5d532796143a907",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/system-controls-final-2026-10-21/cancellation-review-mobile.png",
+      "sha256": "2b705a0829b8f0bf883cc50e31c1cc210d8164be8d2e8f88c95511bb44f6e983",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/system-controls-final-2026-10-21/cancellation-charges-desktop.png",
+      "sha256": "8d18d72488a3ec53cf36532af8d5b2a3196d6d04ed5e3bad58536c70daf7a35b",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/system-controls-final-2026-10-21/cancellation-charges-mobile.png",
+      "sha256": "70d510cdc8a7e2ef07f7d32f200182eb556f9869edb67c83abbbf79a9d780eb4",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/system-controls-final-2026-10-21/cancellation-charges-with-charge-desktop.png",
+      "sha256": "66af17bb19e8e7999acfe6d8ab9f1ad6234acc110b2b50f2d1e601a8e3ff00c2",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/system-controls-final-2026-10-21/cancellation-completed-mobile.png",
+      "sha256": "7ab4df8bb538c5fa20d432d63c672b029c99cd032375dc780a2db67e8998911b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/system-controls-final-2026-10-21/cancellation-completed-desktop.png",
+      "sha256": "127c0880cd43b47e638f161d04549bc8427cf2c2123bbea80e58ceb2e290f34c",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Pass for the shared form-control issue. Inspected desktop/mobile contact sheets and full-size payroll, existing-record, status-filter and dialog screenshots. Real dropdowns replace generated option rows; no horizontal overflow.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

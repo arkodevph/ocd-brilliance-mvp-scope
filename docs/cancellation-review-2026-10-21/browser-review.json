@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:07:28.940Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Service booking search",
+      "status": "pass",
+      "detail": "Filters bookings by their labels, selects the matching record, shows an empty result message and fits a mobile viewport."
+    },
+    {
+      "name": "Cancellation assistant",
+      "status": "pass",
+      "detail": "Travel and charge review, native read-back, two notifications, failed delivery, reload recovery, completion, recipient views and mobile layout passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/cancellation-review-2026-10-21/booking-search.png",
+      "sha256": "82b79106a069aaed86933bd68473c1de26abd0e8db8234a02864cb59e77e5b69",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/cancellation-review-2026-10-21/cancellation-review-desktop.png",
+      "sha256": "128e5ccff2cf1577025dd28dc3cdbc69499691e449df28f5c33e275e2e36904b",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/cancellation-review-2026-10-21/cancellation-review-mobile.png",
+      "sha256": "fa458b7698a7e000700970771c6caccbea8fa66073f6f3d93d6a00157ef9bf30",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/cancellation-review-2026-10-21/cancellation-completed-mobile.png",
+      "sha256": "d9c2d56bf7fb1489c426dc8f9affb3700dacdbadbaad9b178596320831fa6005",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/cancellation-review-2026-10-21/cancellation-completed-desktop.png",
+      "sha256": "9ace577d26367ba97b0ee9ad344a76a2baf63ab56f1a3b756c6d440a9f7cdf2c",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Pass: inspected desktop review and completed mobile screenshots; checklist, evidence form and completion fit without horizontal overflow.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

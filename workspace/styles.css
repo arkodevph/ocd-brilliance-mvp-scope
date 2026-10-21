@@ -1021,28 +1021,8 @@ td a:hover { text-decoration: underline; }
 .intake-steps .complete > span { color: var(--green-dark); background: var(--green-pale); border-color: #b8d3c2; }
 .intake-mode { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; color: var(--muted); font-size: .8125rem; }
 .intake-mode svg { flex: none; width: 18px; height: 18px; }
-.intake-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; align-items: start; margin-bottom: 24px; }
-.intake-layout > * { min-width: 0; }
-.intake-layout[hidden] { display: none; }
-.intake-layout.intake-single { grid-template-columns: minmax(0, 1fr); max-width: 800px; }
-.intake-section-nav { position: sticky; top: 64px; z-index: 3; background: var(--canvas); padding-top: 8px; flex-wrap: wrap; gap: 8px 17px; }
-@media (max-width: 760px) {
-  .intake-section-nav { top: 0; }
-}
-.intake-layout .panel { padding: 24px; border-radius: 12px; margin-top: 0; }
-.intake-layout .section-heading h2, .intake-queue h2 { font-size: 1rem; }
-.intake-layout .section-heading p, .intake-queue .section-heading p, .intake-layout .form-note { font-size: .8125rem; }
-.intake-layout label { font-size: .875rem; }
-.intake-layout input, .intake-layout textarea, .intake-layout select { font-size: .9375rem; }
-.intake-layout input, .intake-layout textarea, .intake-layout select { border-color: #85938a; }
-.intake-layout .field-error { font-size: .875rem; }
-.intake-layout .form-actions { flex-wrap: wrap; }
-.intake-followup { scroll-margin-top: 90px; }
-.intake-layout textarea { resize: vertical; }
-.intake-layout .checkbox { margin-top: 20px; align-items: start; }
-.intake-layout .checkbox input { margin-top: 3px; }
-.intake-layout .btn { min-height: 40px; }
-.intake-source { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: .9375rem; line-height: 1.8; }
+.intake-queue h2 { font-size: 1rem; }
+.intake-queue .section-heading p { font-size: .8125rem; }
 .field-evidence { color: var(--muted); font-weight: 400; font-size: .75rem; overflow-wrap: anywhere; }
 .intake-warning { margin: 0 0 20px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; font-size: .875rem; }
 .intake-warning > strong { display: block; color: var(--amber); }
@@ -1061,17 +1041,12 @@ td a:hover { text-decoration: underline; }
 .handoff-fields button { grid-column: 2; grid-row: span 2; }
 .intake-queue { overflow: hidden; }
 .intake-queue > .section-heading { margin: 0; padding: 20px 24px; border-bottom: 1px solid var(--line); }
-.review-stamp { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: .8125rem; color: var(--green-dark); overflow-wrap: anywhere; }
 .verification-receipt h3 { font-size: 1rem; overflow-wrap: anywhere; }
 .verification-receipt p { overflow-wrap: anywhere; }
-.intake-layout .record-history { max-height: 320px; overflow-y: auto; }
-.intake-layout fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 @media (max-width: 1050px) {
-  .intake-layout { grid-template-columns: minmax(0, 1fr); }
   .intake-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
-  .intake-layout .panel { padding: 20px; }
   .intake-stats { gap: 8px; }
   .intake-stats > div { padding: 16px 12px; }
   .intake-stats span { font-size: .75rem; }
@@ -1079,7 +1054,6 @@ td a:hover { text-decoration: underline; }
   .intake-steps { gap: 16px 8px; padding: 12px; }
   .intake-steps li { gap: 0 8px; }
   .intake-steps strong { font-size: .75rem; }
-  .intake-layout input, .intake-layout textarea, .intake-layout select { font-size: 1rem; }
   .intake-preview-fields > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .intake-mode { align-items: start; }
 }
@@ -1643,13 +1617,6 @@ table td:first-child a:hover { color: var(--green); text-decoration: underline; 
 .sidebar .nav-disclosure > .disclosure-title { display: none; }
 .sidebar .nav-disclosure { padding: 0; border: 0; }
 .sidebar .nav-disclosure .nav-group { margin-bottom: 8px; }
-.visible-choices { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; min-width: 0; margin-top: 6px; }
-.visible-choices button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; max-width: 100%; padding: 8px 2px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 500; line-height: 1.35; text-align: left; overflow-wrap: anywhere; }
-.visible-choices button:hover { color: var(--ink); }
-.visible-choices button[aria-pressed="true"] { border-bottom-color: var(--green); color: var(--green-dark); font-weight: 650; }
-.visible-choices button:disabled { opacity: .55; cursor: default; }
-.visible-choices > input { flex: 1 0 100%; min-width: 0; margin-bottom: 2px; padding: 9px 12px; }
-.visible-choices .choice-error { flex-basis: 100%; margin: 5px 0; }
 .view-select { display: block; white-space: normal; }
 .account-trigger { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 8px; border: 0; border-radius: 10px; background: transparent; font-size: 13px; font-weight: 600; color: var(--ink); }
 .account-trigger:hover { background: #eff3ec; }
@@ -1659,7 +1626,6 @@ table td:first-child a:hover { color: var(--green); text-decoration: underline; 
 .intake-stats > div { padding: 17px 20px; gap: 8px; }
 .intake-stats strong { font-size: 30px; }
 .intake-capture-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: 20px; }
-.intake-layout .panel { border-radius: var(--radius-panel); padding: 22px; }
 .intake-capture-layout textarea { min-height: 145px; resize: vertical; }
 .intake-auto-caption { color: var(--muted); font-size: 12px; margin-right: auto; }
 .intake-empty { padding: 54px 24px; }
@@ -1679,10 +1645,8 @@ table td:first-child a:hover { color: var(--green); text-decoration: underline; 
 }
 @media (max-width: 1050px) { .intake-capture-layout { grid-template-columns: 1fr; } }
 @media (max-width: 760px) {
-  .visible-choices button { min-height: 44px; }
   .account-trigger > span:last-child { display: none; }
   .action-record { padding: 15px; }
-  .intake-layout .panel { padding: 18px; }
   .intake-auto-guide { font-size: 12px; align-items: flex-start; }
   .intake-stats { gap: 8px; }
   .intake-stats > div { padding: 14px 12px; }

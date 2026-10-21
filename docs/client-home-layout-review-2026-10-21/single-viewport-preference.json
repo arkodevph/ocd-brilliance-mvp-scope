@@ -1,0 +1,28 @@
+{
+  "id": "2026-10-21-design-preference-single-viewport",
+  "summary": "USER DESIGN PREFERENCE: one point of view means a complete non-scrollable screen. Fit all page sections in the viewport; do not build a tall page and disable scrolling.",
+  "status": "Design preference recorded; OCD client home adjusted locally",
+  "progress": [
+    "User explicitly corrected the interpretation: everything should be in one place and visible on one screen, without scrolling. This is a general preference for designing interfaces, not just a request to enable scroll.",
+    "Added frontend/features/client-home/viewport-layout.css and calendar-preview.css. Desktop homepage is compact, retains service colour indicators and shows booking, worker and updates content together. Calendar preview uses a native dialog instead of increasing page height.",
+    "npm run build:frontend passed. At1280x720, booking/worker end at580.6px, updates begin592.6px and end689.2px; no overlap or content overflow in measured home sections."
+  ],
+  "decisions": [
+    "GENERAL DESIGN RULE requested by user: design for one viewport, with all main content and actions visible together. Non-scrollable means the content fits; never achieve this by clipping content or merely hiding scrollbars.",
+    "Validate actual section bounds and overlaps at target viewport; a hidden scrollbar alone does not prove the design fits.",
+    "Retain meaningful colours and feature-specific file structure.",
+    "This correction supersedes the earlier decision to let the desktop home page grow vertically with content."
+  ],
+  "blockers": [
+    "None observed for the verified desktop home state"
+  ],
+  "questions": [
+    "User has not specified an exhaustive minimum device size or how the one-screen preference should apply to long forms and enlarged text. Do not infer permission to clip these."
+  ],
+  "next": [
+    "Apply the single-viewport design preference in future design work. Verify content remains visible rather than just disabling scroll."
+  ],
+  "sources": [
+    "01-Projects/OCD Brilliance/Start here.md"
+  ]
+}

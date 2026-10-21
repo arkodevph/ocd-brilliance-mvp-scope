@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T09:43:47.726Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Inbox tasks",
+      "status": "pass",
+      "detail": "Reviewed email becomes an owned task with deadline; edit/reload/work-queue visibility, duplicate import prevention, workflow completion and desktop/mobile layouts passed. No mailbox or native booking changes."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/booking-dropdown.png",
+      "sha256": "5f46e07c52797d81daff57af2c6fd939d7b0a85cae133b6cfae471ad6c71814e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-tasks-desktop.png",
+      "sha256": "13686d88fec24365d0e15885d8eca09ff4e66f8770e8af40f4cd51e1911847ae",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-messages-mobile.png",
+      "sha256": "eef102ec2949bd755581ca8f7d540e16e77c243d14eba689ac2e401e653b3863",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-compose-desktop.png",
+      "sha256": "fe4f1bf7a3ba66b22ba9fd77fe0cab3986d3d8e496e7607b539a61558e285db7",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-review-desktop.png",
+      "sha256": "ddb7b445f19d069789180e6692c5774b18cc7e0c41f2dfabf964c02f1f2a0dc5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-review-mobile.png",
+      "sha256": "37b2b810684aea96cf87c2312f6a82403c4f3414fb0f8812204e0158a0357575",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-assignment-mobile.png",
+      "sha256": "abf7f41f2feff8261a0782277e1aa86bea5dc79d409365c64f07df79e3027cb6",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-assigned-desktop.png",
+      "sha256": "89d4a145dcb09376da21b55c5cda90497cdab0c55e260808642b6f3d8bc439c2",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-task-detail-desktop.png",
+      "sha256": "27e8fd46fe6ec6a9306d902cd35605d50752233ea0cd8bc5808f6667a45b5493",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-task-detail-mobile.png",
+      "sha256": "3cd713871e9b06dff02855dd0a7c6e9779f5b52992356b0cb327512d91c4b57d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-completed-desktop.png",
+      "sha256": "f0f7f7809cbe75931056de9ebad72d993c3790b2a0da4aa64f13890dadd9045e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-completed-hover-desktop.png",
+      "sha256": "dd9633cd79262ed68eacd417278a6815b68fcd305c11c2d2f0e37f7f8e4dd6c7",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-completed-mobile.png",
+      "sha256": "eceaa96692d9b332f2d7298adc280f60131eb0bfabfaace28915785e5888aabb",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-completed-narrow.png",
+      "sha256": "25cd7096de55c6be8bafbe188a282eab0a8e913e9ed039739f1c32aa3eb7333a",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-separated-views-review-2026-10-21/inbox-tasks-mobile.png",
+      "sha256": "1e7a8afcffe154091220d275af8e3a9726bf0165990c800c2cec939efd9f1de3",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Messages/Assigned desktop, completed-hover desktop and320px completed view inspected.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

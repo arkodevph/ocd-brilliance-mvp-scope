@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:34:02.493Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Travel checker",
+      "status": "pass",
+      "detail": "Legacy evidence review, worker/address change flags, work queue navigation, retained estimates, unchanged fees, responsive layout and persistence passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/travel-checker-review-2026-10-21/booking-dropdown.png",
+      "sha256": "3f83005a8af17d97ef43f32e0008d9b9ceb587b24f20434948a9522b329b45d5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/travel-checker-review-2026-10-21/travel-checker-worker-change-desktop.png",
+      "sha256": "517fd3f31565f3af58774f54e2446187add47b8289bb31d80b4f5d3179e6f2f6",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/travel-checker-review-2026-10-21/travel-checker-worker-change-mobile.png",
+      "sha256": "3733f9443c1ee15bcef04b7d49edbb21503e8ff53202a37d77febd42c596f750",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/travel-checker-review-2026-10-21/travel-checker-reviewed-desktop.png",
+      "sha256": "6bd5d3dbae51ada10fec4d8aa38e01b5e2f7dad371a15c09e1282580dc6434a5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/travel-checker-review-2026-10-21/travel-checker-reviewed-mobile.png",
+      "sha256": "d0003e0ba59cc305e19bc5d757d2009357bd74d5459e4b513a782a45a8b87771",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Verified targeted desktop/mobile travel checker, intake scroll and public open-menu screenshots. Automated viewport overflow checks passed.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

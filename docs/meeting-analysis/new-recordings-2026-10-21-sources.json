@@ -1,0 +1,31 @@
+{
+  "analysis_date": "2026-10-21",
+  "recording_dates": "Unknown; filenames and MP3 tags do not establish meeting dates.",
+  "sources": [
+    {
+      "id": "M1",
+      "file": "/home/nami/Downloads/Dialpad Meetings (1).mp3",
+      "duration_seconds": 12864.402667,
+      "sha256": "64726b2f0e745e20a74a6697fe8ea175725747dd18a88bbc0c6b61e780bcf699"
+    },
+    {
+      "id": "M2",
+      "file": "/home/nami/Downloads/Dialpad Meetings (2).mp3",
+      "duration_seconds": 2940.522667,
+      "sha256": "de8b8682be33eea9893203654ec1880d54692457a40740f434b9f4ae2567c67c"
+    }
+  ],
+  "method": "Local whisper.cpp tiny.en transcription across both recordings; base.en re-transcription of M2 00:07:30\u201300:22:30 and four M1 clips recorded in meeting-1-verify-map.json. M1 remainder from 00:23:10 skips detected silences over 3 seconds with 0.6-second padding, retaining an original-time map. Findings paraphrase automated transcripts; they are not a human-verified verbatim transcript.",
+  "raw_artifacts": "/home/nami/Documents/Data/ocd-recordings-2026-10-21",
+  "limits": [
+    "Speech recognition errors remain, particularly names, figures and quiet/overlapping audio.",
+    "Times are approximate elapsed audio positions, not wall-clock times.",
+    "Audio does not verify visual-only actions or actual system state.",
+    "Recommendations and priority rankings are analyst proposals, not approved requirements or verified feature gaps.",
+    "No time savings, ROI, exact billing rules or integration feasibility have been measured.",
+    "Initial expired-plan interpretation is corrected in M1; do not claim that example is expired.",
+    "Recurring shift updates are demonstrated in ShiftCare; do not present bulk updates as absent.",
+    "No old CSV transcript was used as evidence for new findings."
+  ],
+  "findings_count": 23
+}

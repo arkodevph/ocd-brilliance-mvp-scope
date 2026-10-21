@@ -1,0 +1,1160 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:17:11.692Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "office/overview",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/work",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/schedule",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/calendar",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/participants",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/staff",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/enquiries",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/calls",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/agreements",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/visits",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/map",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/fees",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/finance",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/invoices",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/intake",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/intake/new",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/shiftcare",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/verification",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/home",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/personal",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/reviews",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/today",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/map",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/calendar",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/leave",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/availability",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "worker/review",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "client/home",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "client/bookings",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "client/workers",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "client/map",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "client/documents",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "client/intake",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "public/book",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "public/intake",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/participants/PAR-101",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/staff/WRK-01",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/agreements/AGR-301",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/visits/VIS-701",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/schedule/BKG-498",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/enquiries/ENQ-1042",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-1",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-2",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-3",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-4",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-5",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-6",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-7",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-8",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "office/automation/AUTO-9",
+      "status": "pass",
+      "detail": "Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow."
+    },
+    {
+      "name": "Global native form dropdowns",
+      "status": "pass",
+      "detail": "Office, worker, client and public forms plus an agreement dialog retain native selects. Payroll selection and report submission passed; mobile and desktop fit."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/booking-dropdown.png",
+      "sha256": "cbfaf41cb5a2d657c69becbe51ceedfa8fbfa255423483e587bef01313ce44a0",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-01-office-overview-desktop.png",
+      "sha256": "e453aae701aab8c5d5e6a11eb6ac02973b10209bf627fe599389a0ecfa88a7b1",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-01-office-overview-mobile.png",
+      "sha256": "715153c8bb4ae9fa16a955da9779d9ae4e754d08b320121b555c552af9f0f802",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-02-office-work-desktop.png",
+      "sha256": "a25053bf0a3b45d3e6d24164ffeadc069fde917bc66193f064a9b6e681a3e8b9",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-02-office-work-mobile.png",
+      "sha256": "c9431928340411ad945f595c07b943fab88df61241275f76fcf6ac9f35ac5e16",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-03-office-automation-desktop.png",
+      "sha256": "18101201311f2590be647b95c6f44f9fad315bfab1bd4d1092c5304ed9813c56",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-03-office-automation-mobile.png",
+      "sha256": "7b87a3fc52614e1c02e50f0a88d558d7b3bae6f9fe09ebd9ecc3909b524d631d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-04-office-schedule-desktop.png",
+      "sha256": "cc8a524adf69892975da41e6b604e085af2f57af94b77e677a2d4d613383b056",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-04-office-schedule-mobile.png",
+      "sha256": "6cae2bb6d10e9d45e053909434c0d8c1dd1cebbaf387a55da1f2df48ea8d68cb",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-05-office-calendar-desktop.png",
+      "sha256": "7c642d1907a6d15b0c207998cca57ba58383923a60fb3caba9540cfb106144c4",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-05-office-calendar-mobile.png",
+      "sha256": "2a5b1223dd60be4a16437ed26edb12de113f3a82cbc3ec0d1b8086a701716958",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-06-office-participants-desktop.png",
+      "sha256": "bb4d4507434c277c50efeab99c9bf10ab5ea5e5ed521e8dd76b10c294ac8d39f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-06-office-participants-mobile.png",
+      "sha256": "4b4b1c6005c4264b5816f6e8e4edbb41b3047973249088cf51a0e1c0bec4ddd7",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-07-office-staff-desktop.png",
+      "sha256": "2b5b9d918c431bb13f5f21cb73ba666a177be646d8b4f5b60cc9a144ddbd7efa",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-07-office-staff-mobile.png",
+      "sha256": "65db3ae7b6705693f1d90ee7a180a0bf1a383a793a86893bcd6d22ea4c6c6a90",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-08-office-enquiries-desktop.png",
+      "sha256": "99e9a93fa8cc3e2f675c6a487287033619176af7d5f129f45d7038cf68cd0c38",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-08-office-enquiries-mobile.png",
+      "sha256": "e7b5f08bf9636909482c6550c5bcad1b47b6531d3943d46bbc8fc65fe557102c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-09-office-calls-desktop.png",
+      "sha256": "8affd76ed5bc27bcfbdb464085790903fc2332934cc2f1599ed26a054eaeda05",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-09-office-calls-mobile.png",
+      "sha256": "12b81c79af8e8bbfd1e151fa25a5ea79af51dd037a05f79911c59a98b0bd53fa",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-10-office-agreements-desktop.png",
+      "sha256": "e3ff13a3bd2c631a10b521043ca092644e0041f1a3faba6d49d0f5c28d82853a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-10-office-agreements-mobile.png",
+      "sha256": "3d5db85fc6deb8b4959288c4cb7547b2e6e4b88a3285e73705a8698fbb4ffdf8",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-11-office-visits-desktop.png",
+      "sha256": "ce7a918a5005beea5d9e78f4be0f45383abbe4b2b5e520d24e9cf6be8b146469",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-11-office-visits-mobile.png",
+      "sha256": "dd1285923b0a8f681e28230e6698b7988df70e8f27b275134603fb2e6c783e6d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-12-office-map-desktop.png",
+      "sha256": "90ad61d56e5773b25f29278ebba45b2d4e7e9b12c85d49d754049113c6cd73a1",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-12-office-map-mobile.png",
+      "sha256": "58d20f0bc0dc331c18cddec98104eb64ca308b9a9683430763a5ce521cd9102e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-13-office-fees-desktop.png",
+      "sha256": "ff45eeb6453a510ac3206a27ae9451d5858a13a14d7dca31b884b067ff8c3572",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-13-office-fees-mobile.png",
+      "sha256": "817eb41e86616962430a0fb99b3f827d2bd3d9404d376edc1eb9878db2d6aa04",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-14-office-finance-desktop.png",
+      "sha256": "30d7b95f3492db9bce4644ab9456becfe7e4ff30849d1151c3033d2ce6142825",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-14-office-finance-mobile.png",
+      "sha256": "f63e985e3a7d242d00e08978aeb34b5edb4bd3c6ccf834925f45f5123c3e4a5e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-15-office-invoices-desktop.png",
+      "sha256": "11827aededde65334de8b80b0f9ccb1abfa3a63a9ed827c430a2bfcf89166e3b",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-15-office-invoices-mobile.png",
+      "sha256": "0357d2e93f409cf6b27a715504677ffd7bfbe25a1198c66d073e5dcce8bdf561",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-16-office-intake-desktop.png",
+      "sha256": "6971a6c47af16f2ec6456d28d7fecc53ddcd1300fb1421f89bb952a2e9aa21a6",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-16-office-intake-mobile.png",
+      "sha256": "12fec8d6bb4f8eb7b17e7a513f78a3dad18659f3101b43309c34d44c5ec6a6d8",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-17-office-intake-new-desktop.png",
+      "sha256": "72d63494dfc6d848c583ea4bcf1788fc76b41cdabf87b8f6e5eaebbd15858218",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-17-office-intake-new-mobile.png",
+      "sha256": "d777f90c0e0f4b0b02ec889ac8dad1364868bff8fcf9a2a407b3ac7ff8273b1d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-18-office-shiftcare-desktop.png",
+      "sha256": "97f9ca25712d3ceffceffcd2880d5565848543b6fb1710f2ac3f53c8023e6373",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-18-office-shiftcare-mobile.png",
+      "sha256": "d07370eb10e8ae7c4d78de9a2e6b44e400d241c07c4df95f8d5b52da2ad21cbf",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-19-office-verification-desktop.png",
+      "sha256": "9872b5621c6b47829010043c37fe98ea2de2d7945c8d397cbff51233dd21316f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-19-office-verification-mobile.png",
+      "sha256": "87515228a1ef908741e75dc6f4fd671083bb1037c586b3c9fa36a36ad602306d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-20-worker-home-desktop.png",
+      "sha256": "e0dc9e4137a8b029b81833460f03453b8cdbf28f31a1ab68452a7d149ad0ffa5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-20-worker-home-mobile.png",
+      "sha256": "a3f04c0c5100e00418123f2c9d8fa104350b5f3a544c0a96055c5d2dbdb4aad3",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-21-worker-personal-desktop.png",
+      "sha256": "ec339ab0be6feed42318638c6c8f38b0adb603a214e1992eba1efbafb22dde0e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-21-worker-personal-mobile.png",
+      "sha256": "f2ad57b98faceea88859de1b52fcecbf3e5889a2ccf54e074f49eb4b9b5da6d3",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-22-worker-reviews-desktop.png",
+      "sha256": "fc6eb56bbdb6c29f0e1d0f558bd3c39a26be0aebda756c841b36a15eae0b2760",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-22-worker-reviews-mobile.png",
+      "sha256": "250a07ba2e5f6447b16d3390da374288151cddd87099cac73127f6eedafc0a6a",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-23-worker-today-desktop.png",
+      "sha256": "604b0d7178eeea6be71188bddcc141b70c6d935bfbacda96780484568c4aa448",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-23-worker-today-mobile.png",
+      "sha256": "f8d3bbbff3c35be44cb4bdf9b9c2be447434ce2edef878f7af051c2bad42060e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-24-worker-map-desktop.png",
+      "sha256": "c24c2f6c6a374cc291cbb62ad3c6968641766e2214584a45e01e9b82de150a97",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-24-worker-map-mobile.png",
+      "sha256": "518752e3ad680defe65f660a90418f6e75e313937b859f5d4aeb8b9b457b2812",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-25-worker-calendar-desktop.png",
+      "sha256": "f793e965c99a3f4c0e829e0623528e66ab9fb967602dd9ed2978ddbf7a9b451f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-25-worker-calendar-mobile.png",
+      "sha256": "bb07f54b2a685b3c020017802e122d6c241191a34ba7f4a10f3137c95aa13950",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-26-worker-leave-desktop.png",
+      "sha256": "495a77dcb55faa177f4e6e80c1a7519dde9c25addc1f34fd89b8c5169a1baf9c",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-26-worker-leave-mobile.png",
+      "sha256": "6aa6ac8ff85b51d7ff928f73fea65969e659e0c9cb94ac497d359c1c17243069",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-27-worker-availability-desktop.png",
+      "sha256": "3290c9fa92e3fcff2cb67e0ee117ada161a91ea8f833dd2e2c183b8690071324",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-27-worker-availability-mobile.png",
+      "sha256": "462d52b3b5ebc7efc6052e5bf2a53a44d2132293a3d8db217b5b9c588d4bbee6",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-28-worker-review-desktop.png",
+      "sha256": "4999fc6aa254c000d1adc8d7a647d98882fe124f98b610319c787a893c076ea2",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-28-worker-review-mobile.png",
+      "sha256": "faac14b8c35bac6b2d5758a4ab5127da6c9c06f1814ab002d9e9c88fc8464c9e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-29-client-home-desktop.png",
+      "sha256": "da31cd8640f837304ede20ea870bd7de2fdbbd00a562c26ad3e42df1c9d165b5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-29-client-home-mobile.png",
+      "sha256": "ce2b89047210ca0dc255f776cb2163554b666f6fd68bc776ffd6e9def4ee7974",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-30-client-bookings-desktop.png",
+      "sha256": "5e34d5af857c01650c2616f5110e9002920078398d7f4677b7c90e63d419c1d5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-30-client-bookings-mobile.png",
+      "sha256": "27f239aa37d5addefb5345afd2e4cfb9e6e9dd021a2f6d4200abd89d77c8d3ec",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-31-client-workers-desktop.png",
+      "sha256": "bb918e89f329f72fe0b8576c91f18f2646459d63511cd637cfdc552f97cc1175",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-31-client-workers-mobile.png",
+      "sha256": "73f67474cad5ca37d790ad91311fecb695e44ee932cc77e5f13626383d6ba34b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-32-client-map-desktop.png",
+      "sha256": "b4db14634b38ab52bae520a45f938df9485676e2f6a00f782cba2fe7dc7e8249",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-32-client-map-mobile.png",
+      "sha256": "56bd8594127d8159db5d72b105d16bf662467f4d157941071ea7a52ac8c966a7",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-33-client-documents-desktop.png",
+      "sha256": "71a0b5b987f002805d72497e2120de147ce549bd346e4668ed0c2e11f897a7a1",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-33-client-documents-mobile.png",
+      "sha256": "12ba25604d1a03be465c547763108ea96465a024eccd1ec825195e6c5a34a9ab",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-34-client-intake-desktop.png",
+      "sha256": "f5ad1634e97ddb4c964e6fd3b025e303b3846d7c9bfccf50d754fc52ef56c8a1",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-34-client-intake-mobile.png",
+      "sha256": "5d6c10eae1f11b3a8c8a7602aa19a58e997ceded4a03663b1c7631b21c7ee15c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-35-public-book-desktop.png",
+      "sha256": "759896acc50dcc9526b5d1a60aced8f05b602de2cf991b7fe7e2c1e0d1a0c9e8",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-35-public-book-mobile.png",
+      "sha256": "ce9baeb34d810c9d081acdb24fbe035dbf64cf3e48a313316b3aa4793ca7838c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-36-public-intake-desktop.png",
+      "sha256": "3a6d8da28e8f85f08ca28071b0f6186a47df0ec77556595a421b802bf9fa29fb",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-36-public-intake-mobile.png",
+      "sha256": "5afc9eb567a270dddb54c2760e5b03db352c4d3520969b71e1f799721c259f4f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-37-office-participants-PAR-101-desktop.png",
+      "sha256": "e72c2025d806d1ed14d9526e9fda2633b5392fe744f7675dc6907682ca7d127f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-37-office-participants-PAR-101-mobile.png",
+      "sha256": "8a0eb05c44005f893ea1cc16b53f69c02ca360538fafb01c01a5747f8a72b22e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-38-office-staff-WRK-01-desktop.png",
+      "sha256": "6feb71ee59ed4b3a83c988c27b98579d3658193aa93f35d8bc8b6854b4244eeb",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-38-office-staff-WRK-01-mobile.png",
+      "sha256": "17d620d5a62852a079ab82c3da36ab8d4470edeeb915c9c613f130d6f8dc92fb",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-39-office-agreements-AGR-301-desktop.png",
+      "sha256": "2c77d213ff95f71fd470c1e37d4965fb84389473d9efcd5fdcf3aaa042466d24",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-39-office-agreements-AGR-301-mobile.png",
+      "sha256": "ba16e87aa4b7927c6683e99f0420a185e4209e9a7c9441c3a87ee6c4f0c75b2e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-40-office-visits-VIS-701-desktop.png",
+      "sha256": "7d4b5fee4c75617af5358453e8598eb00a079beb78a8c1c84883f1da395438e8",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-40-office-visits-VIS-701-mobile.png",
+      "sha256": "231a2ec7b7931c96d5c9e8b9ee53b53e6194b30f97d8c7abc443e0a9fb51ff3d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-41-office-schedule-BKG-498-desktop.png",
+      "sha256": "b418f8875a57a86a8fe7231603be131c38beee2d5500d3840436efcae4201b81",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-41-office-schedule-BKG-498-mobile.png",
+      "sha256": "844ec36e681e88ad36900da1bebfa5632889c834d227aef46465fcbef34e1ce8",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-42-office-enquiries-ENQ-1042-desktop.png",
+      "sha256": "e6be67e95b81f2118a23ab5018bc14bb67be3a1d177feb817a5829e7dd2e27e7",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-42-office-enquiries-ENQ-1042-mobile.png",
+      "sha256": "0382b3b3bd092a2bbe4afbe20c54647c223ca648cb62e48788d99b2898dcd723",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-43-office-automation-AUTO-1-desktop.png",
+      "sha256": "5d2607b3c272a81163e55af718704c9d793dde789bedf55096e9c879eb65ee31",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-43-office-automation-AUTO-1-mobile.png",
+      "sha256": "330defc5a26b8c35c87d69a3b0547703316103a2aad2baf29435654883b76397",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-44-office-automation-AUTO-2-desktop.png",
+      "sha256": "2c4968a206c0da889acce6d112ecd6214a7d3810483d59bb1b61d6719b34980f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-44-office-automation-AUTO-2-mobile.png",
+      "sha256": "a90d3c86e38d5fb9a169fbdb6447608fae0eb7b23b17140c8a2acfd5eba50e51",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-45-office-automation-AUTO-3-desktop.png",
+      "sha256": "934c3b3022ba55ec416168086eb0b83278f265d576b1a96a05a92b78e9164240",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-45-office-automation-AUTO-3-mobile.png",
+      "sha256": "edddd5df67bd221d806c8f8a88da8760141027eb0ea9500e5a47904f8c827474",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-46-office-automation-AUTO-4-desktop.png",
+      "sha256": "79830bfc5505597c0a9d9db8747c4fe5d51c19277ef8d6fa2fdb560e16f97054",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-46-office-automation-AUTO-4-mobile.png",
+      "sha256": "722bb6af60b23079bf61bc876fc0617be7d3caa6fed740159a9695895a493673",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-47-office-automation-AUTO-5-desktop.png",
+      "sha256": "d0906e6c36b1cefa0f331a31732c5bc522a7d78ab11add7f1ef13454c2f3e307",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-47-office-automation-AUTO-5-mobile.png",
+      "sha256": "58500a8b1a3fd0c04f135d48eb96610f177108d2e14884e1214ff409ba46cd06",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-48-office-automation-AUTO-6-desktop.png",
+      "sha256": "77e53ea8f0cad115e2453f70d0a869f15a1685523a79194867c9ca3535e3ac91",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-48-office-automation-AUTO-6-mobile.png",
+      "sha256": "9eb406254c857543c524bc06be476cefa2ffeda67ad84ef289d19cf23234d7e7",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-49-office-automation-AUTO-7-desktop.png",
+      "sha256": "c1bd5bae3df91699e126c8934d016f779d6acac2540cb38761ff849e04e04cc0",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-49-office-automation-AUTO-7-mobile.png",
+      "sha256": "52e098f5025763f0620cbb75584053af899472075e385bf364ef043595984234",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-50-office-automation-AUTO-8-desktop.png",
+      "sha256": "885661d3faded2221656d16cacc0826c02e43092a1f6458f2682e79d68933d44",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-50-office-automation-AUTO-8-mobile.png",
+      "sha256": "1608cff2494d725a9384a7a0063cb19a59085027f288d6e107a309920763225d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-51-office-automation-AUTO-9-desktop.png",
+      "sha256": "07d4e9c8611553bc88e7c78bcea7d86d3ff9ccdab66fc6ad0eccfe6c6d0e146d",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/screen-51-office-automation-AUTO-9-mobile.png",
+      "sha256": "c1f3f699476fba6f01a1d7ed9bff1828f5e7b69d17e5afed51b2b4d3186867f5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/existing-record-dropdown-desktop.png",
+      "sha256": "a060a743db845d0a421f2543c09e9f3c444e6d8ed3188ac52007e358226ca8ec",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "select[name=matchId]"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/existing-record-dropdown-mobile.png",
+      "sha256": "a31702509ef865cb10e36259dd0500e615a90caf39a24a30f0b5473d551f36f0",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select[name=matchId]"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/status-dropdown-desktop.png",
+      "sha256": "4338365480e9a61b46def09721a47cc3ca1e579b8f9db9131bfd9b50bd8c6f1a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "#enquiry-status"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/status-dropdown-mobile.png",
+      "sha256": "1dd02232bce3f5da2e014e2deace3090f67958d29442ef374682a55ee646b8c4",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#enquiry-status"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/payroll-dropdown-desktop.png",
+      "sha256": "1a62b2b047eceff878633c957d8a60b9193db0eed53c36046c183590caf3c536",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "[data-auto-form=report]"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/payroll-dropdown-mobile.png",
+      "sha256": "bc6c77169217d54870a96c7aad6be85323f4b0ae9a477907faae8fdd2feb117c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "[data-auto-form=report]"
+    },
+    {
+      "path": "docs/system-dropdown-review-2026-10-21/agreement-dropdowns-mobile.png",
+      "sha256": "450f834954dfcbed45b6fcad56e4878daecc4c765f1a2c3e37685dcbf0374d7e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Pass for the shared form-control issue. Inspected desktop/mobile contact sheets and full-size payroll, existing-record, status-filter and dialog screenshots. Real dropdowns replace generated option rows; no horizontal overflow.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

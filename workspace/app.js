@@ -1,7 +1,46 @@
+import {
+  receiveTaskMessage,
+  assignMessageTask,
+  updateTaskAssignment,
+  completeMessageTask,
+} from '../frontend/features/inbox-tasks/engine.mjs';
+import { inboxTasksPage } from '../frontend/features/inbox-tasks/page.mjs';
+import { financialPage, paymentTrackingForm } from '../frontend/features/financial-checks/page.mjs';
+import {
+  runFinancialChecks,
+  updateFinancialCase,
+  trackFinancialInvoice,
+} from '../frontend/features/financial-checks/engine.mjs';
+import {
+  payrollPage,
+  payrollApprovalForm,
+  payrollAdjustmentForm,
+} from '../frontend/features/payroll/page.mjs';
+import {
+  approvePayrollSource,
+  preparePayroll,
+  addPayrollAdjustment,
+  removePayrollAdjustment,
+  reviewPayrollDraft,
+  payrollExport,
+} from '../frontend/features/payroll/engine.mjs';
+import { proposedFeesPage } from '../frontend/features/proposed-fees/page.mjs';
+import {
+  inspectTravel,
+  travelContext,
+  reviewTravel,
+} from '../frontend/features/travel-checker/engine.mjs';
+import { travelChecker, selectTravelReview } from '../frontend/features/travel-checker/view.mjs';
 import intakeRooms from '../lib/intake-rooms.json';
+import {
+  createRoomVideoSelection,
+  validateRoomVideo,
+} from '../frontend/features/intake/room-videos/selection.mjs';
+import { roomVideoPicker } from '../frontend/features/intake/room-videos/picker.mjs';
 /* Full operations workspace. ShiftCare remains authoritative for delivered services. */
 import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-intake.mjs';
 (async () => {
+  const COMPANION_ENABLED = false;
   const STORE = 'ocd-brilliance-operations-v1';
   const app = document.getElementById('app');
   const modal = document.getElementById('modal');
@@ -102,7 +141,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   let intakeDocument = null;
   let serviceVideoPreviewUrls = [];
-  let serviceVideoFiles = [];
+  const roomVideos = createRoomVideoSelection(intakeRooms);
   const serviceVideoUploads = new Map();
   let intakeSaveKey = crypto.randomUUID();
   let documentGeneration = 0;
@@ -576,6 +615,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       area === 'office' ? 'office/overview' : area === 'worker' ? 'worker/today' : 'client/home';
     const homeLabel = area === 'office' ? 'Home' : area === 'worker' ? 'My visits' : 'Home';
     const detailNames = {
+      finance: 'Review check',
       enquiries: find(state.enquiries, detail)?.name,
       participants: participant(detail)?.name,
       agreements: detail,
@@ -734,15 +774,18 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   nav.office.push(['shiftcare', 'ShiftCare', 'layers']);
   nav.office.splice(3, 0, ['automation', 'Automation', 'activity']);
-  nav.office.push(['finance', 'Bookkeeping', 'file']);
+  nav.office.push(['inbox-tasks', 'Inbox tasks', 'inbox']);
+  nav.office.push(['finance', 'Financial checks', 'file']);
   nav.office.push(['invoices', 'Invoices', 'file']);
+  nav.office.push(['proposed-fees', 'Proposed fees', 'file']);
+  nav.office.push(['payroll', 'Payroll preparation', 'file']);
   nav.office.push(['verification', 'Integration proof', 'shield']);
   nav.office.push(['intake', 'Intake', 'inbox']);
   const officeNavGroups = [
-    ['Daily work', ['overview', 'work', 'automation']],
+    ['Daily work', ['overview', 'work', 'inbox-tasks', 'automation']],
     ['Clients & intake', ['enquiries', 'intake', 'participants', 'calls', 'agreements']],
     ['Scheduling', ['schedule', 'calendar', 'visits', 'map']],
-    ['Team & finance', ['staff', 'invoices', 'finance', 'fees']],
+    ['Team & finance', ['staff', 'invoices', 'finance', 'payroll', 'fees', 'proposed-fees']],
     ['Connections', ['shiftcare', 'verification']],
   ];
   function shell(area, section, content) {
@@ -891,13 +934,20 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   function render() {
     clearServiceVideoPreview();
-    serviceVideoFiles = [];
+    roomVideos.clear();
     serviceVideoUploads.clear();
     window.OCD_MAPS.unmount();
     window.OCD_SHIFTCARE.unmount();
     window.OCD_INTEGRATION_PROOF.unmount();
     window.OCD_CLIENT_PRESENTATION.unmount();
     const [area, section, detail] = routeParts();
+    const feesRoute = area === 'office' && section === 'fees' ? detail : '';
+    if (feesRoute && feesRoute !== ui.feesRoute && booking(feesRoute)) {
+      ui.routeBooking = feesRoute;
+      ui.travelBooking = feesRoute;
+      ui.feeTab = 'Routes';
+    }
+    ui.feesRoute = feesRoute;
     window.OCD_ALERTS?.setWorker(area === 'worker' ? ui.workerId : null);
     const pages = {
       office: {
@@ -952,8 +1002,41 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     pages.worker.leave = () => window.OCD_EMPLOYEE.leave(employeeContext());
     pages.office.shiftcare = shiftCarePage;
     pages.office.automation = () => window.OCD_AUTOMATION.page(automationContext(), detail);
-    pages.office.finance = () => window.OCD_AUTOMATION.finance(automationContext());
+    pages.office['inbox-tasks'] = () => {
+      window.OCD_AUTOMATION_ENGINE.ensure(state);
+      return inboxTasksPage({ state, detail, today: todayPerth(), pageHeader });
+    };
+    pages.office.finance = () => {
+      window.OCD_INVOICES.ensure(state);
+      const c = detail && state.financialChecks?.cases[detail];
+      const scope = c?.scope ||
+        state.financialChecks?.scope || {
+          from: '2026-09-28',
+          to: '2026-10-11',
+          asOf: todayPerth(),
+        };
+      const result = runFinancialChecks(
+        state,
+        { ...scope, asOf: state.financialChecks?.scope?.asOf || scope.asOf },
+        window.OCD_INVOICES,
+      );
+      save();
+      return financialPage({
+        state,
+        result,
+        detail,
+        pageHeader,
+        filter: ui.financialFilter,
+        area: ui.financialArea,
+        message: ui.financialMessage,
+      });
+    };
+
     pages.office.invoices = () => invoicesPage(detail);
+    pages.office.payroll = () =>
+      payrollPage({ state, detail, from: ui.payrollFrom, to: ui.payrollTo, pageHeader });
+    pages.office['proposed-fees'] = () =>
+      proposedFeesPage({ state, esc, participant, booking, dateLabel, pill, empty, pageHeader });
     pages.office.intake = intakePage;
     pages.office.enquiries = () =>
       detail ? inspector(enquiryDetail(detail), 'office/enquiries', 'Enquiries') : enquiriesPage();
@@ -980,6 +1063,58 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           : shell(actualArea, actualSection, content),
     );
     window.OCD_SOLAR_REFRESH?.();
+    window.OCD_REACT.renderCompanion(
+      COMPANION_ENABLED && actualArea === 'office'
+        ? {
+            identity: workspaceIdentity(),
+            tasks: officeTasks(),
+            routes: [...state.routeEstimates]
+              .reverse()
+              .filter(
+                (estimate, index, all) =>
+                  all.findIndex((item) => item.bookingId === estimate.bookingId) === index &&
+                  booking(estimate.bookingId) &&
+                  booking(estimate.bookingId).status !== 'Cancelled',
+              )
+              .map((estimate) => ({
+                ...estimate,
+                participant:
+                  participant(booking(estimate.bookingId).participantId)?.name || 'Participant',
+                start: booking(estimate.bookingId).start,
+              })),
+            enquiries: state.enquiries
+              .filter((enquiry) => !enquiry.serverRecord)
+              .map((enquiry) => ({
+                id: enquiry.id,
+                name: enquiry.name,
+                service: enquiry.service,
+                email: enquiry.email,
+                emailDraft: enquiry.emailDraft || null,
+              })),
+            saveDraft(id, message, previous) {
+              const enquiry = state.enquiries.find((item) => item.id === id && !item.serverRecord);
+              if (routeParts()[0] !== 'office' || !enquiry)
+                throw new Error('Open this enquiry in the office workspace.');
+              if ((enquiry.emailDraft || null) !== previous)
+                throw new Error(
+                  'This draft changed in the workspace. Reopen Messages to review the latest draft.',
+                );
+              if (!message.trim() || message.length > 12000)
+                throw new Error('Enter a message of up to 12,000 characters.');
+              enquiry.emailDraft = message.trim();
+              enquiry.emailStatus = 'Needs approval';
+              enquiry.emailAI = { provider: 'Demo', model: 'Local template' };
+              save();
+              render();
+            },
+            openTravel(bookingId) {
+              ui.routeBooking = bookingId;
+              ui.feeTab = 'Routes';
+              go('office/fees');
+            },
+          }
+        : null,
+    );
     window.OCD_UI.mount(
       app.querySelector('main'),
       [actualArea, actualSection, detail].filter(Boolean).join('/'),
@@ -1245,10 +1380,24 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     return `${window.OCD_CLIENT_PRESENTATION.banner()}<div data-react-office-overview="${attr(JSON.stringify(model))}"></div>`;
   }
 
-  function officeWorkQueue() {
+  function officeTasks() {
     const tasks = [];
     const add = (type, title, detail, status, action, reference, owner = 'Office') =>
       tasks.push({ type, title, detail, status, action, reference, owner });
+
+    (state.automation?.jobs || [])
+      .filter((j) => j.kind === 'email-review' && j.status !== 'completed')
+      .forEach((j) =>
+        add(
+          'Messages',
+          j.title,
+          `${j.draft.nextAction || 'Review email follow-up'} · ${j.dueDate ? `Due ${j.dueDate}` : 'Deadline needs review'}`,
+          j.dueDate && j.dueDate < todayPerth() ? 'Overdue' : 'Assigned',
+          `<a href="#/office/inbox-tasks/${attr(j.id)}">Review task ${icon('arrow')}</a>`,
+          j.id,
+          j.owner,
+        ),
+      );
 
     intakeQueue.forEach((e) =>
       add(
@@ -1345,6 +1494,23 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           m.id,
         ),
       );
+    inspectTravel(state)
+      .filter((item) => item.reasons.length)
+      .forEach(({ estimate, reasons }) =>
+        add(
+          'Checks',
+          `Travel check · ${participant(booking(estimate.bookingId)?.participantId)?.name || estimate.bookingId}`,
+          reasons.join(' '),
+          'Needs review',
+          `<a href="#/office/fees/${attr(estimate.bookingId)}">Review travel ${icon('arrow')}</a>`,
+          estimate.bookingId,
+        ),
+      );
+    return tasks;
+  }
+
+  function officeWorkQueue() {
+    const tasks = officeTasks();
     const filters = [
       ['All', 'All work'],
       ['Intake', 'Intake'],
@@ -1624,7 +1790,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     openModal(
       'Review message',
       'Check the suggestion, confirm the team, then create a task.',
-      `<div class="ai-mail-review"><section class="ai-mail-original"><h3>Original message</h3><strong>${esc(source.title)}</strong>${source.sender ? `<p class="form-note">From ${esc(source.sender)}</p>` : ''}<p>${esc(source.body)}</p></section><section class="ai-mail-suggestions"><h3>AI review</h3><p>${esc(review.summary)}</p><dl><div><dt>Suggested category</dt><dd>${esc(review.category)}</dd></div><div><dt>Suggested team</dt><dd>${esc(review.team)}</dd></div></dl><p class="form-note">${esc(review.reason)}</p><h4>Suggested next step</h4><p>${esc(review.nextAction)}</p></section></div><section class="ai-mail-reply"><h3>Reply draft</h3>${emailComposer(review)}</section>${source.jobId ? `<p><a href="#/office/automation/${attr(source.jobId)}">Open assigned task →</a></p>` : `<form data-form="ai-route-email" data-id="${attr(source.id)}" class="ai-mail-assignment"><h3>Assign follow-up</h3><label>Responsible team<select name="team">${['Intake team', 'Roster team', 'Bookkeeper', 'HR / admin', 'Office'].map((team) => option(team, review.team)).join('')}</select></label><label>Next action<textarea name="nextAction" rows="2" required maxlength="1000">${esc(review.nextAction)}</textarea></label><label class="checkbox"><input name="reviewed" type="checkbox" required><span>I checked the original message and the proposed follow-up.</span></label><div class="form-actions"><button class="btn primary" type="submit">Create assigned task</button></div></form>`}`,
+      `<div class="ai-mail-review"><section class="ai-mail-original"><h3>Original message</h3><strong>${esc(source.title)}</strong>${source.sender ? `<p class="form-note">From ${esc(source.sender)}</p>` : ''}<p>${esc(source.body)}</p></section><section class="ai-mail-suggestions"><h3>AI review</h3><p>${esc(review.summary)}</p><dl><div><dt>Suggested category</dt><dd>${esc(review.category)}</dd></div><div><dt>Suggested team</dt><dd>${esc(review.team)}</dd></div></dl><p class="form-note">${esc(review.reason)}</p><h4>Suggested next step</h4><p>${esc(review.nextAction)}</p></section></div><section class="ai-mail-reply"><h3>Reply draft</h3>${emailComposer(review)}</section>${source.jobId ? `<p><a href="#/office/automation/${attr(source.jobId)}">Open assigned task →</a></p>` : `<form data-form="ai-route-email" data-id="${attr(source.id)}" class="ai-mail-assignment"><h3>Assign follow-up</h3><label>Due date<input name="dueDate" type="date" required value="${todayPerth()}"></label><label>Responsible team<select name="team">${['Intake team', 'Roster team', 'Bookkeeper', 'HR / admin', 'Office'].map((team) => option(team, review.team)).join('')}</select></label><label>Next action<textarea name="nextAction" rows="2" required maxlength="1000">${esc(review.nextAction)}</textarea></label><label class="checkbox"><input name="reviewed" type="checkbox" required><span>I checked the original message and the proposed follow-up.</span></label><div class="form-actions"><button class="btn primary" type="submit">Create assigned task</button></div></form>`}`,
     );
   }
 
@@ -1633,21 +1799,32 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       style: 'currency',
       currency: 'AUD',
     }).format(cents / 100);
+  function invoiceReviewQueue() {
+    const rows = window.OCD_INVOICES.reviewQueue(state);
+    return `<section class="panel invoice-review-queue" aria-labelledby="invoice-queue-title"><header class="invoice-section-heading"><div><h2 id="invoice-queue-title">Invoice review queue <span class="invoice-count">${rows.length}</span></h2><p>Check these records before completing your invoice review.</p></div><span class="invoice-section-label">${rows.length ? 'Needs attention' : 'Up to date'}</span></header><ul class="invoice-queue-list" aria-label="Records needing invoice review">${rows.map((row) => `<li class="invoice-queue-row"><div class="invoice-record"><span class="invoice-record-icon" aria-hidden="true">${icon('file')}</span><div><h3>${esc(participant(row.participantId)?.name || 'Participant missing')}</h3><span>${esc(row.id)} · ${row.invoiceId ? 'Invoice draft' : 'Completed service'}</span></div></div><ul class="invoice-checks" aria-label="Checks for ${attr(row.id)}">${row.issues.map((issue) => `<li><strong>${esc(issue.type)}</strong><p>${esc(issue.detail)}</p></li>`).join('')}</ul><div class="invoice-queue-actions">${row.invoiceId ? `<a class="btn small invoice-row-primary" href="#/office/invoices/${attr(row.invoiceId)}">Review invoice</a>` : `<button class="btn small invoice-row-primary" type="button" data-action="new-invoice" data-id="${attr(row.bookingId)}">Prepare draft</button><a class="btn small invoice-secondary" href="#/office/schedule/${attr(row.bookingId)}">Open service</a>`}<button class="btn small invoice-secondary" type="button" data-action="billing-profile" data-id="${attr(row.participantId)}">Billing agreement</button></div></li>`).join('') || '<li class="invoice-queue-empty"><strong>You’re all caught up</strong><p>No invoice exceptions or completed services awaiting invoicing.</p></li>'}</ul><footer class="invoice-queue-footer">Checks compare current records with your saved billing agreement.</footer></section>`;
+  }
+
   function invoicesPage(invoiceId) {
+    return `<div class="invoice-workspace">${invoiceContent(invoiceId)}</div>`;
+  }
+
+  function invoiceContent(invoiceId) {
     const I = window.OCD_INVOICES,
       invoices = I.ensure(state);
     save();
     if (!invoiceId)
-      return `${pageHeader('Team & finance', 'Invoices', 'Prepare invoices from completed visits, check hours and rates, then review the draft.', `<a class="btn" href="#/office/finance">Bookkeeping checks</a><button class="btn primary" data-action="new-invoice" type="button">New invoice</button>`)}<p class="form-note">Prototype invoices · saved in this browser. Example rates are fictional. No invoice is sent or exported.</p><section class="panel tight"><div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Participant</th><th>Service period</th><th>Status</th><th>Total</th><th></th></tr></thead><tbody>${invoices.map((i) => `<tr><td><strong>${esc(i.id)}</strong>${i.example ? '<span class="cell-sub">Example draft</span>' : ''}</td><td>${esc(participant(i.participantId)?.name || i.billingName)}</td><td>${dateLabel(i.from)} – ${dateLabel(i.to)}</td><td>${pill(i.status)}</td><td>${invoiceMoney(I.total(i))}</td><td><a class="btn small" href="#/office/invoices/${attr(i.id)}">Open invoice</a></td></tr>`).join('') || '<tr><td colspan="6">No invoices yet. Create one from completed visits.</td></tr>'}</tbody></table></div></section>`;
+      return `${pageHeader('Team & finance', 'Invoices', 'Prepare invoices from completed visits, check hours and rates, then review the draft.', `<a class="btn" href="#/office/finance">Financial checks</a><button class="btn primary" data-action="new-invoice" type="button">New invoice</button>`)}<p class="form-note">Prototype invoices · saved in this browser. Example rates are fictional. No invoice is sent or exported.</p>${invoiceReviewQueue()}<section class="panel tight invoice-drafts" aria-labelledby="invoice-drafts-title"><header class="invoice-section-heading"><div><h2 id="invoice-drafts-title">Invoices <span class="invoice-count">${invoices.length}</span></h2><p>Saved drafts and reviewed invoices</p></div></header><div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Participant</th><th>Service period</th><th>Status</th><th>Total</th><th></th></tr></thead><tbody>${invoices.map((i) => `<tr><td><strong>${esc(i.id)}</strong>${i.example ? '<span class="cell-sub">Example draft</span>' : ''}</td><td>${esc(participant(i.participantId)?.name || i.billingName)}</td><td>${dateLabel(i.from)} – ${dateLabel(i.to)}</td><td>${pill(i.status)}</td><td>${invoiceMoney(I.total(i))}</td><td><a class="btn small" href="#/office/invoices/${attr(i.id)}">Open invoice</a></td></tr>`).join('') || '<tr><td colspan="6">No invoices yet. Create one from completed visits.</td></tr>'}</tbody></table></div></section>`;
     const i = invoices.find((item) => item.id === invoiceId);
     if (!i)
       return `${pageHeader('Invoices', 'Invoice not found')}<a href="#/office/invoices">Back to invoices</a>`;
     const p = participant(i.participantId);
-    const checks =
-      state.automation?.jobs.filter(
-        (j) => j.workflow === 'W10' && i.lines.some((line) => line.bookingId === j.targetId),
-      ) || [];
-    return `<a class="record-back" href="#/office/invoices">← Back to invoices</a>${pageHeader('Invoice', i.id, `${p?.name || i.billingName} · ${i.status}`, `<button class="btn" data-action="print-invoice" type="button">Print / save PDF</button>`)}<div class="grid-detail invoice-layout"><section class="panel print-target invoice-sheet"><header><div><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"><p>OCD Brilliance</p></div><div><h2>INVOICE DRAFT</h2><strong>${esc(i.id)}</strong><p>${dateLabel(i.created)}</p></div></header><div class="invoice-address"><div><small>Bill to</small><h3>${esc(i.billingName)}</h3><p>${esc(i.billingEmail)}</p></div><div><small>Service period</small><p>${dateLabel(i.from)} – ${dateLabel(i.to)}</p><small>Status: ${esc(i.status)}</small></div></div><div class="table-wrap"><table><thead><tr><th>Service</th><th>Hours</th><th>Rate</th><th>Amount</th></tr></thead><tbody>${i.lines.map((line) => `<tr><td><strong>${esc(line.description)}</strong><span class="cell-sub">${dateLabel(line.date)} · ${esc(line.bookingId)}</span></td><td>${Number(line.hours).toFixed(2)}</td><td>${invoiceMoney(Math.round(Number(line.rate) * 100))}</td><td>${invoiceMoney(I.lineTotal(line))}</td></tr>`).join('')}</tbody></table></div><div class="invoice-total"><span>Draft service total (AUD)</span><strong>${invoiceMoney(I.total(i))}</strong></div><p class="form-note">${esc(i.rateSource)}</p><p class="invoice-draft-note">Prototype draft. Verify billing recipient, agreed billable hours, rates and tax treatment before issuing through the existing invoicing process. Not sent. Not a tax invoice.</p>${i.reviewedBy ? `<p class="form-note">Reviewed by ${esc(i.reviewedBy)} · ${esc(i.reviewedAt)}</p>` : ''}</section><aside class="stack no-print"><section class="panel"><h2>Review invoice</h2><p class="form-note">Initial hours use the scheduled duration. Compare with attendance and confirm the agreed billable hours.</p><form data-form="invoice-review" data-id="${attr(i.id)}"><label>Billing name<input name="billingName" value="${attr(i.billingName)}" required maxlength="120"></label><label>Billing email<input name="billingEmail" type="email" value="${attr(i.billingEmail)}" required></label>${i.lines.map((line, index) => `<div class="invoice-line-review"><a href="#/office/visits/${attr(state.visits.find((v) => v.bookingId === line.bookingId)?.id || '')}">${esc(line.bookingId)} · ${dateLabel(line.date)}</a><div class="booking-time-fields"><label>Billable hours<input name="hours-${index}" type="number" min="0.01" max="24" step="0.01" value="${attr(line.hours)}" required></label><label>Hourly rate (AUD)<input name="rate-${index}" type="number" min="0.01" max="10000" step="0.01" value="${attr(line.rate)}" required></label></div></div>`).join('')}<label>Rate source<input name="rateSource" value="${attr(i.rateSource)}" required maxlength="250"></label><label>Review note<textarea name="note" rows="2" maxlength="1000">${esc(i.reviewNote)}</textarea></label><label class="checkbox"><input name="checked" type="checkbox"><span>I checked the recipient, hours, agreed rate and applicable billing treatment.</span></label><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn" name="decision" value="draft" type="submit">Save draft</button><button class="btn primary" name="decision" value="reviewed" type="submit">Mark reviewed</button></div></form></section><section class="panel"><h2>Linked bookkeeping checks</h2>${checks.length ? checks.map((j) => `<p><a href="#/office/automation/${attr(j.id)}">${esc(j.title)} →</a></p>`).join('') : '<p class="muted">Prepare the invoice exception checklist to check linked visits.</p>'}<a href="#/office/finance">Open bookkeeping review →</a></section></aside></div>`;
+    const issues = I.invoiceIssues(state, i);
+    const checks = Object.values(state.financialChecks?.cases || {}).filter(
+      (c) =>
+        c.status === 'Open' &&
+        (c.entityId === i.id || i.lines.some((line) => line.bookingId === c.entityId)),
+    );
+    return `<a class="record-back" href="#/office/invoices">← Back to invoices</a>${pageHeader('Invoice', i.id, `${p?.name || i.billingName} · ${i.status}`, `<button class="btn" data-action="print-invoice" type="button">Print / save PDF</button>`)}<div class="grid-detail invoice-layout"><section class="panel print-target invoice-sheet"><header><div><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"><p>OCD Brilliance</p></div><div><h2>INVOICE DRAFT</h2><strong>${esc(i.id)}</strong><p>${dateLabel(i.created)}</p></div></header><div class="invoice-address"><div><small>Bill to</small><h3>${esc(i.billingName)}</h3><p>${esc(i.billingEmail)}</p></div><div><small>Service period</small><p>${dateLabel(i.from)} – ${dateLabel(i.to)}</p><small>Status: ${esc(i.status)}</small></div></div><div class="table-wrap"><table><thead><tr><th>Service</th><th>Hours</th><th>Rate</th><th>Amount</th></tr></thead><tbody>${i.lines.map((line) => `<tr><td><strong>${esc(line.description)}</strong><span class="cell-sub">${esc(line.category || 'Category not recorded')}</span><span class="cell-sub">${dateLabel(line.date)} · ${esc(line.bookingId)}</span></td><td>${Number(line.hours).toFixed(2)}</td><td>${invoiceMoney(Math.round(Number(line.rate) * 100))}</td><td>${invoiceMoney(I.lineTotal(line))}</td></tr>`).join('')}</tbody></table></div><div class="invoice-total"><span>Draft service total (AUD)</span><strong>${invoiceMoney(I.total(i))}</strong></div><p class="form-note">${esc(i.rateSource)}</p><p class="invoice-draft-note">Prototype draft. Verify billing recipient, agreed billable hours, rates and tax treatment before issuing through the existing invoicing process. Not sent. Not a tax invoice.</p>${i.reviewedBy ? `<p class="form-note">Reviewed by ${esc(i.reviewedBy)} · ${esc(i.reviewedAt)}</p>` : ''}</section><aside class="stack no-print"><section class="panel"><h2>Review invoice</h2>${issues.length ? `<ul role="status">${issues.map((issue) => `<li><strong>${esc(issue.type)}</strong>: ${esc(issue.detail)}</li>`).join('')}</ul>` : '<p class="form-note">All saved billing checks pass.</p>'}<button class="btn" type="button" data-action="billing-profile" data-id="${attr(i.participantId)}">Billing agreement</button><p class="form-note">Initial hours use the scheduled duration. Compare with attendance and confirm the agreed billable hours.</p><form data-form="invoice-review" data-id="${attr(i.id)}"><label>Billing name<input name="billingName" value="${attr(i.billingName)}" required maxlength="120"></label><label>Billing email<input name="billingEmail" type="email" value="${attr(i.billingEmail)}" required></label>${i.lines.map((line, index) => `<div class="invoice-line-review"><a href="#/office/visits/${attr(state.visits.find((v) => v.bookingId === line.bookingId)?.id || '')}">${esc(line.bookingId)} · ${dateLabel(line.date)}</a><div class="booking-time-fields"><label>Service<input name="service-${index}" value="${attr(line.description)}" required></label><label>Billing category<input name="category-${index}" value="${attr(line.category || '')}" required></label><label>Billable hours<input name="hours-${index}" type="number" min="0.01" max="24" step="0.01" value="${attr(line.hours)}" required></label><label>Hourly rate (AUD)<input name="rate-${index}" type="number" min="0.01" max="10000" step="0.01" value="${attr(line.rate)}" required></label></div></div>`).join('')}<label>Rate source<input name="rateSource" value="${attr(i.rateSource)}" required maxlength="250"></label><label>Review note<textarea name="note" rows="2" maxlength="1000">${esc(i.reviewNote)}</textarea></label><label class="checkbox"><input name="checked" type="checkbox"><span>I checked the recipient, hours, agreed rate and applicable billing treatment.</span></label><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn" name="decision" value="draft" type="submit">Save draft</button><button class="btn primary" name="decision" value="reviewed" type="submit">Mark reviewed</button></div></form></section><section class="panel"><h2>Financial checks</h2>${checks.length ? checks.map((j) => `<p><a href="#/office/finance/${attr(j.id)}">${esc(j.title)} →</a></p>`).join('') : '<p class="muted">Compare attendance, billing details, charges and payroll readiness.</p>'}<a href="#/office/finance">Open Financial checks →</a></section></aside></div>`;
   }
 
   function enquiryDetail(enquiryId) {
@@ -2247,11 +2424,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const p = participant(b.participantId);
     const w = worker(b.workerId);
     const v = state.visits.find((x) => x.bookingId === b.id);
+    const cancellationCase = state.automation?.jobs.find(
+      (j) => j.kind === 'cancel' && j.targetId === b.id,
+    );
     return `${crumb(b.id, 'office/schedule', 'Team schedule')}${pageHeader('Booking / ' + b.id, `${p?.name} · ${b.service}`, `${dateLabel(b.date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${clockRange(b.start, b.end)}`, pill(b.status) + `<a class="btn" href="#/office/map/${attr(b.id)}">${icon('map')} View on map</a>`)}<div class="grid-detail"><div class="stack"><section class="panel"><h2>Service details</h2><div class="spacer"></div><div class="grid-half"><div>${pair('Participant', p?.name)}${pair('Service', b.service)}${pair('Service area', p?.address)}</div><div>${pair('Worker', w?.name || 'Not assigned')}${pair('Worker role', w?.role || 'Not assigned')}${pair('Recurrence', b.recurrence)}${pair('Participant agreement', b.participantAgreed ? 'Recorded' : 'Needed before confirmation')}</div></div></section>
       ${b.status === 'Needs cover' ? `<section class="panel"><h2>Arrange reviewed cover</h2><p class="muted">The office checks candidates, posts a native offer, waits for worker acceptance, then verifies the assignment.</p><div class="notice warning">For same-day or essential changes, also use the existing urgent contact process.</div><div class="form-actions"><button class="btn primary" data-action="offer-cover" data-id="${attr(b.id)}" type="button">Open cover case</button></div></section>` : ''}
       ${b.status === 'Proposed' ? `<section class="panel"><h2>Confirm booking</h2><p class="muted">Check worker approval, overlap and the signed agreement before confirmation.</p><form data-form="confirm-booking" data-id="${attr(b.id)}"><label class="checkbox"><input name="agreed" type="checkbox" required><span>The participant agreed to this arrangement.</span></label><div class="form-actions"><button class="btn primary" type="submit">Review native confirmation</button></div></form></section>` : ''}
-      ${b.status === 'Confirmed' ? `<section class="panel"><h2>Manage this service</h2><p class="muted">A change is recorded before the roster is updated.</p><div class="button-row"><button class="btn" data-action="mark-cover" data-id="${attr(b.id)}" type="button">Worker cannot attend</button><button class="btn danger" data-action="cancel-booking" data-id="${attr(b.id)}" type="button">Record cancellation</button></div></section>` : ''}
-      ${b.status === 'Cancelled' && b.cancellation ? `<section class="panel"><h2>Recorded cancellation</h2><div class="spacer"></div>${pair('Cancelled by', b.cancellation.cause)}${pair('Notice received', `${dateLabel(b.cancellation.notice.slice(0, 10))} · ${b.cancellation.notice.slice(11, 16)}`)}${pair('Office note', b.cancellation.note)}<div class="spacer"></div><a class="btn" href="#/office/fees" data-action="open-cancellation" data-id="${attr(b.id)}">Review fee rule</a></section>` : ''}
+      ${b.status === 'Confirmed' ? `<section class="panel"><h2>Manage this service</h2><p class="muted">A change is recorded before the roster is updated.</p><div class="button-row"><button class="btn" data-action="mark-cover" data-id="${attr(b.id)}" type="button">Worker cannot attend</button><button class="btn danger" data-action="cancel-booking" data-id="${attr(b.id)}" type="button">Cancellation assistant</button></div></section>` : ''}
+      ${b.status === 'Cancelled' && b.cancellation ? `<section class="panel"><h2>Recorded cancellation</h2><div class="spacer"></div>${pair('Cancelled by', b.cancellation.cause)}${pair('Notice received', `${dateLabel(b.cancellation.notice.slice(0, 10))} · ${b.cancellation.notice.slice(11, 16)}`)}${pair('Office note', b.cancellation.note)}${b.cancellation.travelEvidence ? pair('Travel review', b.cancellation.travelEvidence) : ''}${b.cancellation.billingEvidence ? pair('Charge review', b.cancellation.billingEvidence) : ''}${cancellationCase ? `<div class="spacer"></div><a class="btn primary" href="#/office/automation/${attr(cancellationCase.id)}">Open cancellation assistant</a>` : ''}<div class="spacer"></div><a class="btn" href="#/office/fees" data-action="open-cancellation" data-id="${attr(b.id)}">Review fee rule</a></section>` : ''}
       ${v ? `<section class="panel"><div class="section-heading"><h2>Visit record</h2><a href="#/office/visits/${attr(v.id)}">Open record</a></div>${pair('Clock in', clockLabel(v.clockIn))}${pair('Clock out', clockLabel(v.clockOut))}${pair('Note', v.note || 'Missing')}</section>` : ''}</div><aside class="stack"><section class="panel"><h2>Participant</h2><div class="spacer"></div>${pair('Name', p?.name)}${pair('Preferred worker', worker(p?.preferredWorker)?.name || 'Not set')}${pair('Agreement', agreementFor(p?.id)?.status || 'Missing')}<div class="spacer"></div><a class="btn" href="#/office/participants/${attr(p?.id)}">Open participant</a></section><div class="side-note">A worker's absence never reassigns a booking or creates a participant charge automatically.</div></aside></div>`;
   }
 
@@ -2276,20 +2456,6 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       return `${pageHeader('Visit records', 'Visit not found')}<a class="btn" href="#/office/visits">Back to visits</a>`;
     const b = booking(v.bookingId);
     return `${crumb(v.id, 'office/visits', 'Visit records')}${pageHeader('Visit / ' + v.id, `${participant(b?.participantId)?.name} · ${b?.service}`, `${dateLabel(b?.date)} · ${worker(b?.workerId)?.name}`, pill(v.status))}<div class="grid-detail"><div class="stack"><section class="panel"><h2>Recorded service</h2><div class="spacer"></div>${pair('Scheduled time', clockRange(b?.start, b?.end))}${pair('Clock in', clockLabel(v.clockIn))}${pair('Clock out', clockLabel(v.clockOut))}${pair('Tasks', v.tasks || 'Native evidence to check')}${pair('Goals / extra-time explanation', v.goals || 'Native evidence to check')}${v.majorIssue ? `<div class="notice warning">Major issue flagged by worker — restricted office review. Use the existing urgent process.</div>` : ''}<div class="content-section"><h3>Progress note</h3>${v.note ? `<p>${esc(v.note)}</p>` : `<div class="notice warning">${icon('alert')} This record needs a progress note from the worker.</div>`}</div></section><section class="panel"><h2>Correction history</h2><div class="spacer"></div>${v.corrections?.length ? `<ol class="timeline">${v.corrections.map((c) => `<li><strong>${esc(c.field)}: ${esc(c.oldValue)} → ${esc(c.newValue)}</strong><small>Reason: ${esc(c.reason)} · ${esc(c.by)}</small></li>`).join('')}</ol>` : `<p class="muted">No time corrections recorded.</p>`}</section></div><aside class="stack"><section class="panel"><h2>Office review</h2><p class="muted tiny">Original values remain in the correction history.</p><button class="btn" data-action="correct-visit" data-id="${attr(v.id)}" type="button">Correct a time</button>${v.note && v.clockIn && v.clockOut && v.status !== 'Reviewed' ? `<div class="spacer"></div><button class="btn primary" data-action="review-visit" data-id="${attr(v.id)}" type="button">Mark reviewed</button>` : ''}</section><div class="side-note">Only assigned workers can record visit notes in the worker view. Office corrections require a reason.</div></aside></div>`;
-  }
-
-  function feeHistory() {
-    return `<section class="panel tight"><div class="panel-header"><h2>Proposed fees</h2><span class="muted tiny">Office approval before billing</span></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Service</th><th>Calculation</th><th>Status</th><th></th></tr></thead><tbody>${
-      state.feeProposals.length
-        ? [...state.feeProposals]
-            .reverse()
-            .map(
-              (f) =>
-                `<tr><td>${esc(f.id)}</td><td>${esc(f.type)}</td><td>${esc(participant(booking(f.bookingId)?.participantId)?.name)}<span class="cell-sub">${dateLabel(booking(f.bookingId)?.date)}</span></td><td>$${Number(f.amount).toFixed(2)}<span class="cell-sub">${esc(f.rule)}</span></td><td>${pill(f.status)}</td><td>${f.status === 'Proposed' ? `<button class="btn small primary" data-action="approve-fee" data-id="${attr(f.id)}" type="button">Approve</button>` : ''}</td></tr>`,
-            )
-            .join('')
-        : `<tr><td colspan="6">${empty('No proposed fees yet', 'Try one of the calculation examples above.')}</td></tr>`
-    }</tbody></table></div></section>`;
   }
 
   function cancellationPanel() {
@@ -2320,7 +2486,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     if (tab === 'Transport')
       content = `<div class="grid-two"><section class="panel"><div class="section-heading"><div><h2>Transport fee proposal</h2><p>Use verified actual distance and an approved rate.</p></div></div><form data-form="transport-preview"><div class="form-grid"><label class="full">Completed service<select name="bookingId" required>${completedBookingOptions('BKG-499')}</select></label><label>Verified actual distance (km)<input type="number" name="actualKm" min="0" step="0.1" required placeholder="Enter actual kilometres"></label><label>Approved rate (AUD / km)<input type="number" name="rate" min="0" step="0.01" required placeholder="Enter approved rate"></label><label>Rate version / reference<input name="rateVersion" required placeholder="Enter approved rate reference"></label><label class="full">Source of actual distance<input name="source" required placeholder="e.g. approved mileage record"></label></div><div class="form-actions"><button class="btn primary" type="submit">Calculate proposal</button></div></form>${ui.feePreview?.type === 'Transport' ? feePreview() : ''}</section><aside class="panel"><h2>Calculation record</h2><div class="spacer"></div><p class="muted">The final platform keeps the input distance, source, rate version and result so staff can reproduce the proposal.</p><div class="notice">${icon('shield')} No invoice is created here. Final invoicing remains in the current system during the pilot.</div></aside></div>`;
     if (tab === 'Cancellation') content = cancellationPanel();
-    return `${pageHeader('Office / Routes & fees', 'Routes & fees', 'Store route estimates and prepare transport or cancellation charges for office review.')}<div class="tabs" role="tablist">${['Routes', 'Transport', 'Cancellation'].map((t) => `<button class="tab ${t === tab ? 'active' : ''}" data-action="fee-tab" data-value="${t}" type="button">${t}</button>`).join('')}</div>${content}<div class="spacer"></div>${feeHistory()}`;
+    return `${pageHeader('Office / Routes & fees', 'Routes & fees', 'Store route estimates and prepare transport or cancellation charges for office review.')}<div class="tabs" role="tablist">${['Routes', 'Transport', 'Cancellation'].map((t) => `<button class="tab ${t === tab ? 'active' : ''}" data-action="fee-tab" data-value="${t}" type="button">${t}</button>`).join('')}</div>${content}${tab === 'Routes' ? travelChecker(state, ui.travelBooking) : ''}`;
   }
 
   function feePreview() {
@@ -2400,7 +2566,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       section === 'intake'
         ? `<label class="client-demo-account">Demo account<select id="client-persona" data-native-select>${state.participants.map((person) => `<option value="${attr(person.id)}" ${person.id === ui.clientId ? 'selected' : ''}>${esc(person.id === 'PAR-103' ? "Samira · Farah's representative" : person.name)}</option>`).join('')}</select></label>`
         : '';
-    return `<div class="client-app"><a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><header class="client-app-header"><a href="#/client/home" aria-label="OCD Brilliance home"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></a><nav class="client-app-nav" aria-label="Client navigation">${links.map(([path, label, glyph]) => `<a href="#/client/${path}" ${section === path || (path === 'intake' && section === 'documents') ? 'aria-current="page"' : ''}>${icon(glyph)}<span>${label}</span></a>`).join('')}</nav><div><button class="btn" data-action="client-feedback" type="button">${icon('inbox')} Get help</button><button class="client-account-button" data-action="account-settings" type="button" aria-label="Account and workspace view">${profileImage(p.name)}</button></div></header><main class="client-app-main" id="main-content" tabindex="-1">${account}${content}</main></div>`;
+    return `<div class="client-app"><a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><header class="client-app-header"><a href="#/client/home" aria-label="OCD Brilliance home"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></a><nav class="client-app-nav" aria-label="Client navigation">${links.map(([path, label, glyph]) => `<a href="#/client/${path}" ${section === path || (path === 'intake' && section === 'documents') ? 'aria-current="page"' : ''}>${icon(glyph)}<span>${label}</span></a>`).join('')}</nav><div><button class="btn" data-action="client-feedback" type="button">${icon('inbox')} Get help</button><button class="client-account-button" data-action="account-settings" type="button" aria-label="Account and workspace view">${profileImage(p.name)}</button></div></header><main class="client-app-main" id="main-content" tabindex="-1">${account}${content}${['home', 'bookings'].includes(section) && state.updates.some((u) => u.to === `client:${p.id}`) ? updateFeed(`client:${p.id}`) : ''}</main></div>`;
   }
 
   function clientHome() {
@@ -2517,13 +2683,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   function reviewClientBooking() {
     if (!clientBooking.service || !clientBooking.date || clientBooking.date < todayPerth()) return;
     clearServiceVideoPreview();
-    serviceVideoFiles = [];
+    roomVideos.clear();
     serviceVideoUploads.clear();
     const p = participant(ui.clientId);
     openModal(
       'Review your booking request',
       'The office confirms availability, price and your worker.',
-      `<form data-form="client-booking" data-participant="${attr(ui.clientId)}"><input type="hidden" name="date" value="${attr(clientBooking.date)}"><p>Preferred date: <strong>${dateLabel(clientBooking.date)}</strong></p>${clientBooking.mode === 'same-as-before' ? `<p>Same as before: ${esc(clientBooking.service)} · ${esc(clientBooking.start)}–${esc(clientBooking.end)}. Previous reference: ${esc(clientBooking.previousBookingId)}.</p><input type="hidden" name="service" value="${attr(clientBooking.service)}">` : `<fieldset><legend>Choose services</legend>${serviceTypes.map((service) => `<label class="checkbox"><input type="checkbox" name="service" value="${attr(service)}" ${service === clientBooking.service ? 'checked' : ''}><span>${esc(service)}</span></label>`).join('')}</fieldset>`}<label>Service postcode<input name="postcode" value="${attr(p.postcode || '')}" pattern="[0-9]{4}" maxlength="4" inputmode="numeric" required></label><label>Needs, rooms or tasks<textarea name="notes" maxlength="1500" placeholder="Tell us what has changed">${esc(clientBooking.notes || '')}</textarea></label><label>New service videos (optional)<input name="serviceVideo" type="file" multiple accept="video/mp4,video/webm,video/quicktime,.mov" aria-describedby="service-video-help"></label><p id="service-video-help" class="form-note">Up to 5 videos, 100 MB each. Show only people who agree to appear. New videos go to the office for work and pricing assessment.</p><div id="service-video-preview" class="service-video-review" aria-live="polite"></div><label class="checkbox"><input name="consent" type="checkbox" required><span>I agree to share this request and videos with OCD Brilliance for office review.</span></label><p class="form-note">Your contact details: ${esc(p.name)} · ${esc(p.email)} · ${esc(p.phone)}. Previous booking references are checked by the office.</p><div class="form-actions"><button class="btn" data-action="close-modal" type="button">Go back</button><button class="btn primary" type="submit">Send booking request</button></div></form>`,
+      `<form data-form="client-booking" data-participant="${attr(ui.clientId)}"><input type="hidden" name="date" value="${attr(clientBooking.date)}"><p>Preferred date: <strong>${dateLabel(clientBooking.date)}</strong></p>${clientBooking.mode === 'same-as-before' ? `<p>Same as before: ${esc(clientBooking.service)} · ${esc(clientBooking.start)}–${esc(clientBooking.end)}. Previous reference: ${esc(clientBooking.previousBookingId)}.</p><input type="hidden" name="service" value="${attr(clientBooking.service)}">` : `<fieldset><legend>Choose services</legend>${serviceTypes.map((service) => `<label class="checkbox"><input type="checkbox" name="service" value="${attr(service)}" ${service === clientBooking.service ? 'checked' : ''}><span>${esc(service)}</span></label>`).join('')}</fieldset>`}<label>Service postcode<input name="postcode" value="${attr(p.postcode || '')}" pattern="[0-9]{4}" maxlength="4" inputmode="numeric" required></label><label>Needs, rooms or tasks<textarea name="notes" maxlength="1500" placeholder="Tell us what has changed">${esc(clientBooking.notes || '')}</textarea></label>${roomVideoPicker(intakeRooms)}<label class="checkbox"><input name="consent" type="checkbox" required><span>I agree to share this request and videos with OCD Brilliance for office review.</span></label><p class="form-note">Your contact details: ${esc(p.name)} · ${esc(p.email)} · ${esc(p.phone)}. Previous booking references are checked by the office.</p><div class="form-actions"><button class="btn" data-action="close-modal" type="button">Go back</button><button class="btn primary" type="submit">Send booking request</button></div></form>`,
     );
   }
 
@@ -2658,41 +2824,18 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     serviceVideoPreviewUrls = [];
   }
 
-  function validateServiceVideoFile(file) {
-    if (
-      !['video/mp4', 'video/webm', 'video/quicktime'].includes(file.type) ||
-      !file.size ||
-      file.size > 100 * 1024 * 1024
-    )
-      throw new Error('Choose MP4, MOV or WebM videos of up to 100 MB each.');
-  }
-
   function previewServiceVideo(input) {
     clearServiceVideoPreview();
     const panel = document.getElementById('service-video-preview');
     panel.replaceChildren();
     try {
-      const files = [...serviceVideoFiles];
-      for (const file of input.files) {
-        validateServiceVideoFile(file);
-        if (
-          !files.some(
-            (previous) =>
-              previous.name === file.name &&
-              previous.size === file.size &&
-              previous.lastModified === file.lastModified,
-          )
-        )
-          files.push(file);
-      }
-
-      if (files.length > 5) throw new Error('Attach up to 5 service videos.');
-      serviceVideoFiles = files;
+      roomVideos.add(input.files, input.dataset.room || 'other');
+      const files = roomVideos.files;
       panel.innerHTML = files
         .map((file, index) => {
           const url = URL.createObjectURL(file);
           serviceVideoPreviewUrls.push(url);
-          return `<div><video controls playsinline preload="metadata" aria-label="Preview service video ${index + 1}" src="${attr(url)}"></video><p>${esc(file.name)} · ${file.size < 1024 * 1024 ? Math.ceil(file.size / 1024) + ' KB' : (file.size / (1024 * 1024)).toFixed(1) + ' MB'}</p><button class="btn small" type="button" data-action="remove-service-video" data-value="${index}">Remove video ${index + 1}</button></div>`;
+          return `<div><video controls playsinline preload="metadata" aria-label="Preview service video ${index + 1}" src="${attr(url)}"></video><p>${esc(intakeRooms[roomVideos.room(file)])} · ${esc(file.name)} · ${file.size < 1024 * 1024 ? Math.ceil(file.size / 1024) + ' KB' : (file.size / (1024 * 1024)).toFixed(1) + ' MB'}</p><button class="btn small" type="button" data-action="remove-service-video" data-value="${index}">Remove video ${index + 1}</button></div>`;
         })
         .join('');
     } catch (error) {
@@ -2732,6 +2875,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           size: file.size,
           postcode,
           consent,
+          room: roomVideos.room(file),
         }),
       });
 
@@ -2767,7 +2911,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         : area?.status === 'outside'
           ? 'Outside current service area'
           : 'Service area unavailable';
-    return `<div class="public-intro"><span class="eyebrow">Request support</span><h1>Check your service area</h1><p>Check postcode → Send request → Office review</p></div><div class="public-layout"><section class="panel"><div class="step-heading"><span>01</span><div><h2>Service postcode</h2><p>Availability confirmed by the office.</p></div></div><form data-form="area-check" class="area-check-form"><label>Australian postcode<input name="postcode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{4}" maxlength="4" placeholder="e.g. 6027" value="${attr(area?.postcode || '')}" required></label><button class="btn primary" type="submit">Check postcode</button></form>${area ? `<div class="area-result ${resultClass}" role="status"><strong>${esc(resultTitle)}</strong><p>${esc(area.message)}</p></div>` : ''}${canContinue ? `<div class="step-heading step-heading-next"><span>02</span><div><h2>Your support needs</h2></div></div><form data-form="public-intake"><input type="hidden" name="postcode" value="${attr(area.postcode)}"><div class="form-grid"><label>Name<input name="name" autocomplete="name" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Phone<input name="phone" type="tel" autocomplete="tel" required></label><label>Suburb<input name="suburb" autocomplete="address-level2" required></label><label>Requested service<select name="service">${serviceOptions(serviceTypes.find((s) => s.toLowerCase() === new URLSearchParams(location.search).get('service')?.toLowerCase()) || '')}</select></label><label>Preferred contact<select name="preferredContact">${option('Email')}${option('Phone')}</select></label><label class="full">What support are you looking for?<textarea name="support" required></textarea></label><label class="full">Service videos <span class="muted">(optional)</span><input name="serviceVideo" type="file" multiple accept="video/mp4,video/webm,video/quicktime,.mov" aria-describedby="service-video-help"></label><p class="full form-note" id="service-video-help">Show your needs, rooms or tasks so management can assess the work and prepare pricing. Up to 5 MP4, MOV or WebM videos, 100 MB each. A written description is enough if you prefer. Only include people who agree to appear in your video.</p><div id="service-video-preview" class="full service-video-review" aria-live="polite"></div><label class="full">Schedule or worker preferences<textarea name="preference" placeholder="Optional"></textarea></label><label class="full checkbox"><input name="consent" type="checkbox" required><span>I agree to share these details with OCD Brilliance so the office can review and respond to my request.</span></label></div><div class="form-actions"><button class="btn primary" type="submit">Send request</button></div></form>` : ''}</section><aside class="panel next-steps"><h2>What happens next</h2><ol class="visual-checklist"><li>${icon('inbox')}<span><strong>Review</strong><small>Office checks your request</small></span></li><li>${icon('people')}<span><strong>Contact</strong><small>Confirm needs &amp; availability</small></span></li><li>${icon('calendar')}<span><strong>Arrange support</strong><small>Staff confirm the next step</small></span></li></ol></aside></div>`;
+    return `<div class="public-intro"><span class="eyebrow">Request support</span><h1>Check your service area</h1><p>Check postcode → Send request → Office review</p></div><div class="public-layout"><section class="panel"><div class="step-heading"><span>01</span><div><h2>Service postcode</h2><p>Availability confirmed by the office.</p></div></div><form data-form="area-check" class="area-check-form"><label>Australian postcode<input name="postcode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{4}" maxlength="4" placeholder="e.g. 6027" value="${attr(area?.postcode || '')}" required></label><button class="btn primary" type="submit">Check postcode</button></form>${area ? `<div class="area-result ${resultClass}" role="status"><strong>${esc(resultTitle)}</strong><p>${esc(area.message)}</p></div>` : ''}${canContinue ? `<div class="step-heading step-heading-next"><span>02</span><div><h2>Your support needs</h2></div></div><form data-form="public-intake"><input type="hidden" name="postcode" value="${attr(area.postcode)}"><div class="form-grid"><label>Name<input name="name" autocomplete="name" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Phone<input name="phone" type="tel" autocomplete="tel" required></label><label>Suburb<input name="suburb" autocomplete="address-level2" required></label><label>Requested service<select name="service">${serviceOptions(serviceTypes.find((s) => s.toLowerCase() === new URLSearchParams(location.search).get('service')?.toLowerCase()) || '')}</select></label><label>Preferred contact<select name="preferredContact">${option('Email')}${option('Phone')}</select></label><label class="full">What support are you looking for?<textarea name="support" required></textarea></label><div class="full">${roomVideoPicker(intakeRooms)}</div><label class="full">Schedule or worker preferences<textarea name="preference" placeholder="Optional"></textarea></label><label class="full checkbox"><input name="consent" type="checkbox" required><span>I agree to share these details with OCD Brilliance so the office can review and respond to my request.</span></label></div><div class="form-actions"><button class="btn primary" type="submit">Send request</button></div></form>` : ''}</section><aside class="panel next-steps"><h2>What happens next</h2><ol class="visual-checklist"><li>${icon('inbox')}<span><strong>Review</strong><small>Office checks your request</small></span></li><li>${icon('people')}<span><strong>Contact</strong><small>Confirm needs &amp; availability</small></span></li><li>${icon('calendar')}<span><strong>Arrange support</strong><small>Staff confirm the next step</small></span></li></ol></aside></div>`;
   }
 
   function openModal(title, subtitle, body) {
@@ -2790,7 +2934,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   modal.addEventListener('close', () => {
     clearServiceVideoPreview();
-    serviceVideoFiles = [];
+    roomVideos.clear();
     serviceVideoUploads.clear();
   });
 
@@ -2978,11 +3122,95 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const value = button.dataset.value;
     if (action.startsWith('employee-') && routeParts()[0] === 'worker')
       return window.OCD_EMPLOYEE.action(employeeContext(), button);
+    if (action === 'financial-source') {
+      const c = state.financialChecks?.cases[itemId];
+      if (!c) return toast('The check is no longer available.');
+      if (c.kind === 'travel') {
+        ui.feeTab = 'Routes';
+        ui.travelBooking = c.entityId;
+      }
+      if (c.area === 'Payroll') {
+        ui.payrollFrom = c.scope.from;
+        ui.payrollTo = c.scope.to;
+      }
+      go(c.href.replace(/^#\//, ''));
+      return;
+    }
+    if (action === 'financial-track')
+      return openModal(
+        'Payment follow-up',
+        'Record verified accounting evidence.',
+        paymentTrackingForm(state, itemId),
+      );
+    if (action === 'financial-recheck') {
+      const result = runFinancialChecks(state, state.financialChecks.scope, window.OCD_INVOICES);
+      ui.financialMessage = `Rechecked current records: ${result.open.length} open checks. Source corrections resolve checks automatically.`;
+      save();
+      render();
+      toast(ui.financialMessage);
+      return;
+    }
+    if (action.startsWith('payroll-')) {
+      try {
+        if (action === 'payroll-approve-source')
+          return openModal(
+            'Approve payroll inputs',
+            'Approve time and actual mileage for one visit.',
+            payrollApprovalForm(state, itemId),
+          );
+        if (action === 'payroll-add-adjustment')
+          return openModal(
+            'Approved adjustment',
+            'Record a correction or allowance with its source.',
+            payrollAdjustmentForm(state, itemId),
+          );
+        if (action === 'payroll-review')
+          return openModal(
+            'Review payroll draft',
+            'This records office review; it does not release pay.',
+            `<form data-form="payroll-review" data-id="${attr(itemId)}"><label>Final review note<textarea name="note" required></textarea></label><label class="checkbox"><input type="checkbox" name="checked" required><span>I checked approved hours, actual mileage, adjustments and all source exceptions.</span></label><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">Record reviewed draft</button></div></form>`,
+          );
+        if (action === 'payroll-remove-adjustment') {
+          const [draftId, adjustmentId] = itemId.split(':');
+          removePayrollAdjustment(state, draftId, adjustmentId);
+          save();
+          render();
+          toast('Adjustment removed; evidence retained in draft history.');
+        }
+        if (action === 'payroll-export')
+          csvDownload(
+            `ocd-payroll-review-${itemId}.csv`,
+            [
+              'Draft',
+              'Period start',
+              'Period end',
+              'Worker ID',
+              'Worker',
+              'Date',
+              'Source ID',
+              'Entry',
+              'Hours',
+              'Actual km',
+              'AUD adjustment',
+              'Time / adjustment reference',
+              'Mileage reference',
+              'Review note',
+              'Approved by',
+              'Approved at',
+            ],
+            payrollExport(state, itemId),
+          );
+      } catch (error) {
+        toast(error.message);
+      }
+      return;
+    }
+
     if (action === 'remove-service-video') {
       if (button.closest('form').getAttribute('aria-busy') === 'true') return;
-      const input = button.closest('form').elements.serviceVideo;
+      const input = button.closest('form').querySelector('[name=serviceVideo]');
       input.value = '';
-      const removed = serviceVideoFiles.splice(Number(value), 1)[0];
+      const removed = roomVideos.remove(Number(value));
       serviceVideoUploads.delete(removed);
       previewServiceVideo(input);
       input.focus();
@@ -3532,12 +3760,30 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       return;
     }
 
-    if (action === 'new-invoice')
+    if (action === 'billing-profile') {
+      const person = participant(itemId);
+      if (!person) return;
+      const profile = person.billingProfile || {};
+      const services = [
+        ...new Set([
+          ...serviceTypes,
+          ...state.bookings.filter((b) => b.participantId === person.id).map((b) => b.service),
+        ]),
+      ];
+      return openModal(
+        'Billing agreement',
+        `Record the agreed billing details for ${person.name}.`,
+        `<form class="invoice-agreement-form" data-form="billing-profile" data-id="${attr(person.id)}"><p class="form-note">Use the participant’s agreement or plan manager instructions. Saving this reference does not change existing invoices.</p><label>Billing recipient name<input name="name" required maxlength="120" value="${attr(profile.name || '')}"></label><label>Billing recipient email<input name="email" type="email" required value="${attr(profile.email || '')}"></label><label>Agreement / instruction source<input name="source" required maxlength="250" value="${attr(profile.source || '')}"></label><h3>Agreed service categories</h3><p class="form-note">Enter the agreed category for each relevant service. Leave unknown categories blank for follow-up.</p>${services.map((service, index) => `<label>${esc(service)}<input name="category-${index}" data-service="${attr(service)}" maxlength="150" value="${attr(profile.serviceCategories?.[service] || '')}"></label>`).join('')}${profile.by ? `<p class="form-note">Last recorded by ${esc(profile.by)} · ${esc(profile.at)}</p>` : ''}<p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">Save billing agreement</button></div></form>`,
+      );
+    }
+    if (action === 'new-invoice') {
+      const booking = state.bookings.find((b) => b.id === itemId);
       return openModal(
         'New invoice',
         'Create a draft from completed visits that are not already on an invoice.',
-        `<form data-form="new-invoice" class="incoming-message-form"><label>Participant<select name="participantId">${participantOptions()}</select></label><div class="booking-time-fields"><label>Period starts<input name="from" type="date" value="2026-10-01" required></label><label>Period ends<input name="to" type="date" value="2026-10-05" required></label></div><label>Agreed hourly rate (AUD)<input name="rate" type="number" min="0.01" max="10000" step="0.01" required placeholder="Enter the agreed rate"></label><label>Rate source<input name="rateSource" required maxlength="250" placeholder="Agreement or approved pricing reference"></label><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">Create invoice draft</button></div></form>`,
+        `<form data-form="new-invoice" class="incoming-message-form"><label>Participant<select name="participantId">${participantOptions(booking?.participantId)}</select></label><div class="booking-time-fields"><label>Period starts<input name="from" type="date" value="${attr(booking?.date || '2026-10-01')}" required></label><label>Period ends<input name="to" type="date" value="${attr(booking?.date || '2026-10-05')}" required></label></div><label>Agreed hourly rate (AUD)<input name="rate" type="number" min="0.01" max="10000" step="0.01" required placeholder="Enter the agreed rate"></label><label>Rate source<input name="rateSource" required maxlength="250" placeholder="Agreement or approved pricing reference"></label><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">Create invoice draft</button></div></form>`,
       );
+    }
     if (action === 'add-inbox-message')
       return openModal(
         'Add incoming message',
@@ -3918,6 +4164,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       return;
     }
 
+    if (action === 'select-travel-review') {
+      ui.travelBooking = itemId;
+      selectTravelReview(document.querySelector('.travel-checker'), itemId);
+      return;
+    }
+
     if (action === 'fee-tab') {
       ui.feeTab = value;
       ui.feePreview = null;
@@ -3944,6 +4196,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         duration,
         created: todayPerth(),
         source: 'Illustrative map response',
+        travelContext: travelContext(state, b.id),
       };
 
       state.routeEstimates.push(record);
@@ -3968,6 +4221,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       ui.feePreview = null;
       save();
       render();
+      go('office/proposed-fees');
       toast('Proposed fee saved for office approval.');
       return;
     }
@@ -4241,6 +4495,35 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       return;
     }
 
+    if (kind === 'billing-profile') {
+      if (routeParts()[0] !== 'office') return;
+      try {
+        window.OCD_INVOICES.saveBillingProfile(
+          state,
+          {
+            participantId: itemId,
+            name: val(form, 'name'),
+            email: val(form, 'email'),
+            source: val(form, 'source'),
+            serviceCategories: Object.fromEntries(
+              [...form.querySelectorAll('[data-service]')].map((input) => [
+                input.dataset.service,
+                input.value,
+              ]),
+            ),
+          },
+          workspaceIdentity(),
+        );
+        save();
+        closeModal();
+        render();
+        toast('Billing agreement saved. Invoice checks refreshed.');
+      } catch (reason) {
+        formError(form, reason.message);
+      }
+      return;
+    }
+
     if (kind === 'new-invoice' || kind === 'invoice-review') {
       if (routeParts()[0] !== 'office') return;
       const I = window.OCD_INVOICES;
@@ -4265,6 +4548,8 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           if (!original) throw new Error('Invoice not found.');
           const invoice = structuredClone(original);
           invoice.lines.forEach((line, index) => {
+            line.description = val(form, `service-${index}`);
+            line.category = val(form, `category-${index}`);
             line.hours = Number(val(form, `hours-${index}`));
             line.rate = Number(val(form, `rate-${index}`));
           });
@@ -4289,6 +4574,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
             !invoice.rateSource.trim()
           )
             throw new Error('Add the billing recipient and rate source.');
+          if (reviewed && I.invoiceIssues(state, invoice).length)
+            throw new Error(
+              'Resolve the invoice checks and record the billing agreement before marking reviewed.',
+            );
           Object.assign(original, invoice);
           save();
           render();
@@ -4357,6 +4646,13 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         !['Intake team', 'Roster team', 'Bookkeeper', 'HR / admin', 'Office'].includes(owner)
       )
         return formError(form, 'Confirm the team, next action and source review.');
+      const dueDate = val(form, 'dueDate');
+      if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(dueDate) ||
+        !Number.isFinite(Date.parse(dueDate)) ||
+        new Date(dueDate).toISOString().slice(0, 10) !== dueDate
+      )
+        return formError(form, 'Choose a valid due date.');
       const job = window.OCD_AUTOMATION_ENGINE.create(state, {
         kind: 'email-review',
         workflow: 'W02',
@@ -4374,10 +4670,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         },
       });
 
+      job.dueDate = dueDate;
       job.status = 'manual_action_required';
       job.stage = 'followup';
       job.history[0].by = sessionEmail;
       job.history[0].event = 'Original message reviewed; team and follow-up confirmed.';
+      source.kind = 'email-review';
       source.owner = owner;
       source.state = 'routed';
       source.jobId = job.id;
@@ -4918,6 +5216,198 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       render();
     }
 
+    if (kind.startsWith('inbox-task-')) {
+      if (routeParts()[0] !== 'office') return;
+      try {
+        const engine = window.OCD_AUTOMATION_ENGINE;
+        let record;
+        if (kind === 'inbox-task-receive')
+          record = receiveTaskMessage(
+            state,
+            { sender: val(form, 'sender'), title: val(form, 'title'), body: val(form, 'body') },
+            engine,
+          );
+        if (kind === 'inbox-task-assign')
+          record = assignMessageTask(
+            state,
+            {
+              sourceId: itemId,
+              type: val(form, 'type'),
+              owner: val(form, 'owner'),
+              dueDate: val(form, 'dueDate'),
+              nextAction: val(form, 'nextAction'),
+              checked: form.elements.checked.checked,
+              by: sessionEmail || 'Office',
+            },
+            engine,
+          );
+        if (kind === 'inbox-task-complete')
+          record = completeMessageTask(
+            state,
+            {
+              id: itemId,
+              token: val(form, 'token'),
+              note: val(form, 'note'),
+              reference: val(form, 'reference'),
+              checked: form.elements.checked.checked,
+            },
+            engine,
+          );
+        if (kind === 'inbox-task-update')
+          record = updateTaskAssignment(
+            state,
+            {
+              id: itemId,
+              token: val(form, 'token'),
+              owner: val(form, 'owner'),
+              dueDate: val(form, 'dueDate'),
+              nextAction: val(form, 'nextAction'),
+              by: sessionEmail || 'Office',
+            },
+            engine,
+          );
+        save();
+        go(`office/inbox-tasks/${record.id}`);
+        toast(
+          kind === 'inbox-task-receive' ? 'Message saved for review.' : 'Task assignment saved.',
+        );
+      } catch (error) {
+        formError(form, error.message);
+      }
+      return;
+    }
+    if (kind.startsWith('financial-')) {
+      try {
+        if (kind === 'financial-scope') {
+          runFinancialChecks(
+            state,
+            { from: val(form, 'from'), to: val(form, 'to'), asOf: val(form, 'asOf') },
+            window.OCD_INVOICES,
+          );
+          ui.financialMessage = 'Period updated. Checks use current saved records.';
+        }
+        if (kind === 'financial-filter') {
+          ui.financialFilter = val(form, 'filter');
+          ui.financialArea = val(form, 'area');
+          ui.financialMessage = '';
+        }
+        if (kind === 'financial-case')
+          updateFinancialCase(
+            state,
+            {
+              id: itemId,
+              token: val(form, 'token'),
+              owner: val(form, 'owner'),
+              note: val(form, 'note'),
+              reference: val(form, 'reference'),
+              checked: form.elements.checked?.checked === true,
+              explain: event.submitter?.value === 'explain',
+              by: sessionEmail || 'Office',
+            },
+            window.OCD_INVOICES,
+          );
+        if (kind === 'financial-track') {
+          trackFinancialInvoice(state, {
+            invoiceId: val(form, 'invoiceId'),
+            token: val(form, 'token'),
+            externalReference: val(form, 'externalReference'),
+            recipient: val(form, 'recipient'),
+            status: val(form, 'status'),
+            due: val(form, 'due'),
+            nextFollowup: val(form, 'nextFollowup'),
+            reason: val(form, 'reason'),
+            reference: val(form, 'reference'),
+            checked: form.elements.checked.checked,
+            by: sessionEmail || 'Office',
+          });
+          closeModal();
+        }
+        save();
+        render();
+        toast('Financial checks updated from saved evidence.');
+      } catch (error) {
+        formError(form, error.message);
+      }
+      return;
+    }
+    if (kind.startsWith('payroll-')) {
+      try {
+        const by = sessionEmail || 'Office';
+        if (kind === 'payroll-prepare') {
+          const d = preparePayroll(state, val(form, 'from'), val(form, 'to'));
+          ui.payrollFrom = d.from;
+          ui.payrollTo = d.to;
+          save();
+          go(`office/payroll/${d.id}`);
+          toast('Payroll draft prepared from current approvals.');
+          return;
+        }
+        if (kind === 'payroll-source')
+          approvePayrollSource(state, {
+            bookingId: val(form, 'bookingId'),
+            token: val(form, 'token'),
+            breakMinutes: Number(val(form, 'breakMinutes')),
+            actualKm: Number(val(form, 'actualKm')),
+            hoursReference: val(form, 'hoursReference'),
+            mileageReference: val(form, 'mileageReference'),
+            note: val(form, 'note'),
+            checked: form.elements.checked.checked,
+            by,
+          });
+        if (kind === 'payroll-adjustment')
+          addPayrollAdjustment(state, itemId, {
+            workerId: val(form, 'workerId'),
+            date: val(form, 'date'),
+            kind: val(form, 'kind'),
+            value: Number(val(form, 'value')),
+            reference: val(form, 'reference'),
+            reason: val(form, 'reason'),
+            checked: form.elements.checked.checked,
+            by,
+          });
+        if (kind === 'payroll-review')
+          reviewPayrollDraft(state, itemId, {
+            note: val(form, 'note'),
+            checked: form.elements.checked.checked,
+            by,
+          });
+        save();
+        closeModal();
+        render();
+        toast(
+          kind === 'payroll-source'
+            ? 'Payroll inputs approved. Refresh any prepared draft to collect them.'
+            : 'Payroll draft updated.',
+        );
+      } catch (error) {
+        formError(form, error.message);
+      }
+      return;
+    }
+
+    if (kind === 'travel-review') {
+      try {
+        ui.travelBooking = val(form, 'bookingId');
+        reviewTravel(state, {
+          bookingId: val(form, 'bookingId'),
+          token: val(form, 'token'),
+          distance: Number(val(form, 'distance')),
+          duration: Number(val(form, 'duration')),
+          source: val(form, 'source'),
+          note: val(form, 'note'),
+          checked: form.elements.checked.checked,
+          scheduleRiskAcknowledged: form.elements.scheduleRiskAcknowledged?.checked === true,
+          by: sessionEmail || 'Office',
+        });
+        save();
+        render();
+        toast('Travel review saved. Original estimate retained; no charges changed.');
+      } catch (error) {
+        formError(form, error.message);
+      }
+      return;
+    }
+
     if (kind === 'transport-preview') {
       const b = booking(val(form, 'bookingId'));
       if (b.status !== 'Completed')
@@ -5115,7 +5605,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         request,
         notes,
         postcode,
-        files: serviceVideoFiles.map((file) => [file.name, file.size, file.lastModified]),
+        files: roomVideos.files.map((file) => [
+          roomVideos.room(file),
+          file.name,
+          file.size,
+          file.lastModified,
+        ]),
       });
 
       if (form.dataset.requestFingerprint !== fingerprint) {
@@ -5132,10 +5627,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       let result;
       try {
         const videos = [];
-        for (const [index, file] of serviceVideoFiles.entries())
+        for (const [index, file] of roomVideos.files.entries())
           videos.push(
             await uploadServiceVideo(file, postcode, consent, (percent) => {
-              button.textContent = `Uploading video ${index + 1}/${serviceVideoFiles.length} · ${percent}%`;
+              button.textContent = `Uploading video ${index + 1}/${roomVideos.files.length} · ${percent}%`;
             }),
           );
         button.textContent = 'Sending request…';
@@ -5195,7 +5690,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       clientBooking.service = '';
       clientBooking.date = '';
       clearServiceVideoPreview();
-      serviceVideoFiles = [];
+      roomVideos.clear();
       serviceVideoUploads.clear();
       form.removeAttribute('aria-busy');
       closeModal();
@@ -5405,17 +5900,19 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       button.disabled = true;
       button.textContent = 'Sending…';
       form.setAttribute('aria-busy', 'true');
-      form.elements.serviceVideo.disabled = true;
+      form.querySelectorAll('[name=serviceVideo]').forEach((input) => {
+        input.disabled = true;
+      });
       form.querySelectorAll('[data-action="remove-service-video"]').forEach((remove) => {
         remove.disabled = true;
       });
 
       try {
-        const files = [...serviceVideoFiles];
+        const files = [...roomVideos.files];
         if (files.length > 5) throw new Error('Attach up to 5 service videos.');
         payload.serviceVideos = [];
         for (const [index, video] of files.entries()) {
-          validateServiceVideoFile(video);
+          validateRoomVideo(video);
           payload.serviceVideos.push(
             await uploadServiceVideo(video, payload.postcode, payload.consent, (percent) => {
               button.textContent = `Uploading video ${index + 1}/${files.length} · ${percent}%`;
@@ -5434,7 +5931,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         if (!response.ok) throw new Error(result.error || 'The request could not be sent.');
         form.reset();
         clearServiceVideoPreview();
-        serviceVideoFiles = [];
+        roomVideos.clear();
         serviceVideoUploads.clear();
         ui.areaCheck = null;
         openModal(
@@ -5447,7 +5944,9 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         button.disabled = false;
         button.textContent = 'Send request';
         form.removeAttribute('aria-busy');
-        form.elements.serviceVideo.disabled = false;
+        form.querySelectorAll('[name=serviceVideo]').forEach((input) => {
+          input.disabled = false;
+        });
         form.querySelectorAll('[data-action="remove-service-video"]').forEach((remove) => {
           remove.disabled = false;
         });
@@ -5564,6 +6063,14 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       render();
     }
 
+    if (target.name === 'invoiceId' && target.closest('[data-form="financial-track"]')) {
+      openModal(
+        'Payment follow-up',
+        'Record verified accounting evidence.',
+        paymentTrackingForm(state, target.value),
+      );
+      return;
+    }
     if (target.id === 'cancellation-booking') {
       ui.cancellationBooking = target.value;
       ui.feePreview = null;

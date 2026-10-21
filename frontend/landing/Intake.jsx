@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { PageHero } from './components';
 import { workflow, uploadVideo } from './workflow-api';
 import rooms from '../../lib/intake-rooms.json';
+import { roomVideoCategories } from '../features/intake/room-videos/selection.mjs';
 
 const services = [
   'Domestic assistance',
@@ -433,7 +434,7 @@ export default function Intake() {
                         <p className="room-video-count" role="status">
                           {files.length} of 5 videos added
                         </p>
-                        {Object.entries(rooms).map(([room, label]) => (
+                        {roomVideoCategories(rooms).map(([room, label]) => (
                           <section
                             className="room-video-card"
                             key={room}

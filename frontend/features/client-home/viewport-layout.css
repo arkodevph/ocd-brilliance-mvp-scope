@@ -1,0 +1,65 @@
+/* Desktop task screens fit one viewport; content must fit, not be clipped. */
+@media (min-width: 1000px) {
+  .client-app:has(.client-home-workspace) { height: 100dvh; min-height: 0; display: flex; flex-direction: column; }
+  .client-app:has(.client-home-workspace) > .client-app-header { flex-shrink: 0; }
+  .client-app-main:has(.client-home-workspace) { display: flex; flex-direction: column; flex: 1; width: 100%; min-height: 0; height: auto; padding: 16px 24px; gap: 16px; }
+  .portal-client-home.client-home-workspace { --home-space: 16px; min-height: 0; height: auto; }
+  .client-home-workspace .client-greeting { margin-bottom: 12px; }
+  .client-home-workspace .client-greeting p { margin: 0; font-size: .875rem; line-height: 1.5; }
+  .client-home-workspace .client-greeting h1 { font-size: 28px; line-height: 1.25; }
+  .client-home-workspace .client-greeting h1 + p { margin-top: 4px; }
+  .client-home-workspace .client-home-tabs { margin-bottom: 12px; }
+  .client-home-workspace .portal-repeat { margin-bottom: 16px; padding-bottom: 16px; gap: 12px; }
+  .client-home-workspace .portal-repeat :is(p, small) { margin-top: 4px; }
+  .client-home-workspace .client-service-grid { margin: 16px 0; gap: 12px; }
+  .client-home-workspace .client-service-group { gap: 8px; }
+  .client-home-workspace .client-service-tile { min-height: 56px; padding: 10px; }
+  .client-home-workspace .client-calendar-disclosure { margin-top: 12px; padding-top: 8px; }
+  .client-home-workspace .client-help-panel { gap: 10px; }
+  .client-home-workspace .client-featured-worker { padding-top: 12px; padding-bottom: 8px; }
+  .client-home-workspace .client-worker-copy .portal-link { min-height: 36px; }
+  .client-home-workspace .client-help-panel .btn,
+  .client-home-workspace .portal-list-pagination button { min-height: 36px; padding: 8px 12px; }
+  .client-home-workspace .client-help-panel .client-agreement-link { min-height: 32px; padding: 4px 0; }
+  .client-app-main:has(.client-home-workspace) > .update-feed { margin: 0; padding: 12px 16px; }
+  .client-app-main:has(.client-home-workspace) > .update-feed .section-heading { margin-bottom: 8px; }
+  .client-app-main:has(.client-home-workspace) > .update-feed h2 { font-size: 16px; }
+  .client-app-main:has(.client-home-workspace) > .update-feed .update-item { padding: 8px 0 0; }
+  .client-app-main:has(.client-home-workspace) > .update-feed .update-item small { margin-top: 2px; }
+}
+@media (min-width: 1000px) {
+  .portal-client-home.client-home-workspace { width: 100%; flex: none; }
+  .client-app-main:has(.client-home-workspace) > .update-feed { flex: none; }
+  .client-app-main:has(.client-home-workspace) > .update-feed .section-heading > div { display: flex; align-items: center; gap: 12px; }
+  .client-app-main:has(.client-home-workspace) > .update-feed .update-item .body { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+  .client-home-workspace .client-booking-layout[data-home-view="book"] > .client-booking-selected { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(200px, 1fr); gap: 12px 24px; }
+  .client-home-workspace .client-booking-selected > .section-heading { grid-column: 1 / -1; margin: 0; }
+  .client-home-workspace .client-inline-calendar { grid-column: 1; grid-row: 2 / 5; margin: 0; }
+  .client-home-workspace .client-date-label { grid-column: 2; grid-row: 2; align-self: end; }
+  .client-home-workspace #client-booking-note { grid-column: 2; grid-row: 3; margin: 0; }
+  .client-home-workspace .client-booking-cta { grid-column: 2; grid-row: 4; align-self: start; margin: 0; }
+}
+@media (min-width: 1000px) and (max-height: 850px) {
+  .client-app-main:has(.client-home-workspace) { padding-block: 12px; gap: 12px; }
+  .portal-client-home.client-home-workspace { --home-space: 12px; --home-note-size: .8125rem; }
+  .client-home-workspace .client-greeting { margin-bottom: 8px; }
+  .client-home-workspace .client-greeting > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 12px; }
+  .client-home-workspace .client-greeting h1 { order: -1; font-size: 24px; }
+  .client-home-workspace .client-greeting h1 + p { flex-basis: 100%; margin: 0; }
+  .client-home-workspace .client-home-tabs { margin-bottom: 8px; }
+  .client-home-workspace .client-home-tabs button { min-height: 36px; padding-block: 6px; }
+  .client-home-workspace .portal-repeat { margin-bottom: 12px; padding-bottom: 12px; }
+  .client-home-workspace .client-service-grid { margin: 12px 0; }
+  .client-home-workspace .client-service-tile { min-height: 48px; padding: 8px; }
+  .client-home-workspace .client-service-category h3 { margin: 0; }
+  .client-home-workspace .client-calendar-disclosure > button { min-height: 36px; }
+  .client-home-workspace .client-help-panel { gap: 8px; }
+  .client-home-workspace .client-help-panel > p { font-size: .8125rem; line-height: 1.5; }
+  .client-home-workspace .client-featured-worker { padding: 8px 48px 4px 8px; gap: 8px; }
+  .client-home-workspace .client-featured-worker .client-favourite { width: 36px; height: 36px; }
+  .client-home-workspace .client-worker-copy .portal-link { min-height: 32px; }
+  .client-home-workspace .client-help-panel .btn,
+  .client-home-workspace .portal-list-pagination button { min-height: 32px; padding-block: 6px; }
+  .client-home-workspace .client-featured-workers .portal-list-pagination { padding-top: 4px; }
+  .client-home-workspace .client-calendar-days button { min-height: 36px; }
+}

@@ -1,0 +1,26 @@
+{
+  "build": "pass",
+  "targetedTestFiles": 2,
+  "targetedFiles": [
+    "tests/financial-checks.test.mjs",
+    "tests/react-frontend.test.cjs"
+  ],
+  "browserScenarios": 2,
+  "captures": 8,
+  "browserErrors": 0,
+  "checked": [
+    "1440px desktop distinct columns",
+    "390px stacked summary layout",
+    "320px internal financial-row reflow",
+    "keyboard focus acquisition",
+    "full financial explanation/source-change/payment/persistence/empty flows"
+  ],
+  "formatting": "financial page and styles passed",
+  "diffCheck": "pass",
+  "unknown": [
+    "staff task-time improvement",
+    "screen-reader user trial",
+    "user acceptance"
+  ],
+  "deployment": "not performed"
+}

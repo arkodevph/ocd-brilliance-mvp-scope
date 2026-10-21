@@ -1,0 +1,23 @@
+{
+  "name": "ocd-mobile-tutorial",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture-screens.cjs",
+    "narration": "uv run --with edge-tts python generate-narration.py",
+    "stills": "node render.mjs --stills",
+    "render": "node render.mjs && python finish-video.py"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.377",
+    "@remotion/cli": "4.0.377",
+    "@remotion/renderer": "4.0.377",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.377",
+    "zod": "3.24.2"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
+  }
+}

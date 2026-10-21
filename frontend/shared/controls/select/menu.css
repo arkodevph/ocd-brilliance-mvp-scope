@@ -1,0 +1,89 @@
+/* Progressive enhancement: unsupported browsers retain the native platform menu. */
+@supports (appearance: base-select) {
+  :root select:not([multiple]):not([size]),
+  :root select:not([multiple]):not([size])::picker(select) {
+    appearance: base-select;
+  }
+
+  :root select:not([multiple]):not([size]) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  :root select:not([multiple]):not([size])::picker-icon {
+    color: var(--select-muted);
+    font-size: 11px;
+    flex: none;
+  }
+
+  :root select:not([multiple]):not([size]):open::picker-icon {
+    rotate: 180deg;
+  }
+
+  :root select:not([multiple]):not([size])::picker(select) {
+    inline-size: anchor-size(width);
+    min-inline-size: anchor-size(width);
+    max-inline-size: calc(100vw - 24px);
+    max-block-size: min(320px, 60dvh);
+    overflow: auto;
+    margin-block: 4px;
+    padding: 4px;
+    border: 1px solid var(--select-border);
+    border-radius: 10px;
+    background: var(--select-surface);
+    color: var(--select-ink);
+    box-shadow: 0 8px 28px rgb(25 28 36 / 16%);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.4;
+    scrollbar-width: thin;
+  }
+
+  :root select:not([multiple]):not([size]) option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-block-size: 36px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: var(--select-surface);
+    color: var(--select-ink);
+    font: inherit;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+
+  :root select:not([multiple]):not([size]) option:checked {
+    background: var(--select-selected);
+    font-weight: 500;
+  }
+
+  :root select:not([multiple]):not([size]) option:is(:hover, :focus-visible):not(:disabled) {
+    outline: none;
+    background: var(--select-hover);
+  }
+
+  :root select:not([multiple]):not([size]) option::checkmark {
+    order: 1;
+    margin-inline-start: auto;
+    color: var(--select-accent);
+  }
+
+  :root select:not([multiple]):not([size]) :is(option:disabled, optgroup:disabled) {
+    color: var(--select-muted);
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 760px) {
+    :root select:not([multiple]):not([size])::picker(select) {
+      font-size: 16px;
+    }
+
+    :root select:not([multiple]):not([size]) option {
+      min-block-size: 44px;
+    }
+  }
+}

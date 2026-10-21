@@ -174,3 +174,20 @@
 .automation-thread .automation-history .timeline { margin: 0; }
 .automation-thread .automation-history .timeline strong { font-size: 13px; font-weight: 500; line-height: 1.5; }
 .automation-thread .automation-history .timeline small { display: block; margin-top: 5px; font-size: 11px; }
+
+.cancellation-checklist {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+}
+.cancellation-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cancellation-checklist .status {
+  min-width: 66px;
+  text-align: center;
+}

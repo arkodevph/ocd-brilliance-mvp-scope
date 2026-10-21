@@ -55,6 +55,30 @@ const intakePolicy = JSON.stringify({
   },
 });
 
+const browserCache = path.join(os.homedir(), '.cache/ms-playwright');
+const cachedBrowsers = await fs.readdir(browserCache).catch(() => []);
+const browserCandidates = process.env.CHROME_PATH
+  ? [process.env.CHROME_PATH]
+  : [
+      '/usr/bin/google-chrome',
+      '/usr/bin/chromium',
+      '/usr/bin/chromium-browser',
+      ...cachedBrowsers
+        .filter((name) => /^chromium-\d+$/.test(name))
+        .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
+        .map((name) => path.join(browserCache, name, 'chrome-linux64/chrome')),
+    ];
+let browserPath;
+for (const candidate of browserCandidates) {
+  try {
+    await fs.access(candidate);
+    browserPath = candidate;
+    break;
+  } catch {}
+}
+if (!browserPath)
+  throw new Error('No Chromium executable found. Set CHROME_PATH to an installed browser.');
+
 const server = spawn(process.execPath, ['server.cjs'], {
   cwd: root,
   stdio: 'ignore',
@@ -79,7 +103,7 @@ const server = spawn(process.execPath, ['server.cjs'], {
 });
 
 const chrome = spawn(
-  process.env.CHROME_PATH || '/usr/bin/google-chrome',
+  browserPath,
   [
     '--headless=new',
     '--no-sandbox',
@@ -308,36 +332,17 @@ try {
   await command('Page.reload');
   await wait("!!document.querySelector('.sidebar')");
   await route('office/fees');
-  await wait('!!document.querySelector(".booking-picker input")');
+  await wait('!!document.querySelector("#route-booking")');
   await evaluate(
-    `(() => { const search = document.querySelector('.booking-picker input'); search.value = 'BKG-504'; search.dispatchEvent(new Event('input', { bubbles: true })); })()`,
+    `(() => { const select = document.querySelector('#route-booking'); select.value = 'BKG-504'; select.dispatchEvent(new Event('change', { bubbles: true })); })()`,
   );
-  assert.equal(
-    await evaluate('document.querySelectorAll(".booking-picker button:not([hidden])").length'),
-    1,
-  );
-  await click('.booking-picker button[data-choice="BKG-504"]');
   assert.equal(await evaluate('document.querySelector("#route-booking").value'), 'BKG-504');
-  assert.equal(
-    await evaluate(
-      'document.querySelector(".booking-picker button[aria-pressed=true]").getAttribute("aria-pressed")',
-    ),
-    'true',
-  );
-  await evaluate(
-    `(() => { const search = document.querySelector('.booking-picker input'); search.value = 'no matching booking'; search.dispatchEvent(new Event('input', { bubbles: true })); })()`,
-  );
-  assert.equal(
-    await evaluate('document.querySelector(".booking-picker .profile-picker-empty").hidden'),
-    false,
-  );
-  await evaluate(
-    `(() => { const search = document.querySelector('.booking-picker input'); search.value = ''; search.dispatchEvent(new Event('input', { bubbles: true })); })()`,
-  );
-  await capture('booking-search', 390, 900);
+  assert.equal(await evaluate('document.querySelector("#route-booking").hidden'), false);
+  assert.equal(await evaluate('document.querySelectorAll(".visible-choices").length'), 0);
+  await capture('booking-dropdown', 390, 900);
   passed(
-    'Service booking search',
-    'Filters bookings by their labels, selects the matching record, shows an empty result message and fits a mobile viewport.',
+    'Native booking selection',
+    'Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport.',
   );
   await command('Emulation.setDeviceMetricsOverride', {
     width: 1440,
@@ -353,7 +358,908 @@ try {
         ? 'office/verification'
         : 'office/automation',
   );
-  if (clientPresentation) {
+  if (process.env.PROTOTYPE_INBOX_TASKS === '1') {
+    await route('office/inbox-tasks');
+    await wait('!!document.querySelector(".inbox-task-views")');
+    assert.equal(
+      await evaluate('document.querySelectorAll("[data-form=inbox-task-receive]").length'),
+      0,
+    );
+    await capture('inbox-tasks-desktop', 1440, 1000);
+    await capture('inbox-messages-mobile', 390, 900);
+    await click('.page-header a[href="#/office/inbox-tasks/new"]');
+    await wait('!!document.querySelector("[data-form=inbox-task-receive]")');
+    await capture('inbox-compose-desktop', 1440, 1000);
+    assert.equal(await evaluate('document.querySelectorAll(".inbox-task-list").length'), 0);
+    await submit('[data-form=inbox-task-receive]', {
+      sender: 'participant@example.test',
+      title: 'Booking request for Friday',
+      body: 'Please book a cleaning visit on Friday morning.',
+    });
+    await wait('!!document.querySelector("[data-form=inbox-task-assign]")');
+    assert.equal(await evaluate('document.querySelector("[name=type]").value'), 'Booking request');
+    await capture('inbox-review-desktop', 1440, 1000);
+    await capture('inbox-review-mobile', 390, 900);
+    await submit('[data-form=inbox-task-assign]', {
+      owner: 'Roster team',
+      type: 'Booking request',
+      dueDate: '2026-10-22',
+      nextAction: 'Confirm participant and Friday availability.',
+      checked: true,
+    });
+    await wait('!!document.querySelector("[data-form=inbox-task-update]")');
+    const id = await evaluate('document.querySelector("[data-form=inbox-task-update]").dataset.id');
+    await command('Page.reload');
+    await wait('!!document.querySelector("[data-form=inbox-task-update]")');
+    await click('.inbox-task-edit summary');
+    assert.equal(
+      await evaluate(
+        'document.querySelector("[data-form=inbox-task-update] [name=dueDate]").value',
+      ),
+      '2026-10-22',
+    );
+    await submit('[data-form=inbox-task-update]', {
+      owner: 'Office',
+      dueDate: '2026-10-23',
+      nextAction: 'Call participant to confirm service.',
+    });
+    assert.equal(
+      await stored(`s.automation.jobs.find(j=>j.id===${JSON.stringify(id)}).owner`),
+      'Office',
+    );
+    await capture('inbox-assignment-mobile', 390, 900);
+    await route('office/work');
+    assert.match(
+      await evaluate('document.querySelector(".crm-work-list").innerText'),
+      /Booking request for Friday/,
+    );
+    assert.match(
+      await evaluate('document.querySelector(".crm-work-list").innerText'),
+      /Due 2026-10-23/,
+    );
+    await route('office/inbox-tasks/assigned');
+    await wait('!!document.querySelector(".inbox-task-views")');
+    assert.match(
+      await evaluate('document.querySelector(".inbox-task-list").innerText'),
+      /Booking request for Friday/,
+    );
+    await command('Page.reload');
+    await wait('!!document.querySelector(".inbox-task-views")');
+    assert.equal(
+      await evaluate(
+        'document.querySelector(".inbox-task-views [aria-current]").getAttribute("href")',
+      ),
+      '#/office/inbox-tasks/assigned',
+    );
+    await capture('inbox-assigned-desktop', 1440, 1000);
+    await click('.inbox-task-views a[href="#/office/inbox-tasks/completed"]');
+    assert.ok(
+      !(await evaluate('document.querySelector(".inbox-task-list").innerText')).includes(
+        'Booking request for Friday',
+      ),
+    );
+    await route('office/inbox-tasks/new');
+    await submit('[data-form=inbox-task-receive]', {
+      sender: 'participant@example.test',
+      title: 'Booking request for Friday',
+      body: 'Please book a cleaning visit on Friday morning.',
+    });
+    await wait('!!document.querySelector(".inbox-task-review")');
+    assert.match(
+      await evaluate('document.querySelector(".inbox-task-review").innerText'),
+      /already has an assigned task/,
+    );
+    assert.equal(
+      await stored('s.automation.jobs.filter(j=>j.title==="Booking request for Friday").length'),
+      1,
+    );
+    await route(`office/inbox-tasks/${id}`);
+    await wait('!!document.querySelector("[data-form=inbox-task-complete]")');
+    await capture('inbox-task-detail-desktop', 1440, 1000);
+    await capture('inbox-task-detail-mobile', 390, 900);
+    assert.equal(
+      await evaluate('document.querySelectorAll(".inbox-task-page a[href*=automation]").length'),
+      0,
+    );
+    await submit('[data-form=inbox-task-complete]', {
+      checked: true,
+      reference: 'Fictional contact log',
+      note: 'Participant contacted; availability review remains with roster team.',
+    });
+    assert.equal(
+      await stored(`s.automation.jobs.find(j=>j.id===${JSON.stringify(id)}).status`),
+      'completed',
+    );
+    await route('office/inbox-tasks');
+    assert.ok(
+      !(await evaluate('document.querySelector(".inbox-task-list").innerText')).includes(
+        'Booking request for Friday',
+      ),
+    );
+    await click('.inbox-task-views a[href="#/office/inbox-tasks/completed"]');
+    await wait(
+      'document.querySelector(".inbox-task-views [aria-current]")?.getAttribute("href")=="#/office/inbox-tasks/completed"',
+    );
+    assert.match(
+      await evaluate('document.querySelector(".inbox-task-list").innerText'),
+      /Booking request for Friday/,
+    );
+    await capture('inbox-completed-desktop', 1440, 1000);
+    await command('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 0, y: 0 });
+    const rowBackground = await evaluate(
+      'getComputedStyle(document.querySelector(".inbox-task-list article")).backgroundColor',
+    );
+    const hoverPoint = await evaluate(
+      '(() => {const r=document.querySelector(".inbox-task-list article").getBoundingClientRect();return {x:r.x+24,y:r.y+r.height/2}})()',
+    );
+    await command('Input.dispatchMouseEvent', { type: 'mouseMoved', ...hoverPoint });
+    assert.equal(
+      await evaluate('document.querySelector(".inbox-task-list article").matches(":hover")'),
+      true,
+    );
+    assert.equal(
+      await evaluate(
+        'getComputedStyle(document.querySelector(".inbox-task-list article")).backgroundColor',
+      ),
+      rowBackground,
+      'Hovering a content row must not create a selection block',
+    );
+    await capture('inbox-completed-hover-desktop', 1440, 1000);
+    await capture('inbox-completed-mobile', 390, 900);
+    await capture('inbox-completed-narrow', 320, 900);
+    await click('.inbox-task-views a[href="#/office/inbox-tasks"]');
+    await capture('inbox-tasks-mobile', 390, 900);
+    passed(
+      'Inbox tasks',
+      'Reviewed email becomes an owned task with deadline; edit/reload/work-queue visibility, duplicate import prevention, workflow completion and desktop/mobile layouts passed. No mailbox or native booking changes.',
+    );
+  } else if (process.env.PROTOTYPE_FINANCIAL === '1') {
+    await route('office/finance');
+    await wait('!!document.querySelector("[data-form=financial-scope]")');
+    assert.equal(await evaluate('document.querySelector("h1").textContent'), 'Financial checks');
+    await click('.financial-period summary');
+    await submit('[data-form=financial-scope]', {
+      from: '2026-10-01',
+      to: '2026-10-11',
+      asOf: '2026-10-21',
+    });
+    await capture('financial-queue-desktop', 1440, 1000);
+    assert.equal(
+      await evaluate(
+        '(() => {const row=document.querySelector(".financial-row"),subject=row.querySelector(".financial-subject").getBoundingClientRect(),issue=row.querySelector(".financial-issue").getBoundingClientRect(),action=row.querySelector(".financial-row-action").getBoundingClientRect();return subject.right <= issue.left && issue.right <= action.left})()',
+      ),
+      true,
+      'Record identity, issue and action occupy distinct desktop columns',
+    );
+    assert.equal(
+      await evaluate('getComputedStyle(document.querySelector(".financial-workspace")).padding'),
+      '0px',
+      'Financial queue must not inherit extra panel padding',
+    );
+    await capture('financial-queue-mobile', 390, 900);
+    await capture('financial-queue-small', 320, 900);
+    assert.equal(
+      await evaluate(
+        'new Set([...document.querySelectorAll(".financial-summary section")].map(s=>s.getBoundingClientRect().left)).size',
+      ),
+      1,
+      'Mobile readiness summaries must stack for readable labels and actions',
+    );
+    await capture('financial-queue-narrow', 320, 900, '.financial-rows');
+    assert.equal(
+      await evaluate(
+        '(() => {const row=document.querySelector(".financial-row");return row.scrollWidth <= row.clientWidth})()',
+      ),
+      true,
+      'Narrow financial rows must reflow internally',
+    );
+    await command('Input.dispatchKeyEvent', {
+      type: 'keyDown',
+      key: 'Tab',
+      code: 'Tab',
+      windowsVirtualKeyCode: 9,
+    });
+    await command('Input.dispatchKeyEvent', {
+      type: 'keyUp',
+      key: 'Tab',
+      code: 'Tab',
+      windowsVirtualKeyCode: 9,
+    });
+    assert.equal(await evaluate('document.activeElement !== document.body'), true);
+    const travelCase = await stored(
+      'Object.values(s.financialChecks.cases).find(c=>c.kind==="travel" && c.status==="Open" && c.scope.from===s.financialChecks.scope.from)',
+    );
+    assert.ok(travelCase);
+    await route(`office/finance/${travelCase.id}`);
+    await click('[data-action=financial-source]');
+    await wait('!!document.querySelector(".travel-check:not([hidden])")');
+    assert.equal(
+      await evaluate('document.querySelector(".travel-check:not([hidden])").id'),
+      `travel-${travelCase.entityId}`,
+    );
+    await route('office/finance');
+    const timeId = await stored(
+      'Object.values(s.financialChecks.cases).find(c=>c.kind==="time" && c.status==="Open" && c.scope.from===s.financialChecks.scope.from).id',
+    );
+    await route(`office/finance/${timeId}`);
+    await wait('!!document.querySelector("[data-form=financial-case]")');
+    await submit(
+      '[data-form=financial-case]',
+      {
+        owner: 'Bookkeeper',
+        note: 'Check agreed billed time',
+        reference: 'Approved service agreement',
+        checked: true,
+      },
+      '[value=explain]',
+    );
+    assert.equal(
+      await stored(`s.financialChecks.cases[${JSON.stringify(timeId)}].status`),
+      'Explained',
+    );
+    await capture('financial-evidence-desktop', 1440, 1000);
+    await capture('financial-evidence-mobile', 390, 900);
+    await command('Page.reload');
+    await wait('!!document.querySelector("[data-form=financial-case]")');
+    assert.equal(await evaluate('document.querySelector("[name=owner]").value'), 'Bookkeeper');
+    const timeBooking = await stored(`s.financialChecks.cases[${JSON.stringify(timeId)}].entityId`);
+    await evaluate(
+      `(() => {const k='ocd-brilliance-operations-v1';const s=JSON.parse(localStorage.getItem(k));s.visits.find(v=>v.bookingId===${JSON.stringify(timeBooking)}).clockOut='15:30';localStorage.setItem(k,JSON.stringify(s));})()`,
+    );
+    await command('Page.reload');
+    await wait('!!document.querySelector("[data-form=financial-case]")');
+    assert.equal(await stored(`s.financialChecks.cases[${JSON.stringify(timeId)}].status`), 'Open');
+    await click('.financial-actions a');
+    await wait('!location.hash.startsWith("#/office/finance")');
+    await route('office/finance');
+    await click('[data-action=financial-track]');
+    await wait('document.querySelector("#modal").open');
+    const invoiceId = await evaluate(
+      'document.querySelector("[data-form=financial-track] [name=invoiceId]").value',
+    );
+    await submit('[data-form=financial-track]', {
+      status: 'Returned',
+      externalReference: 'XERO-DEMO-42',
+      recipient: 'Verified plan manager',
+      due: '2026-10-15',
+      nextFollowup: '2026-10-22',
+      reason: 'Recipient changed; verify before reissue',
+      reference: 'Returned invoice evidence',
+      checked: true,
+    });
+    await wait('!document.querySelector("#modal").open');
+    await submit('[data-form=financial-filter]', { area: 'Follow-up', filter: 'Open' });
+    assert.match(
+      await evaluate('document.querySelector(".financial-rows").innerText'),
+      /Invoice was returned/,
+    );
+    await capture('financial-followup-desktop', 1440, 1000);
+    const followupId = await stored(
+      `Object.values(s.financialChecks.cases).find(c=>c.kind==='followup'&&c.entityId===${JSON.stringify(invoiceId)}).id`,
+    );
+    await route(`office/finance/${followupId}`);
+    await click('[data-action=financial-track]');
+    await submit('[data-form=financial-track]', {
+      status: 'Paid',
+      reason: 'Payment verified in external accounting record',
+      checked: true,
+    });
+    await wait('!document.querySelector("#modal").open');
+    assert.equal(
+      await stored(`s.financialChecks.cases[${JSON.stringify(followupId)}].status`),
+      'Resolved',
+    );
+    await command('Page.reload');
+    await wait('!!document.querySelector(".financial-detail")');
+    assert.match(
+      await evaluate('document.querySelector(".financial-detail").innerText'),
+      /Resolved/,
+    );
+    await route('office/finance');
+    await submit('[data-form=financial-filter]', { area: 'All areas', filter: 'Resolved' });
+    assert.match(
+      await evaluate('document.querySelector(".financial-rows").innerText'),
+      /Invoice was returned/,
+    );
+    await click('.financial-period summary');
+    await submit('[data-form=financial-scope]', {
+      from: '2026-08-01',
+      to: '2026-08-02',
+      asOf: '2026-10-21',
+    });
+    await submit('[data-form=financial-filter]', { area: 'All areas', filter: 'Open' });
+    assert.match(
+      await evaluate('document.querySelector(".financial-rows").innerText'),
+      /No open checks/,
+    );
+    await capture('financial-empty-mobile', 390, 900);
+    passed(
+      'Financial checks',
+      'Real period findings, evidenced time explanation, source-change reopening, owner persistence, source navigation, returned payment tracking, verified paid resolution, filters and empty scope passed. Desktop/mobile captured without page overflow.',
+    );
+  } else if (process.env.PROTOTYPE_PAYROLL === '1') {
+    await route('office/finance');
+    await click('a[href="#/office/payroll"]');
+    await wait('!!document.querySelector("[data-form=payroll-prepare]")');
+    assert.equal(await evaluate('document.querySelector("h1").textContent'), 'Payroll preparation');
+    await capture('payroll-preparation-desktop', 1440, 1000);
+    await capture('payroll-preparation-mobile', 390, 900);
+    await click('[data-action=payroll-approve-source][data-id=BKG-500]');
+    await wait('document.querySelector("#modal").open');
+    await submit('[data-form=payroll-source]', {
+      breakMinutes: 0,
+      actualKm: 8.5,
+      hoursReference: 'Checked timesheet VIS-703',
+      mileageReference: 'Approved actual mileage log',
+      note: 'Actual time and mileage approved',
+      checked: true,
+    });
+    await wait('!document.querySelector("#modal").open');
+    await submit('[data-form=payroll-prepare]', { from: '2026-10-05', to: '2026-10-05' });
+    await wait('location.hash.startsWith("#/office/payroll/PAY-")');
+    const draftId = await stored('s.payroll.drafts[0].id');
+    assert.equal(await stored('s.payroll.drafts[0].lines.length'), 1);
+    assert.equal(await stored('s.payroll.drafts[0].lines[0].minutes'), 59);
+    assert.equal(await stored('s.payroll.drafts[0].lines[0].actualKm'), 8.5);
+    await click('[data-action=payroll-add-adjustment]');
+    await submit('[data-form=payroll-adjustment]', {
+      workerId: 'WRK-03',
+      date: '2026-10-05',
+      kind: 'amount',
+      value: 25.5,
+      reference: 'Approved allowance reference',
+      reason: 'Reviewed reimbursement adjustment',
+      checked: true,
+    });
+    await wait('!document.querySelector("#modal").open');
+    assert.match(await evaluate('document.querySelector(".payroll-metrics").innerText'), /25.50/);
+    await click('[data-action=payroll-review]');
+    await submit('[data-form=payroll-review]', {
+      note: 'Bookkeeper checked the period and approved inputs.',
+      checked: true,
+    });
+    await wait('!document.querySelector("#modal").open');
+    assert.equal(await stored('s.payroll.drafts[0].status'), 'Reviewed');
+    assert.equal(
+      await evaluate('document.querySelector("[data-action=payroll-export]").disabled'),
+      false,
+    );
+    await capture('payroll-reviewed-desktop', 1440, 1000);
+    await capture('payroll-reviewed-mobile', 390, 900);
+    await click('[data-action=payroll-export]');
+    await command('Page.reload');
+    await wait('!!document.querySelector("[data-action=payroll-export]")');
+    assert.equal(
+      await evaluate('document.querySelector("[data-action=payroll-export]").disabled'),
+      false,
+    );
+    await evaluate(
+      `(() => {const k='ocd-brilliance-operations-v1';const s=JSON.parse(localStorage.getItem(k));s.visits.find(v=>v.id==='VIS-703').clockOut='09:32';localStorage.setItem(k,JSON.stringify(s));})()`,
+    );
+    await command('Page.reload');
+    await wait('!!document.querySelector("[data-action=payroll-export]")');
+    assert.equal(
+      await evaluate('document.querySelector("[data-action=payroll-export]").disabled'),
+      true,
+    );
+    assert.match(
+      await evaluate('document.querySelector("#main-content").innerText'),
+      /Source records or approvals changed/,
+    );
+    await capture('payroll-stale-source-desktop', 1440, 1000);
+    await submit('[data-form=payroll-prepare]', { from: '2026-10-05', to: '2026-10-05' });
+    assert.equal(await stored('s.payroll.drafts.length'), 1);
+    assert.equal(await stored('s.payroll.drafts[0].status'), 'Draft');
+    assert.equal(await stored('s.payroll.drafts[0].lines.length'), 0);
+    assert.equal(await stored('s.payroll.drafts[0].id'), draftId);
+    passed(
+      'Payroll preparation',
+      'Approved actual hours/mileage, dated adjustment, draft review/export, persistence, source-change detection, blocked stale export and refresh without duplicate drafts passed. Desktop/mobile checked.',
+    );
+  } else if (process.env.PROTOTYPE_PROPOSED_FEES === '1') {
+    await route('office/fees');
+    assert.equal(
+      await evaluate(
+        'Array.from(document.querySelectorAll("h2")).some(h=>h.textContent==="Proposed fees")',
+      ),
+      false,
+    );
+    await click('a[href="#/office/proposed-fees"]');
+    await wait('location.hash==="#/office/proposed-fees"');
+    assert.equal(await evaluate('document.querySelector("h1").textContent'), 'Proposed fees');
+    for (const [width, height] of [
+      [1440, 1000],
+      [390, 900],
+    ])
+      await capture(`proposed-fees-page-${width}`, width, height);
+    await route('office/fees');
+    await click('[data-action=fee-tab][data-value=Transport]');
+    await submit('[data-form=transport-preview]', {
+      bookingId: 'BKG-499',
+      actualKm: 10,
+      rate: 1,
+      rateVersion: 'Sample reviewed rate',
+      source: 'Checked mileage fixture',
+    });
+    await click('[data-action=save-fee]');
+    await wait('location.hash==="#/office/proposed-fees"');
+    assert.match(await evaluate('document.querySelector("#main-content").innerText'), /10.00/);
+    await click('[data-action=approve-fee]');
+    await submit('[data-form=approve-fee]', { amount: 10, reason: 'Checked sample evidence' });
+    assert.equal(await stored('s.feeProposals.at(-1).status'), 'Approved');
+    await command('Page.reload');
+    await wait('!!document.querySelector("h1")');
+    assert.equal(await evaluate('document.querySelector("h1").textContent'), 'Proposed fees');
+    assert.match(await evaluate('document.querySelector("#main-content").innerText'), /Approved/);
+    for (const tab of ['Routes', 'Transport', 'Cancellation']) {
+      await route('office/fees');
+      await click(`[data-action=fee-tab][data-value="${tab}"]`);
+      assert.equal(
+        await evaluate(
+          'Array.from(document.querySelectorAll("h2")).some(h=>h.textContent==="Proposed fees")',
+        ),
+        false,
+      );
+    }
+    passed(
+      'Dedicated proposed-fees page',
+      'Sidebar navigation, empty desktop/mobile layouts, create-to-page navigation, approval, reload persistence and removal from all calculator tabs passed.',
+    );
+  } else if (process.env.PROTOTYPE_TRAVEL_LAYOUT === '1') {
+    await evaluate(
+      `(() => {const key='ocd-brilliance-operations-v1';const s=JSON.parse(localStorage.getItem(key)); const original=s.routeEstimates[0]; for(const [i,id] of ['BKG-502','BKG-503'].entries()) {const b=s.bookings.find(b=>b.id===id);s.routeEstimates.push({...original,id:'RTE-'+(602+i),bookingId:id,destination:s.participants.find(p=>p.id===b.participantId).address,distance:13.6,duration:21});}localStorage.setItem(key,JSON.stringify(s));})()`,
+    );
+    await command('Page.reload');
+    await wait('!!document.querySelector(".sidebar")');
+    await route('office/fees');
+    assert.equal(await evaluate('document.querySelectorAll(".travel-booking").length'), 3);
+    assert.equal(
+      await evaluate('document.querySelectorAll(".travel-check:not([hidden])").length'),
+      1,
+    );
+    await input('.travel-check:not([hidden]) [name=note]', 'Unfinished review remains here');
+    await click('[data-action=select-travel-review][data-id=BKG-502]');
+    assert.equal(
+      await evaluate('document.querySelector(".travel-check:not([hidden])").id'),
+      'travel-BKG-502',
+    );
+    assert.equal(await evaluate('document.activeElement.id'), 'travel-title-BKG-502');
+    await click('[data-action=select-travel-review][data-id=BKG-499]');
+    assert.equal(
+      await evaluate('document.querySelector(".travel-check:not([hidden]) [name=note]").value'),
+      'Unfinished review remains here',
+    );
+    for (const [width, height] of [
+      [1736, 1000],
+      [1440, 1000],
+      [390, 900],
+      [320, 900],
+    ]) {
+      await capture(`travel-list-detail-${width}`, width, height, '.travel-checker');
+      assert.equal(
+        await evaluate('document.querySelectorAll(".travel-check:not([hidden])").length'),
+        1,
+      );
+      if (width === 1736)
+        assert.equal(
+          await evaluate(
+            'document.querySelector(".travel-bookings").getBoundingClientRect().right < document.querySelector(".travel-review-pane").getBoundingClientRect().left',
+          ),
+          true,
+        );
+    }
+    await click('[data-action=select-travel-review][data-id=BKG-502]');
+    await submit('.travel-check:not([hidden]) [data-form=travel-review]', {
+      source: 'Checked route',
+      note: 'Worker and destination checked',
+      distance: 13.6,
+      duration: 21,
+      checked: true,
+    });
+    assert.equal(
+      await evaluate('document.querySelector(".travel-check:not([hidden])").id'),
+      'travel-BKG-502',
+    );
+    assert.match(
+      await evaluate('document.querySelector(".travel-check:not([hidden])").innerText'),
+      /Current/,
+    );
+    await capture('travel-list-detail-saved', 1440, 1000, '.travel-checker');
+    await route('office/fees/BKG-503');
+    assert.equal(
+      await evaluate('document.querySelector(".travel-check:not([hidden])").id'),
+      'travel-BKG-503',
+    );
+    passed(
+      'Travel list and focused review',
+      'Three bookings, one visible review, draft preservation, focus transfer, reviewed selection retention, queue deep link and 1736/1440/390/320px reflow passed.',
+    );
+  } else if (process.env.PROTOTYPE_TRAVEL_CHECKER === '1') {
+    await route('office/fees');
+    await wait('!!document.querySelector("[data-form=travel-review]")');
+    const before = await stored('s.routeEstimates.length');
+    await submit('[data-form=travel-review]', {
+      distance: 11.4,
+      duration: 18,
+      source: 'Checked map fixture',
+      note: 'Current worker and destination checked.',
+      checked: true,
+    });
+    assert.equal(await stored('s.routeEstimates.length'), before + 1);
+    assert.match(await evaluate('document.querySelector(".travel-checker").innerText'), /Current/);
+    const fees = await stored('JSON.stringify(s.feeProposals)');
+    await evaluate(
+      `(() => {const key='ocd-brilliance-operations-v1';const s=JSON.parse(localStorage.getItem(key));s.bookings.find(b=>b.id==='BKG-499').workerId='WRK-02';localStorage.setItem(key,JSON.stringify(s));})()`,
+    );
+    await command('Page.reload');
+    await wait('!!document.querySelector("[data-form=travel-review]")');
+    assert.match(
+      await evaluate('document.querySelector(".travel-checker").innerText'),
+      /Worker or dispatch location changed/,
+    );
+    await route('office/work');
+    await click('[data-action=work-filter][data-value=Checks]');
+    assert.match(
+      await evaluate('document.querySelector("#main-content").innerText'),
+      /Travel check/,
+    );
+    await click('a[href="#/office/fees/BKG-499"]');
+    await wait('!!document.querySelector("[data-form=travel-review]")');
+    assert.equal(await evaluate('document.querySelector("#route-booking").value'), 'BKG-499');
+    await capture('travel-checker-worker-change-desktop', 1440, 1000, '.travel-checker');
+    await capture('travel-checker-worker-change-mobile', 390, 900, '.travel-checker');
+    await evaluate(
+      `(() => {const key='ocd-brilliance-operations-v1';const s=JSON.parse(localStorage.getItem(key));s.participants.find(p=>p.id==='PAR-101').address='Kingsley, WA';localStorage.setItem(key,JSON.stringify(s));})()`,
+    );
+    await command('Page.reload');
+    await wait('!!document.querySelector("[data-form=travel-review]")');
+    assert.match(
+      await evaluate('document.querySelector(".travel-checker").innerText'),
+      /address or map location changed/,
+    );
+    await submit('[data-form=travel-review]', {
+      distance: 15,
+      duration: 25,
+      source: 'Reviewed map reference',
+      note: 'New worker and changed destination reviewed; actual travel remains separate.',
+      checked: true,
+    });
+    assert.equal(await stored('s.routeEstimates.length'), before + 2);
+    assert.equal(await stored('JSON.stringify(s.feeProposals)'), fees);
+    await capture('travel-checker-reviewed-desktop', 1440, 1000, '.travel-checker');
+    await capture('travel-checker-reviewed-mobile', 390, 900, '.travel-checker');
+    await click('[data-action=fee-tab][data-value=Transport]');
+    assert.equal(await evaluate('!!document.querySelector("[data-form=transport-preview]")'), true);
+    await command('Page.reload');
+    await wait('!!document.querySelector(".travel-checker")');
+    assert.match(await evaluate('document.querySelector(".travel-checker").innerText'), /Current/);
+    passed(
+      'Travel checker',
+      'Legacy evidence review, worker/address change flags, work queue navigation, retained estimates, unchanged fees, responsive layout and persistence passed.',
+    );
+  } else if (process.env.PROTOTYPE_SELECT_MENUS === '1') {
+    for (const page of ['/contact', '/resources', '/portal', '/intake']) {
+      await command('Page.navigate', { url: origin + page });
+      await wait('!!document.querySelector("main")');
+      if (page === '/intake') {
+        await evaluate(
+          `(() => {const el=document.querySelector('[name=postcode]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el,'6024');el.dispatchEvent(new Event('input',{bubbles:true}));})()`,
+        );
+        await evaluate('document.querySelector("[data-form=landing-area]").requestSubmit()');
+      }
+      await wait('document.querySelectorAll("select").length > 0');
+      const controls = await evaluate(
+        'Array.from(document.querySelectorAll("select:not([multiple]):not([size])")).map(s=>({name:s.name,field:getComputedStyle(s).appearance,menu:getComputedStyle(s,"::picker(select)").appearance}))',
+      );
+      assert.ok(controls.length > 0);
+      if (await evaluate('CSS.supports("appearance","base-select")'))
+        assert.ok(controls.every((s) => s.field === 'base-select' && s.menu === 'base-select'));
+      await capture(`public-${page.slice(1)}-desktop`, 1440, 1000, 'select');
+      await capture(`public-${page.slice(1)}-mobile`, 390, 900, 'select');
+      await command('Runtime.evaluate', {
+        expression: 'document.querySelector("select").showPicker()',
+        userGesture: true,
+      });
+      assert.equal(await evaluate('document.querySelector("select").matches(":open")'), true);
+      await capture(`public-${page.slice(1)}-open-menu`, 390, 900, 'select');
+      await command('Input.dispatchKeyEvent', {
+        type: 'keyDown',
+        key: 'Escape',
+        code: 'Escape',
+        windowsVirtualKeyCode: 27,
+      });
+      await command('Input.dispatchKeyEvent', {
+        type: 'keyUp',
+        key: 'Escape',
+        code: 'Escape',
+        windowsVirtualKeyCode: 27,
+      });
+      passed(
+        `Shared select styles on ${page}`,
+        `${controls.length} select fields and menus styled; desktop/mobile and open-menu rendering checked.`,
+      );
+    }
+    const tokens = await fs.readFile(
+      path.join(root, 'frontend/shared/controls/select/tokens.css'),
+      'utf8',
+    );
+    const fields = await fs.readFile(
+      path.join(root, 'frontend/shared/controls/select/field.css'),
+      'utf8',
+    );
+    await evaluate(
+      `(() => { const frame=document.createElement('iframe'); frame.id='native-select-fallback'; document.body.append(frame); const doc=frame.contentDocument; doc.open(); doc.write(${JSON.stringify('<style>')}+${JSON.stringify(tokens + fields)}+${JSON.stringify('</style><label>Fallback selection<select required><option value="">Choose</option><option value="yes">Yes</option></select></label>')}); doc.close(); })()`,
+    );
+    assert.deepEqual(
+      await evaluate(
+        '(() => {const s=document.querySelector("#native-select-fallback").contentDocument.querySelector("select"); return {appearance:getComputedStyle(s).appearance, valid:s.checkValidity()};})()',
+      ),
+      { appearance: 'auto', valid: false },
+    );
+    assert.equal(
+      await evaluate(
+        '(() => {const s=document.querySelector("#native-select-fallback").contentDocument.querySelector("select"); s.value="yes"; return s.checkValidity();})()',
+      ),
+      true,
+    );
+    passed(
+      'Native select fallback',
+      'Without the enhancement stylesheet, the field uses native appearance and required validation still works.',
+    );
+  } else if (process.env.PROTOTYPE_DROPDOWN_DIALOGS === '1') {
+    const dialogs = [
+      ['office/enquiries', 'new-enquiry'],
+      ['office/automation', 'add-inbox-message'],
+      ['office/agreements', 'generate-agreement'],
+      ['office/overview', 'account-settings'],
+      ['client/bookings/BKG-503', 'request-change'],
+    ];
+    for (const [page, action] of dialogs) {
+      await route(page);
+      if (action === 'request-change') {
+        await evaluate(
+          `(() => { const key='ocd-brilliance-operations-v1'; const s=JSON.parse(localStorage.getItem(key)); s.bookings.find(b=>b.id==='BKG-503').date='2099-10-06'; localStorage.setItem(key,JSON.stringify(s)); })()`,
+        );
+        await command('Page.reload');
+        await wait('!!document.querySelector("[data-action=request-change]")');
+      }
+      await click(`[data-action="${action}"]`);
+      await wait('document.querySelector("#modal").open');
+      assert.equal(
+        await evaluate('document.querySelectorAll("#modal .visible-choices").length'),
+        0,
+      );
+      assert.equal(
+        await evaluate(
+          'Array.from(document.querySelectorAll("#modal select")).every(s=>!s.hidden)',
+        ),
+        true,
+      );
+      assert.equal(
+        await evaluate(
+          'Array.from(document.querySelectorAll("#modal select:not([multiple]):not([size])")).every(s=>!CSS.supports("appearance","base-select") || (getComputedStyle(s).appearance==="base-select" && getComputedStyle(s,"::picker(select)").appearance==="base-select"))',
+        ),
+        true,
+        `Shared dropdown field and menu styling: ${action}`,
+      );
+      await capture(`dialog-${action}-desktop`, 1440, 1000, '#modal');
+      await capture(`dialog-${action}-mobile`, 390, 900, '#modal');
+      await click('[data-action=close-modal]');
+      passed(
+        `Dialog ${action}`,
+        'Native dropdowns retained without expanded option buttons; desktop/mobile checked.',
+      );
+    }
+  } else if (process.env.PROTOTYPE_DROPDOWNS === '1') {
+    const pages = [
+      ...[
+        'overview',
+        'work',
+        'automation',
+        'schedule',
+        'calendar',
+        'participants',
+        'staff',
+        'enquiries',
+        'calls',
+        'agreements',
+        'visits',
+        'map',
+        'fees',
+        'finance',
+        'invoices',
+        'intake',
+        'intake/new',
+        'shiftcare',
+        'verification',
+      ].map((p) => `office/${p}`),
+      ...[
+        'home',
+        'personal',
+        'reviews',
+        'today',
+        'map',
+        'calendar',
+        'leave',
+        'availability',
+        'review',
+      ].map((p) => `worker/${p}`),
+      ...['home', 'bookings', 'workers', 'map', 'documents', 'intake'].map((p) => `client/${p}`),
+      'public/book',
+      'public/intake',
+      ...(await stored(
+        "[['participants','participants'],['staff','workers'],['agreements','agreements'],['visits','visits'],['schedule','bookings'],['enquiries','enquiries']].map(([route,key])=>'office/'+route+'/'+s[key][0].id)",
+      )),
+      ...(await stored("s.automation.jobs.map(j=>'office/automation/'+j.id)")),
+    ];
+    for (const [index, page] of pages.entries()) {
+      await route(page);
+      assert.equal(await evaluate('document.querySelectorAll(".visible-choices").length'), 0, page);
+      assert.equal(
+        await evaluate(
+          'Array.from(document.querySelectorAll("select:not([hidden])")).every(s=>getComputedStyle(s).appearance!=="none")',
+        ),
+        true,
+        page,
+      );
+      assert.equal(
+        await evaluate(
+          'Array.from(document.querySelectorAll("select:not([hidden]):not([multiple]):not([size])")).every(s=>!CSS.supports("appearance","base-select") || (getComputedStyle(s).appearance==="base-select" && getComputedStyle(s,"::picker(select)").appearance==="base-select"))',
+        ),
+        true,
+        `Shared dropdown field and menu styling: ${page}`,
+      );
+      await capture(
+        `screen-${String(index + 1).padStart(2, '0')}-${page.replaceAll('/', '-')}-desktop`,
+        1440,
+        1000,
+      );
+      await capture(
+        `screen-${String(index + 1).padStart(2, '0')}-${page.replaceAll('/', '-')}-mobile`,
+        390,
+        900,
+      );
+      passed(
+        page,
+        'Desktop and mobile checked: no expanded option-button groups; native selects preserved; no horizontal overflow.',
+      );
+    }
+    const employee = await job('employee');
+    await route(`office/automation/${employee}`);
+    assert.equal(await evaluate('document.querySelector("select[name=matchId]").hidden'), false);
+    await input('select[name=matchId]', 'WRK-01');
+    assert.equal(await evaluate('document.querySelector("select[name=matchId]").value'), 'WRK-01');
+    await capture('existing-record-dropdown-desktop', 1440, 1000, 'select[name=matchId]');
+    await capture('existing-record-dropdown-mobile', 390, 900, 'select[name=matchId]');
+    await route('office/enquiries');
+    await input('#enquiry-status', 'Closed');
+    await evaluate(
+      'document.querySelector("#enquiry-status").dispatchEvent(new Event("change",{bubbles:true}))',
+    );
+    assert.equal(await evaluate('document.querySelector("#enquiry-status").value'), 'Closed');
+    await capture('status-dropdown-desktop', 1440, 1000, '#enquiry-status');
+    await capture('status-dropdown-mobile', 390, 900, '#enquiry-status');
+    await route('office/finance');
+    await input('[data-auto-form=report] select[name=type]', 'payroll');
+    await evaluate(
+      'document.querySelector("[data-auto-form=report] select[name=type]").dispatchEvent(new Event("change",{bubbles:true}))',
+    );
+    await capture('payroll-dropdown-desktop', 1440, 1000, '[data-auto-form=report]');
+    await capture('payroll-dropdown-mobile', 390, 900, '[data-auto-form=report]');
+    await submit('[data-auto-form=report]', { type: 'payroll', partial: false });
+    assert.equal(await stored('s.automation.lastReport.type'), 'payroll');
+    await route('office/agreements');
+    await click('[data-action=generate-agreement]');
+    await wait('document.querySelector("#modal").open');
+    assert.equal(await evaluate('document.querySelectorAll("#modal .visible-choices").length'), 0);
+    assert.equal(
+      await evaluate('document.querySelectorAll("#modal select:not([hidden])").length > 0'),
+      true,
+    );
+    await capture('agreement-dropdowns-mobile', 390, 900, '#modal');
+    passed(
+      'Global native form dropdowns',
+      'Office, worker, client and public forms plus an agreement dialog retain native selects. Payroll selection and report submission passed; mobile and desktop fit.',
+    );
+  } else if (process.env.PROTOTYPE_CANCELLATION === '1') {
+    await route('office/schedule/BKG-503');
+    await click('[data-action="cancel-booking"]');
+    await wait('!!document.querySelector(".cancellation-assistant")');
+    const cancel = await stored(
+      "s.automation.jobs.find(j=>j.kind==='cancel'&&j.targetId==='BKG-503').id",
+    );
+    assert.match(
+      await evaluate('document.querySelector(".cancellation-assistant").innerText'),
+      /BKG-503/,
+    );
+    assert.equal(
+      await evaluate('document.querySelectorAll(".cancellation-checklist li").length'),
+      5,
+    );
+    assert.equal(
+      await evaluate('document.querySelectorAll(".cancellation-form .visible-choices").length'),
+      0,
+    );
+    assert.equal(
+      await evaluate(
+        'Array.from(document.querySelectorAll(".cancellation-form select")).every(s=>!s.hidden)',
+      ),
+      true,
+    );
+    assert.equal(
+      await evaluate('document.querySelector(".cancellation-charge-code").getClientRects().length'),
+      0,
+    );
+    await capture('cancellation-review-desktop', 1440, 1000, '.cancellation-assistant');
+    await capture('cancellation-review-mobile', 390, 900, '.cancellation-assistant');
+    await capture('cancellation-charges-desktop', 1440, 1000, '.cancellation-group:last-of-type');
+    await capture('cancellation-charges-mobile', 390, 900, '.cancellation-group:last-of-type');
+    await input('.cancellation-form select[name=charge]', 'with-charge');
+    assert.equal(
+      await evaluate(
+        'document.querySelector(".cancellation-charge-code").getClientRects().length > 0',
+      ),
+      true,
+    );
+    await capture(
+      'cancellation-charges-with-charge-desktop',
+      1440,
+      1000,
+      '.cancellation-group:last-of-type',
+    );
+
+    assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'), true);
+    await submit('[data-auto-form="approve"]', {
+      reason: 'Participant requested cancellation',
+      cause: 'Participant',
+      notice: '2026-10-05T10:00',
+      charge: 'no-charge',
+      scope: 'occurrence',
+      policyReviewed: true,
+      sourceReviewed: true,
+      travelOccurred: 'no',
+      travelReviewed: true,
+      travelEvidence: 'Worker confirmed no travel; sample planned travel line removed.',
+      billingEvidence: 'Sample agreement and notice checked; office approved no charge.',
+    });
+    assert.equal(await jobStatus(cancel), 'approved');
+    await submit('[data-auto-form="native"]', { failure: 'success' });
+    assert.equal(await stored("s.bookings.find(b=>b.id==='BKG-503').status"), 'Confirmed');
+    await click('[data-auto-action="verify"]');
+    assert.equal(await jobStatus(cancel), 'manual_action_required');
+    assert.equal(
+      await evaluate('document.querySelectorAll(".automation-outbox article").length'),
+      2,
+    );
+    await click('[data-auto-action="delivery-fail"]');
+    assert.equal(await jobStatus(cancel), 'manual_action_required');
+    await click('[data-auto-action="deliver"]');
+    assert.equal(await jobStatus(cancel), 'manual_action_required');
+    await command('Page.reload');
+    await wait('!!document.querySelector(".cancellation-assistant")');
+    await click('[data-auto-action="deliver"]');
+    assert.equal(await jobStatus(cancel), 'completed');
+    assert.match(
+      await evaluate('document.querySelector(".cancellation-assistant").innerText'),
+      /Every step finished/,
+    );
+    await capture('cancellation-completed-mobile', 390, 900, '.cancellation-assistant');
+    await capture('cancellation-completed-desktop', 1440, 1000, '.cancellation-assistant');
+    await route('client/home');
+    assert.match(
+      await evaluate('document.querySelector("#main-content").innerText'),
+      /Cancellation confirmed/,
+    );
+    await route('worker/today');
+    assert.match(
+      await evaluate('document.querySelector("#main-content").innerText'),
+      /Visit cancelled/,
+    );
+    passed(
+      'Cancellation assistant',
+      'Travel and charge review, native read-back, two notifications, failed delivery, reload recovery, completion, recipient views and mobile layout passed.',
+    );
+  } else if (clientPresentation) {
     await wait("!!document.querySelector('#client-presentation')");
     assert.equal(await evaluate("document.querySelectorAll('.cp-tabs a').length"), 5);
     assert.match(await evaluate("document.querySelector('.cp-counts').innerText"), /7[\s\S]*14/);
@@ -767,6 +1673,73 @@ try {
     passed(
       'Consistent calendar layout',
       'Week/month toolbar, date navigation, Today, sample week, search, selected-day details and office call controls checked at desktop/mobile sizes.',
+    );
+  } else if (process.env.PROTOTYPE_EMPLOYEE_MAC === '1') {
+    await route('worker/map');
+    const boundaries = [];
+    for (const [width, height] of [
+      [1736, 1000],
+      [1440, 900],
+      [1280, 800],
+      [1024, 768],
+    ]) {
+      await command('Emulation.setDeviceMetricsOverride', {
+        width,
+        height,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await evaluate(
+        'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+      );
+      const bounds = await evaluate(`(() => {
+        const rect = selector => {
+          const r = document.querySelector(selector).getBoundingClientRect();
+          return { top: r.top, bottom: r.bottom, left: r.left, right: r.right };
+        };
+        return {
+          panel: rect('.map-side-panel'), map: rect('.booking-map-surface'),
+          workspace: rect('.booking-map-layout'), note: rect('.map-demo-note'),
+          overflow: getComputedStyle(document.querySelector('.map-side-panel')).overflowY,
+          sidebar: rect('.employee-sidebar'), footer: rect('.employee-footer'),
+          sidebarOverflow: getComputedStyle(document.querySelector('.employee-sidebar')).overflowY,
+        };
+      })()`);
+      assert.ok(
+        bounds.panel.bottom <= bounds.workspace.bottom + 1,
+        `${width}: booking panel escapes workspace`,
+      );
+      assert.ok(bounds.panel.right <= bounds.map.left + 1, `${width}: booking panel covers map`);
+      assert.ok(bounds.note.top >= bounds.workspace.bottom - 1, `${width}: map covers notes`);
+      assert.equal(bounds.overflow, 'auto');
+      assert.equal(bounds.sidebarOverflow, 'visible');
+      assert.ok(
+        bounds.sidebar.bottom <= bounds.footer.top + 1,
+        `${width}: employee sidebar clips at footer`,
+      );
+      boundaries.push({ width, height, ...bounds });
+      await capture(`employee-map-${width}`, width, height);
+    }
+    await fs.writeFile(
+      path.join(output, 'map-boundaries.json'),
+      JSON.stringify(boundaries, null, 2),
+    );
+    assert.equal(
+      await evaluate(`getComputedStyle(document.querySelector('.employee-main')).fontSize`),
+      '16px',
+    );
+    assert.equal(
+      await evaluate(`getComputedStyle(document.querySelector('.employee-navigation a')).fontSize`),
+      '15px',
+    );
+    assert.equal(await evaluate(`document.querySelectorAll('.employee-quick svg').length`), 0);
+    for (const section of ['home', 'personal', 'today', 'leave', 'map']) {
+      await route('worker/' + section);
+      await capture(`employee-${section}-phone`, 390, 900);
+    }
+    passed(
+      'Employee comfortable macOS layout',
+      'Map pane contained at four desktop sizes, notes unobscured, readable type, text-only Quick links and five phone layouts verified.',
     );
   } else if (process.env.PROTOTYPE_REVIEWS === '1') {
     await route('office/staff/WRK-01');
@@ -2081,10 +3054,7 @@ try {
     await wait('location.hash==="#/office/calendar"&&!document.querySelector("#modal").open');
     await click('[data-action="account-settings"]');
     await wait('document.querySelector("#modal").open');
-    assert.equal(
-      await evaluate('document.querySelectorAll("#modal .visible-choices button").length'),
-      4,
-    );
+    assert.equal(await evaluate('document.querySelectorAll("#modal select option").length'), 4);
     await evaluate('document.querySelector(".modal-close").focus()');
     assert.notEqual(
       await evaluate('getComputedStyle(document.activeElement).outlineStyle'),
@@ -2287,6 +3257,34 @@ try {
     await click('[data-action="intake-section"][data-value="review"]');
     assert.ok(
       (await evaluate("document.querySelector('.intake-source').innerText")).includes('Alex Demo'),
+    );
+    for (const [width, height] of [
+      [1736, 1000],
+      [390, 900],
+    ]) {
+      await command('Emulation.setDeviceMetricsOverride', {
+        width,
+        height,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      assert.equal(
+        await evaluate('getComputedStyle(document.querySelector(".intake-section-nav")).position'),
+        'static',
+      );
+      await evaluate('document.querySelector("main.page").scrollTop=450');
+      assert.equal(
+        await evaluate(
+          '(() => {const nav=document.querySelector(".intake-section-nav").getBoundingClientRect(); const section=document.querySelector("[data-intake-section]:not([hidden])").getBoundingClientRect(); return nav.bottom <= section.top;})()',
+        ),
+        true,
+      );
+      await capture(`intake-tabs-scroll-${width}`, width, height, '.intake-section-nav');
+      await evaluate('document.querySelector("main.page").scrollTop=0');
+    }
+    passed(
+      'Intake navigation flow',
+      'Section navigation stays in document flow without overlapping the visible source/review section at desktop and mobile widths.',
     );
     await capture('intake-review-desktop');
     await capture('intake-review-mobile', 390, 900);
@@ -2722,6 +3720,12 @@ try {
     await route(`office/automation/${cancel}`);
     await submit('[data-auto-form="approve"]', {
       charge: 'with-charge',
+      cause: 'Participant',
+      notice: '2026-10-05T10:00',
+      travelOccurred: 'no',
+      travelReviewed: true,
+      travelEvidence: 'Worker confirmed no travel; sample native travel lines checked.',
+      billingEvidence: 'Sample agreement and notice checked by office.',
       code: 'NSDH',
       scope: 'occurrence',
       policyReviewed: true,
@@ -2811,20 +3815,22 @@ try {
     });
 
     await route('office/finance');
-    await submit('[data-auto-form="report"]', { type: 'invoices', partial: true });
-
-    assert.equal(await stored('s.automation.lastReport.complete'), false);
-    assert.equal(
-      await stored("s.automation.jobs.find(j=>j.kind==='finance'&&j.targetId==='BKG-498').owner"),
-      'Office',
+    await click('.financial-period summary');
+    await submit('[data-form="financial-scope"]', {
+      from: '2026-09-28',
+      to: '2026-10-05',
+      asOf: '2026-10-21',
+    });
+    assert.ok(
+      await stored(
+        'Object.values(s.financialChecks.cases).some(c=>c.kind==="attendance" && c.status==="Open")',
+      ),
     );
-    await capture('bookkeeping-desktop');
-    await submit('[data-auto-form="report"]', { type: 'payroll', partial: false });
-
+    await capture('financial-checks-desktop');
     assert.equal(await stored('s.feeProposals.length'), 0);
     passed(
-      'Native care and bookkeeping exceptions',
-      'Worker tasks/goals/major flag reached the restricted office review. Missing source scope remained visible; invoice and payroll checks created no financial release.',
+      'Native care and financial checks',
+      'Worker care evidence reached office review. Financial checks identified source discrepancies without financial release.',
     );
 
     await route('worker/today');

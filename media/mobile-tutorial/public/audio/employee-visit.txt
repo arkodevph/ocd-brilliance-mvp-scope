@@ -1,0 +1,1 @@
+Employees see the client, service, and travel estimate together. They accept the offer, so the office can confirm the assignment.

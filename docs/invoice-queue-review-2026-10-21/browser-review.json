@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T05:44:00.918Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Invoice queue workflow",
+      "status": "pass",
+      "detail": "Four check types covered in unit tests; browser verified queue, prefilled service draft, billing reference, mismatch approval guard, corrected review, refreshed queue and persistence."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/invoice-queue-review-2026-10-21/queue-desktop.png",
+      "sha256": "776949f943558564f263cc67f20f4cbf0cac872d49b73f8d46f4032509e3da61",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-queue-review-2026-10-21/queue-mobile.png",
+      "sha256": "e63da33177bf1239b84965924b966369675b2ee10609746263966d3b7d6409e8",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-queue-review-2026-10-21/review-corrected.png",
+      "sha256": "fc4f095dbb6aa44573e00b0cf28eda6cbe825d1ad6fe1ea00061e01976b4a757",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-queue-review-2026-10-21/queue-narrow.png",
+      "sha256": "0d3daedf05371877a9850eb7d0b7eb2a872dc817355596e2ea8c0bf5c2293061",
+      "width": 320,
+      "height": 844,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Desktop 1440px and mobile 390px screenshots inspected; mobile uses stacked rows with readable checks and actions. 320px overflow assertion passed.",
+  "mapbox": "External Mapbox calls blocked; maps are outside this feature.",
+  "productionLimit": "Browser-local prototype only. No live ShiftCare ingestion, invoice delivery, tax rules or external billing writes verified."
+}

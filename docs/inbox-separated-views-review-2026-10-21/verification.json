@@ -1,0 +1,21 @@
+{
+  "build": "pass",
+  "targetedTestFiles": 2,
+  "inboxBehaviorTests": 8,
+  "browserScenarios": 2,
+  "captures": 15,
+  "browserErrors": 0,
+  "verified": [
+    "one data stage per view",
+    "separate composition form",
+    "active assigned URL survives reload",
+    "completed record excluded from Messages/Assigned and visible in Completed",
+    "duplicate prevention and in-place completion",
+    "desktop pointer hover matches row but does not change its background",
+    "390px and320px captures without document overflow"
+  ],
+  "formatting": "feature files and inbox tests pass",
+  "diffCheck": "pass",
+  "usabilityTrial": "not performed",
+  "deployment": "not performed"
+}

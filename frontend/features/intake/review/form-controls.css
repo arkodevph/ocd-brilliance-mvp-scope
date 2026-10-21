@@ -1,0 +1,42 @@
+.intake-layout label {
+  font-size: 0.875rem;
+}
+.intake-layout input,
+.intake-layout textarea,
+.intake-layout select {
+  font-size: 0.9375rem;
+  border-color: #85938a;
+}
+.intake-layout .field-error {
+  font-size: 0.875rem;
+}
+.intake-layout .form-actions {
+  flex-wrap: wrap;
+}
+.intake-layout textarea {
+  resize: vertical;
+}
+.intake-layout .checkbox {
+  margin-top: 20px;
+  align-items: start;
+}
+.intake-layout .checkbox input {
+  margin-top: 3px;
+}
+.intake-layout .btn {
+  min-height: 40px;
+}
+.intake-layout fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .intake-layout input,
+  .intake-layout textarea,
+  .intake-layout select {
+    font-size: 1rem;
+  }
+}

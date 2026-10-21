@@ -1,0 +1,281 @@
+.inbox-task-page {
+  display: grid;
+  gap: 24px;
+}
+.inbox-task-review {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+.inbox-task-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.inbox-task-capture > summary {
+  cursor: pointer;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.inbox-task-list > article {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--mac-border);
+}
+.inbox-task-list > article:last-child {
+  border-bottom: 0;
+}
+.inbox-task-list article > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.inbox-task-list strong {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.inbox-task-list p,
+.inbox-task-list span {
+  font-size: 0.875rem;
+  color: var(--mac-muted);
+  line-height: 1.5;
+}
+.inbox-task-list .btn {
+  flex-shrink: 0;
+}
+.inbox-task-page form > button {
+  margin-top: 16px;
+}
+@media (max-width: 800px) {
+  .inbox-task-review {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .inbox-task-list > article {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* Grouped native controls with a clear reading order and restrained emphasis. */
+.inbox-task-stack {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+  min-width: 0;
+}
+.inbox-task-page .panel {
+  margin: 0;
+  align-self: start;
+}
+.inbox-task-page h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+.inbox-task-page form {
+  display: grid;
+  gap: 16px;
+}
+.inbox-task-page form > label {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.inbox-task-page form > .checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.inbox-task-page form > .checkbox input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+.inbox-task-page form > button {
+  justify-self: start;
+  margin-top: 0;
+}
+.inbox-task-page :is(input, textarea, select) {
+  font-weight: 400;
+  font-size: 1rem;
+}
+.inbox-task-page .form-note {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin: 12px 0 16px;
+  max-width: 70ch;
+}
+.inbox-task-page .inbox-task-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.inbox-task-section-heading h2 {
+  margin: 0;
+}
+.inbox-task-next {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.inbox-task-facts {
+  margin: 20px 0;
+}
+.inbox-task-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  border-top: 1px solid var(--mac-border);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.inbox-task-facts dt {
+  color: var(--mac-muted);
+}
+.inbox-task-facts dd {
+  margin: 0;
+  text-align: right;
+}
+.inbox-task-edit summary {
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.inbox-task-edit[open] summary {
+  margin-bottom: 20px;
+}
+.inbox-task-history ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.inbox-task-history li {
+  padding: 12px 0;
+  border-top: 1px solid var(--mac-border);
+}
+.inbox-task-history p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+}
+.inbox-task-history small {
+  font-size: 0.75rem;
+  color: var(--mac-muted);
+  overflow-wrap: anywhere;
+}
+/* Rows are content containers. Hover feedback belongs to their action buttons. */
+.inbox-task-list > article:hover {
+  background: transparent;
+}
+
+/* Each view serves one stage: messages, open assignments, or completed work. */
+.inbox-task-views {
+  display: inline-flex;
+  justify-self: start;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--mac-border);
+  border-radius: 10px;
+  background: var(--mac-selected);
+  max-width: 100%;
+}
+.inbox-task-views a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  min-height: 40px;
+  border-radius: 7px;
+  color: var(--mac-muted);
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: background-color var(--mac-duration) var(--mac-ease);
+}
+.inbox-task-views a[aria-current='page'] {
+  background: var(--mac-surface);
+  box-shadow: var(--mac-shadow);
+  color: var(--mac-ink);
+  font-weight: 500;
+}
+.inbox-task-views a:hover {
+  color: var(--mac-ink);
+}
+.inbox-task-views span {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.inbox-task-collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.inbox-task-page .inbox-task-collection-header {
+  background: transparent;
+}
+.inbox-task-collection-header h2 {
+  margin: 0;
+}
+.inbox-task-collection-header > span {
+  font-size: 0.8125rem;
+  color: var(--mac-muted);
+}
+.inbox-task-collection .inbox-task-list {
+  margin-top: 16px;
+}
+.inbox-task-compose {
+  width: 100%;
+  max-width: 760px;
+  justify-self: center;
+}
+.inbox-task-form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-top: 8px;
+}
+.inbox-task-empty {
+  padding: 40px 0;
+  text-align: center;
+}
+.inbox-task-empty strong {
+  font-size: 1rem;
+  font-weight: 500;
+}
+.inbox-task-empty p,
+.inbox-task-local-note {
+  font-size: 0.8125rem;
+  color: var(--mac-muted);
+  line-height: 1.6;
+}
+.inbox-task-local-note {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .inbox-task-views {
+    display: flex;
+    justify-self: stretch;
+  }
+  .inbox-task-views a {
+    flex: 1;
+    gap: 6px;
+    padding: 8px 6px;
+    font-size: 0.8125rem;
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inbox-task-views a {
+    transition: none;
+  }
+}

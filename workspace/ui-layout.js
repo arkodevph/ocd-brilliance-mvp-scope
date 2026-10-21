@@ -123,7 +123,12 @@
     });
 
     root.querySelectorAll('details').forEach((details) => {
-      if (details.classList.contains('client-onboarding-guide')) return;
+      if (
+        details.matches(
+          '.client-onboarding-guide, .financial-period, .financial-history, .inbox-task-edit, .inbox-task-capture',
+        )
+      )
+        return;
       const section = document.createElement('section');
       section.className = `${details.className} expanded-details`;
       if (details.id) section.id = details.id;
@@ -138,139 +143,6 @@
 
       section.append(...details.childNodes);
       details.replaceWith(section);
-    });
-
-    root.querySelectorAll('select').forEach((select) => {
-      if (select.closest('[data-owner-picker]') || select.hasAttribute('data-native-select'))
-        return;
-      if (select.dataset.visibleChoices) {
-        select.refreshChoices?.();
-        return;
-      }
-
-      select.dataset.visibleChoices = 'true';
-      select.hidden = true;
-      select.tabIndex = -1;
-      const label =
-        select.getAttribute('aria-label') ||
-        [...(select.labels?.[0]?.childNodes || [])]
-          .filter((n) => n !== select)
-          .map((n) => n.textContent)
-          .join(' ')
-          .trim() ||
-        select.name ||
-        'Choose an option';
-      const group = document.createElement('div');
-      group.className = 'visible-choices';
-      group.setAttribute('role', 'group');
-      group.setAttribute('aria-label', label);
-      const profiles = ['participantId', 'workerId'].includes(select.name);
-      const bookings = select.id === 'route-booking';
-      if (bookings) group.classList.add('booking-picker');
-      if (profiles) group.classList.add('profile-picker');
-      if (select.name === 'service') group.classList.add('service-picker');
-      const results = document.createElement('div');
-      results.className = 'profile-picker-results';
-      const empty = document.createElement('p');
-      empty.className = 'profile-picker-empty';
-      empty.textContent = `No matching ${select.name === 'workerId' ? 'workers' : 'participants'}. Try another name.`;
-      empty.hidden = true;
-      if (bookings) empty.textContent = 'No matching bookings. Try a name, booking ID or date.';
-      if (profiles || bookings || select.options.length > 10) {
-        const search = document.createElement('input');
-        search.type = 'search';
-        search.placeholder = `Find ${label.toLowerCase()}`;
-        search.setAttribute('aria-label', `Search ${label.toLowerCase()}`);
-        if (bookings) search.placeholder = 'Search by participant, booking ID or date';
-        search.addEventListener('input', () => {
-          group.querySelectorAll('button').forEach((button) => {
-            button.hidden = !button.textContent
-              .toLowerCase()
-              .includes(search.value.trim().toLowerCase());
-          });
-
-          empty.hidden = !!group.querySelector('button:not([hidden])');
-        });
-
-        group.append(search);
-      }
-
-      if (profiles || bookings) {
-        group.append(results, empty);
-        empty.setAttribute('role', 'status');
-      }
-
-      const choices = [...select.options].map((option) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = option.textContent;
-        button.dataset.choice = option.value;
-        if (profiles) {
-          const avatarTemplate = document.createElement('template');
-          avatarTemplate.innerHTML = window.OCD_AUTOMATION.profileImage(
-            option.value ? option.textContent.trim() : '',
-            'profile-picker-avatar',
-          );
-          const avatar = avatarTemplate.content.firstElementChild;
-          const text = document.createElement('span');
-          text.className = 'profile-picker-text';
-          const name = document.createElement('strong');
-          name.textContent = option.textContent;
-          const detail = document.createElement('small');
-          detail.textContent = option.dataset.profileDetail || option.value;
-          const indicator = document.createElement('span');
-          indicator.className = 'choice-indicator';
-          indicator.setAttribute('aria-hidden', 'true');
-          text.append(name, detail);
-          button.replaceChildren(avatar, text, indicator);
-        } else if (select.name === 'service') {
-          const indicator = document.createElement('span');
-          indicator.className = 'choice-indicator';
-          indicator.setAttribute('aria-hidden', 'true');
-          button.prepend(indicator);
-        }
-
-        button.addEventListener('click', () => {
-          if (select.matches(':disabled') || option.disabled) return;
-          if (select.multiple) option.selected = !option.selected;
-          else select.value = option.value;
-          group.querySelector('.choice-error')?.remove();
-          update();
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-
-        (profiles || bookings ? results : group).append(button);
-        return { option, button };
-      });
-
-      function update() {
-        choices.forEach(({ option, button }) => {
-          button.setAttribute('aria-pressed', String(option.selected));
-          const disabled = select.matches(':disabled') || option.disabled;
-          if (button.disabled !== disabled) button.disabled = disabled;
-        });
-      }
-
-      select.refreshChoices = update;
-      select.addEventListener('change', update);
-      select.addEventListener('invalid', (event) => {
-        event.preventDefault();
-        choices.find(({ button }) => !button.disabled)?.button.focus();
-        if (!group.querySelector('.choice-error')) {
-          const error = document.createElement('p');
-          error.className = 'choice-error field-error';
-          error.textContent = 'Choose an option to continue.';
-          group.append(error);
-        }
-      });
-
-      select.after(group);
-      update();
-      if (bookings)
-        requestAnimationFrame(() => {
-          const selected = choices.find(({ option }) => option.selected)?.button;
-          if (selected) results.scrollTop = selected.offsetTop;
-        });
     });
 
     root

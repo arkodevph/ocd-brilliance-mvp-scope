@@ -1,0 +1,11 @@
+:root {
+  --select-surface: #fff;
+  --select-ink: #242529;
+  --select-muted: #73757d;
+  --select-border: #cacbd2;
+  --select-hover: #f3f3f6;
+  --select-selected: #edf5f1;
+  --select-accent: #137257;
+  --select-focus: #277dba;
+  --select-radius: 8px;
+}

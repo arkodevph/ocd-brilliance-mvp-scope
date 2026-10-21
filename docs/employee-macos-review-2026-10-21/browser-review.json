@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T06:18:25.939Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Employee home",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee personal",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee today",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee reviews",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee calendar",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee leave",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee review",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee availability",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee map",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshot/overflow checks passed."
+    },
+    {
+      "name": "Employee interactions",
+      "status": "pass",
+      "detail": "Mark read, notification category/tab, leave save/reload/withdraw/error, visit access, employee switch, keyboard focus/Tab, reduced motion and 200% CSS zoom reflow passed."
+    },
+    {
+      "name": "Switch motion",
+      "status": "pass",
+      "detail": "160ms Web Animation recorded for workspace state switches, local pagination and visit panel tabs; reduced motion starts no animations. Controls update without awaiting animation completion."
+    },
+    {
+      "name": "Map layout regression",
+      "status": "pass",
+      "detail": "Permanent PROTOTYPE_EMPLOYEE_MAC browser mode passed: booking pane within layout, beside map, notes unobscured at1736/1440/1280/1024 widths; five mobile pages, 16px body,15px desktop navigation, icon-free Quick links."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/employee-macos-review-2026-10-21/home-desktop.png",
+      "sha256": "62250c5885014440ad6ab1090567177f78850f8ce9913b7d1cd5b546bdd67f1c",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/home-mobile.png",
+      "sha256": "d4841b6289bb441f41c171539bfd7a85d6daf612df25c8efda2d50f5305571d8",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/personal-desktop.png",
+      "sha256": "0f40333fb191de9ce1401751e4b1197d9c29782fc7dd9d8c7f11029e9382bcb4",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/personal-mobile.png",
+      "sha256": "c36d58e074680042c26c664c85e15cc33236e9be239f664a159abd2e6c88cba1",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/today-desktop.png",
+      "sha256": "9c6926d2466f96094c5e5c2f008047074da74bcdc26befc2f91ae3c4e629905f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/today-mobile.png",
+      "sha256": "8fe07026ca025ea38319466a6266aa44b6b90a31286134c440609b2267ddd631",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/reviews-desktop.png",
+      "sha256": "2cf7486594826217f45ff01e8e4d8eb6bbc12353886660c32e73ab8f8ff36edf",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/reviews-mobile.png",
+      "sha256": "010c153f055d754b88548c963aa3bc84d6517069f8f2f785427642363c24be9d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/calendar-desktop.png",
+      "sha256": "51b5dacbf9e21cc4825d71c93b3cb01e5b5b41ce2a4c11952281cedc4ca00f4a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/calendar-mobile.png",
+      "sha256": "ffb0263dcdfc93cdb82d162a0eb1d1366af2579aef15e490271a5900d9caf75a",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/leave-desktop.png",
+      "sha256": "ccc45c384f0105d69e4f5e6db1d1cacfc4c384ca5b298cd783a020f229e852e8",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/leave-mobile.png",
+      "sha256": "e37e5f65039a59e626b9877e4724090b8840807b8287d515151bd0acbd2da873",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/review-desktop.png",
+      "sha256": "b47276825c3e790bff4743e4dc6df2cdd88f4b22b83ce529c79ea93a77c98551",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/review-mobile.png",
+      "sha256": "2cc0f40a91bfddb382baf8e5590c7413685743bae5c18b0db3d902bcbec01a1f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/availability-desktop.png",
+      "sha256": "25a1f88fcec3ccfc5458e447462c9dbc30a3364adf3b8d0cf5ec58afbebc5d08",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/availability-mobile.png",
+      "sha256": "dba9b33c6bc8d05f42e8e029f78364386041c130907e2b1a1f5672d4b18f15f5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/map-desktop.png",
+      "sha256": "45a445ac4a8eaf88edc7bf0af4ef982d38fba0eb7c1f90268102d1f6f2a97257",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/map-mobile.png",
+      "sha256": "42d280d3a5360c95212b10af788c1724e03b92cf18376bd06744153f5bde265d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/leave-error.png",
+      "sha256": "d931baab8875f5a0d525a8dfea3ffadc1e186d711b36cb1b145fa300398b2ae4",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/visit-detail-desktop.png",
+      "sha256": "a22f3e70ae3cedf85fda0e305a3564491059f45764b459f60fe58d3c9e8183d6",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/visit-detail-mobile.png",
+      "sha256": "a21738082866ce46512eb9585b1d035913da8812d1d686336c3c7fda21c0c29a",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/home-narrow.png",
+      "sha256": "d682e40aa0ad3958fddad6756d95b55f0db09603a7525443f7cbf62c29ea2b0c",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/personal-narrow.png",
+      "sha256": "2c65f46e544ad3ed6da0316e684ef2fbda8e888591d789af593c55bad3300e26",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-macos-review-2026-10-21/home-empty.png",
+      "sha256": "74f1cc9cf79dba93f228782a884d07216cd57e052212627c9ebb8a1889bb13c7",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Inspected desktop Home, Personal, Reviews, Leave and Map; phone Home, Map, Leave and visit detail. Final comfortable scale and phone map label placement inspected. Four-size map geometry independently verified.",
+  "mapbox": "Mapbox external requests deliberately blocked. Loading/error and panel geometry verified; live rendering and network performance not certified.",
+  "productionLimit": "Employee UI and minimal transitions only; browser-local sample behavior preserved. No native macOS integration or measured staff usability gain claimed.",
+  "verification": {
+    "build": "npm run build passed",
+    "tests": "node --test tests/employee-portal.test.cjs tests/react-frontend.test.cjs tests/offline-shell.test.cjs tests/maps.test.cjs:4/4 file reports passed",
+    "browser": "24 captures; original employee flow, animation, reduced motion, keyboard, reflow and empty/error checks passed",
+    "layoutRegression": "PROTOTYPE_EMPLOYEE_MAC=1 node scripts/prototype-browser-check.mjs:2 scenarios,10 captures,0 browser errors",
+    "format": "Prettier check passed for changed CSS, motion module, renderer, employee shell and browser script; git diff --check passed"
+  },
+  "changedFiles": [
+    "frontend/employee-macos.css",
+    "frontend/employee-motion.ts",
+    "frontend/main.tsx",
+    "frontend/renderer.tsx",
+    "workspace/employee-portal.js",
+    "workspace/sw.js",
+    "scripts/prototype-browser-check.mjs"
+  ]
+}

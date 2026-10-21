@@ -1,0 +1,138 @@
+[
+  {
+    "width": 1736,
+    "height": 1000,
+    "panel": {
+      "top": 359,
+      "bottom": 998.296875,
+      "left": 300,
+      "right": 660,
+      "height": 639.296875
+    },
+    "surface": {
+      "top": 348,
+      "bottom": 882.5,
+      "left": 289,
+      "right": 1711,
+      "height": 534.5
+    },
+    "layout": {
+      "top": 347,
+      "bottom": 919.5,
+      "left": 288,
+      "right": 1712,
+      "height": 572.5
+    },
+    "footer": {
+      "top": 966.5,
+      "bottom": 1000,
+      "left": 0,
+      "right": 1736,
+      "height": 33.5
+    },
+    "panelOverflow": "visible",
+    "contained": false
+  },
+  {
+    "width": 1440,
+    "height": 900,
+    "panel": {
+      "top": 359,
+      "bottom": 998.296875,
+      "left": 300,
+      "right": 660,
+      "height": 639.296875
+    },
+    "surface": {
+      "top": 348,
+      "bottom": 782.5,
+      "left": 289,
+      "right": 1415,
+      "height": 434.5
+    },
+    "layout": {
+      "top": 347,
+      "bottom": 819.5,
+      "left": 288,
+      "right": 1416,
+      "height": 472.5
+    },
+    "footer": {
+      "top": 866.5,
+      "bottom": 900,
+      "left": 0,
+      "right": 1440,
+      "height": 33.5
+    },
+    "panelOverflow": "visible",
+    "contained": false
+  },
+  {
+    "width": 1280,
+    "height": 800,
+    "panel": {
+      "top": 367,
+      "bottom": 1005.296875,
+      "left": 300,
+      "right": 660,
+      "height": 638.296875
+    },
+    "surface": {
+      "top": 356,
+      "bottom": 688.5,
+      "left": 289,
+      "right": 1255,
+      "height": 332.5
+    },
+    "layout": {
+      "top": 355,
+      "bottom": 725.5,
+      "left": 288,
+      "right": 1256,
+      "height": 370.5
+    },
+    "footer": {
+      "top": 766.5,
+      "bottom": 800,
+      "left": 0,
+      "right": 1280,
+      "height": 33.5
+    },
+    "panelOverflow": "visible",
+    "contained": false
+  },
+  {
+    "width": 1024,
+    "height": 768,
+    "panel": {
+      "top": 411,
+      "bottom": 1048.296875,
+      "left": 300,
+      "right": 660,
+      "height": 637.296875
+    },
+    "surface": {
+      "top": 400,
+      "bottom": 641,
+      "left": 289,
+      "right": 999,
+      "height": 241
+    },
+    "layout": {
+      "top": 399,
+      "bottom": 693.5,
+      "left": 288,
+      "right": 1000,
+      "height": 294.5
+    },
+    "footer": {
+      "top": 734.5,
+      "bottom": 768,
+      "left": 0,
+      "right": 1024,
+      "height": 33.5
+    },
+    "panelOverflow": "visible",
+    "contained": false
+  }
+]

@@ -23,7 +23,17 @@ const reviewed = (job, extra = {}) => ({
 });
 
 const cancelReview = (j) =>
-  reviewed(j, { charge: 'with-charge', code: 'NSDH', policyReviewed: true });
+  reviewed(j, {
+    charge: 'with-charge',
+    code: 'NSDH',
+    policyReviewed: true,
+    cause: 'Participant',
+    notice: '2026-10-05T10:00',
+    travelOccurred: 'no',
+    travelReviewed: true,
+    travelEvidence: 'Worker confirmed no travel; native planned travel line checked and removed.',
+    billingEvidence: 'Sample agreement checked; notice and charge reviewed by office.',
+  });
 
 test('a client booking request needs manual follow-up and never creates a confirmed booking', () => {
   const s = seed(),
@@ -522,4 +532,92 @@ test('fresh example cases remain unfinished without changing existing outcomes o
   const counts = [s.automation.jobs.length, s.automation.inbox.length];
   E.pendingExamples(s);
   assert.deepEqual([s.automation.jobs.length, s.automation.inbox.length], counts);
+});
+
+test('cancellation blocks unknown travel, missing evidence and provider charges', () => {
+  for (const input of [
+    { travelOccurred: '' },
+    { travelEvidence: ' ' },
+    { travelReviewed: false },
+    { billingEvidence: '' },
+    { cause: '' },
+    { notice: '2026-02-30T10:00' },
+    { notice: '2026-10-05T25:00' },
+    { cause: 'Worker' },
+    { cause: 'Provider' },
+  ]) {
+    const s = seed(),
+      j = jobOf(s, 'cancel');
+    assert.throws(() => E.approve(s, j.id, { ...cancelReview(j), ...input }));
+    assert.equal(j.status, 'needs_review');
+    assert.equal(s.automation.messages.length, 0);
+  }
+});
+
+test('cancellation remains open across reload and delivery failures until both recipients are notified', () => {
+  let s = seed(),
+    j = jobOf(s, 'cancel');
+  E.approve(s, j.id, cancelReview(j));
+  E.native(s, j.id);
+  E.verify(s, j.id);
+  assert.equal(j.stage, 'notifications');
+  assert.equal(j.status, 'manual_action_required');
+  assert.equal(s.automation.messages.length, 2);
+  assert.throws(
+    () => E.manual(s, j.id, { checked: true, note: 'Done', reference: 'test' }),
+    /Cancellation requires/,
+  );
+  assert.throws(() => E.reopen(s, j.id), /pending handoff/);
+  const client = s.automation.messages.find((m) => m.to.startsWith('client:'));
+  E.deliver(s, client.id);
+  assert.notEqual(j.status, 'completed');
+  s = JSON.parse(JSON.stringify(s));
+  j = jobOf(s, 'cancel');
+  const worker = s.automation.messages.find((m) => m.to.startsWith('worker:'));
+  E.deliver(s, worker.id, true);
+  assert.notEqual(j.status, 'completed');
+  E.deliver(s, worker.id);
+  assert.equal(j.status, 'completed');
+  assert.equal(s.updates.find((u) => u.messageId === worker.id).href, 'worker/today');
+  assert.throws(() => E.deliver(s, worker.id), /already delivered/);
+  assert.equal(s.automation.messages.length, 2);
+  assert.equal(s.updates.filter((u) => u.messageId).length, 2);
+});
+
+test('reviewed actual travel and no-charge treatment are read back with the exact cancellation', () => {
+  const s = seed(),
+    j = jobOf(s, 'cancel');
+  E.approve(s, j.id, {
+    ...cancelReview(j),
+    cause: 'Worker',
+    charge: 'no-charge',
+    travelOccurred: 'yes',
+    travelEvidence: 'Worker travelled 4 km / 8 minutes; checked actual travel only.',
+  });
+  E.native(s, j.id);
+  const native = s.automation.remote.bookings.find((b) => b.id === j.targetId);
+  assert.equal(native.cancellation.cause, 'Worker');
+  assert.equal(native.cancellation.code, '');
+  assert.equal(native.cancellation.notice, '2026-10-05T10:00');
+  assert.equal(native.cancellation.travelTreatment, 'Reviewed actual travel only');
+  native.cancellation.travelOccurred = 'no';
+  E.verify(s, j.id);
+  assert.equal(j.stage, 'exception');
+  assert.equal(s.automation.messages.length, 0);
+  assert.throws(
+    () => E.manual(s, j.id, { checked: true, note: 'Done', reference: 'test' }),
+    /Cancellation requires/,
+  );
+});
+
+test('unassigned cancellations require only the participant notification', () => {
+  const s = seed(),
+    j = jobOf(s, 'cancel');
+  s.automation.remote.bookings.find((b) => b.id === j.targetId).workerId = '';
+  E.approve(s, j.id, cancelReview(j));
+  E.native(s, j.id);
+  E.verify(s, j.id);
+  assert.equal(s.automation.messages.length, 1);
+  E.deliver(s, s.automation.messages[0].id);
+  assert.equal(j.status, 'completed');
 });

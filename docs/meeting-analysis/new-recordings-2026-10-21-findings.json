@@ -1,0 +1,186 @@
+[
+  {
+    "id": "NEW-01",
+    "priority_recommendation": "High",
+    "area": "Shift instructions",
+    "recorded_manual_work": "Check bookings individually and copy mandatory timesheet instructions into missing shifts.",
+    "proposed_improvement": "Apply an approved instruction template and flag missing instructions; preview affected future shifts.",
+    "audio_evidence": "M1 00:48:36\u201300:49:56; 01:53:57\u201301:54:20"
+  },
+  {
+    "id": "NEW-02",
+    "priority_recommendation": "Medium",
+    "area": "Instruction formatting and versions",
+    "recorded_manual_work": "Rewrite instructions using separate AI tools, adjust formatting, keep before/after copies and mark edits manually.",
+    "proposed_improvement": "Use structured instruction fields and approved wording with saved versions and review.",
+    "audio_evidence": "M1 00:50:03\u201300:58:54; 01:41:12\u201301:42:40"
+  },
+  {
+    "id": "NEW-03",
+    "priority_recommendation": "High",
+    "area": "Travel calculations",
+    "recorded_manual_work": "Look up addresses and travel distance, compare with saved values, and manually change kilometres and time. Previous booking values may remain after roster changes.",
+    "proposed_improvement": "Recalculate proposed travel on worker or booking changes and flag discrepancies for review; confirm rounding and eligibility rules.",
+    "audio_evidence": "M1 01:44:21\u201301:48:01; 02:45:17\u201302:47:08; 03:07:01\u201303:10:35"
+  },
+  {
+    "id": "NEW-04",
+    "priority_recommendation": "High",
+    "area": "Staff replacement",
+    "recorded_manual_work": "Move recurring shifts from a departing worker to a replacement, check travel and remember to inform the participant. Staff demonstrate a future-shift update option.",
+    "proposed_improvement": "Guide reassignment through existing bulk-update capability, travel review, participant notice and completion checks.",
+    "audio_evidence": "M1 02:48:45\u201302:53:24; 03:06:04\u201303:08:29"
+  },
+  {
+    "id": "NEW-05",
+    "priority_recommendation": "Medium",
+    "area": "Phone booking entry",
+    "recorded_manual_work": "Copy an existing shift, edit date and time and check travel/service details while being guided on screen.",
+    "proposed_improvement": "Create a reviewed booking draft from structured call details and validate dates, times, service type, worker suitability and overlaps. The meeting distinguishes sequential services by one worker from overlapping services by different workers.",
+    "audio_evidence": "M1 03:11:42\u201303:19:11; M1 03:21:08\u201303:23:41"
+  },
+  {
+    "id": "NEW-06",
+    "priority_recommendation": "Medium",
+    "area": "Prospect status",
+    "recorded_manual_work": "Search prospect and active-client lists to locate a consultation; a record was moved to active earlier than intended.",
+    "proposed_improvement": "Use explicit enquiry/consultation/active stages and a checklist for activation.",
+    "audio_evidence": "M1 00:40:29\u201300:43:08"
+  },
+  {
+    "id": "NEW-07",
+    "priority_recommendation": "High",
+    "area": "Inbox checking",
+    "recorded_manual_work": "Administrator proposes refreshing email every 30 minutes for bookings and sending periodic updates. This is a proposed routine, not measured actual frequency.",
+    "proposed_improvement": "Turn incoming requests into assigned review tasks with notifications and a pending-work digest.",
+    "audio_evidence": "M1 01:42:49\u201301:43:59"
+  },
+  {
+    "id": "NEW-08",
+    "priority_recommendation": "High",
+    "area": "Document completeness",
+    "recorded_manual_work": "Open client records one by one to check agreements; move client and staff documents from cloud storage into ShiftCare. Missing copies in ShiftCare are suspected, not proof that agreements do not exist.",
+    "proposed_improvement": "Maintain a document checklist; match and propose filing documents to the correct record, with review of uncertain matches.",
+    "audio_evidence": "M1 02:55:39\u201302:56:51; 03:03:43\u201303:04:29"
+  },
+  {
+    "id": "NEW-09",
+    "priority_recommendation": "High",
+    "area": "Plan dates and follow-up",
+    "recorded_manual_work": "Read plan dates in documents, clarify day/month ordering and contact coordinators for updated dates and funding. An initial expired-date interpretation is corrected during the discussion.",
+    "proposed_improvement": "Display unambiguous dates and schedule follow-up reminders; distinguish plan dates from agreement dates.",
+    "audio_evidence": "M1 02:58:21\u201303:03:29"
+  },
+  {
+    "id": "NEW-10",
+    "priority_recommendation": "High",
+    "area": "Cancellation completion",
+    "recorded_manual_work": "A reported cancellation was communicated to the worker but not entered in ShiftCare; another person later corrected the booking.",
+    "proposed_improvement": "Track cancellation as a multi-step task with verified booking update, notifications and unresolved-step alerts.",
+    "audio_evidence": "M2 00:33:53\u201300:35:25"
+  },
+  {
+    "id": "NEW-11",
+    "priority_recommendation": "High",
+    "area": "Cancellation travel charges",
+    "recorded_manual_work": "Bookkeeper explains removing provider travel and mileage before cancellation when the worker has not gone to the address. Missing cleanup causes later corrections.",
+    "proposed_improvement": "Ask whether travel occurred and propose the appropriate charge changes before cancelling, under approved business rules.",
+    "audio_evidence": "M2 00:14:27\u201300:17:19"
+  },
+  {
+    "id": "NEW-12",
+    "priority_recommendation": "High",
+    "area": "Payroll entry",
+    "recorded_manual_work": "Select the pay period, open each employee, compare ShiftCare hours/mileage, enter values and finalise/email payslips.",
+    "proposed_improvement": "Prepare reviewed payroll entries from approved timesheets; reconcile totals and flag differences before finalisation.",
+    "audio_evidence": "M2 00:08:32\u201300:12:49"
+  },
+  {
+    "id": "NEW-13",
+    "priority_recommendation": "High",
+    "area": "Payroll adjustments",
+    "recorded_manual_work": "Remember notes about hour adjustments, leave and back pay while preparing pay.",
+    "proposed_improvement": "Attach approved adjustments to the pay period and show an exceptions checklist with reasons and approvals.",
+    "audio_evidence": "M2 00:10:36\u201300:12:34"
+  },
+  {
+    "id": "NEW-14",
+    "priority_recommendation": "High",
+    "area": "Invoice service coding",
+    "recorded_manual_work": "Review and correct mismatches between the actual service and the assigned support category, including travel items.",
+    "proposed_improvement": "Validate service/category/travel mappings before export and present exceptions to the bookkeeper.",
+    "audio_evidence": "M2 00:19:38\u201300:22:10"
+  },
+  {
+    "id": "NEW-15",
+    "priority_recommendation": "High",
+    "area": "Client billing instructions",
+    "recorded_manual_work": "Remember client-specific billing exceptions, including advance payment and residential-cleaning tax settings, from notes and explanations.",
+    "proposed_improvement": "Store reviewed billing profiles per client/service and apply those settings to draft invoices. Tax treatment needs accountant-approved rules.",
+    "audio_evidence": "M2 00:02:09\u201300:02:40; 00:04:46\u201300:05:44"
+  },
+  {
+    "id": "NEW-16",
+    "priority_recommendation": "Medium",
+    "area": "Invoice preparation cadence",
+    "recorded_manual_work": "Discuss and repeatedly clarify the weekly invoice process and when completed services should be invoiced. Alternatives are discussed; one definitive new cadence is not established.",
+    "proposed_improvement": "Provide a batch view of completed, not-yet-invoiced services; use an agreed billing schedule and flag omissions/duplicates.",
+    "audio_evidence": "M1 00:59:21\u201301:06:11"
+  },
+  {
+    "id": "NEW-17",
+    "priority_recommendation": "High",
+    "area": "Payment follow-up and recipient changes",
+    "recorded_manual_work": "Discuss invoice chasing, concern over returned invoices delaying cash for payroll, and plan-manager changes that are not always communicated.",
+    "proposed_improvement": "Maintain an overdue/returned-invoice queue, verify billing recipients and assign follow-up with review before sending.",
+    "audio_evidence": "M1 00:14:43\u201300:15:16; M2 00:36:25\u201300:37:53"
+  },
+  {
+    "id": "NEW-18",
+    "priority_recommendation": "Medium",
+    "area": "Message completeness",
+    "recorded_manual_work": "Feedback describes messages without enough information about time, person or next steps.",
+    "proposed_improvement": "Use message templates with participant, service date/time, change, owner and next action; require review.",
+    "audio_evidence": "M2 00:33:22\u201300:33:53"
+  },
+  {
+    "id": "NEW-19",
+    "priority_recommendation": "High",
+    "area": "Procedural knowledge and coaching",
+    "recorded_manual_work": "Staff repeatedly write notes and revisit recordings; supervisors explain that pages of notes are difficult to find and repeat coaching.",
+    "proposed_improvement": "Create approved searchable procedures, short task checklists and timestamped training examples. Phone skills still need coaching.",
+    "audio_evidence": "M1 00:35:09\u201300:35:23; 01:53:28\u201301:53:57; M2 00:17:35\u201300:18:40; 00:23:07\u201300:27:51; 00:31:24\u201300:32:52"
+  },
+  {
+    "id": "NEW-20",
+    "priority_recommendation": "Medium",
+    "area": "Access setup",
+    "recorded_manual_work": "Administrator repeatedly waits for access to email and cloud files before independent work is possible; phone access/routing is discussed.",
+    "proposed_improvement": "Use an onboarding access checklist with a responsible owner and successful-access checks; configure the existing tools.",
+    "audio_evidence": "M1 00:08:17\u201300:14:39; 00:39:03\u201300:40:24; 01:48:16\u201301:49:18; 03:04:14\u201303:04:52"
+  },
+  {
+    "id": "NEW-21",
+    "priority_recommendation": "Medium",
+    "area": "Missing signing attachment",
+    "recorded_manual_work": "Staff discuss an email referring to a code-of-conduct form that was not attached, requiring follow-up.",
+    "proposed_improvement": "Check required attachments before sending and track document-sent/signed/filed states.",
+    "audio_evidence": "M1 00:31:53\u201300:33:29"
+  },
+  {
+    "id": "NEW-22",
+    "priority_recommendation": "Medium",
+    "area": "Safety-related follow-up",
+    "recorded_manual_work": "A worker reports a household hazard; the manager plans a carefully worded email to the participant and support coordinator.",
+    "proposed_improvement": "Create a factual incident/follow-up task and draft communication for manager review; keep safety decisions with responsible staff.",
+    "audio_evidence": "M1 01:30:10\u201301:35:42"
+  },
+  {
+    "id": "NEW-23",
+    "priority_recommendation": "Medium",
+    "area": "Inactive staff cleanup",
+    "recorded_manual_work": "An inactive worker remains on the website; payroll demonstration also includes workers who should be removed from the selection.",
+    "proposed_improvement": "Use an offboarding checklist covering future shifts, payroll status, access and website listing.",
+    "audio_evidence": "M1 00:23:43\u201300:24:41; M2 00:09:04\u201300:09:24"
+  }
+]

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T07:55:11.320Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Financial checks",
+      "status": "pass",
+      "detail": "Real period findings, evidenced time explanation, source-change reopening, owner persistence, source navigation, returned payment tracking, verified paid resolution, filters and empty scope passed. Desktop/mobile captured without page overflow."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/financial-macos-review-2026-10-21/booking-dropdown.png",
+      "sha256": "5f46e07c52797d81daff57af2c6fd939d7b0a85cae133b6cfae471ad6c71814e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-macos-review-2026-10-21/financial-queue-desktop.png",
+      "sha256": "2b64bcbef5418dffaa4c1d685a5c8525d565d73ee02ea814f8b4afb7f15fdd5a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-macos-review-2026-10-21/financial-queue-mobile.png",
+      "sha256": "207649d73331a6c4913b9208babc8635912bc103c85e7d5916790eba764faec5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-macos-review-2026-10-21/financial-queue-narrow.png",
+      "sha256": "7b3e19e5aea53bcf99d23b8fa716e205f2fbc1ab8c8199bec20da54507fca81f",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".financial-rows"
+    },
+    {
+      "path": "docs/financial-macos-review-2026-10-21/financial-evidence-desktop.png",
+      "sha256": "e20a6aa912c87ff74abeeed337675546023d85d0d4ea4bc78ee72df5e9825d30",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-macos-review-2026-10-21/financial-evidence-mobile.png",
+      "sha256": "88009cd221125b42a01012dc8731fce0bdeccc2168e9f52c22915967c0ee3802",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-macos-review-2026-10-21/financial-followup-desktop.png",
+      "sha256": "f7a3be4dffb20141dbd4307e21c1a3e2ed009198b7d725914ca55e9bf5f1c78b",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-macos-review-2026-10-21/financial-empty-mobile.png",
+      "sha256": "75a16691c246aca6c0055e21ed444121977341f6cd4c5d47a964c296251f99f8",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Desktop queue and320px stacked financial rows visually inspected; separate identity/issue/status/owner blocks confirmed.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

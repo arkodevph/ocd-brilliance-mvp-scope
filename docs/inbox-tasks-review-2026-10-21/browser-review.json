@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T09:19:22.917Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Inbox tasks",
+      "status": "pass",
+      "detail": "Reviewed email becomes an owned task with deadline; edit/reload/work-queue visibility, duplicate import prevention, workflow completion and desktop/mobile layouts passed. No mailbox or native booking changes."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/booking-dropdown.png",
+      "sha256": "5f46e07c52797d81daff57af2c6fd939d7b0a85cae133b6cfae471ad6c71814e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/inbox-tasks-desktop.png",
+      "sha256": "daec3437a3752d4b612b5c4897f9812feb3420c5b8a9fbbd5533cd282a644985",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/inbox-review-desktop.png",
+      "sha256": "012870eb9d639f8b914ff84298191b150f5f7e3dffdfef849fda0b48213e45ed",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/inbox-review-mobile.png",
+      "sha256": "b8d834822ab027b4d64148b2ed9b09327ec040baba32c63527346aaae6a94d86",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/inbox-assignment-mobile.png",
+      "sha256": "bb22c26db5bf0c5c837ec10a5bb01b2896c4e46b57c15d76bada67cf1e6f14f7",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/inbox-task-detail-desktop.png",
+      "sha256": "50d54b14311193298a19266f16e89c644f1050e6314da724ba9340ec68415e34",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/inbox-task-detail-mobile.png",
+      "sha256": "6a11963c33714ac58f9a1817938d4a39c7d7e06255d174904167f2a16e21f765",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/inbox-tasks-review-2026-10-21/inbox-tasks-mobile.png",
+      "sha256": "c17e9553ab8340fda9a4f0fb2b7580228d9c46b4a90903ae9c0466d0464016f5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Final desktop/mobile task detail and prior review/list screenshots inspected.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

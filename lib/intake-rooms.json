@@ -2,5 +2,14 @@
   "living-room": "Living room",
   "bedroom": "Bedroom",
   "master-bedroom": "Master bedroom",
+  "kitchen": "Kitchen",
+  "bathroom": "Bathroom",
+  "toilet": "Toilet",
+  "dining-room": "Dining room",
+  "laundry": "Laundry",
+  "study": "Study / home office",
+  "hallway": "Hallway",
+  "stairs": "Stairs",
+  "garage": "Garage",
   "other": "Other rooms"
 }

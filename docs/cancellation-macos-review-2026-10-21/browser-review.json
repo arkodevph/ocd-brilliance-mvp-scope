@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:10:31.423Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Service booking search",
+      "status": "pass",
+      "detail": "Filters bookings by their labels, selects the matching record, shows an empty result message and fits a mobile viewport."
+    },
+    {
+      "name": "Cancellation assistant",
+      "status": "pass",
+      "detail": "Travel and charge review, native read-back, two notifications, failed delivery, reload recovery, completion, recipient views and mobile layout passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/booking-search.png",
+      "sha256": "82b79106a069aaed86933bd68473c1de26abd0e8db8234a02864cb59e77e5b69",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/cancellation-review-desktop.png",
+      "sha256": "11e11d5ba32fe8615911f3990c1668efd3beca80efa4b40dd1f528af1e26df4e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/cancellation-review-mobile.png",
+      "sha256": "1268db33c6defca309a99fc82c14fe35c817c582186e2738a278798dec5ad189",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/cancellation-charges-desktop.png",
+      "sha256": "0c29428fa035e1cfdb2758c6c7823d1950994a9c720ac0679b761d79f6542eed",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/cancellation-charges-mobile.png",
+      "sha256": "22f7a6e26870db57601d7174df0f7f0eeda311d1ff95bbe7920ea8e66e5aa27d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/cancellation-charges-with-charge-desktop.png",
+      "sha256": "17f38c162cfa540b5163957ef1ab6fa711d5468fcf4cbbc130d199dc589bf3bd",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/cancellation-completed-mobile.png",
+      "sha256": "5eb5df1ea13e88e028734cb8401061a66137febe40c859c2602b6bcd0602604a",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/cancellation-macos-review-2026-10-21/cancellation-completed-desktop.png",
+      "sha256": "2cbf39708c25104aecca625e774886edc211c60cbaf8361dc63f7c4a7eb9e8b4",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Pass: inspected desktop/mobile charges and conditional with-charge controls. Compact real dropdowns, neutral borders and grouped form fit without horizontal overflow.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

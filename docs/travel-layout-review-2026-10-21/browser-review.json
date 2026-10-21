@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T05:19:55.949Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Travel list and focused review",
+      "status": "pass",
+      "detail": "Three bookings, one visible review, draft preservation, focus transfer, reviewed selection retention, queue deep link and 1736/1440/390/320px reflow passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/travel-layout-review-2026-10-21/booking-dropdown.png",
+      "sha256": "3b7a29eeb2ef0ad50128baa4096f391d234dfdf2aed912069980a045ffe3569d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/travel-layout-review-2026-10-21/travel-list-detail-1736.png",
+      "sha256": "ace69be24af125c72df3b3a93f536a48540d30af85d844622910cff92b69f234",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/travel-layout-review-2026-10-21/travel-list-detail-1440.png",
+      "sha256": "9f19792faf6cd708ba46ddae261ac1f07cf3489a9c722e993b62d3e997048f6f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/travel-layout-review-2026-10-21/travel-list-detail-390.png",
+      "sha256": "c8b81a670781ef6aaab318696d191c330a0bd18b010aca189a0bc47f0d6a43f9",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/travel-layout-review-2026-10-21/travel-list-detail-320.png",
+      "sha256": "99c7954b121184cae5215cfc1fbf79da52698b42e03e3bb80402ae63349c6ee8",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/travel-layout-review-2026-10-21/travel-list-detail-saved.png",
+      "sha256": "7afa1a8621fa1a16a692e02e855b44205300fb8eb0df3dd460c583c08b1357ab",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Inspected desktop 1736px and mobile 390/320px screenshots. One focused review beside booking list on desktop; stack on mobile.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

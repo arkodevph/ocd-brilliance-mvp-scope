@@ -1,0 +1,107 @@
+{
+  "scope": "Employee workspace only: Home, Personal, My reviews, My visits/detail, Visit map, Calendar, Time off, Hours & documents, Availability.",
+  "goal": "Consistent macOS visual hierarchy with readable record state and direct access to employee actions. User additionally requested minimal animation on switches and fewer repeated icons.",
+  "assumptions": [
+    "Employees may use desktop keyboard/mouse or a phone. Actual staff preferences, task frequency and measured usability are unknown.",
+    "Keep existing office/client styling and employee business logic intact.",
+    "Browser-local sample data and access controls remain as before."
+  ],
+  "flow": [
+    {
+      "stage": "First visit",
+      "goal": "Identify current employee and find a destination",
+      "information": "Identity, active navigation, primary action and clear labels",
+      "action": "Choose page or Quick link",
+      "hesitation": "Repeated calendar icons look indistinguishable",
+      "feedback": "Selected navigation plus page title",
+      "recovery": "All original destinations remain visible",
+      "success": "Correct screen opens"
+    },
+    {
+      "stage": "Routine",
+      "goal": "Read updates, find visit, record work, manage time off",
+      "information": "Visit time/client/status, unread state and leave request status",
+      "action": "Choose tab/filter, open visit or submit form",
+      "hesitation": "Busy chrome competes with content",
+      "feedback": "Persistent text status, selected segments, 160ms fade/3px shift on switches",
+      "recovery": "Edit or withdraw where already supported",
+      "success": "Saved record and visible resulting status"
+    },
+    {
+      "stage": "Error",
+      "goal": "Recover from invalid request or empty list",
+      "information": "Inline error or empty-state explanation",
+      "action": "Correct fields or change view",
+      "hesitation": "Motion could mask feedback or distract",
+      "feedback": "Existing validation remains; no wait on animation",
+      "recovery": "Retry without losing the navigation context",
+      "success": "Valid request saved; empty result understandable"
+    }
+  ],
+  "route": "ui-design-index \u2192 ui-design-systems, with ui-mobile-patterns constraints",
+  "patterns": [
+    "Reeder-inspired readable pane hierarchy and shared neutral macOS tokens",
+    "Segmented view controls and persistent navigation; text-only Quick links with active-state feedback",
+    "Short interruptible transitions for page/tab/filter/pagination switches, disabled by reduced-motion preference"
+  ],
+  "evidence": [
+    {
+      "principle": "Pointer target size and visible keyboard focus",
+      "sources": [
+        "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
+        "https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html"
+      ],
+      "participants_task": "Web accessibility standards, not an OCD employee study",
+      "finding": "Minimum target sizing or spacing and visible keyboard focus support operation",
+      "confidence": "strong",
+      "boundary": "WCAG floor does not establish ideal employee screen density or certify this whole app",
+      "implication": "36px navigation on desktop; 44px mobile controls; visible focus; labels wrap on small screens",
+      "falsifier": "Clipped labels, lost focus, or more incorrect activations in a staff trial"
+    },
+    {
+      "principle": "Choice overload is contextual",
+      "source": "https://doi.org/10.1086/651235",
+      "participants_task": "Meta-analysis of 63 conditions/50 experiments, N=5036; task/population differs from employee administration",
+      "finding": "Near-zero average choice-overload effect with substantial heterogeneity",
+      "confidence": "strong",
+      "boundary": "Not evidence for a fixed navigation item limit or guaranteed task gains",
+      "implication": "Keep all destinations; reduce decoration and clarify active state instead of hiding choices",
+      "falsifier": "Employees take longer to find a destination or confuse labels"
+    },
+    {
+      "principle": "Nonessential interaction motion can cause harm or distraction",
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html",
+      "participants_task": "WCAG 2.3.3 Level AAA guidance addressing vestibular sensitivity; not a universal animation-duration experiment",
+      "finding": "Interaction-triggered movement should be disableable when not essential",
+      "confidence": "strong",
+      "boundary": "AAA criterion, not an AA requirement; 160ms/3px is a design choice, not a research-established optimum",
+      "implication": "Honor prefers-reduced-motion; cancel previous transitions on rapid switches; never block state updates or controls",
+      "falsifier": "Any animation still starts under reduced motion, interaction is delayed, or users report discomfort"
+    },
+    {
+      "principle": "Familiar macOS productivity patterns",
+      "source": "https://developer.apple.com/design/human-interface-guidelines/designing-for-macos/",
+      "participants_task": "Apple platform guidance, not a comparative experiment",
+      "finding": "Comfortable density and keyboard support suit desktop productivity",
+      "confidence": "analogy-only",
+      "boundary": "Browser interface uses system font fallback on Linux; this is not native AppKit",
+      "implication": "Use shared neutral tokens, compact controls and stable grouping",
+      "falsifier": "Readability or task completion worsens compared to previous employee UI"
+    }
+  ],
+  "validationPlan": [
+    "npm run build",
+    "Existing employee-portal, React frontend and offline-shell test files",
+    "Desktop 1440px and mobile 390px screenshots for nine employee sections",
+    "Visit detail, 320px home/personal, leave save/reload/withdraw/invalid-date error, unread/filter/tab behavior and persona switching",
+    "Animation interception verifies 160ms switch effect and no calls under reduced motion; keyboard Tab/focus and 200% CSS zoom reflow checks"
+  ],
+  "metricRecommendation": "Compare staff time and wrong-destination actions for finding a visit, marking an update read and requesting leave. Gather motion comfort feedback. No measured usability benefit is claimed.",
+  "userCorrections": [
+    "Increase readable scale; macOS should not imply tiny controls",
+    "Map side panel overflow reproduced at1736x1000,1440x900,1280x800,1024x768",
+    "Quick links must not repeat decorative calendar icons"
+  ],
+  "primaryReference": "https://reederapp.com/",
+  "mapRootCause": "Absolutely positioned map sidebar had max-height:none and overflow:visible while its map shrank with the viewport. Applying a temporary bottom bound and overflow:auto made the original geometry checks pass. Final layout uses in-flow split panes."
+}

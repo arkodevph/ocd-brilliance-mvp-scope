@@ -151,7 +151,19 @@ test('in-app MP4 and WebM recordings stay in their room and release the camera',
   for (const mime of ['video/mp4', 'video/webm']) {
     await t.test(mime, async (t) => {
       const page = await intakePage(t, mime);
-      assert.equal(page.window.document.querySelectorAll('.room-video-card').length, 4);
+      const rooms = require('../lib/intake-rooms.json');
+      const supportedRooms = Object.entries(rooms).filter(([room]) => room !== 'other');
+      const cards = [...page.window.document.querySelectorAll('.room-video-card')];
+      assert.equal(cards.length, supportedRooms.length);
+      for (const [, label] of supportedRooms)
+        assert.ok(
+          cards.some((card) => card.textContent.includes(label)),
+          `${label} is available`,
+        );
+      assert.equal(
+        cards.some((card) => card.textContent.includes('Other rooms')),
+        false,
+      );
       page.button('Record master bedroom').click();
       await page.waitFor(() => page.button('Start recording'));
       page.button('Start recording').click();

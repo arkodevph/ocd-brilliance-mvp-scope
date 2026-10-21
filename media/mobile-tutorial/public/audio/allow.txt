@@ -1,0 +1,1 @@
+When notification permission appears, choose Allow to receive booking updates. The permission choice stays with each person.

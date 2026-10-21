@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T07:15:32.675Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Employee comfortable macOS layout",
+      "status": "pass",
+      "detail": "Map pane contained at four desktop sizes, notes unobscured, readable type, text-only Quick links and five phone layouts verified."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/booking-dropdown.png",
+      "sha256": "5f46e07c52797d81daff57af2c6fd939d7b0a85cae133b6cfae471ad6c71814e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-map-1736.png",
+      "sha256": "95dd9cb11c8dab8521678f259b1d391da35004c4b8a71b4d6bb8a621f3bc2d55",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-map-1440.png",
+      "sha256": "ddcf23824ec6d3643b398812e7372c0ec1a1b125c228d2c15934d2b38372471c",
+      "width": 1440,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-map-1280.png",
+      "sha256": "e02487e9697a6947050f8fefb64bf2bd51ffd661b46faa39ad2bbaa51c956617",
+      "width": 1280,
+      "height": 800,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-map-1024.png",
+      "sha256": "83dd47d7aade0c7a54abe6006b1eb198f6fff6c1ed255d861feca03635fe4894",
+      "width": 1024,
+      "height": 768,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-home-phone.png",
+      "sha256": "90f1e38d8f73a3ce51e21e59690d46bcf79bff74e04d8d319e90dd04646a9140",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-personal-phone.png",
+      "sha256": "0e56c1bf28975ce9f62d49b4c7331f981355ff765e511cf1130e4d9997e57701",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-today-phone.png",
+      "sha256": "e0c9585e04d85971fa8c9093858797c2fcaebc8dea4d1edac39830c2ec4e605b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-leave-phone.png",
+      "sha256": "f91457ca1175a9c619b662442d0208a8b76bfbd4f5d101744f0c1b9494f88866",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-social-review-2026-10-21/layout-regression/employee-map-phone.png",
+      "sha256": "3b830be15fecbf1bc4a9d60914b803afc280076a308e83ad408302bb4e59e666",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

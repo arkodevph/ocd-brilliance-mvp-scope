@@ -1,0 +1,13 @@
+.portal-client-home .client-calendar-marker {
+  background: var(--mac-accent, #137257);
+}
+
+.portal-client-home .client-calendar-days button[aria-pressed='true'] {
+  background: var(--mac-accent, #137257);
+  border-color: var(--mac-accent, #137257);
+  color: #fff;
+}
+
+.portal-client-home .client-calendar-days button[aria-pressed='true'] .client-calendar-marker {
+  background: #fff;
+}

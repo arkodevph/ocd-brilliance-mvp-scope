@@ -1,0 +1,5 @@
+.client-calendar-preview { position: fixed; inset: 0; margin: auto; width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 20px; border: 1px solid var(--portal-border); border-radius: 16px; color: var(--portal-ink); background: white; }
+.client-calendar-preview::backdrop { background: rgb(20 35 28 / 35%); }
+.client-calendar-preview .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.client-calendar-preview h2 { font-size: 1.125rem; margin: 0; }
+.client-calendar-preview .client-calendar { width: 100%; padding-top: 0; }

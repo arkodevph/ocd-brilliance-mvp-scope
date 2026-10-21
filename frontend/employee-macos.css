@@ -1,0 +1,691 @@
+/* Employee-only macOS expression; shared tokens live in macos-premium.css. */
+.employee-shell {
+  --social-radius: var(--mac-radius);
+  --employee-sage: #c2d3cb;
+  --employee-lime: #d9dfda;
+  --calendar-ink: var(--mac-ink);
+  --calendar-line: var(--mac-border);
+  --calendar-lime: var(--mac-accent);
+  font-family: var(--mac-font);
+}
+.employee-shell .employee-top {
+  background: rgb(255 255 255 / 92%);
+  border-color: var(--mac-border);
+  padding-inline: 24px;
+}
+.employee-shell .employee-top :is(.employee-demo, .employee-timezone) {
+  color: var(--mac-muted);
+  font-size: 0.8125rem;
+}
+.employee-shell .employee-navigation {
+  background: var(--mac-sidebar);
+  border-color: var(--mac-border);
+  box-shadow: none;
+  gap: 4px;
+  padding: 8px 24px;
+}
+.employee-shell .employee-navigation > a {
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: var(--mac-control-radius);
+  color: var(--mac-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: background-color var(--mac-duration) var(--mac-ease);
+}
+.employee-shell .employee-navigation > a:hover {
+  background: var(--mac-selected);
+  color: var(--mac-ink);
+}
+.employee-shell .employee-navigation > a[aria-current='page'] {
+  font-weight: 600;
+  color: var(--mac-ink);
+  background: var(--mac-surface);
+  box-shadow: 0 1px 3px rgb(25 28 36 / 9%);
+}
+.employee-shell .employee-layout {
+  padding-inline: 24px;
+  gap: 24px;
+}
+.employee-shell
+  :is(
+    .employee-profile,
+    .employee-quick,
+    .panel,
+    .portal-panel,
+    .social-card,
+    .employee-card,
+    .feedback-stat,
+    .feedback-distribution,
+    .feedback-review-section,
+    .week-calendar
+  ) {
+  border: 1px solid var(--mac-border);
+  border-radius: var(--mac-radius);
+  background: var(--mac-surface);
+  box-shadow: var(--mac-shadow);
+}
+.employee-shell .employee-profile > div {
+  position: relative;
+  padding: 24px;
+  text-align: left;
+  background: var(--mac-surface);
+  border-color: transparent;
+}
+.employee-shell .employee-profile > div::before {
+  content: none;
+}
+.employee-shell .employee-profile .profile-image {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  background: var(--mac-inset);
+}
+.employee-shell .employee-profile h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.employee-shell .employee-profile p {
+  font-size: 0.9375rem;
+  color: var(--mac-muted);
+}
+.employee-shell .employee-profile small {
+  font-size: 0.8125rem;
+  color: var(--mac-muted);
+}
+.employee-shell .employee-profile dt {
+  color: var(--mac-muted);
+  font-size: 0.8125rem;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.employee-shell .employee-profile dd {
+  color: var(--mac-ink);
+  font-size: 0.9375rem;
+}
+.employee-shell .employee-quick {
+  padding: 12px;
+}
+.employee-shell .employee-quick h2 {
+  padding: 12px;
+  border: 0;
+  color: var(--mac-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.employee-shell .employee-quick > :is(a, button) {
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: var(--mac-control-radius);
+  color: var(--mac-ink);
+  font-size: 0.9375rem;
+}
+.employee-shell .employee-quick > :is(a, button):hover {
+  background: var(--mac-inset);
+}
+.employee-shell :is(.portal-page-heading, .page-header, .employee-heading) h1 {
+  font-size: 2rem;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.employee-shell :is(.social-card-heading, .social-feed-heading, .portal-panel, .panel) h2 {
+  color: var(--mac-ink);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.employee-shell :is(.social-card-body, .social-update-body) p {
+  color: var(--mac-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.employee-shell .social-update > header strong {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.employee-shell .social-update-body h3 {
+  color: var(--mac-ink);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.employee-shell .social-update footer {
+  border-color: var(--mac-border);
+  background: transparent;
+}
+.employee-shell .social-view-switch {
+  width: fit-content;
+  max-width: 100%;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--mac-border);
+  border-radius: 9px;
+  background: var(--mac-selected);
+}
+.employee-shell .social-view-switch button {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--mac-muted);
+  background: transparent;
+  font-size: 0.9375rem;
+}
+.employee-shell .social-view-switch button[aria-pressed='true'] {
+  color: var(--mac-ink);
+  background: var(--mac-surface);
+  box-shadow: 0 1px 3px rgb(25 28 36 / 9%);
+  font-weight: 600;
+}
+.employee-shell .social-filter-switch button {
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border-color: var(--mac-border);
+  color: var(--mac-muted);
+  background: var(--mac-surface);
+  font-size: 0.9375rem;
+}
+.employee-shell .social-filter-switch button[aria-pressed='true'] {
+  border-color: var(--mac-border-strong);
+  background: var(--mac-selected);
+  color: var(--mac-ink);
+}
+.employee-shell .btn {
+  min-height: 40px;
+  padding: 7px 12px;
+  border-radius: 7px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.employee-shell .btn:not(.primary):not(.danger) {
+  background: var(--mac-surface);
+  border-color: var(--mac-border-strong);
+  box-shadow: 0 1px 2px rgb(25 28 36 / 5%);
+}
+.employee-shell :is(.btn:not(.primary), .social-filter-switch button):hover {
+  background: var(--mac-inset);
+}
+.employee-shell :is(.portal-panel, .employee-card) > header {
+  background: var(--mac-surface);
+  border-color: var(--mac-border);
+}
+.employee-shell :is(.social-tags span, .date-badge, .social-office-avatar) {
+  background: var(--mac-inset);
+  color: var(--mac-ink);
+  border-color: var(--mac-border);
+}
+.employee-shell .social-profile-cover {
+  height: 64px;
+  padding: 20px 24px;
+  background: var(--mac-inset);
+  color: var(--mac-muted);
+}
+.employee-shell .social-profile-avatar {
+  margin-top: -16px;
+  width: 72px;
+  height: 72px;
+  background: var(--mac-selected);
+  color: var(--mac-ink);
+}
+.employee-shell .social-profile-identity h1 {
+  font-size: 1.75rem;
+  color: var(--mac-ink);
+}
+.employee-shell .social-profile-sections {
+  border-color: var(--mac-border);
+}
+.employee-shell .social-profile-sections :is(a, button) {
+  color: var(--mac-muted);
+  font-size: 0.9375rem;
+}
+.employee-shell .visit-row {
+  border-color: var(--mac-border);
+  border-radius: var(--mac-control-radius);
+}
+.employee-shell .visit-row:hover {
+  background: var(--mac-inset);
+}
+.employee-shell .employee-footer {
+  color: var(--mac-muted);
+  background: var(--mac-canvas);
+  border-color: var(--mac-border);
+}
+.employee-shell :is(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--mac-focus);
+  outline-offset: 3px;
+}
+@media (min-width: 1000px) {
+  .employee-shell .employee-layout {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+  .employee-shell .employee-sidebar {
+    max-height: none;
+    overflow: visible;
+    align-self: start;
+  }
+  .employee-shell .employee-main:not(:has([data-map-area='worker'])) {
+    overflow: auto;
+    scrollbar-width: thin;
+    padding-right: 8px;
+  }
+  .employee-shell .employee-main > .portal-page {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+}
+@media (max-width: 767px) {
+  .employee-shell .employee-top {
+    padding-inline: 16px;
+  }
+  .employee-shell .employee-navigation {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    padding: 8px 12px;
+  }
+  .employee-shell .employee-navigation > a {
+    justify-content: center;
+    min-height: 44px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+  .employee-shell .employee-navigation > label {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  .employee-shell .employee-layout {
+    padding: 24px 16px 36px;
+  }
+  .employee-shell :is(.btn, .social-view-switch button, .social-filter-switch button) {
+    min-height: 44px;
+  }
+  .employee-shell .social-profile-identity > a {
+    margin-left: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .employee-shell :is(a, button, input, textarea, select) {
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+.employee-shell .employee-quick > a[aria-current='page'] {
+  color: var(--mac-ink);
+  background: var(--mac-selected);
+  font-weight: 600;
+}
+.employee-shell .employee-main:focus-visible {
+  outline: 2px solid var(--mac-focus);
+  outline-offset: -2px;
+}
+@media (max-width: 767px) {
+  .employee-shell .employee-navigation > a {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Comfortable content scale inspired by Reeder's native pane hierarchy. */
+.employee-shell .employee-main {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.employee-shell
+  :is(.social-fields dd, .portal-fields dd, .portal-form label, .visit-row .body strong) {
+  font-size: 1rem;
+}
+.employee-shell
+  :is(
+    .social-fields dt,
+    .portal-fields dt,
+    .portal-panel > header p,
+    .feedback-stat > span,
+    .feedback-stat small,
+    .visit-row small
+  ) {
+  font-size: 0.875rem;
+}
+.employee-shell :is(.portal-form input, .portal-form select, .portal-form textarea) {
+  font-size: 1rem;
+  min-height: 44px;
+}
+.employee-shell .social-shortcut-links strong {
+  font-size: 1rem;
+}
+.employee-shell .social-shortcut-links span {
+  display: block;
+  font-size: 0.875rem;
+}
+.employee-shell
+  :is(
+    .social-update footer a,
+    .social-update footer button,
+    .social-profile-sections a,
+    .social-profile-sections button
+  ) {
+  font-size: 0.9375rem;
+  min-height: 40px;
+}
+.employee-shell .social-update-body {
+  padding-block: 20px;
+}
+.employee-shell .portal-request-list article {
+  box-shadow: none;
+  border-color: var(--mac-border);
+}
+.employee-shell .portal-calendar-grid > :is(button, span) {
+  font-size: 0.875rem;
+}
+.employee-shell .social-feed-heading > span,
+.employee-shell .social-feed-heading h2 span {
+  font-size: 0.875rem;
+}
+.employee-shell
+  :is(.map-booking-copy strong, .map-worker-heading strong, .map-booking-facts strong) {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.employee-shell
+  :is(
+    .map-booking-copy > span,
+    .map-booking-copy small,
+    .map-worker-heading small,
+    .map-booking-facts small,
+    .map-arrival-card p,
+    .map-eta-caption,
+    .map-route-source,
+    .map-update-note,
+    .map-privacy-note,
+    .map-journey-steps,
+    .map-playback small,
+    .map-playback-label,
+    .map-arrival-status,
+    .map-toolbar label,
+    .map-scope-note,
+    .map-stats span,
+    .map-detail-tabs button
+  ) {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.employee-shell .map-focus-actions .btn,
+.employee-shell .map-view-toggle button {
+  min-height: 40px;
+  padding: 8px 12px;
+  font-size: 0.9375rem;
+}
+.employee-shell .map-booking-card {
+  padding: 16px;
+}
+.employee-shell .map-booking-card.selected {
+  background: var(--mac-selected);
+  border-color: var(--mac-border-strong);
+  box-shadow: none;
+}
+.employee-shell .map-arrival-card {
+  background: var(--mac-inset);
+  border-color: var(--mac-border);
+}
+@media (min-width: 1000px) {
+  /* In-flow panes cannot escape the map's bounds when the viewport gets shorter. */
+  .employee-shell .employee-main:has([data-map-area='worker']) {
+    display: block;
+    overflow: auto;
+    padding-right: 8px;
+  }
+  .employee-shell [data-map-area='worker'] {
+    display: block;
+    flex: none;
+  }
+  .employee-shell .booking-map-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 16px;
+    height: clamp(480px, 62vh, 720px);
+    min-height: 0;
+    flex: none;
+  }
+  .employee-shell .booking-map-layout .booking-map-panel {
+    grid-column: 2;
+    grid-row: 1;
+    height: 100%;
+    min-width: 0;
+  }
+  .employee-shell .booking-map-layout .map-side-panel {
+    position: static;
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    background: var(--mac-surface);
+    border-color: var(--mac-border);
+    border-radius: var(--mac-radius);
+    box-shadow: var(--mac-shadow);
+    backdrop-filter: none;
+  }
+  .employee-shell .map-booking-section,
+  .employee-shell .map-arrival-section {
+    padding: 20px;
+  }
+  .employee-shell .map-booking-list {
+    max-height: none;
+    overflow: visible;
+  }
+  .employee-shell .map-selected-label {
+    left: 16px;
+    max-width: calc(100% - 32px);
+  }
+  .employee-shell .map-fallback {
+    padding: 24px;
+  }
+}
+@media (max-width: 767px) {
+  .employee-shell .employee-navigation > a {
+    font-size: 0.875rem;
+  }
+  .employee-shell :is(.map-focus-actions .btn, .map-view-toggle button) {
+    min-height: 44px;
+  }
+}
+.employee-shell .map-selected-label strong {
+  font-size: 0.9375rem;
+}
+.employee-shell .map-selected-label small,
+.employee-shell .map-footer,
+.employee-shell .map-footer .map-legend,
+.employee-shell .map-connection-state {
+  font-size: 0.8125rem;
+}
+.employee-shell .booking-map-surface:has(.map-fallback:not([hidden])) .map-selected-label {
+  display: none;
+}
+@media (max-width: 767px) {
+  .employee-shell .map-selected-label {
+    top: auto;
+    bottom: 16px;
+    max-width: calc(100% - 24px);
+  }
+  .employee-shell :is(.social-update footer a, .social-update footer button) {
+    min-height: 44px;
+  }
+}
+
+/* Flat employee sidebar: identity, work details, then navigation. */
+.employee-shell .employee-sidebar {
+  gap: 0;
+  padding: 8px;
+  border-right: 1px solid var(--mac-border);
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+  max-height: none;
+}
+.employee-shell .employee-sidebar :is(.employee-profile, .employee-quick) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+.employee-shell .employee-profile > .employee-profile-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 8px 20px;
+  text-align: left;
+  border: 0;
+  background: transparent;
+}
+.employee-shell .employee-profile .profile-image {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+}
+.employee-shell .employee-profile-identity {
+  min-width: 0;
+}
+.employee-shell .employee-profile h2 {
+  margin: 0 0 4px;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.employee-shell .employee-profile p {
+  margin: 0 0 8px;
+  color: var(--mac-muted);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.employee-shell .employee-profile small {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.employee-shell .employee-profile dl {
+  display: block;
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+}
+.employee-shell .employee-profile dt {
+  display: block;
+  margin: 0 0 4px;
+  color: var(--mac-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.employee-shell .employee-profile dd {
+  display: block;
+  margin: 0 0 16px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.employee-shell .employee-profile-summary dd:first-of-type {
+  font-weight: 500;
+}
+.employee-shell .employee-personal-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+  margin: 0 0 16px;
+  padding: 8px;
+  border-radius: 7px;
+  color: var(--mac-accent);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  text-decoration: none;
+  transition: background-color var(--mac-duration) var(--mac-ease);
+}
+.employee-shell .employee-personal-link:hover {
+  background: var(--mac-selected);
+}
+.employee-shell .employee-personal-link > span:last-child {
+  color: var(--mac-muted);
+}
+.employee-shell .employee-quick {
+  padding: 16px 0 0;
+  border-top: 1px solid var(--mac-border);
+}
+.employee-shell .employee-quick h2 {
+  margin: 0 0 8px;
+  padding: 0 8px;
+  color: var(--mac-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.employee-shell .employee-quick > :is(a, button) {
+  min-height: 36px;
+  padding: 8px;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.employee-shell .employee-quick > a[aria-current='page'] {
+  font-weight: 600;
+}
+.employee-shell .employee-quick > [data-action='employee-help'] {
+  margin-top: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .employee-shell .employee-personal-link {
+    transition: none;
+  }
+}
+
+.employee-shell .employee-profile .employee-profile-summary :is(dt, dd) {
+  display: block;
+}
+.employee-shell .employee-sidebar .employee-quick {
+  border-top: 1px solid var(--mac-border);
+}
+@media (min-width: 1000px) and (max-width: 1250px) {
+  .employee-shell .employee-navigation > a {
+    padding-inline: 8px;
+  }
+  .employee-shell .employee-navigation > label,
+  .employee-shell .employee-navigation select {
+    max-width: 190px;
+  }
+}
+@media (min-width: 1000px) and (max-height: 800px) {
+  .employee-shell .employee-sidebar {
+    padding-block: 0;
+  }
+  .employee-shell .employee-profile > .employee-profile-header {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .employee-shell .employee-personal-link {
+    margin-bottom: 8px;
+  }
+  .employee-shell .employee-quick {
+    padding-top: 12px;
+  }
+  .employee-shell .employee-quick h2 {
+    margin-bottom: 4px;
+  }
+}

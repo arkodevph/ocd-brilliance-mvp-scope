@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:29:28.391Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Searchable staff ownership",
+      "status": "pass",
+      "detail": "Search filters configured staff, unknown names cannot be selected, and the selected account persists after save and reload."
+    },
+    {
+      "name": "Focused intake sections",
+      "status": "pass",
+      "detail": "Only one section is visible at a time; all five navigation buttons work and preserve unsaved review fields."
+    },
+    {
+      "name": "Intake navigation flow",
+      "status": "pass",
+      "detail": "Section navigation stays in document flow without overlapping the visible source/review section at desktop and mobile widths."
+    },
+    {
+      "name": "Digital PDF and scanned PDF",
+      "status": "pass",
+      "detail": "PDF.js extracted digital text; Tesseract processed an image-only PDF using local language assets; the original PDF persisted and appeared beside the draft after reload."
+    },
+    {
+      "name": "Reviewed intake and manual handoff",
+      "status": "pass",
+      "detail": "Original source, missing contact gate, staff review, ready status, per-field/full copying and clipboard denial fallback were exercised with fictional data."
+    },
+    {
+      "name": "Verification and persistence",
+      "status": "pass",
+      "detail": "Staff check and reference persisted after reload; completed fields were disabled and shared intake data stayed out of browser localStorage."
+    },
+    {
+      "name": "Duplicate recovery and responsive keyboard flow",
+      "status": "pass",
+      "detail": "Duplicate extraction linked to the existing intake and prevented another draft; desktop, 390px and 320px captures had no horizontal page overflow; keyboard focus and dialog Escape were checked."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/booking-dropdown.png",
+      "sha256": "5636011075aa00d77120e81a85881b99c31ab92154c1ae61dfca92fd416454a8",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-capture-desktop.png",
+      "sha256": "5a952e93f077e47445562948a1635de305ccf8e2bb9272a007f196ce251cd26a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-tabs-scroll-1736.png",
+      "sha256": "d309d427412c4b44ffba1461db20f2b64f93e3e3341e72abd1c00d33cd08854f",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".intake-section-nav"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-tabs-scroll-390.png",
+      "sha256": "e48a5af4abda21b91fdef8cfc9ddfc96983a168a2c4481d766b8f922db2d5f50",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".intake-section-nav"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-review-desktop.png",
+      "sha256": "9be4a771c6a584e12d7bc3c81675a4c6966f80fa6251be9826b973a5d0f02aed",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-review-mobile.png",
+      "sha256": "fedd7bb16dd148e157359aefb48b127855ab82e5c8a56cfafa46b2b9184d23ea",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-handoff-mobile.png",
+      "sha256": "37f8028ac66f10b754929ea813db3d796440fbf7a9c13273dd90ab6eeee00202",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".intake-followup"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-verified-desktop.png",
+      "sha256": "fcb2b7987d4d7941099eae0d7791cca8a3249f25e4f38a90af06f7ff2814bd9a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-duplicate-mobile.png",
+      "sha256": "930e83d67364976f86914e43cd6529aacab3f5e3b836c0c2d4c555b5f02f941f",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/modular-intake-verification-2026-10-21/intake-original-document-desktop.png",
+      "sha256": "dee2f921ab3fd804430d0d3df21871c75d1d32addbf98412875c4a506c946f81",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Verified targeted desktop/mobile travel checker, intake scroll and public open-menu screenshots. Automated viewport overflow checks passed.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T06:48:19.632Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Premium employee sidebar",
+      "status": "pass",
+      "detail": "Identity, reference, service chips, icon-free links, desktop/laptop/phone widths, personal-details navigation, Quick links, coordinator dialog and persona switch passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/employee-card-review-2026-10-21/employee-card-1440.png",
+      "sha256": "93e4c8d4993f46ed2c25dc762f8a4642b9a6850aecae744d85ea7730c8b65388",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-card-review-2026-10-21/employee-card-1280.png",
+      "sha256": "e08f09f4109e8050ffaf0e5a2995fb0e26a7dc4ee9ed7ec637a777b1d351fff3",
+      "width": 1280,
+      "height": 800,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-card-review-2026-10-21/employee-card-1024.png",
+      "sha256": "06a5ba1a4c0f7eccea79a9aebd1ddf75e4722e95b8188e60f223b9d57107d4aa",
+      "width": 1024,
+      "height": 768,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-card-review-2026-10-21/employee-card-390.png",
+      "sha256": "5d3739029e04c6b7405d9abaa321aa1d9b284675dcde7c2a5cf180c6409a0b7f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-card-review-2026-10-21/employee-card-320.png",
+      "sha256": "fa105d44e8fb42670f8f207c2d234a700996ba1e20a9fd9e3896f3323b402cf0",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-card-review-2026-10-21/employee-card-second-person.png",
+      "sha256": "2cf5df43d90b33284856138aa3ebf57194edd399e9b85687437eb2181663a7b0",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Inspected1440px desktop sidebar: portrait frame, left-aligned identity, reference badge, inset details, service chips and full-row profile link. Five viewport overflow checks passed.",
+  "mapbox": "Outside card scope; external map requests blocked by harness.",
+  "productionLimit": "Visual refinement of existing employee sidebar; no business behavior or permissions changed.",
+  "changedFiles": [
+    "frontend/employee-macos.css",
+    "workspace/employee-portal.js",
+    "workspace/sw.js"
+  ],
+  "verification": {
+    "build": "npm run build passed",
+    "tests": "node --test tests/employee-portal.test.cjs tests/react-frontend.test.cjs:2/2 file reports passed",
+    "browser": "1440/1280/1024/390/320px layout checks, identity/service content, personal link, leave Quick link, coordinator dialog and persona switch passed;0 uncaught errors",
+    "diff": "git diff --check passed"
+  }
+}

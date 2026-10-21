@@ -1,0 +1,757 @@
+{
+  "metadata": {
+    "source": "/home/nami/Downloads/dialpad_transcript_20261014_1230 (1).csv",
+    "sha256": "34ec90759263affe6461a2302d5114ee7b217fa17700523a50b795c6681cac1a",
+    "records_reviewed": 891,
+    "first_timestamp": "2026-10-14 12:36:43.1 PST",
+    "last_timestamp": "2026-10-14 16:53:04.3 PST",
+    "method": "Read all records in order in eight chunks; separate reported workflow, proposed solution and unresolved detail. Audio/video not reviewed.",
+    "second_meeting": "Not analysed; transcript/recording content unavailable."
+  },
+  "issues": [
+    {
+      "id": "M1-01",
+      "group": "Data entry and scheduling",
+      "title": "Repeated participant-by-participant copy and paste",
+      "problem": "Marv says he observed Michael copying and pasting and identifies repeating the work for each participant as a bottleneck. The transcript does not identify the exact fields or source and destination.",
+      "opportunity": "Map the observed copy-and-paste steps, then reuse approved participant information across those steps without retyping.",
+      "record_start": 757,
+      "record_end": 762,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 757,
+          "record_end": 762,
+          "line_start": 758,
+          "line_end": 763,
+          "time_start": "2026-10-14 16:32:54.7 PST",
+          "time_end": "2026-10-14 16:33:46.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-02",
+      "group": "Data entry and scheduling",
+      "title": "Entering new-client information from paperwork",
+      "problem": "Adriana describes the burden of paperwork and an unimplemented idea: scan a new-client document and have its data entered into ShiftCare. Her mention of an already linked AI tool does not establish working document import.",
+      "opportunity": "Extract draft fields from intake documents, show missing or uncertain values, and let an authorised administrator review before creating or updating a client.",
+      "record_start": 763,
+      "record_end": 768,
+      "classification": "Reported burden; proposed import",
+      "evidence": [
+        {
+          "record_start": 763,
+          "record_end": 768,
+          "line_start": 764,
+          "line_end": 769,
+          "time_start": "2026-10-14 16:34:07.1 PST",
+          "time_end": "2026-10-14 16:35:19.1 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-03",
+      "group": "Data entry and scheduling",
+      "title": "Repetitive participant emails",
+      "problem": "Emails are explicitly included in the participant-by-participant work Marv says should be automated. No particular email template or trigger is specified.",
+      "opportunity": "Identify recurring message types; prepare messages from approved records and track sending and replies. Confirm which messages can be sent automatically.",
+      "record_start": 757,
+      "record_end": 762,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 757,
+          "record_end": 762,
+          "line_start": 758,
+          "line_end": 763,
+          "time_start": "2026-10-14 16:32:54.7 PST",
+          "time_end": "2026-10-14 16:33:46.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-04",
+      "group": "Data entry and scheduling",
+      "title": "Finding agreed service hours in email and notes",
+      "problem": "An emailed update about weekly hours must be checked against notes; the supervisor initially does not know whether a colleague recorded it.",
+      "opportunity": "Keep the approved service allocation and its source together, with a clear owner for updating it.",
+      "record_start": 18,
+      "record_end": 22,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 18,
+          "record_end": 22,
+          "line_start": 19,
+          "line_end": 23,
+          "time_start": "2026-10-14 13:01:56.8 PST",
+          "time_end": "2026-10-14 13:02:26.2 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-05",
+      "group": "Data entry and scheduling",
+      "title": "Editing recurring service times",
+      "problem": "A Friday shift change requires clarification that it applies to every Friday and future shifts, followed by manual editing.",
+      "opportunity": "Provide a single reviewed change with an explicit scope: one visit or future visits; preview affected bookings.",
+      "record_start": 36,
+      "record_end": 62,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 36,
+          "record_end": 62,
+          "line_start": 37,
+          "line_end": 63,
+          "time_start": "2026-10-14 13:05:35.3 PST",
+          "time_end": "2026-10-14 13:09:18.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-06",
+      "group": "Data entry and scheduling",
+      "title": "Checking and changing travel kilometres",
+      "problem": "During the shift edit, the supervisor asks whether the journey is 17 kilometres and the administrator confirms changing it. This establishes manual distance entry/checking, not how they derived the number.",
+      "opportunity": "Calculate route distance from confirmed job addresses, retain the route basis, and allow a documented override.",
+      "record_start": 83,
+      "record_end": 87,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 83,
+          "record_end": 87,
+          "line_start": 84,
+          "line_end": 88,
+          "time_start": "2026-10-14 13:11:32.4 PST",
+          "time_end": "2026-10-14 13:11:41.1 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-07",
+      "group": "Data entry and scheduling",
+      "title": "Keeping travel blocks aligned with service times",
+      "problem": "The team separately checks a 9:30\u201310:00 travel block, a 10:00\u201315:30 service, and 30 minutes of travel. The supervisor stresses that travel time must not be changed.",
+      "opportunity": "Represent travel and service separately; check that route estimates and booking times agree, without silently overwriting approved travel.",
+      "record_start": 46,
+      "record_end": 62,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 46,
+          "record_end": 62,
+          "line_start": 47,
+          "line_end": 63,
+          "time_start": "2026-10-14 13:06:54.3 PST",
+          "time_end": "2026-10-14 13:09:18.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-08",
+      "group": "Data entry and scheduling",
+      "title": "Checking that edits actually saved correctly",
+      "problem": "The administrator first repeats 10 PM before correcting it to 10 AM. Later the visible shift appears unchanged, so the team screen-shares, reopens it, edits another field, checks a future shift and adds notes. The underlying cause of the apparent failed update is unverified.",
+      "opportunity": "Use unambiguous times, a preview, clear save confirmation, a check of the saved booking and an automatic change history.",
+      "record_start": 39,
+      "record_end": 91,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 39,
+          "record_end": 91,
+          "line_start": 40,
+          "line_end": 92,
+          "time_start": "2026-10-14 13:05:45.5 PST",
+          "time_end": "2026-10-14 13:12:03.2 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-09",
+      "group": "Data entry and scheduling",
+      "title": "Confirming that the worker knows about a change",
+      "problem": "The administrator separately asks whether the worker has been notified; the supervisor verbally confirms the worker already agreed.",
+      "opportunity": "Record notification and acknowledgement against the booking change, with follow-up for changes awaiting a response.",
+      "record_start": 50,
+      "record_end": 53,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 50,
+          "record_end": 53,
+          "line_start": 51,
+          "line_end": 54,
+          "time_start": "2026-10-14 13:07:33.3 PST",
+          "time_end": "2026-10-14 13:07:48.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-10",
+      "group": "Data entry and scheduling",
+      "title": "Chasing the actual service schedule",
+      "problem": "The next day\u2019s start time is uncertain. The supervisor is waiting for a schedule and plans to contact the participant\u2019s family before closing to confirm when two workers should attend.",
+      "opportunity": "Collect requested times in a structured form, flag unconfirmed bookings and remind the responsible person before the deadline.",
+      "record_start": 389,
+      "record_end": 399,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 389,
+          "record_end": 399,
+          "line_start": 390,
+          "line_end": 400,
+          "time_start": "2026-10-14 15:39:59.4 PST",
+          "time_end": "2026-10-14 15:41:50.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-11",
+      "group": "Absences, coverage and payroll",
+      "title": "Reconstructing absence patterns across systems",
+      "problem": "The supervisor searches a worker\u2019s Dialpad history, reads dates and copies evidence into cloud storage; the administrator also checks ShiftCare. Intentional absence is explicitly an assumption, not an established fact.",
+      "opportunity": "Consolidate factual absence events, affected bookings and communication references in a reviewable history; leave interpretation to a manager.",
+      "record_start": 218,
+      "record_end": 226,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 218,
+          "record_end": 226,
+          "line_start": 219,
+          "line_end": 227,
+          "time_start": "2026-10-14 15:13:29.9 PST",
+          "time_end": "2026-10-14 15:14:41.9 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-12",
+      "group": "Absences, coverage and payroll",
+      "title": "Checking absence documents and leave treatment",
+      "problem": "The discussion includes missing medical certificates and a correction that a sick cancellation is not automatically paid: accrued sick leave and the worker\u2019s election matter under the practice described.",
+      "opportunity": "Collect required supporting documents and surface leave balances and requests for payroll review. Confirm the applicable rules before implementation.",
+      "record_start": 304,
+      "record_end": 329,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 304,
+          "record_end": 329,
+          "line_start": 305,
+          "line_end": 330,
+          "time_start": "2026-10-14 15:26:30.5 PST",
+          "time_end": "2026-10-14 15:30:28.7 PST"
+        },
+        {
+          "record_start": 254,
+          "record_end": 259,
+          "line_start": 255,
+          "line_end": 260,
+          "time_start": "2026-10-14 15:18:43.7 PST",
+          "time_end": "2026-10-14 15:19:09.5 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-13",
+      "group": "Absences, coverage and payroll",
+      "title": "Finding backup staff when several people are sick",
+      "problem": "Two or three cleaners can be unavailable on one day. The business lacks a sufficient backup pool and must look for cover manually.",
+      "opportunity": "Maintain an availability and coverage roster; shortlist suitable workers and track offers, acceptance and remaining uncovered services.",
+      "record_start": 232,
+      "record_end": 240,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 232,
+          "record_end": 240,
+          "line_start": 233,
+          "line_end": 241,
+          "time_start": "2026-10-14 15:15:48.5 PST",
+          "time_end": "2026-10-14 15:17:11.9 PST"
+        },
+        {
+          "record_start": 797,
+          "record_end": 800,
+          "line_start": 798,
+          "line_end": 801,
+          "time_start": "2026-10-14 16:39:26.9 PST",
+          "time_end": "2026-10-14 16:39:43.1 PST"
+        },
+        {
+          "record_start": 842,
+          "record_end": 842,
+          "line_start": 843,
+          "line_end": 843,
+          "time_start": "2026-10-14 16:47:08.3 PST",
+          "time_end": "2026-10-14 16:47:08.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-14",
+      "group": "Absences, coverage and payroll",
+      "title": "Contacting every affected participant individually",
+      "problem": "For each participant, staff discuss replacement that day, rescheduling or cancelling/skipping until the following visit. Different participants choose different outcomes.",
+      "opportunity": "Create one disruption worklist with a separate choice and confirmation for each affected participant; update the roster after agreement.",
+      "record_start": 234,
+      "record_end": 252,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 234,
+          "record_end": 252,
+          "line_start": 235,
+          "line_end": 253,
+          "time_start": "2026-10-14 15:16:10.1 PST",
+          "time_end": "2026-10-14 15:18:31.1 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-15",
+      "group": "Absences, coverage and payroll",
+      "title": "Matching replacements to location and continuity needs",
+      "problem": "Replacement discussions consider the areas a worker can cover. Later discussion explains that a new cleaner may need an introduction and that participants may reject a replacement or need continuity. Some examples of preferences are hypothetical.",
+      "opportunity": "Suggest workers using availability, geography, skills and documented service needs; retain human review and participant agreement.",
+      "record_start": 167,
+      "record_end": 170,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 167,
+          "record_end": 170,
+          "line_start": 168,
+          "line_end": 171,
+          "time_start": "2026-10-14 15:03:22.7 PST",
+          "time_end": "2026-10-14 15:04:02.3 PST"
+        },
+        {
+          "record_start": 333,
+          "record_end": 361,
+          "line_start": 334,
+          "line_end": 362,
+          "time_start": "2026-10-14 15:31:14.4 PST",
+          "time_end": "2026-10-14 15:36:05.9 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-16",
+      "group": "Absences, coverage and payroll",
+      "title": "Applying the correct cancellation billing treatment",
+      "problem": "The supervisor explains that when the provider cannot supply the service, the participant is not charged. Staff need to distinguish this from other cancellation situations.",
+      "opportunity": "Record who cancelled and why, then apply the approved billing rule with an exception review. This is the meeting\u2019s stated practice, not an independently verified legal rule.",
+      "record_start": 244,
+      "record_end": 259,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 244,
+          "record_end": 259,
+          "line_start": 245,
+          "line_end": 260,
+          "time_start": "2026-10-14 15:17:38.9 PST",
+          "time_end": "2026-10-14 15:19:09.5 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-17",
+      "group": "Service quality and case handling",
+      "title": "Checking whether the service was actually completed",
+      "problem": "The supervisor reports missed tasks, inconsistent cleaning and cases of leaving early despite unfinished work. These are reported concerns, not independently verified findings about an individual.",
+      "opportunity": "Use service-specific completion checklists and an exception report linking time, unfinished tasks and feedback for a supervisor to review.",
+      "record_start": 165,
+      "record_end": 175,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 165,
+          "record_end": 175,
+          "line_start": 166,
+          "line_end": 176,
+          "time_start": "2026-10-14 15:02:48.6 PST",
+          "time_end": "2026-10-14 15:05:38.9 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-18",
+      "group": "Service quality and case handling",
+      "title": "Proactive participant feedback calls",
+      "problem": "The supervisor wants staff to call participants to ask how the cleaner and service are going rather than relying only on incoming complaints.",
+      "opportunity": "Schedule feedback follow-ups, record responses against the service and assign actions for problems.",
+      "record_start": 295,
+      "record_end": 300,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 295,
+          "record_end": 300,
+          "line_start": 296,
+          "line_end": 301,
+          "time_start": "2026-10-14 15:24:30.0 PST",
+          "time_end": "2026-10-14 15:25:50.9 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-19",
+      "group": "Service quality and case handling",
+      "title": "Handling privacy complaints and escalation",
+      "problem": "The team discusses a confidentiality complaint, participant loss and the need to raise problems through the office. Relevant explanations are spread across a conversation and earlier correspondence.",
+      "opportunity": "Create a restricted complaint record with communication references, assigned owner, response deadline and outcome; keep personnel and participant details private.",
+      "record_start": 179,
+      "record_end": 209,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 179,
+          "record_end": 209,
+          "line_start": 180,
+          "line_end": 210,
+          "time_start": "2026-10-14 15:06:16.1 PST",
+          "time_end": "2026-10-14 15:12:08.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-20",
+      "group": "Service quality and case handling",
+      "title": "Keeping a pending personnel case and callbacks coordinated",
+      "problem": "Emails, replies, an earlier phone call, repeat calls and a voicemail must be reconciled while a management decision is pending. The supervisor is drafting a response and wants replacement cover before any change.",
+      "opportunity": "Track case status, authorised responses, callbacks and coverage dependencies. Management must retain the personnel decision and review of the worker\u2019s response.",
+      "record_start": 149,
+      "record_end": 155,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 149,
+          "record_end": 155,
+          "line_start": 150,
+          "line_end": 156,
+          "time_start": "2026-10-14 15:00:26.3 PST",
+          "time_end": "2026-10-14 15:01:41.4 PST"
+        },
+        {
+          "record_start": 229,
+          "record_end": 232,
+          "line_start": 230,
+          "line_end": 233,
+          "time_start": "2026-10-14 15:15:17.9 PST",
+          "time_end": "2026-10-14 15:15:48.5 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-21",
+      "group": "Access, knowledge and handovers",
+      "title": "Getting the correct policies and agreements",
+      "problem": "The administrator asks for the code of conduct/NDA. The discussion distinguishes agency paperwork from OCD/NDIS policies, and documents must be located or forwarded from cloud storage.",
+      "opportunity": "Provide a role-based onboarding checklist with the current required documents and access links.",
+      "record_start": 157,
+      "record_end": 205,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 157,
+          "record_end": 205,
+          "line_start": 158,
+          "line_end": 206,
+          "time_start": "2026-10-14 15:02:01.2 PST",
+          "time_end": "2026-10-14 15:10:21.6 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-22",
+      "group": "Access, knowledge and handovers",
+      "title": "Confirming policies have been read and understood",
+      "problem": "The supervisor says documents are supplied but people may not read them or may assume they already know the requirements.",
+      "opportunity": "Track receipt and acknowledgement, and include short role-specific training checks; an acknowledgement alone does not prove compliant behaviour.",
+      "record_start": 157,
+      "record_end": 164,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 157,
+          "record_end": 164,
+          "line_start": 158,
+          "line_end": 165,
+          "time_start": "2026-10-14 15:02:01.2 PST",
+          "time_end": "2026-10-14 15:02:47.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-23",
+      "group": "Access, knowledge and handovers",
+      "title": "Provisioning access to business systems",
+      "problem": "The administrator still lacks access or instructions for several tools, including what appears to be Xero, SignRequest/a business app, and cloud storage. The automatic transcript garbles some product names.",
+      "opportunity": "Track each required account, permission, invitation, owner and successful access check. Confirm product names rather than coding to uncertain transcript text.",
+      "record_start": 535,
+      "record_end": 544,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 535,
+          "record_end": 544,
+          "line_start": 536,
+          "line_end": 545,
+          "time_start": "2026-10-14 16:01:44.9 PST",
+          "time_end": "2026-10-14 16:02:36.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-24",
+      "group": "Access, knowledge and handovers",
+      "title": "Rewatching meetings and writing personal reference notes",
+      "problem": "The administrator repeatedly reviews previous recordings, takes personal notes and requests another recording to study. Important working instructions are being learned through long meetings.",
+      "opportunity": "Convert approved procedures and meeting decisions into a searchable guide, with concise summaries and links to the source.",
+      "record_start": 23,
+      "record_end": 30,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 23,
+          "record_end": 30,
+          "line_start": 24,
+          "line_end": 31,
+          "time_start": "2026-10-14 13:03:40.2 PST",
+          "time_end": "2026-10-14 13:04:36.6 PST"
+        },
+        {
+          "record_start": 144,
+          "record_end": 144,
+          "line_start": 145,
+          "line_end": 145,
+          "time_start": "2026-10-14 14:59:42.6 PST",
+          "time_end": "2026-10-14 14:59:42.6 PST"
+        },
+        {
+          "record_start": 412,
+          "record_end": 412,
+          "line_start": 413,
+          "line_end": 413,
+          "time_start": "2026-10-14 15:42:46.8 PST",
+          "time_end": "2026-10-14 15:42:46.8 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-25",
+      "group": "Access, knowledge and handovers",
+      "title": "Escalating unfamiliar calls when the owner is on a service",
+      "problem": "The administrator asks whether to contact the supervisor on WhatsApp, proposes taking notes for unanswered questions, and waits for her to return to the office for follow-up.",
+      "opportunity": "Use a shared callback/escalation queue with urgency, owner, due time and relevant client context; document common call procedures.",
+      "record_start": 389,
+      "record_end": 403,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 389,
+          "record_end": 403,
+          "line_start": 390,
+          "line_end": 404,
+          "time_start": "2026-10-14 15:39:59.4 PST",
+          "time_end": "2026-10-14 15:42:07.1 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-26",
+      "group": "Access, knowledge and handovers",
+      "title": "Repeatedly checking separate phone and email channels",
+      "problem": "The administrator says he periodically checks Dialpad and Outlook for new calls or emails while doing other work.",
+      "opportunity": "Bring actionable calls, voicemail and email into a shared work queue with ownership and unread/overdue status.",
+      "record_start": 23,
+      "record_end": 33,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 23,
+          "record_end": 33,
+          "line_start": 24,
+          "line_end": 34,
+          "time_start": "2026-10-14 13:03:40.2 PST",
+          "time_end": "2026-10-14 13:05:05.4 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-27",
+      "group": "Access, knowledge and handovers",
+      "title": "Remembering follow-ups and holiday planning",
+      "problem": "The supervisor asks staff to take notes and remind her to discuss the Christmas closure and possible work on December 28\u201330; they then agree to discuss it on Friday. Those dates are proposals, not a final holiday policy.",
+      "opportunity": "Turn the discussion into assigned reminders; publish approved closures and exceptions once agreed.",
+      "record_start": 436,
+      "record_end": 454,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 436,
+          "record_end": 454,
+          "line_start": 437,
+          "line_end": 455,
+          "time_start": "2026-10-14 15:46:21.5 PST",
+          "time_end": "2026-10-14 15:48:15.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-28",
+      "group": "Recruitment and training",
+      "title": "Keeping recruitment active and building a candidate pool",
+      "problem": "Staff use agencies and Facebook posts to find cleaners. Later the supervisor says recruitment should stay active so they can select candidates and retain a pool for backup, which they do not currently have.",
+      "opportunity": "Keep applications, contact history, availability, areas and readiness in one pipeline, including candidates willing to provide backup cover.",
+      "record_start": 797,
+      "record_end": 800,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 797,
+          "record_end": 800,
+          "line_start": 798,
+          "line_end": 801,
+          "time_start": "2026-10-14 16:39:26.9 PST",
+          "time_end": "2026-10-14 16:39:43.1 PST"
+        },
+        {
+          "record_start": 278,
+          "record_end": 281,
+          "line_start": 279,
+          "line_end": 282,
+          "time_start": "2026-10-14 15:21:19.1 PST",
+          "time_end": "2026-10-14 15:21:40.2 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-29",
+      "group": "Recruitment and training",
+      "title": "Screening suitability rather than just receiving applications",
+      "problem": "The team describes many applications from Seek and the need to assess cleaning knowledge and suitability. The supervisor also accepts beginners who can be trained in their methods.",
+      "opportunity": "Use consistent interview and practical assessment steps, separate experience from training needs, and record the human hiring decision.",
+      "record_start": 278,
+      "record_end": 294,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 278,
+          "record_end": 294,
+          "line_start": 279,
+          "line_end": 295,
+          "time_start": "2026-10-14 15:21:19.1 PST",
+          "time_end": "2026-10-14 15:24:01.2 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-30",
+      "group": "Recruitment and training",
+      "title": "Owner-led training limits other work",
+      "problem": "New workers each require training. The owners\u2019 training workload has contributed to not adding marketing help, and they cannot personally train marketing skills they do not have.",
+      "opportunity": "Create reusable service training, completion checklists and clear trainer ownership; reserve supervised practice for skills that need observation.",
+      "record_start": 465,
+      "record_end": 476,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 465,
+          "record_end": 476,
+          "line_start": 466,
+          "line_end": 477,
+          "time_start": "2026-10-14 15:49:47.5 PST",
+          "time_end": "2026-10-14 15:51:46.1 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-31",
+      "group": "Marketing and business administration",
+      "title": "Maintaining social content and advertising",
+      "problem": "The business has Facebook, Instagram and LinkedIn, but the supervisor says she lacks time and advertising knowledge; the Facebook page is described as quiet.",
+      "opportunity": "Use an approved content calendar, assigned production tasks and scheduled publishing, with enquiries routed to an owner.",
+      "record_start": 659,
+      "record_end": 670,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 659,
+          "record_end": 670,
+          "line_start": 660,
+          "line_end": 671,
+          "time_start": "2026-10-14 16:18:39.1 PST",
+          "time_end": "2026-10-14 16:20:23.3 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-32",
+      "group": "Marketing and business administration",
+      "title": "Coordinating website, email and supplier changes",
+      "problem": "The supervisor wants to move the website, reviews Microsoft 365/email licensing costs and needs to coordinate the change with the provider. This is a concrete administration burden rather than a demonstrated booking-system fault.",
+      "opportunity": "Create a migration and renewal checklist with ownership, account inventory, costs and deadlines before changing providers.",
+      "record_start": 548,
+      "record_end": 571,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 548,
+          "record_end": 571,
+          "line_start": 549,
+          "line_end": 572,
+          "time_start": "2026-10-14 16:03:00.5 PST",
+          "time_end": "2026-10-14 16:06:10.7 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-33",
+      "group": "Operational reliability",
+      "title": "Troubleshooting call audio during working time",
+      "problem": "The administrator reports that participants and meeting attendees cannot hear him properly. Others guide him through Windows input levels, microphone selection and Dialpad audio settings.",
+      "opportunity": "Standardise headsets and call setup, run a pre-shift audio check and keep a short support procedure. This requires an IT fix, not a scheduling feature.",
+      "record_start": 92,
+      "record_end": 140,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 92,
+          "record_end": 140,
+          "line_start": 93,
+          "line_end": 141,
+          "time_start": "2026-10-14 13:18:46.4 PST",
+          "time_end": "2026-10-14 13:23:23.4 PST"
+        }
+      ]
+    },
+    {
+      "id": "M1-34",
+      "group": "Operational reliability",
+      "title": "Unclear meeting identity and access instructions",
+      "problem": "A participant joins under a generic OCD account name; another attendee does not realise who is present and starts a sensitive topic. The supervisor mentions forgotten credentials and copying meeting links through other apps.",
+      "opportunity": "Use identifiable meeting accounts, straightforward access instructions and an attendee check before sensitive discussions.",
+      "record_start": 419,
+      "record_end": 430,
+      "classification": "Reported workflow",
+      "evidence": [
+        {
+          "record_start": 419,
+          "record_end": 430,
+          "line_start": 420,
+          "line_end": 431,
+          "time_start": "2026-10-14 15:43:17.8 PST",
+          "time_end": "2026-10-14 15:44:34.6 PST"
+        }
+      ]
+    }
+  ]
+}

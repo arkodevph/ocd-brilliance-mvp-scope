@@ -1,3 +1,4 @@
+import { animateEmployeeSwitch } from './employee-motion';
 import { EmployeeFeedback, WorkerRating, type EmployeeFeedbackModel } from './employee-feedback';
 import { EmployeePage, type EmployeePageModel } from './employee-pages';
 import { Fragment } from 'react';
@@ -24,6 +25,7 @@ import {
 } from './portal-pages';
 
 import { OfficeOverviewPage, type OfficeOverviewModel } from './office-overview';
+import { OfficeCompanion, type CompanionModel } from './office-companion';
 
 // Native booking-map components share the existing portal and office layouts.
 const parserOptions: HTMLReactParserOptions = {
@@ -96,6 +98,8 @@ export function WorkspaceView({ markup }: { markup: string }) {
 export function createWorkspaceRenderer(app: HTMLElement, modal: HTMLElement) {
   const appRoot = createRoot(app);
   let modalRoot: Root | undefined;
+  let companionRoot: Root | undefined;
+  let companionHost: HTMLElement | undefined;
   let revision = 0;
   const mapRoots = new Map<HTMLElement, Root>();
   const clearMapWidgets = () => {
@@ -114,6 +118,35 @@ export function createWorkspaceRenderer(app: HTMLElement, modal: HTMLElement) {
   }
 
   return {
+    renderCompanion(
+      model:
+        | (Omit<CompanionModel, 'tasks'> & {
+            tasks: (Omit<CompanionModel['tasks'][number], 'action'> & { action: string })[];
+          })
+        | null,
+    ) {
+      if (!model && !companionRoot) return;
+      if (!companionHost) {
+        companionHost = app.ownerDocument.createElement('div');
+        app.ownerDocument.body.appendChild(companionHost);
+        companionRoot = createRoot(companionHost);
+      }
+      flushSync(() =>
+        companionRoot!.render(
+          model ? (
+            <OfficeCompanion
+              model={{
+                ...model,
+                tasks: model.tasks.map((task) => ({
+                  ...task,
+                  action: parse(task.action, parserOptions),
+                })),
+              }}
+            />
+          ) : null,
+        ),
+      );
+    },
     clearMapWidgets,
     renderMapOverview(element: HTMLElement, overview: BookingMapOverview) {
       const stats = element.querySelector<HTMLElement>('[data-map-stats]');
@@ -128,6 +161,7 @@ export function createWorkspaceRenderer(app: HTMLElement, modal: HTMLElement) {
       clearMapWidgets();
       // Legacy widgets mutate their own DOM. Remount after their explicit cleanup.
       flushSync(() => appRoot.render(<WorkspaceView key={++revision} markup={markup} />));
+      animateEmployeeSwitch(app);
     },
     renderModal(markup: string) {
       modalRoot ||= createRoot(modal);
@@ -143,6 +177,8 @@ export function createWorkspaceRenderer(app: HTMLElement, modal: HTMLElement) {
       clearMapWidgets();
       appRoot.unmount();
       modalRoot?.unmount();
+      companionRoot?.unmount();
+      companionHost?.remove();
     },
   };
 }

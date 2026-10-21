@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T07:21:04.443Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Flat macOS employee sidebar",
+      "status": "pass",
+      "detail": "Identity, reference, service chips, icon-free links, desktop/laptop/phone widths, personal-details navigation, Quick links, coordinator dialog and persona switch passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/employee-hierarchy-correction-2026-10-21/employee-card-1736.png",
+      "sha256": "9116c3a1184c140f8cd97a41055f3d862647c6dc6916814b369099a0c3edc3af",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-hierarchy-correction-2026-10-21/employee-card-1440.png",
+      "sha256": "925752148d49e648808c00c2bef02f8f4ed141a0f9bddf3d5f8ee7e059ea04f7",
+      "width": 1440,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-hierarchy-correction-2026-10-21/employee-card-1280.png",
+      "sha256": "68c773aca5cd75368fef8d9d99b9e8a5f89c2f7eda41f99a0e0e919b44384826",
+      "width": 1280,
+      "height": 800,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-hierarchy-correction-2026-10-21/employee-card-1024.png",
+      "sha256": "fe6f75268a1130486da39efa53e4badd6f243ef976a554034c8461eaee75a17a",
+      "width": 1024,
+      "height": 768,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-hierarchy-correction-2026-10-21/employee-card-390.png",
+      "sha256": "223b9e71eb5fd2434035b603d4d2c180e3d47644bb1ecd5dc9886ad2de37de28",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-hierarchy-correction-2026-10-21/employee-card-320.png",
+      "sha256": "8a85d05e88f10a2ff0cd0ed1b7c16cef7070dee52a5cd7448cd158ca16867f1c",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-hierarchy-correction-2026-10-21/employee-card-second-person.png",
+      "sha256": "cac368bf0ae272cac2bff9aca9e1865ee066485b47b0a9725e28290d06d581a4",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

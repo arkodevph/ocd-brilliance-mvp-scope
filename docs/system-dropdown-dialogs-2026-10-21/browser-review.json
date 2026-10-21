@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:18:50.531Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Dialog new-enquiry",
+      "status": "pass",
+      "detail": "Native dropdowns retained without expanded option buttons; desktop/mobile checked."
+    },
+    {
+      "name": "Dialog add-inbox-message",
+      "status": "pass",
+      "detail": "Native dropdowns retained without expanded option buttons; desktop/mobile checked."
+    },
+    {
+      "name": "Dialog generate-agreement",
+      "status": "pass",
+      "detail": "Native dropdowns retained without expanded option buttons; desktop/mobile checked."
+    },
+    {
+      "name": "Dialog account-settings",
+      "status": "pass",
+      "detail": "Native dropdowns retained without expanded option buttons; desktop/mobile checked."
+    },
+    {
+      "name": "Dialog request-change",
+      "status": "pass",
+      "detail": "Native dropdowns retained without expanded option buttons; desktop/mobile checked."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/booking-dropdown.png",
+      "sha256": "cbfaf41cb5a2d657c69becbe51ceedfa8fbfa255423483e587bef01313ce44a0",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-new-enquiry-desktop.png",
+      "sha256": "f41d5d4a0ebdb254f4b59e0296a66773d0d2a3ef4837a095417fe9cd67235c11",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-new-enquiry-mobile.png",
+      "sha256": "0c84aaeb1ef9a92ed143b469feea8b643c4d95dde96a8f710bdfd50dc798f921",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-add-inbox-message-desktop.png",
+      "sha256": "8a35ab762dc639584b19e18b9b05836a69018d068f2ff1e8910a1b183a63a989",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-add-inbox-message-mobile.png",
+      "sha256": "1215c971613f1732748774ab035cd8c0a0f62afec441d2defde485961e450eff",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-generate-agreement-desktop.png",
+      "sha256": "faaaf7745dcf96c30d7e73b46a25a40f58a61c9947a023808a765cc9f6e1ed24",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-generate-agreement-mobile.png",
+      "sha256": "450f834954dfcbed45b6fcad56e4878daecc4c765f1a2c3e37685dcbf0374d7e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-account-settings-desktop.png",
+      "sha256": "def59314fce3d7994b119dd8649c2aa65e302a9172afad7b77bf5851df0d2860",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-account-settings-mobile.png",
+      "sha256": "9de7459b7525242b3e921c5ac219e8db26c99d030b73cfdcb88942a83a3e6cd6",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-request-change-desktop.png",
+      "sha256": "32eb9cc4b3fbf3a7ef09cee64e97af17753c112493f4fd4d05a1d643d46d6a6a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    },
+    {
+      "path": "docs/system-dropdown-dialogs-2026-10-21/dialog-request-change-mobile.png",
+      "sha256": "3bc3063f4620874d66bfd9f482ef3c7054599f0ecefacfdce8e5b80805907d10",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Pass for the shared form-control issue. Inspected desktop/mobile contact sheets and full-size payroll, existing-record, status-filter and dialog screenshots. Real dropdowns replace generated option rows; no horizontal overflow.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

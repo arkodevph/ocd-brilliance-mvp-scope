@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T06:55:21.198Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Employee comfortable macOS layout",
+      "status": "pass",
+      "detail": "Map pane contained at four desktop sizes, notes unobscured, readable type, text-only Quick links and five phone layouts verified."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/booking-dropdown.png",
+      "sha256": "5f46e07c52797d81daff57af2c6fd939d7b0a85cae133b6cfae471ad6c71814e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-map-1736.png",
+      "sha256": "17c1fc62192d81e0846bb8b4705a804bf70b4efc2dc62fef8439a2517b649ad7",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-map-1440.png",
+      "sha256": "15006c4692234eb9bb1d14481454caa6fa8e3914cf2753d4eab40b18744e334d",
+      "width": 1440,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-map-1280.png",
+      "sha256": "3a1975400b80c6adaec570f9fb25e89fc3e80ea9aa047bc9b8517db6053e6dee",
+      "width": 1280,
+      "height": 800,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-map-1024.png",
+      "sha256": "6985ccf885b99e7d87df31b47ad3ae3d50dd44971855de140a780faa17bc0448",
+      "width": 1024,
+      "height": 768,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-home-phone.png",
+      "sha256": "5d3739029e04c6b7405d9abaa321aa1d9b284675dcde7c2a5cf180c6409a0b7f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-personal-phone.png",
+      "sha256": "683ef4a9d0f519d93e68f5645c7c9235a496a57027504c5ac746bb8db26a07cd",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-today-phone.png",
+      "sha256": "b8c57038410e84dcea3a7282173cf6cbadf4faa2895a7d8091c61f450897f5e2",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-leave-phone.png",
+      "sha256": "9d16e96d2514f8115b541d2d89f017120e016423631bcc9db4386ca98db4fe1a",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/layout-regression/employee-map-phone.png",
+      "sha256": "ff422ee9e758c003647c5f58cdf616225e8b68a022532dfec1b511c6897f5c9d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}
