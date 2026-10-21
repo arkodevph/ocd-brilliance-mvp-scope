@@ -1,0 +1,512 @@
+/* Things-inspired typography and quiet surfaces. Research: docs/design/macos-direction.md. */
+:root {
+  --mac-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mac-canvas: #f5f5f7;
+  --mac-sidebar: #f0f0f3;
+  --mac-surface: #fff;
+  --mac-inset: #f7f7f9;
+  --mac-selected: #e8e8ed;
+  --mac-border: #e3e3e8;
+  --mac-border-strong: #cacbd2;
+  --mac-ink: #242529;
+  --mac-muted: #686a73;
+  --mac-accent: #137257;
+  --mac-accent-hover: #0e5d47;
+  --mac-accent-soft: #edf5f1;
+  --mac-focus: #277dba;
+  --mac-radius: 14px;
+  --mac-control-radius: 8px;
+  --mac-shadow: 0 1px 3px rgb(25 28 36 / 3%);
+  --mac-floating-shadow: 0 8px 24px rgb(25 28 36 / 8%), 0 24px 64px rgb(25 28 36 / 10%);
+  --mac-ease: cubic-bezier(.2, .8, .2, 1);
+  --mac-duration: 160ms;
+  --ocd-canvas: var(--mac-canvas);
+  --ocd-surface: var(--mac-surface);
+  --ocd-surface-soft: var(--mac-inset);
+  --ocd-border: var(--mac-border);
+  --ocd-ink: var(--mac-ink);
+  --ocd-muted: var(--mac-muted);
+  --ocd-mint: var(--mac-accent-soft);
+  --ocd-shadow: var(--mac-shadow);
+  --ocd-shadow-raised: var(--mac-shadow);
+}
+
+body:has(:is(.crm-shell, .employee-shell, .client-app, .public-shell)) {
+  background: var(--mac-canvas);
+  color: var(--mac-ink);
+  font-family: var(--mac-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) {
+  --ink: var(--mac-ink);
+  --muted: var(--mac-muted);
+  --line: var(--mac-border);
+  --canvas: var(--mac-canvas);
+  --green: var(--mac-accent);
+  --green-dark: var(--mac-accent-hover);
+  --green-pale: var(--mac-accent-soft);
+  --crm-ink: var(--mac-ink);
+  --crm-muted: var(--mac-muted);
+  --crm-line: var(--mac-border);
+  --crm-canvas: var(--mac-canvas);
+  --crm-accent: var(--mac-accent);
+  --solar-ink: var(--mac-ink);
+  --solar-muted: var(--mac-muted);
+  --solar-border: var(--mac-border);
+  --solar-canvas: var(--mac-canvas);
+  --solar-green: var(--mac-accent);
+  --solar-green-dark: var(--mac-accent-hover);
+  --solar-green-pale: var(--mac-accent-soft);
+  --solar-focus: var(--mac-focus);
+  --social-ink: var(--mac-ink);
+  --social-muted: var(--mac-muted);
+  --social-line: var(--mac-border);
+  --social-canvas: var(--mac-canvas);
+  --social-accent: var(--mac-accent);
+  --radius-panel: var(--mac-radius);
+  --radius-control: var(--mac-control-radius);
+  background: var(--mac-canvas);
+  color: var(--mac-ink);
+  font-family: var(--mac-font);
+}
+
+:is(.employee-main, .client-app-main, .office-portal .page) {
+  --portal-canvas: var(--mac-canvas);
+  --portal-surface: var(--mac-surface);
+  --portal-border: var(--mac-border);
+  --portal-ink: var(--mac-ink);
+  --portal-muted: var(--mac-muted);
+  --portal-accent: var(--mac-accent);
+  --portal-radius: var(--mac-radius);
+  font-family: var(--mac-font);
+  color: var(--mac-ink);
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell, .office-companion) :is(h1, h2, h3, h4, button, input, select, textarea) {
+  font-family: var(--mac-font);
+}
+
+:is(.crm-shell .page-header, .portal-page-heading, .client-greeting, .social-welcome) h1 {
+  color: var(--mac-ink);
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -.035em;
+}
+
+:is(.crm-shell .page-header, .portal-page-heading, .client-greeting) p {
+  color: var(--mac-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.crm-shell .page { padding: 32px 40px 64px; }
+.crm-shell .page-header { margin-bottom: 28px; }
+.crm-shell .eyebrow { color: var(--mac-muted); letter-spacing: .06em; font-size: 10px; }
+
+/* Light, stationary navigation; material is limited to the window chrome. */
+.crm-shell .sidebar, .crm-shell.calendar-shell .sidebar {
+  background: var(--mac-sidebar);
+  color: var(--mac-ink);
+  border-right: 1px solid var(--mac-border);
+  box-shadow: none;
+}
+
+.crm-shell .sidebar .brand img, .crm-shell.calendar-shell .sidebar .brand img {
+  filter: none;
+  background: transparent;
+  width: 124px;
+}
+
+.crm-shell .sidebar :is(.brand-caption, .nav-group-label, .nav-section-label) {
+  color: var(--mac-muted);
+}
+
+.crm-shell .sidebar .brand-caption { margin-bottom: 28px; letter-spacing: .08em; }
+.crm-shell .sidebar .sidebar-search { background: rgb(255 255 255 / 65%); border-color: var(--mac-border); color: var(--mac-muted); }
+.crm-shell .sidebar .nav-link { color: #53555f; border-radius: var(--mac-control-radius); font-weight: 450; transition: background-color var(--mac-duration) var(--mac-ease), color var(--mac-duration) var(--mac-ease); }
+.crm-shell .sidebar .nav-link:hover { background: #e7e7ec; color: var(--mac-ink); transform: none; }
+.crm-shell .sidebar .nav-link.active { background: var(--mac-selected); color: var(--mac-ink); box-shadow: none; font-weight: 600; }
+.crm-shell .sidebar .nav-link.active svg { color: var(--mac-accent); }
+.crm-shell .sidebar .workspace-context, .crm-shell .sidebar .sidebar-bottom, .crm-shell .sidebar .sidebar-account { border-color: var(--mac-border); }
+.crm-shell .sidebar-bottom :is(a, .link-button, strong) { color: #50535b; }
+.crm-shell .sidebar-bottom small { color: var(--mac-muted); }
+.crm-shell .sidebar-brand-mark { background: var(--mac-selected); color: var(--mac-accent); }
+
+.crm-shell .topbar, .employee-shell .employee-top, .client-app-header, .public-shell .public-top {
+  background: rgb(255 255 255 / 92%);
+  border-bottom: 1px solid var(--mac-border);
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.crm-shell .topbar { min-height: 64px; }
+.crm-shell :is(.workspace-search-trigger, .topbar-account, .navigation-toggle) { border-radius: var(--mac-control-radius); }
+.crm-shell .workspace-search-trigger { background: var(--mac-inset); border-color: var(--mac-border); color: var(--mac-muted); }
+.crm-shell .app-breadcrumbs { color: var(--mac-muted); }
+.crm-shell .app-breadcrumbs [aria-current] { color: var(--mac-ink); }
+
+/* Solid content surfaces and hairline separators, rather than floating cards. */
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) :is(
+  .panel, .desk-card, .staff-card, .analytics-card, .analytics-stat, .review-box,
+  .action-record, .portal-panel, .social-card, .employee-profile, .employee-quick,
+  .employee-card, .feedback-stat, .feedback-distribution, .feedback-review-section,
+  .week-calendar, .enquiry-card, .team-member-card
+) {
+  background: var(--mac-surface);
+  color: var(--mac-ink);
+  border: 1px solid var(--mac-border);
+  border-radius: var(--mac-radius);
+  box-shadow: var(--mac-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  animation: none;
+  transform: none;
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) :is(.panel, .desk-card, .staff-card, .analytics-stat, .team-member-card):hover {
+  box-shadow: var(--mac-shadow);
+  transform: none;
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) :is(a.analytics-stat, a.team-member-card, .enquiry-card):hover {
+  border-color: var(--mac-border-strong);
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) :is(.portal-panel, .social-card, .panel) > header {
+  background: var(--mac-surface);
+  border-color: var(--mac-border);
+}
+
+.crm-shell .analytics-stat { padding: 20px; }
+.crm-shell .analytics-stat strong { color: var(--mac-ink); }
+.crm-shell .analytics-icon { color: var(--mac-accent); background: var(--mac-inset); }
+.crm-shell .analytics-card > header { background: var(--mac-surface); border-color: var(--mac-border); }
+.crm-shell .analytics-attention li { background: var(--mac-surface); border: 0; border-bottom: 1px solid var(--mac-border); border-radius: 0; }
+.crm-shell .analytics-attention li:last-child { border-bottom: 0; }
+.crm-shell .analytics-attention li a { color: var(--mac-ink); }
+.crm-shell .analytics-attention li small { color: var(--mac-muted); }
+.crm-shell .analytics-week-control { background: var(--mac-inset); border-color: var(--mac-border); border-radius: var(--mac-control-radius); }
+.crm-shell .presentation-entry { background: var(--mac-surface); border-color: var(--mac-border); color: var(--mac-ink); border-radius: var(--mac-radius); }
+.crm-shell .presentation-entry p { color: var(--mac-muted); }
+
+/* Familiar grouped controls. Selection and status labels remain visible. */
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .btn {
+  background: var(--mac-surface);
+  color: var(--mac-ink);
+  border: 1px solid var(--mac-border-strong);
+  border-radius: var(--mac-control-radius);
+  box-shadow: 0 1px 1px rgb(25 28 36 / 3%);
+  transition: background-color var(--mac-duration) var(--mac-ease), border-color var(--mac-duration) var(--mac-ease), box-shadow var(--mac-duration) var(--mac-ease);
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .btn:hover { background: var(--mac-inset); border-color: #b9bbc3; transform: none; }
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .btn:active { transform: none; background: var(--mac-selected); }
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .btn.primary { background: var(--mac-accent); border-color: var(--mac-accent); color: #fff; box-shadow: none; }
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .btn.primary:hover { background: var(--mac-accent-hover); border-color: var(--mac-accent-hover); }
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .btn.danger { color: #a82b28; background: #fff; border-color: #d6b5b4; }
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .btn:disabled { opacity: .45; transform: none; box-shadow: none; }
+
+.crm-shell :is(.tabs, .section-navigation, .automation-tabs), .crm-view-tabs, .portal-tabs {
+  gap: 4px;
+  padding: 4px;
+  background: #ececf0;
+  border: 0;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  scrollbar-width: thin;
+}
+
+.crm-shell :is(.tabs, .section-navigation, .automation-tabs) > button, .crm-view-tabs > button, .portal-tabs > button {
+  min-height: 38px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--mac-muted);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color var(--mac-duration) var(--mac-ease), color var(--mac-duration) var(--mac-ease);
+}
+
+.crm-shell :is(.tabs, .section-navigation, .automation-tabs) > button:is(.active, [aria-pressed=true]), .crm-view-tabs > button.active, .portal-tabs > button:is(.active, [aria-pressed=true]) {
+  color: var(--mac-ink);
+  background: var(--mac-surface);
+  border: 0;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgb(25 28 36 / 9%);
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) :is(input:not([type=checkbox]):not([type=radio]), textarea, select) {
+  background: var(--mac-surface);
+  color: var(--mac-ink);
+  border-color: var(--mac-border-strong);
+  border-radius: var(--mac-control-radius);
+  transition: border-color var(--mac-duration) var(--mac-ease), box-shadow var(--mac-duration) var(--mac-ease);
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) :is(input, textarea, select):focus-visible {
+  border-color: var(--mac-focus);
+  outline: 2px solid var(--mac-focus);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) :is(button, a):focus-visible { outline: 2px solid var(--mac-focus); outline-offset: 3px; }
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) input:is([type=checkbox], [type=radio]) { accent-color: var(--mac-accent); }
+.crm-shell :is(.crm-list-toolbar, .table-wrap, .pagination) { border-color: var(--mac-border); }
+.crm-shell thead th { background: var(--mac-inset); color: var(--mac-muted); border-color: var(--mac-border); font-size: 12px; font-weight: 600; }
+.crm-shell tbody td { border-color: var(--mac-border); }
+.crm-shell tbody tr { transition: background-color var(--mac-duration) var(--mac-ease); }
+.crm-shell tbody tr:hover { background: var(--mac-inset); }
+
+/* The employee and client portals use the same neutral material system. */
+.employee-shell .employee-navigation {
+  background: var(--mac-surface);
+  border-bottom: 1px solid var(--mac-border);
+  box-shadow: none;
+}
+.employee-shell .employee-navigation > a { color: var(--mac-muted); background: transparent; border-radius: var(--mac-control-radius); }
+.employee-shell .employee-navigation > a:hover { color: var(--mac-ink); background: var(--mac-inset); }
+.employee-shell .employee-navigation > a[aria-current] { color: var(--mac-ink); background: var(--mac-selected); box-shadow: none; }
+.employee-shell .employee-profile > div::before, .social-profile-cover { background: #e5ebe7; color: var(--mac-ink); }
+.employee-shell .employee-profile .profile-image { box-shadow: 0 0 0 4px var(--mac-surface); }
+.employee-shell .employee-footer { background: var(--mac-canvas); border-color: var(--mac-border); color: var(--mac-muted); }
+.employee-shell .social-card :is(h2, h3, h4), .employee-shell .employee-profile h2 { color: var(--mac-ink); }
+.employee-shell .social-feed-tabs { border-color: var(--mac-border); }
+.client-app .client-app-nav a { color: var(--mac-muted); border-radius: var(--mac-control-radius); }
+.client-app .client-app-nav a[aria-current=page], .client-app .client-app-nav a.active { color: var(--mac-ink); background: var(--mac-selected); }
+.portal-client-home .client-booking-layout::before, .portal-client-home .client-service-tile::after { content: none; }
+.portal-client-home .client-service-group, .portal-client-home .client-service-group:nth-child(n) { background: transparent; }
+.portal-client-home .client-service-tile { border-radius: 10px; color: var(--mac-ink); box-shadow: none; transform: none; }
+.portal-client-home .client-service-tile:hover { box-shadow: none; transform: none; }
+.portal-client-home .client-service-icon { box-shadow: none; }
+.portal-client-home .client-featured-worker { border-color: var(--mac-border); }
+.portal-client-home .client-calendar-heading { color: var(--mac-ink); }
+
+/* Route-specific calendar and case-work surfaces follow the shared theme too. */
+.crm-shell.calendar-shell {
+  --calendar-lime: var(--mac-accent);
+  --calendar-line: var(--mac-border);
+  --calendar-ink: var(--mac-ink);
+  background: var(--mac-canvas);
+}
+.crm-shell.calendar-shell .sidebar .nav-link { color: #53555f; }
+.crm-shell.calendar-shell .sidebar .nav-link:hover { background: #e7e7ec; color: var(--mac-ink); }
+.crm-shell.calendar-shell .sidebar .nav-link.active { background: var(--mac-selected); color: var(--mac-ink); }
+.crm-shell.calendar-shell .sidebar .brand-caption,
+.crm-shell.calendar-shell .sidebar .nav-group-label,
+.crm-shell.calendar-shell .sidebar .sidebar-bottom small { color: var(--mac-muted); }
+.crm-shell.calendar-shell .sidebar .sidebar-bottom a { color: #50535b; }
+.crm-shell.calendar-shell .sidebar .workspace-context,
+.crm-shell.calendar-shell .sidebar .sidebar-bottom { border-color: var(--mac-border); }
+.crm-shell.calendar-shell .topbar { background: rgb(255 255 255 / 92%); border-color: var(--mac-border); }
+.crm-shell.calendar-shell :is(.week-calendar, .week-agenda) { border: 1px solid var(--mac-border); border-radius: var(--mac-radius); background: var(--mac-surface); }
+.crm-shell.calendar-shell :is(.week-toolbar, .week-footer, .week-day-header, .week-meta) { background: var(--mac-inset); border-color: var(--mac-border); }
+.crm-shell.calendar-shell .week-toolbar { padding: 20px; }
+.crm-shell.calendar-shell .week-heading h1 { color: var(--mac-ink); font-size: 28px; letter-spacing: -.035em; }
+.crm-shell.calendar-shell .week-heading p { color: var(--mac-muted); }
+.crm-shell.calendar-shell .week-controls .primary { background: var(--mac-accent); border-color: var(--mac-accent); }
+.crm-shell.calendar-shell .week-controls .primary:hover { background: var(--mac-accent-hover); }
+.crm-shell.calendar-shell .week-view-switch { padding: 3px; background: var(--mac-selected); border: 0; border-radius: 8px; }
+.crm-shell.calendar-shell .week-view-switch button { border-radius: 6px; color: var(--mac-muted); }
+.crm-shell.calendar-shell .week-view-switch button[aria-pressed=true] { background: var(--mac-surface); color: var(--mac-ink); box-shadow: 0 1px 3px rgb(25 28 36 / 9%); }
+.crm-shell.calendar-shell .week-date { color: var(--mac-muted); }
+.crm-shell.calendar-shell .week-date.selected strong { background: var(--mac-accent); }
+.crm-shell.calendar-shell .week-date:hover { background: var(--mac-selected); }
+.crm-shell.calendar-shell .week-day-column { background-color: var(--mac-surface); background-image: repeating-linear-gradient(to bottom, var(--mac-border) 0, var(--mac-border) 1px, transparent 1px, transparent calc(100% / var(--calendar-hours))); border-color: var(--mac-border); }
+.crm-shell.calendar-shell .week-day-column.weekend { background-color: var(--mac-inset); }
+.crm-shell.calendar-shell .week-event { background: var(--mac-surface); border: 1px solid var(--mac-border-strong); border-radius: 8px; box-shadow: var(--mac-shadow); color: #245947; }
+.crm-shell.calendar-shell .week-event.call { background: var(--mac-surface); border-color: var(--mac-border-strong); color: #356381; }
+.crm-shell.calendar-shell .week-event.cover { background: var(--mac-surface); border-color: var(--mac-border-strong); color: #875c18; }
+.crm-shell.calendar-shell .week-event.proposed { background: var(--mac-surface); border-color: var(--mac-border-strong); color: var(--mac-muted); }
+.crm-shell.calendar-shell .week-event:hover { background: var(--mac-inset); border-color: var(--mac-accent); }
+.crm-shell.calendar-shell .calendar-agenda-item { background: var(--mac-surface); border: 1px solid var(--mac-border); border-radius: 10px; }
+.crm-shell.calendar-shell .calendar-agenda-time { color: var(--mac-ink); font-variant-numeric: tabular-nums; }
+.crm-shell.calendar-shell .week-agenda h2 { color: var(--mac-ink); }
+.crm-shell :is(.automation-home-link, .automation-boundary, .cp-launch) { background: var(--mac-surface); border-color: var(--mac-border); color: var(--mac-ink); }
+.crm-shell :is(.automation-metrics, .automation-case-row, .automation-inbox article, .automation-outbox, .automation-thread .automation-evidence, .proof-panel) { background: var(--mac-surface); border: 1px solid var(--mac-border); border-radius: var(--mac-radius); box-shadow: var(--mac-shadow); }
+.crm-shell .automation-case-row.selected { border-color: var(--mac-border-strong); background: var(--mac-surface); box-shadow: var(--mac-shadow); }
+.crm-shell :is(.automation-queue, .automation-context, .automation-persona) { background: var(--mac-inset); border-color: var(--mac-border); }
+.crm-shell .automation-stage-track span { background: var(--mac-inset); color: var(--mac-muted); }
+.crm-shell .automation-stage-track span.active { background: var(--mac-accent-soft); color: var(--mac-accent-hover); }
+
+.crm-shell .cp-launch small { color: var(--mac-muted); }
+.crm-shell :is(.cp-hero, .cp-hero-note, .cp-system-grid article, .cp-before-after article, .cp-scenario-card) { background: var(--mac-surface); border-color: var(--mac-border); box-shadow: var(--mac-shadow); }
+
+.crm-shell.schedule-shell .timeline-visit, .crm-shell .roster-shift { background: var(--mac-surface); border-color: var(--mac-border-strong); color: var(--mac-ink); box-shadow: none; }
+.crm-shell.schedule-shell .timeline-visit:hover, .crm-shell .roster-shift:hover { background: var(--mac-inset); border-color: var(--mac-accent); }
+.crm-shell.schedule-shell .schedule-view-switch { padding: 3px; gap: 3px; background: var(--mac-selected); border: 0; border-radius: 8px; }
+.crm-shell.schedule-shell .schedule-view-switch button { background: transparent; border: 0; border-radius: 6px; }
+.crm-shell.schedule-shell .schedule-view-switch button[aria-pressed=true] { background: var(--mac-surface); color: var(--mac-ink); box-shadow: 0 1px 3px rgb(25 28 36 / 9%); }
+.employee-shell .employee-navigation > a, .client-app .client-app-nav a, .companion-close { transition: background-color var(--mac-duration) var(--mac-ease), color var(--mac-duration) var(--mac-ease); }
+
+/* The floating utility is the one raised material above the workspace. */
+.office-companion {
+  --companion-surface: rgb(251 251 253 / 97%);
+  --companion-raised: #f0f0f4;
+  --companion-text: var(--mac-ink);
+  --companion-muted: var(--mac-muted);
+  --companion-border: var(--mac-border);
+  --companion-accent: var(--mac-accent);
+  font-family: var(--mac-font);
+}
+.companion-launcher, .companion-panel { border-color: var(--mac-border); box-shadow: var(--mac-floating-shadow); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+.companion-launcher { border-radius: 14px; transition: background-color var(--mac-duration) var(--mac-ease), box-shadow var(--mac-duration) var(--mac-ease); }
+.companion-launcher:hover { background: var(--mac-surface); transform: none; }
+.companion-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+.companion-tabs { background: #eaeaf0; border: 0; border-radius: 10px; }
+.companion-tabs button { border-radius: 7px; transition: background-color var(--mac-duration) var(--mac-ease); }
+.companion-tabs button[aria-pressed=true] { background: var(--mac-surface); color: var(--mac-ink); box-shadow: 0 1px 3px rgb(25 28 36 / 8%); }
+.companion-content h3 { font-size: 23px; font-weight: 600; letter-spacing: -.035em; }
+.companion-card { background: var(--mac-surface); }
+.companion-primary { background: var(--mac-accent); color: #fff; border-radius: var(--mac-control-radius); }
+.companion-primary:hover { background: var(--mac-accent-hover); filter: none; }
+.companion-content :is(select, textarea) { background: var(--mac-surface); }
+
+.app-tools-dialog, #modal { border-radius: 18px; box-shadow: var(--mac-floating-shadow); }
+.app-tools-dialog::backdrop, #modal::backdrop { background: rgb(28 29 36 / 28%); }
+
+@keyframes mac-enter { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .crm-shell .page > .portal-page { animation: mac-enter 200ms var(--mac-ease); }
+  .companion-panel { animation: mac-enter 180ms var(--mac-ease); }
+}
+
+@media (max-width: 760px) {
+  .crm-shell .page { padding: 24px 18px 56px; }
+  :is(.crm-shell .page-header, .portal-page-heading, .client-greeting, .social-welcome) h1 { font-size: 28px; }
+  .crm-shell .topbar { min-height: 58px; }
+  .crm-shell .sidebar { background: rgb(248 248 250 / 96%); border: 0; border-top: 1px solid var(--mac-border); box-shadow: none; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .crm-shell .sidebar .mobile-primary .nav-link, .crm-shell .sidebar .mobile-more { min-height: 44px; border-radius: 10px; }
+  .crm-shell .sidebar .nav-link.active { color: var(--mac-accent); background: var(--mac-accent-soft); }
+  .crm-shell :is(.tabs, .section-navigation, .automation-tabs) > button, .crm-view-tabs > button, .portal-tabs > button { min-height: 44px; padding-inline: 12px; }
+  :is(.crm-shell, .employee-shell, .client-app, .public-shell) input:not([type=checkbox]):not([type=radio]), :is(.crm-shell, .employee-shell, .client-app, .public-shell) textarea, .office-companion :is(select, textarea) { font-size: 16px; }
+  .client-app .client-app-nav { background: rgb(248 248 250 / 96%); border-color: var(--mac-border); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .employee-shell .employee-navigation > a { min-height: 44px; }
+  .portal-client-home .client-service-tile { min-height: 88px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.crm-shell, .employee-shell, .client-app, .public-shell, .office-companion) *,
+  :is(.crm-shell, .employee-shell, .client-app, .public-shell, .office-companion) *::before,
+  :is(.crm-shell, .employee-shell, .client-app, .public-shell, .office-companion) *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .crm-shell .topbar, .crm-shell .sidebar, .employee-shell .employee-top,
+  .client-app-header, .client-app .client-app-nav, .companion-launcher, .companion-panel {
+    background: var(--mac-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* Cancellation review uses compact controls and grouped settings rows. */
+.crm-shell .automation-pipeline .automation-case.selected:has(.cancellation-case) {
+  border-color: var(--mac-border-strong);
+  border-radius: var(--mac-radius);
+  box-shadow: var(--mac-shadow);
+}
+.crm-shell .cancellation-case .automation-thread {
+  max-width: 800px;
+  width: 100%;
+  margin-inline: auto;
+  padding: 32px;
+}
+.crm-shell .cancellation-case .automation-case-heading {
+  border-color: var(--mac-border);
+}
+.crm-shell .cancellation-assistant { padding-top: 0; }
+.crm-shell .cancellation-assistant > p {
+  color: var(--mac-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-block: 8px;
+}
+.crm-shell .cancellation-assistant > p strong { color: var(--mac-ink); font-weight: 600; }
+.crm-shell .cancellation-checklist {
+  background: var(--mac-inset);
+  border: 1px solid var(--mac-border);
+  border-radius: var(--mac-control-radius);
+  gap: 0;
+  padding: 4px 16px;
+  margin-block: 20px;
+}
+.crm-shell .cancellation-checklist li {
+  padding-block: 10px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--mac-border);
+}
+.crm-shell .cancellation-checklist li:last-child { border-bottom: 0; }
+.crm-shell .cancellation-form > .form-grid { display: block; }
+.crm-shell .cancellation-group {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 0 0 24px;
+  border: 0;
+  border-bottom: 1px solid var(--mac-border);
+}
+.crm-shell .cancellation-group legend {
+  padding: 0 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mac-ink);
+}
+.crm-shell .cancellation-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.crm-shell .cancellation-fields > .full { grid-column: 1 / -1; }
+.crm-shell .cancellation-fields label {
+  display: grid;
+  gap: 8px;
+  color: var(--mac-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+.crm-shell .cancellation-fields :is(input:not([type=checkbox]), select, textarea) {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid var(--mac-border-strong);
+  border-radius: 6px;
+  background-color: var(--mac-surface);
+  color: var(--mac-ink);
+  box-shadow: 0 1px 2px rgb(25 28 36 / 3%);
+  font-size: 13px;
+  font-weight: 400;
+}
+.crm-shell .cancellation-fields textarea { resize: vertical; line-height: 1.6; }
+.crm-shell .cancellation-fields label.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.crm-shell .cancellation-form .cancellation-charge-code { display: none; }
+.crm-shell .cancellation-form:has(select[name=charge] option[value=with-charge]:checked) .cancellation-charge-code { display: grid; }
+@media (max-width: 760px) {
+  .crm-shell .cancellation-case .automation-thread { padding: 20px 16px; }
+  .crm-shell .cancellation-fields { grid-template-columns: minmax(0, 1fr); }
+  .crm-shell .cancellation-fields :is(input:not([type=checkbox]), select, textarea) { min-height: 44px; font-size: 16px; }
+}
+
+:is(.crm-shell, .employee-shell, .client-app, .public-shell) .checkbox input:is([type=checkbox], [type=radio]) {
+  min-height: 16px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 2px 0 0;
+  flex: 0 0 16px;
+}

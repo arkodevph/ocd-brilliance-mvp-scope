@@ -48,9 +48,6 @@ body { background:var(--crm-canvas); color:var(--crm-ink); font-size:14px; }
 .crm-shell .tabs > button,.crm-shell .section-navigation > button,.crm-shell .automation-tabs > button,.crm-view-tabs > button { border:0; border-bottom:3px solid transparent; background:transparent; color:var(--crm-muted); border-radius:0; padding:11px 18px; min-height:44px; font-size:14px; white-space:nowrap; box-shadow:none; }
 .crm-shell .tabs > button.active,.crm-shell .section-navigation > button[aria-pressed=true],.crm-shell .automation-tabs > button.active,.crm-view-tabs > button.active { color:var(--crm-accent); border-bottom-color:var(--crm-accent); background:#fff; font-weight:650; }
 .crm-view-tabs > button span { background:#edf1f4; color:#536874; padding:2px 6px; border-radius:3px; font-size:11px; margin-left:8px; }
-.crm-shell .visible-choices { gap:8px 16px; }
-.crm-shell .visible-choices button { border-radius:0; font-size:13px; padding:8px 2px; }
-.crm-shell .visible-choices button[aria-pressed=true] { color:var(--crm-accent); border-color:var(--crm-accent); }
 .crm-shell .status { font-size:12px; background:transparent; }
 .crm-shell .toolbar { padding:12px 0; margin-bottom:16px; gap:12px; }
 .crm-shell .filters { align-items:center; flex-wrap:wrap; }
@@ -573,29 +570,11 @@ body { background:var(--crm-canvas); color:var(--crm-ink); font-size:14px; }
 .ai-email-panel form { display:grid;gap:12px; }
 .email-source footer { display:flex;align-items:center;gap:16px;flex-wrap:wrap; }
 
-.visible-choices.service-picker { gap:8px; }
-.visible-choices.service-picker button { border:1px solid var(--crm-line);border-radius:8px;padding:10px 12px;background:#fff;color:var(--crm-ink);gap:8px; }
-.visible-choices.service-picker button[aria-pressed=true] { border-color:var(--crm-accent);background:var(--crm-canvas);color:var(--crm-accent); }
-.choice-indicator { width:16px;height:16px;flex:none;border:1.5px solid var(--crm-line);border-radius:50%;display:grid;place-items:center; }
-[aria-pressed=true] > .choice-indicator { border-color:var(--crm-accent); }
-[aria-pressed=true] > .choice-indicator::after { content:'';width:8px;height:8px;background:var(--crm-accent);border-radius:50%; }
-.visible-choices.profile-picker { display:flex;flex-direction:column;align-items:stretch;gap:8px; }
-.visible-choices.profile-picker > input { flex:none;margin:0; }
-.profile-picker-results { max-height:216px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--crm-line) transparent; }
-.visible-choices.profile-picker .profile-picker-results button { display:flex;width:100%;justify-content:flex-start;gap:12px;border:1px solid transparent;border-radius:10px;padding:10px;text-align:left; }
-.visible-choices.profile-picker .profile-picker-results button:hover { background:var(--crm-canvas); }
-.visible-choices.profile-picker .profile-picker-results button[aria-pressed=true] { border-color:var(--crm-line);background:var(--crm-canvas);color:var(--crm-ink); }
-.profile-picker-avatar { width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--crm-line);color:var(--crm-ink);font-size:12px;font-weight:700; }
-.profile-picker-text { display:flex;flex-direction:column;gap:3px;min-width:0;flex:1; }
-.profile-picker-text strong { font-size:13px; }
-.profile-picker-text small { color:var(--muted);font-size:11px;font-weight:400; }
-.profile-picker-empty { margin:4px 0;color:var(--muted);font-size:13px; }
 .crm-shell :is(.map-side-panel,.map-booking-list,.map-connection-panel) { scrollbar-width:thin;scrollbar-color:var(--crm-line) transparent; }
 .crm-shell :is(.map-side-panel,.map-booking-list,.map-connection-panel)::-webkit-scrollbar { width:5px; }
 .crm-shell :is(.map-side-panel,.map-booking-list,.map-connection-panel)::-webkit-scrollbar-track { background:transparent; }
 .crm-shell :is(.map-side-panel,.map-booking-list,.map-connection-panel)::-webkit-scrollbar-thumb { background:var(--crm-line);border-radius:8px; }
 
-.visible-choices.profile-picker .profile-picker-results button[hidden] { display:none; }
 #modal:has(.booking-form) { width:min(960px,calc(100vw - 32px));max-width:960px; }
 #modal:has(.booking-form) .modal-head { padding:24px 28px; }
 #modal:has(.booking-form) .modal-head h2 { font-size:24px; }
@@ -726,13 +705,6 @@ body { background:var(--crm-canvas); color:var(--crm-ink); font-size:14px; }
  .crm-shell .sidebar-search,.crm-shell .sidebar-brand-mark { display:none; }
 }
 
-.visible-choices.booking-picker { display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0; }
-.visible-choices.booking-picker > input { width:100%;min-width:0;margin:0; }
-.visible-choices.booking-picker .profile-picker-results { position:relative;border:1px solid var(--crm-line);border-radius:8px; }
-.crm-shell .visible-choices.booking-picker button { display:flex;justify-content:flex-start;width:100%;min-height:44px;padding:10px 12px;border:0;border-bottom:1px solid var(--crm-line);text-align:left;white-space:normal; }
-.visible-choices.booking-picker button:last-child { border-bottom:0; }
-.visible-choices.booking-picker button[aria-pressed=true] { background:var(--crm-canvas);color:var(--crm-accent);box-shadow:inset 3px 0 var(--crm-accent);font-weight:600; }
-.visible-choices.booking-picker button[hidden] { display:none; }
 
 /* Person-led automation pipeline with one case expanded at a time. */
 .crm-shell .automation-pipeline {height:auto;min-height:0;}

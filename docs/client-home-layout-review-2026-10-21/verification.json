@@ -1,0 +1,77 @@
+{
+  "build": "npm run build:frontend passed (TypeScript and esbuild)",
+  "checks": [
+    {
+      "viewport": "1440x1000",
+      "result": "Booking and worker panels only; natural heights 573px and 543px; other task panels hidden; calendar preview initially closed"
+    },
+    {
+      "viewport": "390x844",
+      "result": "390px document width, 6 distinct service backgrounds, all measured task/service/worker buttons at least 44px high"
+    },
+    {
+      "viewport": "320x740",
+      "result": "Document width 320px; selected date panel had no elements extending beyond viewport; changing service restored all 6 options"
+    },
+    {
+      "viewport": "1280x720",
+      "result": "Requests view showed requests and worker panels only, no horizontal overflow, focus restored to Requests view button"
+    },
+    {
+      "viewport": "1440x1000, root font size 200%",
+      "result": "Document width 1440px and zero task-panel descendants extending past viewport"
+    },
+    {
+      "flow": "Book / Upcoming / Requests",
+      "result": "Only corresponding task panel visible. Empty Upcoming panel fits content. Counts displayed."
+    },
+    {
+      "flow": "Calendar preview",
+      "result": "Button sets aria-expanded true, opens calendar; closes on second click"
+    },
+    {
+      "flow": "Cleaning > 25 Oct 2026 > Review",
+      "result": "Review disabled until date selected. Review form opened with all 12 room categories and consent; closed without submitting"
+    },
+    {
+      "flow": "Keyboard",
+      "result": "Focus returned to selected view button; Tab moved to View all with solid visible outline"
+    },
+    {
+      "flow": "Worker",
+      "result": "Show another worker changed Elena Cruz to Sam Walker"
+    },
+    {
+      "flow": "Shared display components",
+      "result": "My bookings page renders after extraction; frontend typecheck passes"
+    },
+    {
+      "flow": "Runtime console",
+      "result": "No console errors during final flow checks"
+    },
+    {
+      "flow": "Account regression",
+      "result": "#/client/intake renders heading My account after shared component extraction; no console errors"
+    }
+  ],
+  "screenshots": [
+    "/tmp/ocd-home-task-desktop.png",
+    "/tmp/ocd-home-task-mobile.png",
+    "/tmp/ocd-home-task-empty.png",
+    "/tmp/ocd-home-date-320.png",
+    "/tmp/ocd-home-text-resize.png"
+  ],
+  "limits": [
+    "No full accessibility conformance claim",
+    "No real-client usability study",
+    "No booking request sent during this verification",
+    "No production deployment"
+  ],
+  "sourcePaths": [
+    "frontend/features/client-home/",
+    "frontend/shared/portal/",
+    "frontend/portal-pages.tsx",
+    "frontend/main.tsx",
+    "workspace/sw.js"
+  ]
+}

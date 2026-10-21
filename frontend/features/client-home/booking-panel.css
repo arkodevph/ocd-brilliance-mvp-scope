@@ -1,0 +1,31 @@
+.client-home-workspace .client-booking-panel:not(.client-booking-selected) { padding: var(--home-space); }
+.client-home-workspace .portal-repeat { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; padding-bottom: 24px; align-items: start; }
+.client-home-workspace .portal-repeat .button-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.client-home-workspace .portal-repeat :is(p, small) { font-size: var(--home-note-size); line-height: 1.5; }
+.client-home-workspace .client-service-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 24px 0; }
+.client-home-workspace .client-service-group { padding: 0; gap: 12px; }
+.client-home-workspace .client-service-category h3 { font-size: .8125rem; line-height: 1.5; }
+.client-home-workspace .client-service-tile { min-height: 72px; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; align-items: center; padding: 12px; font-size: var(--home-note-size); line-height: 1.45; text-align: left; }
+.client-home-workspace .client-service-icon { width: 28px; height: 28px; border-radius: 8px; }
+.client-home-workspace .client-inline-calendar { display: block; max-width: 440px; margin: 24px 0; }
+.client-home-workspace .client-calendar-disclosure { margin-top: 20px; border-top: 1px solid var(--portal-border); padding-top: 12px; }
+.client-home-workspace .client-calendar-disclosure > button { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-size: var(--home-note-size); font-weight: 600; }
+.client-home-workspace .client-calendar-disclosure > button { width: 100%; padding: 0; border: 0; color: var(--portal-ink); background: transparent; text-align: left; }
+.client-home-workspace .client-calendar-disclosure > button span { margin-left: auto; font-size: 1.25rem; }
+.client-home-workspace .client-calendar-disclosure .client-calendar { max-width: 440px; padding-top: 16px; }
+.client-home-workspace .client-calendar-days button { min-height: 44px; font-size: var(--home-note-size); }
+.client-home-workspace .client-calendar-heading .btn { min-height: 44px; height: auto; }
+.client-home-workspace .client-date-label { display: grid; max-width: 440px; gap: 8px; font-size: var(--home-note-size); }
+.client-home-workspace .client-booking-cta { width: auto; margin-top: 12px; }
+@media (max-width: 600px) {
+  .client-home-workspace .client-service-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .client-home-workspace .client-service-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .client-home-workspace .client-service-category { grid-column: 1 / -1; }
+  .client-home-workspace .client-service-tile { min-height: 80px; padding: 10px; grid-template-columns: 24px minmax(0, 1fr); }
+  .client-home-workspace .client-service-icon { width: 24px; height: 24px; }
+  .client-home-workspace .portal-repeat .button-row { flex-direction: column; width: 100%; }
+  .client-home-workspace .client-booking-cta { width: 100%; }
+}
+@media (max-width: 360px) {
+  .client-home-workspace .client-service-group { grid-template-columns: minmax(0, 1fr); }
+}

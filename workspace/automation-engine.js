@@ -397,6 +397,8 @@
     let created = 0,
       duplicates = 0;
     for (const source of a.inbox) {
+      // Pasted messages need an explicit reviewed assignment before routing.
+      if (source.prototypeInput && !source.kind) continue;
       const before = a.jobs.length;
       const job = create(state, { ...source, source });
 
@@ -870,7 +872,7 @@
 
       if (
         !draft.reason ||
-        !['with-charge', 'native-policy'].includes(draft.charge) ||
+        !['with-charge', 'native-policy', 'no-charge'].includes(draft.charge) ||
         draft.policyReviewed !== true ||
         draft.scope !== 'occurrence'
       )
@@ -879,6 +881,24 @@
         );
       if (draft.charge === 'with-charge' && !['NSDH', 'NSDF', 'NSDT', 'NSDO'].includes(draft.code))
         throw new Error('Choose the reviewed NDIS reason code. Free text is retained separately.');
+      if (
+        !['Participant', 'Worker', 'Provider'].includes(draft.cause) ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(draft.notice || '') ||
+        !validDate(draft.notice.slice(0, 10)) ||
+        minutes(draft.notice.slice(11)) === null
+      )
+        throw new Error('Record who cancelled and the actual notice date and time.');
+      if (draft.cause !== 'Participant' && draft.charge === 'with-charge')
+        throw new Error('Worker or provider cancellations cannot create a participant charge.');
+      if (
+        !['yes', 'no'].includes(draft.travelOccurred) ||
+        !String(draft.travelEvidence || '').trim() ||
+        !String(draft.billingEvidence || '').trim() ||
+        draft.travelReviewed !== true
+      )
+        throw new Error(
+          'Check whether travel occurred and record the travel and charge review evidence.',
+        );
     }
 
     if (job.kind === 'cover') {
@@ -1235,11 +1255,18 @@
       const b = record(state, 'bookings', job.targetId);
       b.status = 'Cancelled';
       b.cancellation = {
-        cause: 'Participant',
-        notice: '2026-10-05T10:00',
+        cause: d.cause,
+        notice: d.notice,
         note: d.reason,
         chargeTreatment: d.charge,
-        code: d.code,
+        code: d.charge === 'with-charge' ? d.code : '',
+        travelOccurred: d.travelOccurred,
+        travelEvidence: d.travelEvidence,
+        travelTreatment:
+          d.travelOccurred === 'yes'
+            ? 'Reviewed actual travel only'
+            : 'No travel charge; exclude planned travel',
+        billingEvidence: d.billingEvidence,
         source: 'Sample native action',
       };
 
@@ -1382,6 +1409,14 @@
         'accounting',
         'ShiftCare sample ID verified. Separate Xero/payroll onboarding must be checked before closing.',
       );
+    } else if (job.kind === 'cancel') {
+      queueMessage(state, job);
+      set(
+        job,
+        'manual_action_required',
+        'notifications',
+        'Cancellation and travel/charge review verified. Deliver each required update before closing.',
+      );
     } else {
       set(
         job,
@@ -1462,9 +1497,13 @@
 
   function manual(state, id, input) {
     const job = get(state, id);
+    if (job.kind === 'cancel')
+      throw new Error(
+        'Cancellation requires verified occurrence, travel, charges and notifications. Resolve the native exception and return for fresh review.',
+      );
     if (
       job.status !== 'manual_action_required' ||
-      ['native', 'accounting', 'worker_acceptance'].includes(job.stage)
+      ['native', 'accounting', 'worker_acceptance', 'notifications'].includes(job.stage)
     )
       throw new Error('Complete the specific handoff before closing this case.');
     if (!input.note || !input.reference || input.checked !== true)
@@ -1492,7 +1531,7 @@
     if (
       terminal(job) ||
       job.status === 'reconciliation_required' ||
-      ['accounting', 'worker_acceptance'].includes(job.stage)
+      ['accounting', 'worker_acceptance', 'notifications'].includes(job.stage)
     )
       throw new Error(
         'Resolve the pending handoff or reconcile the unknown outcome before starting another attempt.',
@@ -1533,6 +1572,17 @@
       createdAt: now(),
       attempts: 0,
     });
+    if (job.kind === 'cancel' && b.workerId)
+      state.automation.messages.push({
+        id: nextId('MSG', state.automation.messages),
+        jobId: job.id,
+        to: `worker:${b.workerId}`,
+        title: 'Visit cancelled (demo)',
+        detail: `${b.id}: ${b.date} ${b.start}–${b.end} is cancelled. Do not attend this occurrence. Contact the office about any actual travel.`,
+        status: 'pending',
+        createdAt: now(),
+        attempts: 0,
+      });
   }
 
   function deliver(state, messageId, fail = false) {
@@ -1555,11 +1605,27 @@
         to: m.to,
         title: m.title,
         detail: m.detail,
-        href: 'client/bookings',
+        href: m.to.startsWith('worker:') ? 'worker/today' : 'client/bookings',
         date: state.automation.date,
         read: false,
       });
 
+    const job = get(state, m.jobId);
+    if (
+      job.kind === 'cancel' &&
+      job.stage === 'notifications' &&
+      state.automation.messages
+        .filter((message) => message.jobId === job.id)
+        .every((message) => message.status === 'delivered')
+    ) {
+      set(
+        job,
+        'completed',
+        'done',
+        'Every cancellation step verified: occurrence, travel, charges and required notifications.',
+      );
+      resolveRequest(state, job);
+    }
     return m;
   }
 

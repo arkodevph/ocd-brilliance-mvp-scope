@@ -1,0 +1,88 @@
+{
+  "surface": "Invoice queue, draft list and existing invoice review; browser-based macOS visual direction",
+  "goal": "Help office staff identify a record, understand exceptions and choose its next action. Faster recognition and fewer wrong-record actions are hypotheses, not measured results.",
+  "assumptions": [
+    "Office staff use mouse/keyboard on desktop; mobile access remains supported.",
+    "User requested macOS appearance for the screenshot surface; keep existing brand accent and shell.",
+    "Actual staff task frequency, visual preferences and comparative completion times unknown."
+  ],
+  "flow": [
+    {
+      "stage": "First use",
+      "goal": "Establish recipient/category reference",
+      "information": "Participant, agreement source and relevant service categories",
+      "action": "Billing agreement",
+      "risk": "Confusing participant contact with agreed billing recipient",
+      "feedback": "Saved reference; refreshed checks",
+      "recovery": "Edit reference and invoice separately",
+      "success": "Correct agreement stored with provenance"
+    },
+    {
+      "stage": "Routine review",
+      "goal": "Find and resolve exceptions",
+      "information": "Participant, record ID, issue labels and explanation",
+      "action": "Review invoice or Prepare draft",
+      "risk": "Wrong-record selection or missed issue",
+      "feedback": "Persistent check text plus current queue count",
+      "recovery": "Back to list; saved drafts remain",
+      "success": "Corrected record leaves queue"
+    },
+    {
+      "stage": "Error",
+      "goal": "Recover from unresolved check",
+      "information": "Inline validation and issue text",
+      "action": "Correct field/reference then retry",
+      "risk": "Mistaking visual polish for approval",
+      "feedback": "Existing review guard remains active",
+      "recovery": "Editable fields and source reference",
+      "success": "Review only after all checks pass"
+    }
+  ],
+  "route": "ui-design-index \u2192 ui-design-systems",
+  "patterns": [
+    "Grouped list with participant-first identity, metadata and persistent checks",
+    "Compact toolbar with primary action and quiet secondary controls",
+    "Token-based neutral surfaces, hairline dividers, system font and responsive stacking",
+    "Billing agreement dialog uses grouped fields in two columns on desktop and one column on mobile"
+  ],
+  "evidence": [
+    {
+      "principle": "Target acquisition and target spacing",
+      "source": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
+      "participants_task": "Accessibility standard for web pointer targets; not a measured office-staff experiment",
+      "finding": "24 by 24 CSS pixel minimum or documented spacing exceptions; larger targets can help users",
+      "confidence": "strong",
+      "boundary": "Conformance floor does not prove usability; use 32px desktop and 44px touch targets here",
+      "decision": "Keep separated actions and visible keyboard focus; verify actual dimensions",
+      "falsifier": "Clipped targets, keyboard focus absent, or more misclicks in staff trial"
+    },
+    {
+      "principle": "Choice overload is contextual",
+      "source": "https://doi.org/10.1086/651235",
+      "participants_task": "Meta-analysis of 63 conditions in 50 published/unpublished experiments, N=5036; choice tasks differ from invoice work",
+      "finding": "Near-zero average choice-overload effect with substantial variation",
+      "confidence": "strong",
+      "boundary": "This does not establish an ideal number of invoice controls or prove this composition",
+      "decision": "Retain secondary actions, clarify weight/grouping instead of deleting choices",
+      "falsifier": "Staff overlook quiet actions or take longer to find them in comparative trials"
+    },
+    {
+      "principle": "Familiar macOS composition",
+      "source": "https://developer.apple.com/design/human-interface-guidelines/designing-for-macos/",
+      "participants_task": "Apple platform guidance for desktop productivity, not a controlled usability trial",
+      "finding": "Comfortable density, fewer nested levels, and keyboard support suit desktop work",
+      "confidence": "analogy-only",
+      "boundary": "Browser interface on Linux cannot provide native AppKit/SF rendering; use existing system-font fallback and brand tokens",
+      "decision": "Grouped inset list, compact controls, visible record context and no new modal workflow",
+      "falsifier": "Desktop/mobile task completion or readability worsens"
+    }
+  ],
+  "validation": [
+    "Build and targeted invoice/frontend/offline-shell regression files",
+    "Browser acceptance: draft prefill, agreement, blocked approval, correction and reload recovery",
+    "1440/1736/390/320px screenshots and overflow assertions",
+    "200% CSS zoom reflow check at 720px viewport; this is targeted, not full WCAG certification",
+    "Visible focus, Tab navigation, reduced motion and empty queue checks"
+  ],
+  "recommendation": "Ask staff to find and resolve the same sample recipient/category errors in both versions; measure time, wrong-record actions and ability to locate Billing agreement."
+}

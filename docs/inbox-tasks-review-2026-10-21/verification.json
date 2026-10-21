@@ -1,0 +1,16 @@
+{
+  "build": "pass",
+  "targetedTestFiles": 2,
+  "featureBehaviorTests": 7,
+  "browserScenarios": 2,
+  "captures": 8,
+  "browserErrors": 0,
+  "formatting": "feature files and test passed",
+  "diffCheck": "pass",
+  "fullSuite": {
+    "pass": 199,
+    "fail": 3,
+    "cause": "Unrelated landing video tests expect4 room cards; current page renders5. MP4/WebM subtests and parent fail."
+  },
+  "deployment": "not performed"
+}

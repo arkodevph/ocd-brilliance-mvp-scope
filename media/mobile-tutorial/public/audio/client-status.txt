@@ -1,0 +1,1 @@
+Once the office confirms the booking, clients can see the worker, service, and visit time, without calling for an update.

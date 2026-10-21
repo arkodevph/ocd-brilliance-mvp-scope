@@ -1,0 +1,68 @@
+{
+  "review": "Nine candidates opened and their captures visually inspected over more than three minutes; incomplete image loads are explicitly noted. Primary/secondary selected from successfully retrieved official product screenshots.",
+  "candidates": [
+    {
+      "name": "Things",
+      "url": "https://culturedcode.com/things/",
+      "capture": "things.png",
+      "decision": "Product screenshot directly reviewed in things-app.png; quieter grouping; secondary comparison"
+    },
+    {
+      "name": "Bear",
+      "url": "https://bear.app/",
+      "capture": "bear.png",
+      "decision": "Product screenshot directly reviewed in bear-app.jpg; clear pane hierarchy; rejected dark navigation as mismatched"
+    },
+    {
+      "name": "Craft",
+      "url": "https://www.craft.do/",
+      "capture": "craft.png",
+      "decision": "Marketing page visually reviewed; editorial rather than employee workflow; rejected as primary"
+    },
+    {
+      "name": "Agenda",
+      "url": "https://agenda.com/",
+      "capture": "agenda.png",
+      "decision": "Page visually reviewed; product images failed to load; unsuitable as a primary reference"
+    },
+    {
+      "name": "Fantastical",
+      "url": "https://flexibits.com/fantastical",
+      "capture": "fantastical.png",
+      "decision": "Page visually reviewed; product screenshot fetch returned403; not used as visual authority"
+    },
+    {
+      "name": "BusyCal",
+      "url": "https://www.busymac.com/busycal/",
+      "capture": "busycal.png",
+      "decision": "Product screenshot directly reviewed in busycal-app.png; dense calendar; rejected as primary for readability request"
+    },
+    {
+      "name": "Raycast",
+      "url": "https://www.raycast.com/",
+      "capture": "raycast.png",
+      "decision": "Page visually reviewed; dark marketing composition and launcher do not match this task"
+    },
+    {
+      "name": "Reeder",
+      "url": "https://reederapp.com/",
+      "capture": "reeder.png",
+      "decision": "Product screenshot directly reviewed in reeder-app.png; PRIMARY: generous list rows, readable text, sidebar/list/content separation"
+    },
+    {
+      "name": "Linear",
+      "url": "https://linear.app/",
+      "capture": "failure-current-state.png",
+      "decision": "Browser navigation timed out; partial page screenshot visually reviewed; rejected as primary"
+    }
+  ],
+  "primary": "Reeder official app screenshot",
+  "fidelityMap": {
+    "hierarchy": "Readable page title, separated primary content and quieter utility areas",
+    "typography": "User-requested comfortable scale: body16px, nav/control15px, section18px, page32px; adaptation, not measured source values",
+    "panes": "Keep information panes in layout flow with bounded independent scroll; map and bookings do not overlap",
+    "palette": "Existing OCD macOS neutral tokens and green action accent",
+    "motion": "Existing160ms fade and3px shift; no bouncing or blocked interaction",
+    "assets": "Official screenshots retained only as research evidence; none used in product UI"
+  }
+}

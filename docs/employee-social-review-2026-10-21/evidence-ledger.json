@@ -1,0 +1,25 @@
+{
+  "primary": "https://dribbble.com/shots/8001937-LinkedIn-UI-Feed-Redesign",
+  "primary_image": "references/victor.png",
+  "scope": "Employee sidebar and related home typography",
+  "fidelity": {
+    "silhouette": "Compact left identity row, plain grouped links, central feed and supporting right rail",
+    "alignment": "Avatar beside left-aligned name/role; shared inset alignment for metadata and links",
+    "images": "One circular employee portrait, no banner or extra branded imagery",
+    "typography": "700 name/headings;600 navigation and manager;400 descriptions/metadata;20px identity,15px navigation,16px feed body",
+    "palette": "Existing neutral macOS surfaces and OCD green; light separators",
+    "motion": "Existing160ms fade/3px shift retained with reduced-motion path"
+  },
+  "adaptations": [
+    "Preserved manager/services metadata and existing employee workflows",
+    "No sidebar scrolling, decorative chips or repeated Quick-link icons",
+    "Primary is a designer concept; not claimed to be current LinkedIn production UI"
+  ],
+  "verification": [
+    "Build passed",
+    "2 targeted test files passed",
+    "6 responsive widths and employee navigation/dialog/persona passed",
+    "Computed weights matched700/600/400/600",
+    "Desktop sidebar fits above footer at1024x768"
+  ]
+}

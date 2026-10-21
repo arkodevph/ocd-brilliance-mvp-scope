@@ -1,0 +1,68 @@
+.payroll-section,
+.payroll-period {
+  margin-top: 24px;
+}
+.payroll-period {
+  max-width: 720px;
+}
+.payroll-boundary {
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.payroll-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.payroll-metrics section {
+  padding: 20px;
+  background: var(--mac-surface);
+  border: 1px solid var(--mac-border);
+  border-radius: var(--mac-radius);
+}
+.payroll-metrics span {
+  display: block;
+  color: var(--mac-muted);
+  font-size: 0.75rem;
+}
+.payroll-metrics strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.payroll-section .panel-header {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.payroll-section .panel-header p {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--mac-muted);
+}
+.payroll-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.payroll-exceptions {
+  padding-left: 20px;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+.payroll-section td {
+  vertical-align: top;
+}
+@media (max-width: 900px) {
+  .payroll-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 400px) {
+  .payroll-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

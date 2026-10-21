@@ -1,0 +1,8 @@
+/* Tabs stay in document flow so they cannot cover the source or review fields. */
+.intake-section-nav {
+  position: static;
+  background: var(--canvas);
+  padding-top: 8px;
+  flex-wrap: wrap;
+  gap: 8px 17px;
+}

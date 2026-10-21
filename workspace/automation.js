@@ -31,7 +31,7 @@
   };
 
   const status = (job) =>
-    `<span class="status ${['reconciliation_required', 'retry_scheduled'].includes(job.status) ? 'red' : job.status === 'completed' ? 'dark' : 'amber'}">${esc(job.kind === 'email-review' ? (job.status === 'completed' ? 'Completed' : 'Assigned') : titles[job.status] || job.status)}</span>`;
+    `<span class="status ${['reconciliation_required', 'retry_scheduled'].includes(job.status) ? 'red' : job.status === 'completed' ? 'dark' : 'amber'}">${esc(job.kind === 'email-review' ? (job.status === 'completed' ? 'Completed' : 'Assigned') : job.stage === 'notifications' ? 'Notifications pending' : titles[job.status] || job.status)}</span>`;
   const dateTime = (value) =>
     value
       ? new Date(value).toLocaleString('en-AU', {
@@ -50,7 +50,7 @@
   }
 
   function header(title, subtitle) {
-    return `<header class="page-header"><div><span class="eyebrow">Office / Workflow</span><h1>${esc(title)}</h1><details class="context-help"><summary>About this workflow</summary><p>${esc(subtitle)}</p></details></div><a class="btn" href="#/office/finance">Bookkeeping review</a></header>`;
+    return `<header class="page-header"><div><span class="eyebrow">Office / Workflow</span><h1>${esc(title)}</h1><details class="context-help"><summary>About this workflow</summary><p>${esc(subtitle)}</p></details></div><a class="btn" href="#/office/finance">Financial checks</a></header>`;
   }
 
   function banner(c) {
@@ -93,6 +93,7 @@
     if (job.status === 'retry_scheduled') return 'Recheck the source before retrying';
     if (job.stage === 'worker_acceptance') return 'Await the selected worker’s response';
     if (job.stage === 'accounting') return 'Confirm the separate accounting or payroll setup';
+    if (job.stage === 'notifications') return 'Complete participant and worker notifications';
     if (job.status === 'approved') return 'Perform the approved native step';
     if (job.status === 'manual_action_required') return 'Record the checked human outcome';
     return job.draft.nextAction || 'Review the source and confirm the next step';
@@ -116,7 +117,7 @@
     return `<article class="automation-case ${selected ? 'selected' : ''}" ${matches ? '' : 'hidden'} data-case-search="${esc(caseSearch(c.state, job))}">
       <header class="automation-person-heading">${profileImage(person.name)}<div><h3>${esc(person.name)}</h3><p>${esc([person.email, person.detail].filter(Boolean).join(' · ') || 'Contact details not recorded')}</p></div>${status(job)}<a class="automation-person-open" href="#/office/automation${selected ? '' : '/' + esc(job.id)}" aria-label="${selected ? 'Hide' : 'Review'} case details for ${esc(person.name)}" aria-expanded="${selected}" ${selected ? `aria-controls="case-${esc(job.id)}"` : ''}>${selected ? 'Hide case details ↑' : 'Review case details →'}</a></header>
       <p class="automation-person-task">${esc(job.title)}</p>
-      <dl class="automation-person-facts"><div><dt>Responsible person / team</dt><dd>${esc(job.owner || 'Unassigned')}</dd></div><div><dt>Workflow</dt><dd>${esc(workflow)}</dd></div><div><dt>Received</dt><dd>${dateTime(job.createdAt)}</dd></div>${person.booking ? `<div><dt>Visit</dt><dd>${esc(person.booking.date)} · ${esc(person.booking.start)}–${esc(person.booking.end)}</dd></div>` : ''}<div><dt>Next action</dt><dd>${esc(nextAction(job))}</dd></div></dl>
+      <dl class="automation-person-facts"><div><dt>Responsible person / team</dt><dd>${esc(job.owner || 'Unassigned')}</dd></div><div><dt>Workflow</dt><dd>${esc(workflow)}</dd></div><div><dt>Received</dt><dd>${dateTime(job.createdAt)}</dd></div>${person.booking ? `<div><dt>Visit</dt><dd>${esc(person.booking.date)} · ${esc(person.booking.start)}–${esc(person.booking.end)}</dd></div>` : ''}<div><dt>Deadline</dt><dd>${esc(job.dueDate || 'Not set')}</dd></div><div><dt>Next action</dt><dd>${esc(nextAction(job))}</dd></div></dl>
       <div class="automation-person-progress">${steps(job)}</div>
       <div class="automation-person-reference">${esc(job.id)}${job.priority === 'Urgent' ? ' · Urgent' : ''}</div>
       ${selected ? `<section id="case-${esc(job.id)}" class="automation-case-detail" aria-label="Case for ${esc(person.name)}">${caseDetail(c, job)}</section>` : ''}
@@ -161,7 +162,7 @@
       ui.page =
         selectedIndex >= 0 ? Math.floor(selectedIndex / pageSize) + 1 : Math.min(ui.page, pages);
       const visible = matching.slice((ui.page - 1) * pageSize, ui.page * pageSize);
-      return `<div class="automation-desk automation-pipeline"><header class="automation-desk-header"><div><h1>Automation</h1><span class="status blue">Prototype workspace</span></div><a class="btn small" href="#/office/finance">Bookkeeping review →</a></header><nav class="automation-tabs" aria-label="Automation workspace">${[
+      return `<div class="automation-desk automation-pipeline"><header class="automation-desk-header"><div><h1>Automation</h1><span class="status blue">Prototype workspace</span></div><a class="btn small" href="#/office/finance">Financial checks →</a></header><nav class="automation-tabs" aria-label="Automation workspace">${[
         ['cases', 'Cases'],
         ['inbox', 'Email review'],
         ['readiness', 'Connection status'],
@@ -210,7 +211,7 @@
 
   function inbox(c) {
     const a = c.state.automation;
-    return `<section class="panel tight email-review"><header class="crm-list-toolbar"><div><h2>Email review</h2><p class="muted tiny">Add a message → AI review → Confirm team → Assigned task</p></div><div class="button-row"><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button></div></header><ol class="email-flow" aria-label="Email processing steps"><li>1. Add message</li><li>2. Review AI suggestion</li><li>3. Confirm responsible team</li><li>4. Follow assigned task</li></ol><div class="automation-inbox">${
+    return `<section class="panel tight email-review"><header class="crm-list-toolbar"><div><h2>Email review</h2><a href="#/office/inbox-tasks">Inbox tasks &amp; deadlines →</a><p class="muted tiny">Add a message → AI review → Confirm team → Assigned task</p></div><div class="button-row"><button class="btn primary" data-action="add-inbox-message" type="button">Add message</button></div></header><ol class="email-flow" aria-label="Email processing steps"><li>1. Add message</li><li>2. Review AI suggestion</li><li>3. Confirm responsible team</li><li>4. Follow assigned task</li></ol><div class="automation-inbox">${
       a.inbox
         .map((m) => {
           const job = a.jobs.find((j) => j.id === m.jobId);
@@ -230,12 +231,13 @@
       'Native step',
       'Read-back',
       ...(['participant', 'employee'].includes(job.kind) ? ['Accounting'] : []),
+      ...(job.kind === 'cancel' ? ['Notifications'] : []),
       'Closed',
     ];
     const current =
       job.status === 'completed'
         ? names.length - 1
-        : job.stage === 'accounting'
+        : ['accounting', 'notifications'].includes(job.stage)
           ? 4
           : ['readback', 'offer_readback'].includes(job.stage)
             ? 3
@@ -258,7 +260,7 @@
         state.automation.remote[job.kind === 'participant' ? 'participants' : 'workers'];
       fields = `${field('firstName', 'First name', d.firstName)}${field('lastName', 'Last name', d.lastName)}${job.kind === 'participant' ? field('dob', 'Verified date of birth', d.dob, 'date') : ''}${field('email', 'Contact email', d.email, 'email')}${field('suburb', 'Service suburb', d.suburb, 'text', job.kind === 'participant')}${field('service', 'Requested service', d.service)}<label class="full">Existing record / new profile<select name="matchId">${option('', 'Create only after checking for duplicates', d.matchId || '')}${people.map((p) => option(p.id, `${p.id} · ${p.name}${p.email ? ` · ${p.email}` : ''}`, d.matchId)).join('')}</select></label><label class="checkbox full"><input name="consent" type="checkbox" ${d.consent ? 'checked' : ''} required><span>Consent/authority is present in the reviewed source.</span></label><p class="form-note full">${job.kind === 'participant' ? 'Missing DOB stays in review. Selecting an existing ID prevents a second profile.' : 'Worker role only. Screening approval, invitations and payroll/Xero records remain separate.'}</p>`;
     } else if (job.kind === 'cancel')
-      fields = `<label class="full">Participant reason<textarea name="reason" required>${esc(d.reason)}</textarea></label><label>Billing treatment<select name="charge">${option('unconfirmed', 'Choose reviewed treatment', d.charge)}${option('native-policy', 'Native UI — agreed office treatment', d.charge)}${option('with-charge', 'With charge — reviewed reason code', d.charge)}</select></label><label>NDIS reason code (if charged)<select name="code">${option('', 'Office to confirm', d.code)}${['NSDH', 'NSDF', 'NSDT', 'NSDO'].map((x) => option(x, x, d.code)).join('')}</select></label><label>Scope<select name="scope">${option('occurrence', 'This occurrence only', d.scope)}</select></label><label class="checkbox full"><input name="policyReviewed" type="checkbox" required><span>The office reviewed the applicable charge, notice, people and policy. This prototype selects no rate or notice rule automatically.</span></label><p class="form-note full">Whole-shift with-charge MCP affects every participant. Group/locked services require a specific native office/bookkeeper action.</p>`;
+      fields = `<fieldset class="cancellation-group"><legend>Cancellation details</legend><div class="cancellation-fields"><input type="hidden" name="scope" value="occurrence"><label class="full">Reason<textarea name="reason" rows="2" required placeholder="Why is this visit being cancelled?">${esc(d.reason)}</textarea></label><label>Cancelled by<select name="cause" required>${option('', 'Select a person', d.cause)}${['Participant', 'Worker', 'Provider'].map((x) => option(x, x, d.cause)).join('')}</select></label>${field('notice', 'Notice received · Perth time', d.notice, 'datetime-local')}</div></fieldset><fieldset class="cancellation-group"><legend>Travel</legend><div class="cancellation-fields"><label class="full">Did the worker travel?<select name="travelOccurred" required>${option('', 'Select travel status', d.travelOccurred)}${option('no', 'No travel occurred', d.travelOccurred)}${option('yes', 'Travel occurred', d.travelOccurred)}</select></label><label class="full">Travel evidence<textarea name="travelEvidence" rows="2" required placeholder="Worker confirmation or journey reference and checked travel lines.">${esc(d.travelEvidence)}</textarea></label><label class="checkbox full"><input name="travelReviewed" type="checkbox" required><span>Travel checked. Only reviewed actual travel is retained.</span></label></div></fieldset><fieldset class="cancellation-group"><legend>Charges</legend><div class="cancellation-fields"><label>Billing treatment<select name="charge" required>${option('unconfirmed', 'Select treatment', d.charge)}${option('no-charge', 'No participant charge', d.charge)}${option('native-policy', 'Reviewed against agreement', d.charge)}${option('with-charge', 'Apply reviewed charge', d.charge)}</select></label><label class="cancellation-charge-code">NDIS reason code<select name="code">${option('', 'Select reason code', d.code)}${['NSDH', 'NSDF', 'NSDT', 'NSDO'].map((x) => option(x, x, d.code)).join('')}</select></label><label class="full">Review note<textarea name="billingEvidence" rows="2" required placeholder="Agreement reference, notice period and charge or waiver.">${esc(d.billingEvidence)}</textarea></label><label class="checkbox full"><input name="policyReviewed" type="checkbox" required><span>Notice, agreement and charge treatment reviewed.</span></label></div></fieldset>`;
     else if (job.kind === 'cover') {
       const b = state.bookings.find((b) => b.id === job.targetId);
       const matches = window.OCD_BOOKING_RULES.candidates(
@@ -290,7 +292,7 @@
       fields += `<label class="checkbox full"><input name="areaReviewed" type="checkbox" required><span>The approved service area and capacity were checked before onboarding. Coverage alone is not availability.</span></label>`;
     if (job.kind === 'new-booking')
       fields = `<p class="form-note full">This creates/confirms one proposed occurrence through the simulated native workflow. A recurring proposal does not confirm other occurrences.</p><label class="checkbox full"><input name="participantAgreed" type="checkbox" required><span>The participant agreed to this occurrence and a signed agreement is on file.</span></label><label class="checkbox full"><input name="workerAccepted" type="checkbox" required><span>The worker accepted this exact occurrence in ShiftCare (demo native evidence).</span></label>`;
-    return `<form data-auto-form="approve" data-id="${esc(job.id)}"><div class="form-grid">${fields}</div><div class="spacer"></div>${guard}<p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">${['yes', 'area'].includes(job.kind) ? 'Record reviewed outcome' : 'Approve next step'}</button></div></form>`;
+    return `<form data-auto-form="approve" data-id="${esc(job.id)}" ${job.kind === 'cancel' ? 'class="cancellation-form"' : ''}><div class="form-grid">${fields}</div><div class="spacer"></div>${guard}<p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary" type="submit">${['yes', 'area'].includes(job.kind) ? 'Record reviewed outcome' : 'Approve next step'}</button></div></form>`;
   }
 
   function caseDetail(c, job) {
@@ -315,6 +317,10 @@
       actions = `<div class="notice warning">The offer is waiting for ${esc(c.state.workers.find((w) => w.id === job.draft.workerId)?.name)}. This must be accepted in ShiftCare. In this demonstration, switch to that worker and simulate the native response.</div><div class="form-actions"><a class="btn primary" href="#/worker/today">Open Worker workspace</a></div>`;
     else if (job.stage === 'accounting')
       actions = `<div class="notice">Sample ShiftCare ID: <strong>${esc(job.verifiedId)}</strong>. A ShiftCare profile does not prove Xero/payroll onboarding happened.</div><form data-auto-form="accounting" data-id="${esc(job.id)}">${field('reference', 'Separate Xero / payroll reference (demo)', '')}<label>Checked outcome<textarea name="note" required placeholder="Record the native contact/payroll link and reviewer."></textarea></label><label class="checkbox"><input name="checked" type="checkbox" required><span>The separate accounting/payroll onboarding was checked (demo).</span></label><p class="field-error" role="alert" hidden></p><div class="form-actions"><button class="btn primary">Record accounting check &amp; close</button></div></form>`;
+    else if (job.stage === 'notifications')
+      actions = `<div class="notice warning">The booking cancellation is verified. Complete each notification below; failed or pending updates keep this case open.</div>`;
+    else if (job.kind === 'cancel' && job.status === 'manual_action_required')
+      actions = `<div class="notice warning">${esc(job.history.at(-1)?.event)} Resolve this exception in the native record, then return for fresh review. A general follow-up note cannot complete a cancellation.</div><div class="form-actions">${button('reopen', 'Return for fresh review', job.id)}</div>`;
     else if (job.status === 'manual_action_required')
       actions = `<div class="notice warning">${esc(job.history.at(-1)?.event || 'Native office action is required.')}</div><form data-auto-form="manual" data-id="${esc(job.id)}">${field('reference', 'Native record / contact reference (demo)', '')}<label>Human resolution and evidence<textarea name="note" required placeholder="Who checked it, what was done, and how the outcome was confirmed?"></textarea></label><label class="checkbox"><input name="checked" type="checkbox" required><span>The actual native/contact outcome was checked in this scenario.</span></label><p class="field-error" role="alert" hidden></p><div class="form-actions">${button('reopen', 'Return for fresh review', job.id)}<button class="btn primary">Record checked human outcome</button></div></form>`;
     else
@@ -324,7 +330,28 @@
     }
 
     const msgs = a.messages.filter((m) => m.jobId === job.id);
-    return `<section class="automation-case-view"><header class="automation-case-heading"><div><span class="eyebrow">${esc(job.id)} · ${esc(job.workflow)}</span><h2>${esc(job.title)}</h2></div>${status(job)}<a class="automation-back" href="#/office/automation">← Cases</a></header><div class="automation-case-content"><div class="automation-thread"><section class="automation-evidence"><header class="automation-message-heading"><span class="automation-source-avatar" aria-hidden="true">${esc((job.draft.name || job.draft.firstName || job.owner).slice(0, 1).toUpperCase())}</span><div><h3>Original source</h3><small>${esc(job.source.label || 'Sample source')} · ${esc(job.source.id)}</small></div><time>${dateTime(job.createdAt)}</time></header><p class="automation-source-text">${esc(job.source.body)}</p></section><section class="automation-next"><h3>${job.status === 'completed' ? 'Outcome' : 'Next action'}</h3>${actions}</section>${msgs.length ? `<section class="automation-outbox"><h3>Participant update</h3>${msgs.map((m) => `<article><strong>${esc(m.title)}</strong><p>${esc(m.detail)}</p><span class="status ${m.status === 'failed' ? 'red' : m.status === 'delivered' ? 'dark' : 'amber'}">${esc(m.status)} (demo)</span><small>Recipient: ${esc(m.to)} · attempts ${m.attempts}</small>${m.status !== 'delivered' ? `<div class="button-row">${button('deliver', m.status === 'failed' ? 'Retry delivery (demo)' : 'Deliver update (demo)', m.id)}${button('delivery-fail', 'Simulate delivery failure', m.id)}</div>` : ''}</article>`).join('')}</section>` : ''}<section class="automation-history automation-context-section"><h3>Activity <span>${job.history.length}</span></h3><ol class="timeline">${[
+    const b = c.state.bookings.find((item) => item.id === job.targetId);
+    const person = c.state.participants.find((item) => item.id === b?.participantId);
+    const checks = [
+      ['Travel checked', !!job.approvedAt && job.draft.travelReviewed === true],
+      ['Charges reviewed', !!job.approvedAt && job.draft.policyReviewed === true],
+      ['Booking cancellation verified', !!job.verifiedAt],
+      [
+        'Participant notified',
+        msgs.some((m) => m.to.startsWith('client:') && m.status === 'delivered'),
+      ],
+      [
+        b && !b.workerId ? 'Worker notification not required (unassigned)' : 'Worker notified',
+        b && !b.workerId
+          ? !!job.verifiedAt
+          : msgs.some((m) => m.to.startsWith('worker:') && m.status === 'delivered'),
+      ],
+    ];
+    const assistant =
+      job.kind === 'cancel'
+        ? `<section class="automation-next cancellation-assistant"><h3>Cancellation assistant</h3><p><strong>${esc(person?.name || 'Participant unavailable')} · ${esc(b?.service || '')}</strong></p><p>${esc(job.targetId)} · ${esc(b?.date)} · ${esc(b?.start)}–${esc(b?.end)} · Perth time</p><p>This visit only. Review travel and charges before confirming the cancellation.</p><ol class="cancellation-checklist" aria-label="Cancellation completion checklist">${checks.map(([label, done]) => `<li><span class="status ${done ? 'dark' : 'amber'}">${done ? 'Done' : 'Pending'}</span> ${esc(label)}</li>`).join('')}</ol><p role="status">${job.status === 'completed' && checks.every(([, done]) => done) ? 'Every step finished.' : 'Cancellation remains open until all steps are finished.'}</p><a href="#/office/schedule/${encodeURIComponent(job.targetId)}">Open booking record →</a></section>`
+        : '';
+    return `<section class="automation-case-view ${job.kind === 'cancel' ? 'cancellation-case' : ''}"><header class="automation-case-heading"><div><span class="eyebrow">${esc(job.id)} · ${esc(job.workflow)}</span><h2>${esc(job.title)}</h2></div>${status(job)}<a class="automation-back" href="#/office/automation">← Cases</a></header><div class="automation-case-content"><div class="automation-thread">${assistant}<section class="automation-evidence"><header class="automation-message-heading"><span class="automation-source-avatar" aria-hidden="true">${esc((job.draft.name || job.draft.firstName || job.owner).slice(0, 1).toUpperCase())}</span><div><h3>Original source</h3><small>${esc(job.source.label || 'Sample source')} · ${esc(job.source.id)}</small></div><time>${dateTime(job.createdAt)}</time></header><p class="automation-source-text">${esc(job.source.body)}</p></section><section class="automation-next"><h3>${job.status === 'completed' ? 'Outcome' : 'Next action'}</h3>${actions}</section>${msgs.length ? `<section class="automation-outbox"><h3>${job.kind === 'cancel' ? 'Required notifications' : 'Participant update'}</h3>${msgs.map((m) => `<article><strong>${esc(m.title)}</strong><p>${esc(m.detail)}</p><span class="status ${m.status === 'failed' ? 'red' : m.status === 'delivered' ? 'dark' : 'amber'}">${esc(m.status)} (demo)</span><small>Recipient: ${esc(m.to)} · attempts ${m.attempts}</small>${m.status !== 'delivered' ? `<div class="button-row">${button('deliver', m.status === 'failed' ? 'Retry delivery (demo)' : 'Deliver update (demo)', m.id)}${button('delivery-fail', 'Simulate delivery failure', m.id)}</div>` : ''}</article>`).join('')}</section>` : ''}<section class="automation-history automation-context-section"><h3>Activity <span>${job.history.length}</span></h3><ol class="timeline">${[
       ...job.history,
     ]
       .reverse()
@@ -343,6 +370,7 @@
                   'sourceReviewed',
                   'fileReviewed',
                   'policyReviewed',
+                  'travelReviewed',
                   'availabilityReviewed',
                   'areaReviewed',
                   'checked',
@@ -434,7 +462,7 @@
         E.deliver(c.state, id, action === 'delivery-fail');
         message =
           action === 'deliver'
-            ? 'Demo update delivered in the participant view. No real message sent.'
+            ? 'Demo update delivered in the recipient workspace. No real message sent.'
             : 'Delivery failed in the scenario. Use agreed fallback contact or retry delivery.';
       }
 
@@ -477,6 +505,7 @@
         'sourceReviewed',
         'consent',
         'policyReviewed',
+        'travelReviewed',
         'availabilityReviewed',
         'noExpiration',
         'fileReviewed',

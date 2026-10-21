@@ -6,6 +6,9 @@ import '@fontsource-variable/fraunces';
 import '@fontsource-variable/fraunces/standard-italic.css';
 import App from './App';
 import './styles.css';
+import '../shared/controls/select/tokens.css';
+import '../shared/controls/select/field.css';
+import '../shared/controls/select/menu.css';
 
 if (window.location.hash === '#office') {
   window.location.replace('/workspace/#/office/intake');

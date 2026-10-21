@@ -1,0 +1,61 @@
+.room-video-picker {
+  min-width: 0;
+  margin: 20px 0;
+  padding: 0;
+  border: 0;
+}
+.room-video-picker legend {
+  padding: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.room-video-picker > .form-note {
+  margin: 8px 0 14px;
+  line-height: 1.5;
+}
+.room-video-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.room-video-picker .room-video-picker-category {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--mac-border, #e3e3e8);
+  border-radius: 10px;
+  background: var(--mac-inset, #f7f7f9);
+}
+.room-video-picker .room-video-picker-category input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 4px;
+  font-size: 12px;
+}
+.room-video-picker input::file-selector-button {
+  min-height: 30px;
+  margin-right: 8px;
+  border: 1px solid var(--mac-border-strong, #cacbd2);
+  border-radius: 6px;
+  padding: 5px 8px;
+  background: #fff;
+  color: var(--mac-ink, #242529);
+  font: inherit;
+  cursor: pointer;
+}
+.room-video-picker .service-video-review:empty {
+  display: none;
+}
+@media (max-width: 560px) {
+  .room-video-picker-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .room-video-picker .room-video-picker-category input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+}

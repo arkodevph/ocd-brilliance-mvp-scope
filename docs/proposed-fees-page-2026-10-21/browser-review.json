@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T05:54:39.859Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Dedicated proposed-fees page",
+      "status": "pass",
+      "detail": "Sidebar navigation, empty desktop/mobile layouts, create-to-page navigation, approval, reload persistence and removal from all calculator tabs passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/proposed-fees-page-2026-10-21/booking-dropdown.png",
+      "sha256": "5f46e07c52797d81daff57af2c6fd939d7b0a85cae133b6cfae471ad6c71814e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/proposed-fees-page-2026-10-21/proposed-fees-page-1440.png",
+      "sha256": "1a7f37fa40d8ca1a2f7bf5cec1254a19f8c195f54c193ce17e85a7261e288c72",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/proposed-fees-page-2026-10-21/proposed-fees-page-390.png",
+      "sha256": "6ffd357d99b7a65c68d2a43c864d24d76e4d1f8b18c2f4463c803db551d636ca",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

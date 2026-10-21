@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T05:42:26.941Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Travel list and focused review",
+      "status": "pass",
+      "detail": "Three bookings, one visible review, draft preservation, focus transfer, reviewed selection retention, queue deep link and 1736/1440/390/320px reflow passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/booking-dropdown.png",
+      "sha256": "c8c5ff0f6012ce28c11aa42fa3fc7316a89c961bdfbc0d6a412d78e85d305846",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/proposed-fees-visible-1440.png",
+      "sha256": "51607d8cf8d97639537ec8ab0c1d37a1258a868d3971ff681b5218afcad3779a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/proposed-fees-visible-390.png",
+      "sha256": "2990213ba97d698aa8d8f0e3b0188d8dba72797b1e03b692f4df753ef87d2ea7",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/travel-list-detail-1736.png",
+      "sha256": "68d5da8026bda801b914e80b9ea41f04a9b104696320a38527f9fe50a982010f",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/travel-list-detail-1440.png",
+      "sha256": "2d97db0c20d99dda1228c6d889a748e6039faead11980305e6e1189f7a55bc5e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/travel-list-detail-390.png",
+      "sha256": "924ea3881c46ae534b93194871ab065e92d6d5c8c83a6754be70dfc3466475be",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/travel-list-detail-320.png",
+      "sha256": "5d24d7e0b6b1b48e6092bae7e56e4116c5d20ef01c13c90a3fe3a5e5a072ad82",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/proposed-fees-position-2026-10-21/travel-list-detail-saved.png",
+      "sha256": "b3d5aa46dae393e6b7f088f3c7b2619a1a3c150ce8db404d6f7b806b4adcd719",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

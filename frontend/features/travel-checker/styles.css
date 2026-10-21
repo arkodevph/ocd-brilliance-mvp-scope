@@ -1,0 +1,194 @@
+.crm-shell .travel-checker {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: var(--mac-radius);
+}
+.travel-checker .section-heading {
+  margin-bottom: 8px;
+}
+.travel-checker .form-note {
+  line-height: 1.6;
+}
+.travel-workspace {
+  display: grid;
+  grid-template-columns: minmax(230px, 280px) minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+  margin-top: 24px;
+}
+.travel-bookings {
+  min-width: 0;
+}
+.travel-bookings > h3 {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 12px;
+  color: var(--mac-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.travel-booking {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 8px;
+  padding: 16px;
+  border: 1px solid var(--mac-border);
+  border-radius: var(--mac-control-radius);
+  background: var(--mac-surface);
+  color: var(--mac-muted);
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.travel-booking:hover {
+  background: var(--mac-inset);
+}
+.travel-booking[aria-expanded='true'] {
+  border-color: var(--mac-border-strong);
+  box-shadow: var(--mac-shadow);
+}
+.travel-booking-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+.travel-booking-top strong {
+  font-size: 0.875rem;
+  color: var(--mac-ink);
+  font-weight: 600;
+}
+.travel-booking-top > span {
+  font-size: 0.6875rem;
+}
+.travel-booking[aria-expanded='true'] .travel-booking-top strong::after {
+  content: ' · Selected';
+  font-weight: 400;
+  color: var(--mac-muted);
+  font-size: 0.6875rem;
+}
+.travel-booking-reason {
+  border-top: 1px solid var(--mac-border);
+  padding-top: 8px;
+}
+.travel-review-pane {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--mac-border);
+  border-radius: var(--mac-radius);
+  background: var(--mac-surface);
+}
+.travel-check[hidden] {
+  display: none;
+}
+.travel-check-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.travel-check-heading h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.travel-check-heading p {
+  margin: 8px 0 0;
+  color: var(--mac-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.travel-check h4 {
+  margin: 0 0 16px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.travel-comparison {
+  padding: 20px;
+  margin: 24px 0 16px;
+  border-radius: var(--mac-control-radius);
+  background: var(--mac-inset);
+}
+.travel-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  margin: 0;
+}
+.travel-values dt {
+  color: var(--mac-muted);
+  font-size: 0.75rem;
+}
+.travel-values dd {
+  margin: 6px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.travel-reasons {
+  padding: 16px 16px 16px 32px;
+  margin: 16px 0;
+  border: 1px solid var(--mac-border);
+  border-radius: var(--mac-control-radius);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+.travel-check form {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--mac-border);
+}
+.travel-check form > .form-note {
+  margin: -8px 0 16px;
+}
+.travel-check .form-actions {
+  gap: 8px;
+}
+@media (max-width: 1100px) {
+  .travel-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .travel-bookings {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .travel-bookings > h3 {
+    grid-column: 1 / -1;
+  }
+  .travel-booking {
+    margin: 0;
+  }
+}
+@media (max-width: 760px) {
+  .crm-shell .travel-checker {
+    padding: 16px;
+  }
+  .travel-bookings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .travel-review-pane {
+    padding: 16px;
+  }
+  .travel-check-heading {
+    flex-wrap: wrap;
+  }
+  .travel-comparison {
+    padding: 16px;
+  }
+  .travel-values {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .travel-check .form-actions {
+    flex-wrap: wrap;
+  }
+}

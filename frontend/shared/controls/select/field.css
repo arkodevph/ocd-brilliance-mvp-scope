@@ -1,0 +1,44 @@
+/* Keep the actual select, its events, required validation and keyboard behavior. */
+:root select:not([multiple]):not([size]) {
+  appearance: auto;
+  display: block;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  min-block-size: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--select-border);
+  border-radius: var(--select-radius);
+  background: var(--select-surface);
+  color: var(--select-ink);
+  box-shadow: 0 1px 2px rgb(25 28 36 / 3%);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color-scheme: light;
+  cursor: pointer;
+}
+
+:root select:not([multiple]):not([size]):hover:not(:disabled) {
+  border-color: #a7aab3;
+}
+
+:root select:not([multiple]):not([size]):focus-visible {
+  outline: 2px solid var(--select-focus);
+  outline-offset: 2px;
+  border-color: var(--select-focus);
+}
+
+:root select:not([multiple]):not([size]):disabled {
+  color: var(--select-muted);
+  background: #f7f7f9;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 760px) {
+  :root select:not([multiple]):not([size]) {
+    min-block-size: 44px;
+    font-size: 16px;
+  }
+}

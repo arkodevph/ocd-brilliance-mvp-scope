@@ -1,0 +1,18 @@
+{
+  "build": "pass",
+  "repositoryTests": {
+    "passed": 192,
+    "failed": 0,
+    "concurrency": 1
+  },
+  "targetedTestFiles": 4,
+  "browser": {
+    "scenarios": 2,
+    "captures": 7,
+    "errors": 0
+  },
+  "visualReview": "desktop/mobile queue and mobile evidence inspected",
+  "formatting": "financial feature files passed",
+  "diffCheck": "pass",
+  "deployment": "not performed"
+}

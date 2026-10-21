@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "pages": 14,
+  "sha256": "e8af581c3684652e6ca7ef5a65d2eeffe4756784a549811950da498585225180",
+  "bytes": 1002895,
+  "format": "A4 portrait study presentation",
+  "checks": [
+    "PDF generation succeeded using gstack make-pdf",
+    "Tagged PDF; no JavaScript or encryption",
+    "Text extracted across all 14 nonempty pages",
+    "All seven feature/workflow topics and speaker/demo material present",
+    "Selected rendered pages visually inspected; no clipped text or images observed"
+  ],
+  "limits": [
+    "Not a live accounting/payroll integration certification",
+    "Study pages designed for reading and rehearsal; no audience usability measurement"
+  ],
+  "workspace_tests": {
+    "collected": 204,
+    "passed": 201,
+    "failed": 3,
+    "reason": "Room-video API fixture expects 4 room cards; current room catalogue renders 12. Includes parent test failure. Unrelated changes preserved."
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T06:55:22.278Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Flat macOS employee sidebar",
+      "status": "pass",
+      "detail": "Identity, reference, service chips, icon-free links, desktop/laptop/phone widths, personal-details navigation, Quick links, coordinator dialog and persona switch passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/employee-card-1736.png",
+      "sha256": "f85fde53a0f7572a8d1e4864e05c62bc48bd8a45b01c371ad28b4fe4b8465a14",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/employee-card-1440.png",
+      "sha256": "ad45e966dea0b6fa86645406454ab4309b963bf7dd54ff75981f6afd6b1bf892",
+      "width": 1440,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/employee-card-1280.png",
+      "sha256": "77357e026cf77a6f38dbed1d513dfb241c2292bac32a512d5c543c135677ea3c",
+      "width": 1280,
+      "height": 800,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/employee-card-1024.png",
+      "sha256": "9235a3e256fc35feeb9c7cfa6b6a45ccdfc2aec1564dcfa06733e31848a1a7e0",
+      "width": 1024,
+      "height": 768,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/employee-card-390.png",
+      "sha256": "5d3739029e04c6b7405d9abaa321aa1d9b284675dcde7c2a5cf180c6409a0b7f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/employee-card-320.png",
+      "sha256": "fa105d44e8fb42670f8f207c2d234a700996ba1e20a9fd9e3896f3323b402cf0",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/employee-flat-sidebar-review-2026-10-21/employee-card-second-person.png",
+      "sha256": "17bed1afc33e1c87fa8e951078c1e829f340c757b62d56490734ec7041f5f372",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Inspected1024x768 final screenshot: flat sidebar, compact identity, plain manager/services and every link including Contact the office visible above footer; no sidebar scrollbar. Desktop view also reviewed during iteration.",
+  "mapbox": "Outside sidebar scope; external map requests blocked by harness.",
+  "productionLimit": "Visual correction only; staff aesthetic acceptance remains unknown. No deployment or business logic change.",
+  "changedFiles": [
+    "frontend/employee-macos.css",
+    "workspace/employee-portal.js",
+    "workspace/sw.js",
+    "scripts/prototype-browser-check.mjs"
+  ],
+  "verification": {
+    "build": "npm run build passed",
+    "targetedTests": "employee-portal and React-frontend:2/2 file reports passed",
+    "geometry": "No sidebar scroll or clipping at1736x1000,1440x900,1280x800,1024x768; permanent PROTOTYPE_EMPLOYEE_MAC regression passed2scenarios/10captures/0errors",
+    "browser": "Six viewport checks, personal-details navigation, leave Quick link, coordinator dialog and employee switching passed;0uncaught errors",
+    "diff": "git diff --check passed"
+  }
+}

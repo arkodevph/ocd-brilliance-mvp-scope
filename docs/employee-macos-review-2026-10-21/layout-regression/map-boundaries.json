@@ -1,0 +1,118 @@
+[
+  {
+    "width": 1736,
+    "height": 1000,
+    "panel": {
+      "top": 354.3291015625,
+      "bottom": 974.3291015625,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 355.3291015625,
+      "bottom": 935.5322265625,
+      "left": 645,
+      "right": 1688
+    },
+    "workspace": {
+      "top": 354.3291015625,
+      "bottom": 974.3291015625,
+      "left": 308,
+      "right": 1689
+    },
+    "note": {
+      "top": 982.3291015625,
+      "bottom": 1003.3291015625,
+      "left": 308,
+      "right": 1168
+    },
+    "overflow": "auto"
+  },
+  {
+    "width": 1440,
+    "height": 900,
+    "panel": {
+      "top": 354.296875,
+      "bottom": 912.296875,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 355.296875,
+      "bottom": 873.5,
+      "left": 645,
+      "right": 1392
+    },
+    "workspace": {
+      "top": 354.296875,
+      "bottom": 912.296875,
+      "left": 308,
+      "right": 1393
+    },
+    "note": {
+      "top": 920.296875,
+      "bottom": 941.296875,
+      "left": 308,
+      "right": 1168
+    },
+    "overflow": "auto"
+  },
+  {
+    "width": 1280,
+    "height": 800,
+    "panel": {
+      "top": 362.296875,
+      "bottom": 858.296875,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 363.296875,
+      "bottom": 819.5,
+      "left": 645,
+      "right": 1232
+    },
+    "workspace": {
+      "top": 362.296875,
+      "bottom": 858.296875,
+      "left": 308,
+      "right": 1233
+    },
+    "note": {
+      "top": 866.296875,
+      "bottom": 887.296875,
+      "left": 308,
+      "right": 1168
+    },
+    "overflow": "auto"
+  },
+  {
+    "width": 1024,
+    "height": 768,
+    "panel": {
+      "top": 444.296875,
+      "bottom": 924.296875,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 445.296875,
+      "bottom": 831.90625,
+      "left": 645,
+      "right": 976
+    },
+    "workspace": {
+      "top": 444.296875,
+      "bottom": 924.296875,
+      "left": 308,
+      "right": 977
+    },
+    "note": {
+      "top": 932.296875,
+      "bottom": 953.296875,
+      "left": 308,
+      "right": 977
+    },
+    "overflow": "auto"
+  }
+]

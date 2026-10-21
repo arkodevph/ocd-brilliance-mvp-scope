@@ -601,12 +601,6 @@ p.portal-caption { margin: 12px 0 24px; }
 .portal-client-home .client-service-icon { position: relative; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 10px; color: var(--service-color, #08734c); background: rgba(255,255,255,.78); box-shadow: inset 0 0 0 1px rgba(255,255,255,.78); }
 .portal-client-home .client-service-icon i { position: absolute; width: 8px; height: 8px; right: -3px; top: -3px; border-radius: 50%; background: var(--service-color, #08734c); opacity: .85; }
 .portal-client-home .client-service-tile > svg:last-child { display: none; }
-.portal-client-home .service-tone-0 { --service-tint:#e7f5ec; --service-orb:rgba(69,173,112,.2); --service-color:#08734c; --service-border:#73b88e; }
-.portal-client-home .service-tone-1 { --service-tint:#eaf2fb; --service-orb:rgba(86,151,215,.2); --service-color:#2d70aa; --service-border:#79a9d1; }
-.portal-client-home .service-tone-2 { --service-tint:#f2edfb; --service-orb:rgba(156,115,213,.19); --service-color:#7352a5; --service-border:#ae90d6; }
-.portal-client-home .service-tone-3 { --service-tint:#fff4df; --service-orb:rgba(235,171,60,.22); --service-color:#a86a0c; --service-border:#d7a34a; }
-.portal-client-home .service-tone-4 { --service-tint:#e8f5f5; --service-orb:rgba(68,178,179,.2); --service-color:#087d7d; --service-border:#72babb; }
-.portal-client-home .service-tone-5 { --service-tint:#f9ecee; --service-orb:rgba(211,105,122,.18); --service-color:#a33e51; --service-border:#d28a99; }
 
 /* One viewport per desktop route. Route content owns its height so switching views does not
    reintroduce document scrolling or leave a second page below the fold. */

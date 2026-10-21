@@ -1,0 +1,84 @@
+[
+  {
+    "index": 1,
+    "url": "https://dribbble.com/shots/26310369-Linkedin-Redesign",
+    "error": "<urlopen error [Errno 104] Connection reset by peer>",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 2,
+    "url": "https://dribbble.com/shots/14287416-Linkedin-Redesign",
+    "error": "<urlopen error [Errno 104] Connection reset by peer>",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 3,
+    "url": "https://dribbble.com/shots/8001937-LinkedIn-UI-Feed-Redesign",
+    "error": "",
+    "review": "Full-size shot visually inspected; image saved as victor.png"
+  },
+  {
+    "index": 4,
+    "url": "https://dribbble.com/shots/5166765-Linkedin-redesign-concept",
+    "error": "<urlopen error [Errno 104] Connection reset by peer>",
+    "review": "Full-size shot visually inspected; image saved as kadu.png"
+  },
+  {
+    "index": 5,
+    "url": "https://dribbble.com/shots/25757479-LinkedIn-UI-Redesign-Concept",
+    "error": "",
+    "review": "Full-size shot visually inspected; image saved as bruno.png"
+  },
+  {
+    "index": 6,
+    "url": "https://dribbble.com/shots/20618854-Social-Media-Feed-UI-cards-Horizon-UI",
+    "error": "<urlopen error [Errno 104] Connection reset by peer>",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 7,
+    "url": "https://dribbble.com/shots/27823699-Social-Networking-Dashboard-UI-UX-Design",
+    "error": "",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 8,
+    "url": "https://dribbble.com/shots/2776813-LinkedIn-Redesign-Screens",
+    "error": "",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 9,
+    "url": "https://dribbble.com/shots/23744825-LinkedIn-Redesign-Profile-Page",
+    "error": "",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 10,
+    "url": "https://dribbble.com/shots/20912344-Pinterest-Desktop-App-Ui",
+    "error": "",
+    "review": "Full-size shot visually inspected; image saved as pinterest.png"
+  },
+  {
+    "index": 11,
+    "url": "https://dribbble.com/shots/2595776-News-Feed-Sidebar-Navigation",
+    "error": "",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 12,
+    "url": "https://dribbble.com/shots/952155-Sidebar-and-profile",
+    "error": "",
+    "review": "Page opened or attempted; full shot unavailable via page download"
+  },
+  {
+    "index": 13,
+    "url": "https://dribbble.com/shots/5998734-Redesign-Linkedin",
+    "review": "Opened and visually inspected robert.png"
+  },
+  {
+    "index": 14,
+    "url": "https://dribbble.com/tags/desktop-ui",
+    "review": "Facebook desktop shot visually inspected; rejected heavy outlined/purple treatment"
+  }
+]

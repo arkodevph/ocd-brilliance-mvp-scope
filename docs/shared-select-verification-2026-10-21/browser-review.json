@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:35:43.010Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Shared select styles on /contact",
+      "status": "pass",
+      "detail": "3 select fields and menus styled; desktop/mobile and open-menu rendering checked."
+    },
+    {
+      "name": "Shared select styles on /resources",
+      "status": "pass",
+      "detail": "1 select fields and menus styled; desktop/mobile and open-menu rendering checked."
+    },
+    {
+      "name": "Shared select styles on /portal",
+      "status": "pass",
+      "detail": "1 select fields and menus styled; desktop/mobile and open-menu rendering checked."
+    },
+    {
+      "name": "Shared select styles on /intake",
+      "status": "pass",
+      "detail": "1 select fields and menus styled; desktop/mobile and open-menu rendering checked."
+    },
+    {
+      "name": "Native select fallback",
+      "status": "pass",
+      "detail": "Without the enhancement stylesheet, the field uses native appearance and required validation still works."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/shared-select-verification-2026-10-21/booking-dropdown.png",
+      "sha256": "3f83005a8af17d97ef43f32e0008d9b9ceb587b24f20434948a9522b329b45d5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-contact-desktop.png",
+      "sha256": "34d8e06e495a37458572567578a6520c89ea3eaea68b2d9a4d240e952938aa2b",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-contact-mobile.png",
+      "sha256": "498bd83afa59f108bd159e4dcf6db87eb15935918f7884cdca8763a6874da0c3",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-contact-open-menu.png",
+      "sha256": "096e57c99e01265b36c2b28e21e354163917c072d98002ebffead2ca0b853430",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-resources-desktop.png",
+      "sha256": "02f29f56156f50a9f554979b9829c61e46c0639680a0b1d5986b0790e3f4b961",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-resources-mobile.png",
+      "sha256": "0e4943b173080ffba4ef183f4ff6bb28df479e11e571b01a9793ee2d574c451e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-resources-open-menu.png",
+      "sha256": "a2dd4edc7d91e8aa10b03f5043c562d34a4338e3ade15b0698afff9bab6ffd43",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-portal-desktop.png",
+      "sha256": "8e340bee9a43373678f1ce9bc17f4c590a1ac3e33af658236d1531b551999da7",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-portal-mobile.png",
+      "sha256": "d6949478a66f0b21b42e0231b1ec51ea4aac1c6032c8d23d4352c02a7b3b2936",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-portal-open-menu.png",
+      "sha256": "379ea6de2dcd163134f0c856da3bd2a9b5983fe89fbc3c6e0a38e4f9b00171bc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-intake-desktop.png",
+      "sha256": "fd99216401ae4e2982e71e3dd04a7345302513e104bf40783b9c85776253997e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-intake-mobile.png",
+      "sha256": "f83203e8ce98afdad295af8ba0dd3438ce8f16e284fa7a39375f998ecf401a1c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    },
+    {
+      "path": "docs/shared-select-verification-2026-10-21/public-intake-open-menu.png",
+      "sha256": "001d7b329960d23a9a8c66351c82405d3d2fe1d2bd56960b2df461eecb005b20",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "select"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Verified targeted desktop/mobile travel checker, intake scroll and public open-menu screenshots. Automated viewport overflow checks passed.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

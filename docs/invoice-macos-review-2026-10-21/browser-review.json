@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T05:53:00.905Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Invoice queue workflow",
+      "status": "pass",
+      "detail": "Four check types covered in unit tests; browser verified queue, prefilled service draft, billing reference, mismatch approval guard, corrected review, refreshed queue and persistence."
+    },
+    {
+      "name": "macOS refinement",
+      "status": "pass",
+      "detail": "Secondary action styling, Tab navigation, visible focus, reduced-motion transition, 200% CSS zoom reflow and empty-state checks passed; screenshot viewport overflow checks passed at 1440/1736/390/320px."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/queue-desktop.png",
+      "sha256": "96e8d6f22c5d45d2a144748ffaa75c1e02ef94779267cb703e0129b4b10f6b5c",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/queue-wide.png",
+      "sha256": "0dad83443a18e9d247593ecd057b93419cd05ee1889af4df4276cac2432dc015",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/queue-mobile.png",
+      "sha256": "557921f1197a94132b22e1c5e44b872fcafff40f58bbd09bb09e95517fcfd092",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/billing-agreement.png",
+      "sha256": "b9fde97aa787473a5c78dd47b553af51733a8d16a53877be1564c4dc0f59cc16",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/billing-agreement-mobile.png",
+      "sha256": "4eda603d83d5eefa48ce184ee4b439fc64dcbc98d8ba46835ac2b6c1e8530714",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/review-corrected.png",
+      "sha256": "a6802b829b5afd26e252b3b7e3ca704b3cb941b2fb0c179e44954f6d28845be5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/queue-narrow.png",
+      "sha256": "45e18515ede3448014732b61e632c8e2f06701f6aa3a5f56fa8541b82df1f3a4",
+      "width": 320,
+      "height": 844,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/invoice-macos-review-2026-10-21/queue-empty.png",
+      "sha256": "079924b75165b9c7019ca046b61ca714281ed49105cbe08b00322142b83e4798",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Inspected 1440px queue and billing dialog, 390px queue and billing dialog. 1736px/320px screenshots and overflow assertions passed.",
+  "mapbox": "External Mapbox requests blocked; maps are outside this change.",
+  "productionLimit": "Browser-local UI refinement. No live ShiftCare ingestion, invoicing, tax or financial rules changed or certified. Usability improvement unmeasured.",
+  "verification": {
+    "build": "npm run build: passed",
+    "targetedTests": "node --test tests/invoices.test.cjs tests/react-frontend.test.cjs tests/offline-shell.test.cjs: 3/3 file reports passed",
+    "format": "Prettier checks passed for app.js and feature CSS; final CSS formatted",
+    "diff": "git diff --check: passed"
+  }
+}

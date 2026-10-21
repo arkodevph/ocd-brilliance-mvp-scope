@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T04:15:50.041Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Global native form dropdowns",
+      "status": "pass",
+      "detail": "Office, worker, client and public forms plus an agreement dialog retain native selects. Payroll selection and report submission passed; mobile and desktop fit."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/global-dropdown-review-2026-10-21/booking-dropdown.png",
+      "sha256": "cbfaf41cb5a2d657c69becbe51ceedfa8fbfa255423483e587bef01313ce44a0",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/global-dropdown-review-2026-10-21/payroll-dropdown-desktop.png",
+      "sha256": "1a62b2b047eceff878633c957d8a60b9193db0eed53c36046c183590caf3c536",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "[data-auto-form=report]"
+    },
+    {
+      "path": "docs/global-dropdown-review-2026-10-21/payroll-dropdown-mobile.png",
+      "sha256": "bc6c77169217d54870a96c7aad6be85323f4b0ae9a477907faae8fdd2feb117c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "[data-auto-form=report]"
+    },
+    {
+      "path": "docs/global-dropdown-review-2026-10-21/agreement-dropdowns-mobile.png",
+      "sha256": "450f834954dfcbed45b6fcad56e4878daecc4c765f1a2c3e37685dcbf0374d7e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "#modal"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

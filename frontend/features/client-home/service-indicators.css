@@ -1,0 +1,58 @@
+/* Service category colours remain meaningful in the minimal theme. */
+.portal-client-home .service-tone-0 {
+  --service-tint: #e7f5ec;
+  --service-orb: rgba(69, 173, 112, 0.2);
+  --service-color: #08734c;
+  --service-border: #73b88e;
+}
+.portal-client-home .service-tone-1 {
+  --service-tint: #eaf2fb;
+  --service-orb: rgba(86, 151, 215, 0.2);
+  --service-color: #2d70aa;
+  --service-border: #79a9d1;
+}
+.portal-client-home .service-tone-2 {
+  --service-tint: #f2edfb;
+  --service-orb: rgba(156, 115, 213, 0.19);
+  --service-color: #7352a5;
+  --service-border: #ae90d6;
+}
+.portal-client-home .service-tone-3 {
+  --service-tint: #fff4df;
+  --service-orb: rgba(235, 171, 60, 0.22);
+  --service-color: #a86a0c;
+  --service-border: #d7a34a;
+}
+.portal-client-home .service-tone-4 {
+  --service-tint: #e8f5f5;
+  --service-orb: rgba(68, 178, 179, 0.2);
+  --service-color: #087d7d;
+  --service-border: #72babb;
+}
+.portal-client-home .service-tone-5 {
+  --service-tint: #f9ecee;
+  --service-orb: rgba(211, 105, 122, 0.18);
+  --service-color: #a33e51;
+  --service-border: #d28a99;
+}
+
+.portal-client-home .client-service-tile {
+  background: var(--service-tint);
+  border-color: var(--service-border);
+}
+.portal-client-home .client-service-tile:hover {
+  background: var(--service-tint);
+  border-color: var(--service-color);
+}
+.portal-client-home .client-service-tile:focus-visible {
+  outline: 2px solid var(--service-color);
+  outline-offset: 2px;
+}
+.portal-client-home .client-service-icon {
+  color: var(--service-color);
+  background: rgb(255 255 255 / 85%);
+}
+.portal-client-home .client-service-icon i {
+  display: block;
+  background: var(--service-color);
+}

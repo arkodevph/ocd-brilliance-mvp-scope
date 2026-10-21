@@ -1,0 +1,170 @@
+[
+  {
+    "width": 1736,
+    "height": 1000,
+    "panel": {
+      "top": 354.56072998046875,
+      "bottom": 974.5607299804688,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 355.56072998046875,
+      "bottom": 935.7638549804688,
+      "left": 645,
+      "right": 1688
+    },
+    "workspace": {
+      "top": 354.56072998046875,
+      "bottom": 974.5607299804688,
+      "left": 308,
+      "right": 1689
+    },
+    "note": {
+      "top": 982.5607299804688,
+      "bottom": 1003.5607299804688,
+      "left": 308,
+      "right": 1168
+    },
+    "overflow": "auto",
+    "sidebar": {
+      "top": 149,
+      "bottom": 750.59375,
+      "left": 24,
+      "right": 284
+    },
+    "footer": {
+      "top": 966.5,
+      "bottom": 1000,
+      "left": 0,
+      "right": 1736
+    },
+    "sidebarOverflow": "visible"
+  },
+  {
+    "width": 1440,
+    "height": 900,
+    "panel": {
+      "top": 354.296875,
+      "bottom": 912.296875,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 355.296875,
+      "bottom": 873.5,
+      "left": 645,
+      "right": 1392
+    },
+    "workspace": {
+      "top": 354.296875,
+      "bottom": 912.296875,
+      "left": 308,
+      "right": 1393
+    },
+    "note": {
+      "top": 920.296875,
+      "bottom": 941.296875,
+      "left": 308,
+      "right": 1168
+    },
+    "overflow": "auto",
+    "sidebar": {
+      "top": 149,
+      "bottom": 750.59375,
+      "left": 24,
+      "right": 284
+    },
+    "footer": {
+      "top": 866.5,
+      "bottom": 900,
+      "left": 0,
+      "right": 1440
+    },
+    "sidebarOverflow": "visible"
+  },
+  {
+    "width": 1280,
+    "height": 800,
+    "panel": {
+      "top": 362.296875,
+      "bottom": 858.296875,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 363.296875,
+      "bottom": 819.5,
+      "left": 645,
+      "right": 1232
+    },
+    "workspace": {
+      "top": 362.296875,
+      "bottom": 858.296875,
+      "left": 308,
+      "right": 1233
+    },
+    "note": {
+      "top": 866.296875,
+      "bottom": 887.296875,
+      "left": 308,
+      "right": 1168
+    },
+    "overflow": "auto",
+    "sidebar": {
+      "top": 157,
+      "bottom": 710.59375,
+      "left": 24,
+      "right": 284
+    },
+    "footer": {
+      "top": 766.5,
+      "bottom": 800,
+      "left": 0,
+      "right": 1280
+    },
+    "sidebarOverflow": "visible"
+  },
+  {
+    "width": 1024,
+    "height": 768,
+    "panel": {
+      "top": 416.671875,
+      "bottom": 896.671875,
+      "left": 308,
+      "right": 628
+    },
+    "map": {
+      "top": 417.671875,
+      "bottom": 804.28125,
+      "left": 645,
+      "right": 976
+    },
+    "workspace": {
+      "top": 416.671875,
+      "bottom": 896.671875,
+      "left": 308,
+      "right": 977
+    },
+    "note": {
+      "top": 904.671875,
+      "bottom": 925.671875,
+      "left": 308,
+      "right": 977
+    },
+    "overflow": "auto",
+    "sidebar": {
+      "top": 173.375,
+      "bottom": 726.96875,
+      "left": 24,
+      "right": 284
+    },
+    "footer": {
+      "top": 734.5,
+      "bottom": 768,
+      "left": 0,
+      "right": 1024
+    },
+    "sidebarOverflow": "visible"
+  }
+]

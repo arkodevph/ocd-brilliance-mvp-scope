@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewedAt": "2026-10-21T10:23:06.162Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Financial checks",
+      "status": "pass",
+      "detail": "Real period findings, evidenced time explanation, source-change reopening, owner persistence, source navigation, returned payment tracking, verified paid resolution, filters and empty scope passed. Desktop/mobile captured without page overflow."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/financial-checks-review-2026-10-21/booking-dropdown.png",
+      "sha256": "5f46e07c52797d81daff57af2c6fd939d7b0a85cae133b6cfae471ad6c71814e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-queue-desktop.png",
+      "sha256": "2b64bcbef5418dffaa4c1d685a5c8525d565d73ee02ea814f8b4afb7f15fdd5a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-queue-mobile.png",
+      "sha256": "207649d73331a6c4913b9208babc8635912bc103c85e7d5916790eba764faec5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-queue-small.png",
+      "sha256": "0d1f12bdcd0ebd3b2392d78ae5e3143bcb703ebc8d8d9d519b240de06a1715dd",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-queue-narrow.png",
+      "sha256": "7b3e19e5aea53bcf99d23b8fa716e205f2fbc1ab8c8199bec20da54507fca81f",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".financial-rows"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-evidence-desktop.png",
+      "sha256": "b566a4f703152fdd3fb08186858f8adf26e81c54cbd269b930514722c0ab2ea5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-evidence-mobile.png",
+      "sha256": "976bacc4e3496a67d43ca40461e51988e22b71ebdd4c5261e02a8d9ec9f4dc1d",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-followup-desktop.png",
+      "sha256": "f7a3be4dffb20141dbd4307e21c1a3e2ed009198b7d725914ca55e9bf5f1c78b",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/financial-checks-review-2026-10-21/financial-empty-mobile.png",
+      "sha256": "75a16691c246aca6c0055e21ed444121977341f6cd4c5d47a964c296251f99f8",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "Desktop queue and mobile evidence page inspected; period disclosure keeps controls compact; screenshots show no horizontal page overflow. 320/390/1440px acceptance captures passed.",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

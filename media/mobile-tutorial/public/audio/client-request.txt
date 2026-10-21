@@ -1,0 +1,1 @@
+Clients choose a service and preferred visit time. The request goes straight to the office, with the details already organised.

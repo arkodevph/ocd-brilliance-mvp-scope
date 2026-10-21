@@ -1,0 +1,18 @@
+.client-home-workspace .client-help-panel { align-items: stretch; gap: 16px; }
+.client-home-workspace .client-help-panel .portal-help-icon { display: none; }
+.client-home-workspace .client-help-panel h2 { font-size: 1.125rem; }
+.client-home-workspace .client-help-panel > p { max-width: none; font-size: var(--home-note-size); line-height: 1.6; }
+.client-home-workspace .client-help-panel .btn { margin-top: 0; min-height: 44px; padding: 10px 12px; font-size: var(--home-note-size); }
+.client-home-workspace .client-help-panel .client-suggest-button { align-self: stretch; order: 3; }
+.client-home-workspace .client-featured-workers { gap: 12px; margin: 0; }
+.client-home-workspace .client-featured-worker { align-items: start; gap: 12px; padding: 16px 52px 16px 12px; }
+.client-home-workspace .client-worker-copy { min-width: 0; overflow-wrap: anywhere; }
+.client-home-workspace .client-worker-copy strong { font-size: var(--home-body-size); }
+.client-home-workspace .client-worker-copy span,
+.client-home-workspace .client-worker-copy small { font-size: .8125rem; line-height: 1.6; }
+.client-home-workspace .client-worker-copy .portal-link { display: inline-flex; min-height: 44px; align-items: center; font-size: var(--home-note-size); }
+.client-home-workspace .client-featured-worker .client-favourite { width: 44px; height: 44px; right: 4px; top: 12px; transform: none; }
+.client-home-workspace .client-featured-workers .portal-list-pagination { gap: 8px; padding-top: 8px; font-size: .8125rem; }
+.client-home-workspace .portal-list-pagination button { min-height: 44px; padding: 8px 12px; font-size: .8125rem; }
+.client-home-workspace .client-office-help { order: 4; }
+.client-home-workspace .client-help-panel .client-agreement-link { order: 5; min-height: 44px; padding: 8px 0; font-size: var(--home-note-size); }

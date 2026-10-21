@@ -1,0 +1,107 @@
+[
+  {
+    "id": "intro",
+    "chapter": "LESS ADMIN. MORE CARE.",
+    "title": "Let the busywork go.",
+    "hint": "One connected workflow for your care team",
+    "kind": "product",
+    "view": "overview",
+    "voice": "Checking distances, copying visit details, and chasing updates adds up. Bring those steps into one connected workflow."
+  },
+  {
+    "id": "android",
+    "chapter": "01 / GET THE APP",
+    "title": "Your team, on Android.",
+    "hint": "Browser menu → Add to Home screen → Install",
+    "kind": "android",
+    "voice": "On Android, open OCD Brilliance. Use your browser menu to add the app to your home screen."
+  },
+  {
+    "id": "ios",
+    "chapter": "01 / GET THE APP",
+    "title": "Your care, on iPhone.",
+    "hint": "Safari → Share → Add to Home Screen",
+    "kind": "ios",
+    "voice": "On iPhone, open Safari. Choose Share, Add to Home Screen, then Add. Open the icon when it appears."
+  },
+  {
+    "id": "client-request",
+    "chapter": "02 / CLIENT EXPERIENCE",
+    "title": "Request care in seconds.",
+    "hint": "Choose a service. Pick a time. Send your request.",
+    "kind": "product",
+    "view": "clientRequest",
+    "voice": "Clients choose a service and preferred visit time. The request goes straight to the office, with the details already organised."
+  },
+  {
+    "id": "distance",
+    "chapter": "03 / AUTOMATIC ROUTE ESTIMATES",
+    "title": "Distance, already worked out.",
+    "hint": "Route distance + travel time, together",
+    "kind": "product",
+    "view": "distance",
+    "voice": "The proposed route workflow calculates distance and travel time together. Staff review the estimate, instead of measuring each journey manually."
+  },
+  {
+    "id": "match",
+    "chapter": "03 / OFFICE WORKFLOW",
+    "title": "Find the right fit faster.",
+    "hint": "Review skills, availability and travel estimates",
+    "kind": "product",
+    "view": "match",
+    "voice": "The office reviews worker skills, availability, and travel estimates in one view. A staff member approves the visit offer."
+  },
+  {
+    "id": "employee-visit",
+    "chapter": "04 / EMPLOYEE EXPERIENCE",
+    "title": "Everything for the next visit.",
+    "hint": "Visit details → Accept offer → Plan your day",
+    "kind": "product",
+    "view": "employeeVisit",
+    "voice": "Employees see the client, service, and travel estimate together. They accept the offer, so the office can confirm the assignment."
+  },
+  {
+    "id": "employee-calendar",
+    "chapter": "04 / EMPLOYEE EXPERIENCE",
+    "title": "A clearer working week.",
+    "hint": "Visits, calendar and availability in one place",
+    "kind": "product",
+    "view": "employeeCalendar",
+    "voice": "The employee calendar brings upcoming visits together. Availability updates help the office plan without another round of messages."
+  },
+  {
+    "id": "client-status",
+    "chapter": "05 / KEEP CLIENTS INFORMED",
+    "title": "The update finds you.",
+    "hint": "A confirmed booking, with the details clients need",
+    "kind": "product",
+    "view": "clientStatus",
+    "voice": "Once the office confirms the booking, clients can see the worker, service, and visit time, without calling for an update."
+  },
+  {
+    "id": "allow",
+    "chapter": "06 / NOTIFICATIONS",
+    "title": "Allow useful updates.",
+    "hint": "You stay in control of notification permission",
+    "kind": "permission",
+    "voice": "When notification permission appears, choose Allow to receive booking updates. The permission choice stays with each person."
+  },
+  {
+    "id": "popup",
+    "chapter": "06 / NOTIFICATIONS",
+    "title": "Confirmed. Noticed. Sorted.",
+    "hint": "Tap the notification to open the booking",
+    "kind": "product",
+    "view": "notification",
+    "voice": "A booking confirmation arrives as a notification. Tap it to open the visit details, with no searching through messages."
+  },
+  {
+    "id": "outro",
+    "chapter": "LESS ADMIN. MORE CARE.",
+    "title": "Give time back to care.",
+    "hint": "Fewer calculations. Fewer follow-ups. Clearer next steps.",
+    "kind": "product",
+    "view": "payoff",
+    "voice": "Bring route estimates, visit offers, and booking updates into one place. Keep staff in control, and give more time back to care."
+  }
+]
