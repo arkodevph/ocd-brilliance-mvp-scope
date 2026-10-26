@@ -86,6 +86,15 @@ export function OfficeOverviewPage({ model }: { model: OfficeOverviewModel }) {
           New intake
         </a>
       </PageHeading>
+      <aside className="demo-office-start">
+        <div>
+          <strong>New to the demonstration?</strong>
+          <span>Follow one request with guidance at every step.</span>
+        </div>
+        <a className="btn" href="#/office/start">
+          Start here <ArrowRight size={16} />
+        </a>
+      </aside>
       <div className="portal-overview-metrics">
         {model.metrics.map((metric, index) => {
           const Icon = [CalendarDays, ClipboardList, Users, FileText][index];

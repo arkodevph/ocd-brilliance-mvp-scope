@@ -22,6 +22,7 @@ import {
 } from '../../solar-icons';
 import { WORKFLOWS, type ModuleId, type WorkflowDefinition } from './catalogue';
 import { MODULES } from './scenarios';
+import { DemoStart, GuideHeading, readGuide, saveGuide } from './beginner';
 import {
   BRANCHES,
   OWNERS,
@@ -44,15 +45,18 @@ import {
 
 export type OperationsModel = { page?: string; caseId?: string };
 const paths = [
-  ['overview', 'Overview'],
+  ['start', 'Start here'],
   ['queue', 'Work queue'],
+  ['library', 'Explore workflows'],
+];
+const morePaths = [
+  ['overview', 'Demo dashboard'],
   ['intake', 'Intake & people'],
   ['documents', 'Documents'],
   ['rostering', 'Rostering'],
   ['finance', 'Finance & payroll'],
   ['care', 'Care & feedback'],
   ['communications', 'Communications'],
-  ['library', 'Workflow library'],
   ['activity', 'Activity'],
 ];
 const go = (page: string, id = '') => {
@@ -134,15 +138,17 @@ function Panel({
   actions,
   children,
   className = '',
+  hidden = false,
 }: {
   title: string;
   detail?: string;
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  hidden?: boolean;
 }) {
   return (
-    <section className={`ops-panel ${className}`}>
+    <section className={`ops-panel ${className}`} hidden={hidden}>
       <header className="ops-panel-heading">
         <div>
           <h2>{title}</h2>
@@ -612,9 +618,14 @@ function ModuleOverview({ module, cases }: { module: ModuleId; cases: WorkflowCa
 
 function Library({ onExplore }: { onExplore: (workflow: WorkflowDefinition) => void }) {
   const [query, setQuery] = useState(''),
-    [scope, setScope] = useState('all');
+    [scope, setScope] = useState('all'),
+    [module, setModule] = useState('intake');
+  const areaWorkflows = WORKFLOWS.filter(
+    (workflow) => module === 'all' || workflow.module === module,
+  );
   const matches = WORKFLOWS.filter(
     (w) =>
+      (module === 'all' || w.module === module) &&
       (scope === 'all' ||
         (scope === 'core' && ['C1', 'C2'].includes(w.selection)) ||
         w.selection === scope) &&
@@ -622,40 +633,72 @@ function Library({ onExplore }: { onExplore: (workflow: WorkflowDefinition) => v
   );
   return (
     <>
-      <div className="ops-library-summary">
-        <div>
-          <strong>35</strong>
-          <span>identified processes</span>
+      <p className="demo-library-intro">
+        Choose one area to explore. Start with intake, or use the area menu to find scheduling,
+        documents and more.
+      </p>
+      <details className="demo-explainer demo-scope-details">
+        <summary>About the scope: 20 core workflows, 5 gated additions, 10 later / native</summary>
+        <div className="ops-library-summary">
+          <div>
+            <strong>35</strong>
+            <span>identified processes</span>
+          </div>
+          <div>
+            <strong>20</strong>
+            <span>core workflows</span>
+          </div>
+          <div>
+            <strong>5</strong>
+            <span>gated additions</span>
+          </div>
+          <div>
+            <strong>10</strong>
+            <span>later / native processes</span>
+          </div>
         </div>
-        <div>
-          <strong>20</strong>
-          <span>core workflows</span>
-        </div>
-        <div>
-          <strong>5</strong>
-          <span>gated additions</span>
-        </div>
-        <div>
-          <strong>10</strong>
-          <span>later / native processes</span>
-        </div>
-      </div>
+      </details>
       <div className="ops-library-toolbar">
+        <label className="demo-area-select">
+          Area
+          <select
+            aria-label="Workflow area"
+            value={module}
+            onChange={(e) => {
+              setModule(e.target.value);
+              setScope('all');
+              setQuery('');
+            }}
+          >
+            {MODULES.map((area) => (
+              <option key={area.id} value={area.id}>
+                {area.label}
+              </option>
+            ))}
+            <option value="all">All areas · 35 processes</option>
+          </select>
+        </label>
         <label className="ops-search">
           <Search size={17} />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Search workflow library"
-            placeholder="Find a process or pain point…"
+            placeholder="Find a workflow in this area…"
           />
         </label>
         <div className="ops-segments" aria-label="Workflow scope">
           {[
-            ['all', 'All 35'],
-            ['core', 'Core 20'],
-            ['G', 'Gated 5'],
-            ['L', 'Later / native 10'],
+            ['all', `All ${areaWorkflows.length}`],
+            [
+              'core',
+              `Core ${areaWorkflows.filter((workflow) => ['C1', 'C2'].includes(workflow.selection)).length}`,
+            ],
+            ['G', `Gated ${areaWorkflows.filter((workflow) => workflow.selection === 'G').length}`],
+            [
+              'L',
+              `Later / native ${areaWorkflows.filter((workflow) => workflow.selection === 'L').length}`,
+            ],
           ].map(([key, label]) => (
             <button key={key} aria-pressed={scope === key} onClick={() => setScope(key)}>
               {label}
@@ -878,9 +921,11 @@ function OutcomeCard({
 function CaseView({
   record: c,
   apply,
+  guided = false,
 }: {
   record: WorkflowCase;
   apply: (a: Action) => PrototypeStore | undefined;
+  guided?: boolean;
 }) {
   const w = definition(c.opportunity),
     blockers = reviewBlockers(c),
@@ -894,16 +939,62 @@ function CaseView({
     c.outcomes.every((o) => o.status === 'done');
   const [owner, setOwner] = useState(c.owner),
     [dueDate, setDueDate] = useState(c.dueDate);
+  const completedOutcomes = c.outcomes.filter((outcome) => outcome.status === 'done').length;
+  const nextOutcome = c.outcomes.find((outcome) => outcome.status !== 'done');
+  const [guideStep, setGuideStep] = useState(() => {
+    const saved = readGuide();
+    if (c.status === 'completed' || c.status === 'follow-up') return 5;
+    if (c.status === 'awaiting-verification' || c.status === 'uncertain') return 4;
+    if (c.status === 'approved') return 3;
+    return saved?.caseId === c.id ? Math.min(saved.step, 3) : 0;
+  });
+  useEffect(() => {
+    if (!guided) return;
+    if (c.status === 'approved') setGuideStep(3);
+    if (['awaiting-verification', 'uncertain'].includes(c.status)) setGuideStep(4);
+    if (['follow-up', 'completed'].includes(c.status)) setGuideStep(5);
+  }, [guided, c.status]);
+  useEffect(() => {
+    if (!guided) return;
+    saveGuide(c.id, guideStep);
+    const frame = requestAnimationFrame(() => {
+      document.querySelector<HTMLElement>('[data-guide-heading]')?.focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [guided, c.id, guideStep, c.status]);
+  useEffect(() => {
+    if (!guided || guideStep !== 5 || completedOutcomes === 0 || c.status !== 'follow-up') return;
+    const frame = requestAnimationFrame(() => {
+      const target =
+        document.querySelector<HTMLElement>('.demo-guided-case .ops-outcome-heading h3') ||
+        document.querySelector<HTMLElement>('[data-ops-close]');
+      if (target) {
+        if (target.tagName === 'H3') target.tabIndex = -1;
+        target.focus({ preventScroll: true });
+        target.scrollIntoView({ block: 'center', behavior: 'instant' });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [guided, guideStep, completedOutcomes, c.status]);
+  const hideStep = (...steps: number[]) => guided && !steps.includes(guideStep);
   useEffect(() => {
     setOwner(c.owner);
     setDueDate(c.dueDate);
   }, [c.owner, c.dueDate]);
   return (
-    <div className="ops-case" data-ops-detail={c.id}>
-      <button className="ops-back" onClick={() => go('queue')}>
-        ← Back to work queue
-      </button>
-      <div className="ops-case-heading">
+    <div
+      className={`ops-case ${guided ? 'demo-guided-case' : ''}`}
+      data-ops-detail={c.id}
+      data-guide-step={guided ? guideStep + 1 : undefined}
+    >
+      {guided && <GuideHeading step={guideStep} complete={c.status === 'completed'} />}
+      {!guided && (
+        <button className="ops-back" onClick={() => go('queue')}>
+          ← Back to work queue
+        </button>
+      )}
+      <div className="ops-case-heading" hidden={guided}>
         <div>
           <div className="ops-case-labels">
             <span>
@@ -919,7 +1010,23 @@ function CaseView({
         </div>
         <Badge record={c} />
       </div>
-      <Progress record={c} />
+      {!guided && <Progress record={c} />}
+      {guided && c.status === 'completed' && (
+        <section className="demo-guide-complete" data-guide-complete>
+          <CheckCircle2 size={40} />
+          <h2>Nice work. Every required outcome is checked.</h2>
+          <p>
+            The profile alone wasn’t the finish line: you also checked the agreement and billing
+            handoff. Your practice case is saved in this browser.
+          </p>
+          <a className="ops-button ops-primary" href="#/office/operations/library">
+            Explore another workflow <ArrowRight size={16} />
+          </a>
+          <a className="ops-button" href="#/office/start">
+            Back to Start here
+          </a>
+        </section>
+      )}
       {c.parentCaseId && (
         <p className="ops-form-note">
           Required follow-through for{' '}
@@ -966,11 +1073,12 @@ function CaseView({
           </div>
         </div>
       )}
-      <div className="ops-case-grid">
+      <div className="ops-case-grid" hidden={guided && c.status === 'completed'}>
         <div className="ops-stack">
           <Panel
             title="Original source"
             detail={`${c.channel} · fictional example · source version ${c.sourceRevision}`}
+            hidden={hideStep(0)}
           >
             <div className="ops-source">
               <span className="ops-source-icon">
@@ -987,6 +1095,7 @@ function CaseView({
             title="Review the exact proposal"
             detail="Compare the current sample context with the proposed values."
             actions={<span className="ops-small-label">{c.fields.length} fields</span>}
+            hidden={hideStep(1)}
           >
             <div className="ops-proposal">
               <div className="ops-proposal-key">
@@ -1059,6 +1168,7 @@ function CaseView({
           <Panel
             title="Evidence & reviewer checks"
             detail="Automation prepares the work. People resolve identity, suitability and ambiguous evidence."
+            hidden={hideStep(2)}
             actions={
               !frozen && (
                 <button
@@ -1091,6 +1201,7 @@ function CaseView({
           {!!c.effects.length && (
             <Panel
               title="Execution & checked results"
+              hidden={hideStep(4)}
               detail={
                 c.mode === 'handoff'
                   ? 'Staff confirmation retains its own reference. No API read-back is claimed.'
@@ -1137,17 +1248,27 @@ function CaseView({
             <Panel
               title="Required follow-through"
               detail="A saved profile, booking or cancellation does not finish every business outcome."
+              hidden={hideStep(5)}
             >
               <div className="ops-outcomes">
-                {c.outcomes.map((outcome) => (
-                  <OutcomeCard key={outcome.id} outcome={outcome} record={c} apply={apply} />
-                ))}
+                {guided && (
+                  <p className="demo-outcome-count" role="status">
+                    {completedOutcomes} of {c.outcomes.length} follow-up checks recorded.
+                    {!nextOutcome && ' You can now close the case below.'}
+                  </p>
+                )}
+                {c.outcomes
+                  .filter((outcome) => !guided || outcome.id === nextOutcome?.id)
+                  .map((outcome) => (
+                    <OutcomeCard key={outcome.id} outcome={outcome} record={c} apply={apply} />
+                  ))}
               </div>
             </Panel>
           )}
           <Panel
             title="Case activity"
             detail="Browser-local demonstration history; production audit controls are not implemented here."
+            hidden={guided}
           >
             <ol className="ops-audit">
               {[...c.history]
@@ -1174,7 +1295,7 @@ function CaseView({
           </Panel>
         </div>
         <aside className="ops-case-sidebar ops-stack">
-          <Panel title="Next action" className="ops-next-action">
+          <Panel title="Next action" className="ops-next-action" hidden={hideStep(3, 4, 5)}>
             <div className="ops-action-body">
               {c.status === 'completed' ? (
                 <div className="ops-complete-summary">
@@ -1357,7 +1478,7 @@ function CaseView({
               </span>
             </div>
           </Panel>
-          <Panel title="Accountability">
+          <Panel title="Accountability" hidden={guided}>
             <form
               className="ops-assignment"
               onSubmit={(e) => {
@@ -1396,7 +1517,7 @@ function CaseView({
               )}
             </form>
           </Panel>
-          <Panel title="Keep the human decision">
+          <Panel title="Keep the human decision" hidden={guided}>
             <div className="ops-boundary-copy">
               <ShieldCheck size={19} />
               <p>{w.manual_boundary}</p>
@@ -1410,7 +1531,7 @@ function CaseView({
               </small>
             </div>
           </Panel>
-          {c.status !== 'completed' && (
+          {!guided && c.status !== 'completed' && (
             <details className="ops-scenarios">
               <summary>
                 <RotateCcw size={16} />
@@ -1458,6 +1579,37 @@ function CaseView({
           )}
         </aside>
       </div>
+      {guided && c.status !== 'completed' && (
+        <nav className="demo-guide-controls" aria-label="Walkthrough controls">
+          <button
+            className="ops-button"
+            disabled={guideStep === 0}
+            onClick={() => setGuideStep((step) => Math.max(0, step - 1))}
+          >
+            Back
+          </button>
+          <a href={`#/office/operations/case/${c.id}`}>Open full case</a>
+          {guideStep < 3 && (
+            <div>
+              <button
+                className="ops-button ops-primary"
+                data-guide-next
+                disabled={
+                  guideStep === 1
+                    ? c.fields.some((field) => !field.value.trim())
+                    : guideStep === 2 && blockers.length > 0
+                }
+                onClick={() => setGuideStep((step) => step + 1)}
+              >
+                Continue <ArrowRight size={16} />
+              </button>
+              {guideStep === 2 && blockers.length > 0 && (
+                <small>Complete the checks above to continue.</small>
+              )}
+            </div>
+          )}
+        </nav>
+      )}
     </div>
   );
 }
@@ -1513,7 +1665,7 @@ function Activity({ store, cases }: { store: PrototypeStore; cases: WorkflowCase
   );
 }
 
-export function OperationsPrototype({ page = 'overview', caseId = '' }: OperationsModel) {
+export function OperationsPrototype({ page = 'start', caseId = '' }: OperationsModel) {
   const [boot] = useState(loadStore),
     [store, setStore] = useState(boot.store),
     [notice, setNotice] = useState(boot.notice),
@@ -1597,16 +1749,20 @@ export function OperationsPrototype({ page = 'overview', caseId = '' }: Operatio
   }
   const filtered = store.cases.filter((c) => branch === 'all' || c.branch === branch);
   const active = store.cases.find((c) => c.id === caseId);
+  const savedGuide = readGuide();
+  const practice = store.cases.find((c) => c.id === savedGuide?.caseId && c.opportunity === 5);
+  const guided = page === 'guide';
+  const starting = page === 'start';
   const area = MODULES.find((m) => m.id === page);
   const heading =
     page === 'overview'
-      ? 'Your operations, connected.'
+      ? 'Demo dashboard'
       : page === 'queue'
-        ? 'One queue. Clear ownership.'
+        ? 'Choose a request to review'
         : page === 'library'
-          ? 'Every process, accounted for.'
+          ? 'Explore one area at a time'
           : page === 'activity'
-            ? 'Follow the work through.'
+            ? 'What happened recently'
             : area?.label || (page === 'case' ? 'Case review' : 'Operations hub');
   const description =
     page === 'overview'
@@ -1614,7 +1770,7 @@ export function OperationsPrototype({ page = 'overview', caseId = '' }: Operatio
       : page === 'queue'
         ? 'Original sources, exact proposals and required follow-through, together.'
         : page === 'library'
-          ? 'The 35 identified opportunities, with the selected scope and human responsibilities intact.'
+          ? 'Choose an area, then open a sample workflow to see how it works.'
           : page === 'activity'
             ? 'See what changed, who owns the next step and which outcomes still need evidence.'
             : area?.description || '';
@@ -1622,6 +1778,42 @@ export function OperationsPrototype({ page = 'overview', caseId = '' }: Operatio
     const c = current.current.cases.find((item) => item.opportunity === w.number);
     libraryDialog.current?.close();
     if (c) go('case', c.id);
+  }
+  function startGuide(fresh = false) {
+    if (practice && !fresh) {
+      go('guide', practice.id);
+      return;
+    }
+    try {
+      const sample = initialStore().cases.find((c) => c.opportunity === 5)!;
+      const sequence =
+        current.current.cases.filter((c) => c.subject.startsWith('Practice ')).length + 1;
+      let next = transition(current.current, {
+        type: 'create',
+        opportunity: 5,
+        person: sample.person,
+        subject: `Practice ${sequence}: Help Ava get started`,
+        source: sample.source,
+        branch: sample.branch,
+      });
+      const created = next.cases[0];
+      for (const field of sample.fields)
+        if (!isComputedField(created, field.key))
+          next = transition(next, {
+            type: 'field',
+            id: created.id,
+            key: field.key,
+            value: field.value,
+          });
+      persist(next);
+      saveGuide(created.id, 0);
+      setError('');
+      go('guide', created.id);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : 'The practice case could not be created. Try again.',
+      );
+    }
   }
   function create(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -1650,7 +1842,10 @@ export function OperationsPrototype({ page = 'overview', caseId = '' }: Operatio
     }
   }
   return (
-    <div className="ops-prototype" data-ops-page={page}>
+    <div
+      className={`ops-prototype ${starting ? 'ops-start-page' : ''} ${guided ? 'ops-guided-page' : ''}`}
+      data-ops-page={page}
+    >
       <div className="ops-demo-strip">
         <span>
           <i />
@@ -1666,14 +1861,14 @@ export function OperationsPrototype({ page = 'overview', caseId = '' }: Operatio
           Reset examples
         </button>
       </div>
-      {page !== 'case' && (
+      {!['case', 'guide', 'start'].includes(page) && (
         <header className="ops-heading">
           <div>
             <span className="ops-kicker">OCD OPERATIONS HUB</span>
             <h1>{heading}</h1>
             <p>{description}</p>
           </div>
-          <div className="ops-heading-actions">
+          <div className="ops-heading-actions" hidden={page === 'library'}>
             <label className="ops-branch">
               <Users size={16} />
               <span className="sr-only">Sample branch</span>
@@ -1704,21 +1899,67 @@ export function OperationsPrototype({ page = 'overview', caseId = '' }: Operatio
           </div>
         </header>
       )}
-      <nav className="ops-tabs" aria-label="Operations hub">
-        {paths.map(([key, label]) => (
-          <a
-            href={`#/office/operations/${key}`}
-            key={key}
-            aria-current={page === key ? 'page' : undefined}
+      {!starting && !guided && (
+        <nav className="ops-tabs" aria-label="Operations hub">
+          {paths.map(([key, label]) => (
+            <a
+              href={`#/office/operations/${key}`}
+              key={key}
+              aria-current={page === key ? 'page' : undefined}
+            >
+              {label}
+              {key === 'queue' && (
+                <span>{filtered.filter((c) => c.status !== 'completed').length}</span>
+              )}
+            </a>
+          ))}
+          <details
+            className="ops-nav-more"
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget)) e.currentTarget.open = false;
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.currentTarget.open = false;
+                e.currentTarget.querySelector('summary')?.focus();
+              }
+            }}
           >
-            {label}
-            {key === 'queue' && (
-              <span>{filtered.filter((c) => c.status !== 'completed').length}</span>
-            )}
-            {key === 'library' && <span>35</span>}
-          </a>
-        ))}
-      </nav>
+            <summary>
+              {morePaths.find(([key]) => key === page)?.[1] || 'More views'}{' '}
+              <ChevronRight size={14} />
+            </summary>
+            <div>
+              {morePaths.map(([key, label]) => (
+                <a
+                  key={key}
+                  href={`#/office/operations/${key}`}
+                  aria-current={page === key ? 'page' : undefined}
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </details>
+          <label className="ops-mobile-views">
+            <span className="sr-only">More operation views</span>
+            <select
+              aria-label="More operation views"
+              value={morePaths.some(([key]) => key === page) ? page : ''}
+              onChange={(e) => go(e.target.value)}
+            >
+              <option value="" disabled>
+                More views
+              </option>
+              {morePaths.map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </nav>
+      )}
       {notice && (
         <div className="ops-notice" role="status">
           <AlertCircle size={17} />
@@ -1745,9 +1986,11 @@ export function OperationsPrototype({ page = 'overview', caseId = '' }: Operatio
           </button>
         </div>
       )}
-      {page === 'case' ? (
+      {starting ? (
+        <DemoStart practice={practice} onStart={startGuide} />
+      ) : page === 'case' || guided ? (
         active ? (
-          <CaseView key={active.id} record={active} apply={apply} />
+          <CaseView key={`${active.id}:${guided}`} record={active} apply={apply} guided={guided} />
         ) : (
           <Empty title="This case is unavailable">
             <button className="ops-button" onClick={() => go('queue')}>

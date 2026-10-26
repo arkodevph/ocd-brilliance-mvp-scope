@@ -281,6 +281,13 @@ try {
   await input('[aria-label="Sample branch"]', 'all');
   passed('Queue search, empty state and sample-branch filtering work');
   await route('library');
+  assert.equal(await evaluate('document.querySelectorAll("[data-ops-workflow]").length'), 7);
+  assert.equal(
+    await evaluate(`document.querySelector('[aria-label="Workflow area"]').value`),
+    'intake',
+  );
+  await capture('02-workflow-library-by-area');
+  await input('[aria-label="Workflow area"]', 'all');
   assert.equal(await evaluate('document.querySelectorAll("[data-ops-workflow]").length'), 35);
   await capture('02-workflow-library');
   for (const [label, count] of [
@@ -582,6 +589,144 @@ try {
   passed(
     'Storage write failure preserves capture across navigation and another-tab updates; restored storage saves it for reload',
   );
+
+  // Exercise the actual first-visit entry and a complete guided case without resetting prior work.
+  const existingCases = await saved('s.cases');
+  await command('Page.navigate', { url: origin + '/portal' });
+  await wait('!!document.querySelector("#demo-accounts")');
+  await click('#demo-accounts a');
+  await wait('!!document.querySelector("[data-demo-start]")');
+  assert.equal(await evaluate('location.hash'), '#/office/start');
+  assert.equal(await evaluate('document.querySelectorAll(".ops-metric").length'), 0);
+  assert.equal(
+    await evaluate('document.querySelectorAll("details.demo-nav-group[open]").length'),
+    0,
+  );
+  assert.equal(
+    await evaluate('document.querySelectorAll(".demo-nav-group.expanded-details").length'),
+    0,
+  );
+  await capture('14-beginner-start-desktop');
+  await capture('15-beginner-start-mobile', 390, 844);
+  await capture('16-beginner-start-small-mobile', 320, 720);
+  await command('Emulation.setDeviceMetricsOverride', {
+    width: 1440,
+    height: 1050,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
+  await command('Page.bringToFront');
+  await command('Emulation.setFocusEmulationEnabled', { enabled: true });
+  await evaluate('document.querySelector(".demo-nav-group summary").focus()');
+  assert.equal(await evaluate('document.activeElement?.matches(".demo-nav-group summary")'), true);
+  await command('Input.dispatchKeyEvent', {
+    type: 'keyDown',
+    text: '\r',
+    key: 'Enter',
+    code: 'Enter',
+    windowsVirtualKeyCode: 13,
+  });
+  await command('Input.dispatchKeyEvent', {
+    type: 'keyUp',
+    key: 'Enter',
+    code: 'Enter',
+    windowsVirtualKeyCode: 13,
+  });
+  await wait('document.querySelector(".demo-nav-group").open');
+  await click('[data-demo-begin]');
+  await wait('!!document.querySelector("[data-ops-page=guide]")');
+  const practiceId = await evaluate(
+    'document.querySelector("[data-ops-detail]").dataset.opsDetail',
+  );
+  assert.equal(await saved('s.cases.length'), existingCases.length + 1);
+  assert.equal(
+    await evaluate('document.querySelector("[data-guide-heading] h1").textContent'),
+    'Read the request',
+  );
+  assert.equal(
+    await evaluate(
+      'document.querySelectorAll(".demo-guided-case .ops-panel:not([hidden])").length',
+    ),
+    1,
+  );
+  await click('[data-guide-next]');
+  await input('[aria-label="Participant name"]', '');
+  assert.equal(await evaluate('document.querySelector("[data-guide-next]").disabled'), true);
+  await input('[aria-label="Participant name"]', 'Ava Bennett');
+  await click('[data-guide-next]');
+  assert.equal(await evaluate('document.querySelector("[data-guide-next]").disabled'), true);
+  for (let i = 1; i <= 3; i++) await click(`.ops-check:nth-child(${i}) input`);
+  await capture('17-guided-evidence-mobile', 390, 844);
+  await command('Page.reload', { ignoreCache: true });
+  await wait('document.querySelector("[data-guide-step]")?.dataset.guideStep === "3"');
+  await evaluate('location.hash="#/office/start"');
+  await wait('!!document.querySelector("[data-demo-begin]")');
+  assert.match(
+    await evaluate('document.querySelector("[data-demo-begin]").textContent'),
+    /Continue/,
+  );
+  await click('[data-demo-begin]');
+  await wait('document.querySelector("[data-guide-step]")?.dataset.guideStep === "3"');
+  assert.equal(
+    await evaluate('document.querySelector("[data-ops-detail]").dataset.opsDetail'),
+    practiceId,
+  );
+  await click('[data-guide-next]');
+  await click('[data-ops-approve]');
+  await expectStatus(practiceId, 'approved');
+  await click('[data-ops-run]');
+  await expectStatus(practiceId, 'awaiting-verification');
+  await wait('document.querySelector("[data-guide-step]")?.dataset.guideStep === "5"');
+  await click('[data-ops-verify]');
+  await expectStatus(practiceId, 'follow-up');
+  await wait('document.querySelector("[data-guide-step]")?.dataset.guideStep === "6"');
+  assert.equal(
+    await evaluate('document.querySelectorAll(".demo-guided-case .ops-outcome").length'),
+    1,
+  );
+  assert.equal(await evaluate('document.querySelector("[data-ops-close]").disabled'), true);
+  await capture('18-guided-follow-up-mobile', 390, 844);
+  for (const key of ['outcome-1', 'outcome-2']) await checkedOutcome(practiceId, key);
+  await click('[data-ops-close]');
+  await expectStatus(practiceId, 'completed');
+  await wait('!!document.querySelector("[data-guide-complete]")');
+  await capture('19-guided-complete-desktop', 1440, 1050);
+  await click('[data-guide-complete] a');
+  await wait('!!document.querySelector("[data-ops-page=library]")');
+  await evaluate('document.querySelector(".ops-nav-more summary").focus()');
+  await command('Input.dispatchKeyEvent', {
+    type: 'keyDown',
+    text: '\r',
+    key: 'Enter',
+    code: 'Enter',
+    windowsVirtualKeyCode: 13,
+  });
+  await command('Input.dispatchKeyEvent', {
+    type: 'keyUp',
+    key: 'Enter',
+    code: 'Enter',
+    windowsVirtualKeyCode: 13,
+  });
+  await wait('document.querySelector(".ops-nav-more").open');
+  await command('Input.dispatchKeyEvent', {
+    type: 'keyDown',
+    key: 'Escape',
+    code: 'Escape',
+    windowsVirtualKeyCode: 27,
+  });
+  assert.equal(await evaluate('document.querySelector(".ops-nav-more").open'), false);
+  await capture('20-mobile-more-views', 320, 720);
+  await input('[aria-label="More operation views"]', 'activity');
+  await wait('!!document.querySelector("[data-ops-page=activity]")');
+  await capture('21-mobile-activity', 320, 720);
+  assert.deepEqual(
+    await saved(`s.cases.filter(c=>c.id!==${JSON.stringify(practiceId)})`),
+    existingCases,
+  );
+  passed(
+    'First-time entry offers a quiet starting point; six guided steps preserve review/closure gates, resume after reload and leave prior cases unchanged',
+  );
+
   assert.equal(requests.filter((r) => r.method !== 'GET' && r.method !== 'HEAD').length, 0);
   assert.equal(
     requests.filter(

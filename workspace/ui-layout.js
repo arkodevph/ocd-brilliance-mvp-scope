@@ -127,7 +127,7 @@
       if (details.closest('#native-automation, .ops-prototype')) return;
       if (
         details.matches(
-          '.client-onboarding-guide, .financial-period, .financial-history, .inbox-task-edit, .inbox-task-capture',
+          '.client-onboarding-guide, .financial-period, .financial-history, .inbox-task-edit, .inbox-task-capture, .demo-nav-group',
         )
       )
         return;

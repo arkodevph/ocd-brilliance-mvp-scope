@@ -1,8 +1,23 @@
 # OCD comprehensive frontend prototype
 
-Updated 26 October 2026. Open **Daily work → Operations hub**, or navigate directly to `/workspace/#/office/operations/overview` on the local application server. **Home → Demo guide** opens the existing presentation screens; they are also listed under Daily work.
+Updated 26 October 2026. First-time visitors should open **Start here**, or navigate directly to `/workspace/#/office/start`. Choosing **Start office demo** at `/portal` opens this same starting page. The full dashboard remains at `/workspace/#/office/operations/overview`; the older presentation remains under **Explore tools → Office tools → Demo guide**.
 
 This extends the existing React frontend with a proposed operations layer based on the [35-item feasibility register](automation-feasibility-2026-10-25/feasibility.json), [custom-system blueprint](OCD_Custom_System_Implementation_Plan.md) and [complete workflow diagrams](OCD_Complete_Workflow_Flowcharts.md). It preserves the selected **20 core**, **five gated** and **ten later/native** dispositions across W01–W14.
+
+## First visit: one request, six small steps
+
+Choose **Start guided demo** to create a separate fictional onboarding practice case for Ava. It does not reset or edit existing examples. Only the information needed for the current step is shown:
+
+1. **Read the request.** Understand Ava's fictional request for help at home.
+2. **Check the details.** Compare the three prepared sample values with the original; edit them if needed.
+3. **Review the evidence.** Check each of the three reviewer items. Continue stays unavailable until the required checks are complete.
+4. **Approve and save.** Approve the exact proposal, then run the demo save as a separate action.
+5. **Check the result.** Verify the saved fictional record against the approved values.
+6. **Finish the follow-up.** Record agreement/document and billing-readiness evidence, one check at a time. Use the clearly labelled example references for practice, confirm each check, then close the case. The next check appears after the previous outcome is recorded.
+
+**Start here → Continue guided demo** resumes the same practice case after navigation or reload when browser storage is available. **Back** revisits earlier steps; **Open full case** exposes the usual controls without discarding progress. **Start a new practice case** preserves the previous case. Ordinary case validation, stale approval protection and required-outcome closure rules still apply. An unsaved-storage warning retains its existing reload limitation.
+
+The hub now has three primary links: **Start here**, **Work queue** and **Explore workflows**. **More views** contains the dashboard, individual areas and activity. The workflow library initially shows Intake & people rather than all 35 cards; its **Area** selector includes every area and **All areas**. Scope filters retain all 20/5/10 dispositions. Office tools are grouped in expandable sidebar sections, with the active group open. On phones, Start and Demo are directly available in the bottom navigation; More retains the other tools.
 
 ## What can be explored
 
