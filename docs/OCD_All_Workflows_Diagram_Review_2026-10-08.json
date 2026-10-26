@@ -1,0 +1,1013 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-08T15:23:12.674501+00:00",
+  "scope": "Two delivered Archify architecture diagrams covering all fourteen planned workflow areas and ShiftCare integration/data ownership.",
+  "sourceRevision": "db759d5febbec90ae01f0cef0f7471722410f959",
+  "sourceRepository": "https://github.com/arkodevph/ocd-brilliance-mvp-scope.git",
+  "workflowGuide": "docs/OCD_Workflow_Use_Cases.md",
+  "artifacts": [
+    {
+      "id": "all14",
+      "diagramType": "architecture",
+      "title": "OCD + ShiftCare · All 14 workflow connections",
+      "specification": {
+        "path": ".archify/architecture-ocd-all-14-workflows-20261008-223845/candidate.json",
+        "sha256": "dc2c43a5beeb9b569a4544dcfcbb8840c6d8f3d3f808c69ed7f5b2fa0a4cdd63",
+        "bytes": 34032
+      },
+      "artifact": {
+        "path": ".archify/architecture-ocd-all-14-workflows-20261008-223845/ocd-all-14-workflows.html",
+        "sha256": "b02e684af64a591ba77a6752a03f9f77cd292a5ac29ba4a28fabcd70c4453370",
+        "bytes": 826938
+      },
+      "counts": {
+        "nodes": 14,
+        "relationships": 29,
+        "detailCards": 16
+      },
+      "validation": {
+        "checksPassed": 9,
+        "checkCount": 9,
+        "compositionProfile": "showcase",
+        "compositionStatus": "pass",
+        "errors": 0,
+        "warnings": 0
+      },
+      "artifactCheck": "passed",
+      "browserEvidence": "passed",
+      "finalizeReceipt": ".archify/architecture-ocd-all-14-workflows-20261008-223845/review-7/ocd-all-14-workflows.finalize.json",
+      "browserReceipt": ".archify/architecture-ocd-all-14-workflows-20261008-223845/review-7/ocd-all-14-workflows.browser-check.json",
+      "captureReceipt": ".archify/architecture-ocd-all-14-workflows-20261008-223845/review-7/visual-check/ocd-all-14-workflows.visual-check.json",
+      "captureContactSheet": ".archify/architecture-ocd-all-14-workflows-20261008-223845/review-7/visual-check/ocd-all-14-workflows.visual-check.html",
+      "captureStatus": "passed",
+      "captureToolVisualReview": "pending (capture generation makes no perceptual judgment)",
+      "manualCaptureReceipt": ".archify/architecture-ocd-all-14-workflows-20261008-223845/review-7/visual-check/manual-scroll-captures.json",
+      "perceptualReview": {
+        "status": "reviewed",
+        "scope": "Light/dark overviews plus scrolled business flows and explanatory cards. Critical gates and connector limits are in visible node text.",
+        "observations": [
+          "Arrow endpoints and labelled data handoffs were inspected; crossed lines are separate relationships.",
+          "Long conditional handoffs make the overview dense. Use zoom and the workflow cards to trace one case at a time.",
+          "Native approval, worker acceptance, finance release, delivery and ETA retain separate evidence."
+        ],
+        "remainingLayoutAdvice": {}
+      },
+      "placementReview": {
+        "performedOnce": true,
+        "outcome": "Restored the passing placement after the single position-only attempt increased resolved crossovers. Later semantic corrections preserved the retained positions."
+      }
+    },
+    {
+      "id": "integration",
+      "diagramType": "architecture",
+      "title": "OCD + ShiftCare · Integration and data ownership",
+      "specification": {
+        "path": ".archify/architecture-ocd-shiftcare-integration-20261008-223845/candidate.json",
+        "sha256": "9871a9150312559bf183306723344bfb2fa24968f58e449f9d8ed2e4d3798844",
+        "bytes": 21575
+      },
+      "artifact": {
+        "path": ".archify/architecture-ocd-shiftcare-integration-20261008-223845/ocd-shiftcare-integration.html",
+        "sha256": "793d9b3404d751c9409082ebca8b0d1fc16d5540ce60c7c45f5087855c3e4732",
+        "bytes": 807859
+      },
+      "counts": {
+        "nodes": 15,
+        "relationships": 23,
+        "detailCards": 8
+      },
+      "validation": {
+        "checksPassed": 9,
+        "checkCount": 9,
+        "compositionProfile": "showcase",
+        "compositionStatus": "pass",
+        "errors": 0,
+        "warnings": 0
+      },
+      "artifactCheck": "passed",
+      "browserEvidence": "passed",
+      "finalizeReceipt": ".archify/architecture-ocd-shiftcare-integration-20261008-223845/review-5/ocd-shiftcare-integration.finalize.json",
+      "browserReceipt": ".archify/architecture-ocd-shiftcare-integration-20261008-223845/review-5/ocd-shiftcare-integration.browser-check.json",
+      "captureReceipt": ".archify/architecture-ocd-shiftcare-integration-20261008-223845/review-5/visual-check/ocd-shiftcare-integration.visual-check.json",
+      "captureContactSheet": ".archify/architecture-ocd-shiftcare-integration-20261008-223845/review-5/visual-check/ocd-shiftcare-integration.visual-check.html",
+      "captureStatus": "passed",
+      "captureToolVisualReview": "pending (capture generation makes no perceptual judgment)",
+      "manualCaptureReceipt": ".archify/architecture-ocd-shiftcare-integration-20261008-223845/review-5/visual-check/manual-scroll-captures.json",
+      "perceptualReview": {
+        "status": "reviewed",
+        "scope": "Light/dark overviews plus scrolled business flows and explanatory cards. Critical gates and connector limits are in visible node text.",
+        "observations": [
+          "Arrow endpoints and labelled data handoffs were inspected; crossed lines are separate relationships.",
+          "Long conditional handoffs make the overview dense. Use zoom and the workflow cards to trace one case at a time.",
+          "Native approval, worker acceptance, finance release, delivery and ETA retain separate evidence."
+        ],
+        "remainingLayoutAdvice": {}
+      },
+      "placementReview": {
+        "performedOnce": true,
+        "outcome": "Restored the passing placement after the single position-only attempt increased resolved crossovers. Later semantic corrections preserved the retained positions."
+      }
+    }
+  ],
+  "semanticCoverage": {
+    "workflowCount": 14,
+    "catalogMatch": "passed",
+    "workflowGuideSections": "passed",
+    "directedHandoffCount": 29,
+    "workflows": [
+      {
+        "workflow": "W01",
+        "title": "W01 · Area and enquiry ownership",
+        "visibleTriggerAndGate": "Enquiry → area / capacity review",
+        "detailCard": "W01 — Area and enquiry ownership",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 145,
+            "end_line": 145,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 80,
+            "end_line": 80,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W03",
+            "dataOrCondition": "Area / capacity reviewed",
+            "conditional": false
+          }
+        ]
+      },
+      {
+        "workflow": "W02",
+        "title": "W02 · Email triage",
+        "visibleTriggerAndGate": "Message → original + identity review",
+        "detailCard": "W02 — Email triage",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 146,
+            "end_line": 146,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 81,
+            "end_line": 81,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W03",
+            "dataOrCondition": "Participant form",
+            "conditional": false
+          },
+          {
+            "to": "W04",
+            "dataOrCondition": "Employee form",
+            "conditional": false
+          },
+          {
+            "to": "W05",
+            "dataOrCondition": "Returned file",
+            "conditional": true
+          },
+          {
+            "to": "W06",
+            "dataOrCondition": "Matched reply",
+            "conditional": true
+          },
+          {
+            "to": "W10",
+            "dataOrCondition": "Invoice query",
+            "conditional": true
+          },
+          {
+            "to": "W01",
+            "dataOrCondition": "Enquiry / area",
+            "conditional": false
+          },
+          {
+            "to": "W13",
+            "dataOrCondition": "Feedback / contact",
+            "conditional": true
+          }
+        ]
+      },
+      {
+        "workflow": "W03",
+        "title": "W03 · Participant onboarding",
+        "visibleTriggerAndGate": "Intake → reviewed fields + native proof",
+        "detailCard": "W03 — Participant onboarding",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 147,
+            "end_line": 147,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 82,
+            "end_line": 82,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W05",
+            "dataOrCondition": "Verified client ID",
+            "conditional": false
+          },
+          {
+            "to": "W13",
+            "dataOrCondition": "Verified profile update",
+            "conditional": true
+          }
+        ]
+      },
+      {
+        "workflow": "W04",
+        "title": "W04 · Employee onboarding",
+        "visibleTriggerAndGate": "Employee form → HR + worker role review",
+        "detailCard": "W04 — Employee onboarding",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 148,
+            "end_line": 148,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 83,
+            "end_line": 83,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W12",
+            "dataOrCondition": "Screening evidence",
+            "conditional": false
+          },
+          {
+            "to": "W11",
+            "dataOrCondition": "Staff / payroll link",
+            "conditional": true
+          }
+        ]
+      },
+      {
+        "workflow": "W05",
+        "title": "W05 · Agreements and returned files",
+        "visibleTriggerAndGate": "Returned file → signature / filing review",
+        "detailCard": "W05 — Agreements and returned files",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 149,
+            "end_line": 149,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 84,
+            "end_line": 84,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W08",
+            "dataOrCondition": "Reviewed agreement",
+            "conditional": false
+          }
+        ]
+      },
+      {
+        "workflow": "W06",
+        "title": "W06 · Service confirmation replies",
+        "visibleTriggerAndGate": "Native reply → one-occurrence matching",
+        "detailCard": "W06 — Service confirmation replies",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 150,
+            "end_line": 150,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 85,
+            "end_line": 85,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W07",
+            "dataOrCondition": "Matched cancellation",
+            "conditional": false
+          },
+          {
+            "to": "W08",
+            "dataOrCondition": "Change request",
+            "conditional": true
+          }
+        ]
+      },
+      {
+        "workflow": "W07",
+        "title": "W07 · Cancellation",
+        "visibleTriggerAndGate": "Cancel request → office charge/scope review",
+        "detailCard": "W07 — Cancellation",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 151,
+            "end_line": 151,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 86,
+            "end_line": 86,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W08",
+            "dataOrCondition": "Reviewed rebook",
+            "conditional": true
+          },
+          {
+            "to": "W10",
+            "dataOrCondition": "Reviewed charge",
+            "conditional": false
+          },
+          {
+            "to": "W13",
+            "dataOrCondition": "Verified cancellation",
+            "conditional": false
+          }
+        ]
+      },
+      {
+        "workflow": "W08",
+        "title": "W08 · Bookings, changes and cover",
+        "visibleTriggerAndGate": "Booking / cover → reviewed native acceptance",
+        "detailCard": "W08 — Bookings, changes and cover",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 152,
+            "end_line": 152,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 87,
+            "end_line": 87,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W06",
+            "dataOrCondition": "Verified service",
+            "conditional": false
+          },
+          {
+            "to": "W09",
+            "dataOrCondition": "Roster context",
+            "conditional": false
+          },
+          {
+            "to": "W14",
+            "dataOrCondition": "Current assignment",
+            "conditional": false
+          },
+          {
+            "to": "W13",
+            "dataOrCondition": "Verified cover",
+            "conditional": false
+          }
+        ]
+      },
+      {
+        "workflow": "W09",
+        "title": "W09 · Care and attendance exceptions",
+        "visibleTriggerAndGate": "Native care update → restricted review",
+        "detailCard": "W09 — Care and attendance exceptions",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 153,
+            "end_line": 153,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 88,
+            "end_line": 88,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W10",
+            "dataOrCondition": "Billing exceptions",
+            "conditional": false
+          },
+          {
+            "to": "W11",
+            "dataOrCondition": "Hours exceptions",
+            "conditional": false
+          }
+        ]
+      },
+      {
+        "workflow": "W10",
+        "title": "W10 · Tuesday invoice review",
+        "visibleTriggerAndGate": "Tuesday cut-off → bookkeeper review",
+        "detailCard": "W10 — Tuesday invoice review",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 154,
+            "end_line": 154,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 89,
+            "end_line": 89,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W13",
+            "dataOrCondition": "Approved invoice reply",
+            "conditional": true
+          }
+        ]
+      },
+      {
+        "workflow": "W11",
+        "title": "W11 · Fortnightly payroll review",
+        "visibleTriggerAndGate": "Pay-period cut-off → bookkeeper review",
+        "detailCard": "W11 — Fortnightly payroll review",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 155,
+            "end_line": 155,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 90,
+            "end_line": 90,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W13",
+            "dataOrCondition": "Approved pay reply",
+            "conditional": true
+          }
+        ]
+      },
+      {
+        "workflow": "W12",
+        "title": "W12 · Document cleanup and renewal",
+        "visibleTriggerAndGate": "Expiry / evidence → native doc review",
+        "detailCard": "W12 — Document cleanup and renewal",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 156,
+            "end_line": 156,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 91,
+            "end_line": 91,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W08",
+            "dataOrCondition": "Reviewed eligibility",
+            "conditional": false
+          },
+          {
+            "to": "W13",
+            "dataOrCondition": "Renewal contact",
+            "conditional": true
+          }
+        ]
+      },
+      {
+        "workflow": "W13",
+        "title": "W13 · Communication and delivery",
+        "visibleTriggerAndGate": "Verified outcome → recipient / receipt",
+        "detailCard": "W13 — Communication and delivery",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 157,
+            "end_line": 157,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 92,
+            "end_line": 92,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": []
+      },
+      {
+        "workflow": "W14",
+        "title": "W14 · Bookings and arrival estimates",
+        "visibleTriggerAndGate": "Current assignment + worker consent/start",
+        "detailCard": "W14 — Bookings and arrival estimates",
+        "detailCoverage": [
+          "trigger and inputs",
+          "automated preparation",
+          "ShiftCare action and human owner",
+          "output/next workflow",
+          "failure/human recovery",
+          "business value and implementation status"
+        ],
+        "sources": [
+          {
+            "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+            "line": 158,
+            "end_line": 158,
+            "label": "Researched workflow"
+          },
+          {
+            "path": "docs/OCD_Prototype_Workflow_Plan_and_Validation.md",
+            "line": 93,
+            "end_line": 93,
+            "label": "Prototype status"
+          },
+          {
+            "path": "workspace/automation-engine.js",
+            "line": 10,
+            "end_line": 25,
+            "label": "Fictional workflow catalog"
+          }
+        ],
+        "outputs": [
+          {
+            "to": "W13",
+            "dataOrCondition": "Delay follow-up",
+            "conditional": true
+          }
+        ]
+      }
+    ],
+    "dataHandoffs": [
+      {
+        "id": "W01-W03",
+        "from": "W01",
+        "to": "W03",
+        "label": "Area / capacity reviewed",
+        "variant": "default"
+      },
+      {
+        "id": "W02-W03",
+        "from": "W02",
+        "to": "W03",
+        "label": "Participant form",
+        "variant": "default"
+      },
+      {
+        "id": "W02-W04",
+        "from": "W02",
+        "to": "W04",
+        "label": "Employee form",
+        "variant": "default"
+      },
+      {
+        "id": "W02-W05",
+        "from": "W02",
+        "to": "W05",
+        "label": "Returned file",
+        "variant": "dashed"
+      },
+      {
+        "id": "W02-W06",
+        "from": "W02",
+        "to": "W06",
+        "label": "Matched reply",
+        "variant": "dashed"
+      },
+      {
+        "id": "W02-W10",
+        "from": "W02",
+        "to": "W10",
+        "label": "Invoice query",
+        "variant": "dashed"
+      },
+      {
+        "id": "W03-W05",
+        "from": "W03",
+        "to": "W05",
+        "label": "Verified client ID",
+        "variant": "default"
+      },
+      {
+        "id": "W05-W08",
+        "from": "W05",
+        "to": "W08",
+        "label": "Reviewed agreement",
+        "variant": "default"
+      },
+      {
+        "id": "W04-W12",
+        "from": "W04",
+        "to": "W12",
+        "label": "Screening evidence",
+        "variant": "default"
+      },
+      {
+        "id": "W12-W08",
+        "from": "W12",
+        "to": "W08",
+        "label": "Reviewed eligibility",
+        "variant": "default"
+      },
+      {
+        "id": "W04-W11",
+        "from": "W04",
+        "to": "W11",
+        "label": "Staff / payroll link",
+        "variant": "dashed"
+      },
+      {
+        "id": "W08-W06",
+        "from": "W08",
+        "to": "W06",
+        "label": "Verified service",
+        "variant": "default"
+      },
+      {
+        "id": "W06-W07",
+        "from": "W06",
+        "to": "W07",
+        "label": "Matched cancellation",
+        "variant": "default"
+      },
+      {
+        "id": "W06-W08",
+        "from": "W06",
+        "to": "W08",
+        "label": "Change request",
+        "variant": "dashed",
+        "fromSide": "right",
+        "toSide": "left"
+      },
+      {
+        "id": "W07-W08",
+        "from": "W07",
+        "to": "W08",
+        "label": "Reviewed rebook",
+        "variant": "dashed",
+        "fromSide": "left",
+        "toSide": "top"
+      },
+      {
+        "id": "W08-W09",
+        "from": "W08",
+        "to": "W09",
+        "label": "Roster context",
+        "variant": "default"
+      },
+      {
+        "id": "W08-W14",
+        "from": "W08",
+        "to": "W14",
+        "label": "Current assignment",
+        "variant": "default"
+      },
+      {
+        "id": "W09-W10",
+        "from": "W09",
+        "to": "W10",
+        "label": "Billing exceptions",
+        "variant": "default"
+      },
+      {
+        "id": "W09-W11",
+        "from": "W09",
+        "to": "W11",
+        "label": "Hours exceptions",
+        "variant": "default"
+      },
+      {
+        "id": "W07-W10",
+        "from": "W07",
+        "to": "W10",
+        "label": "Reviewed charge",
+        "variant": "default"
+      },
+      {
+        "id": "W03-W13",
+        "from": "W03",
+        "to": "W13",
+        "label": "Verified profile update",
+        "variant": "dashed"
+      },
+      {
+        "id": "W07-W13",
+        "from": "W07",
+        "to": "W13",
+        "label": "Verified cancellation",
+        "variant": "emphasis"
+      },
+      {
+        "id": "W08-W13",
+        "from": "W08",
+        "to": "W13",
+        "label": "Verified cover",
+        "variant": "emphasis"
+      },
+      {
+        "id": "W12-W13",
+        "from": "W12",
+        "to": "W13",
+        "label": "Renewal contact",
+        "variant": "dashed"
+      },
+      {
+        "id": "W14-W13",
+        "from": "W14",
+        "to": "W13",
+        "label": "Delay follow-up",
+        "variant": "dashed"
+      },
+      {
+        "id": "W02-W01",
+        "from": "W02",
+        "to": "W01",
+        "label": "Enquiry / area",
+        "variant": "default"
+      },
+      {
+        "id": "W02-W13",
+        "from": "W02",
+        "to": "W13",
+        "label": "Feedback / contact",
+        "variant": "dashed"
+      },
+      {
+        "id": "W10-W13",
+        "from": "W10",
+        "to": "W13",
+        "label": "Approved invoice reply",
+        "variant": "dashed"
+      },
+      {
+        "id": "W11-W13",
+        "from": "W11",
+        "to": "W13",
+        "label": "Approved pay reply",
+        "variant": "dashed",
+        "labelDy": 20
+      }
+    ],
+    "visibleCriticalGates": {
+      "cancellation": "W07 office charge/scope review; group/locked/unknown outcomes need native/human handling.",
+      "cover": "W08 reviewed native worker acceptance; current assignment and suitability remain controlled.",
+      "finance": "W10/W11 bookkeeper review and existing export/payroll release.",
+      "journey": "W14 current assignment plus assigned-worker consent/start; stale/cancelled/reassigned journeys withdraw ETA.",
+      "serverIntegration": "Current website connector is GET-only; REST mutations require entitlement and validated contracts.",
+      "resultFlow": "Independent connector read-back/errors return to jobs; native MCP/UI reads return to the supervised actor."
+    },
+    "sharedRecovery": "The workflow guide’s completion/exception section and individual cards explain owned native tasks, unknown-write reconciliation and independent delivery recovery."
+  },
+  "capabilityBoundaries": {
+    "shiftcare": "Main/source-of-truth system for people, roster, care, documents, funding/service billing.",
+    "ocd": "Enquiries, source references, proposals, approvals, jobs, owned exceptions and its own delivery/journey records. Production shared jobs remain proposed.",
+    "accounting": "Existing accounting/payroll systems and bookkeeper retain approval, export and financial release.",
+    "mcp": "Recorded authenticated trial reads plus one exact approved administrative follow-up with independent read-back. Assistant OAuth is separate from website credentials.",
+    "rest": "Website route is GET-only; live REST credentials and mutation contracts remain unverified.",
+    "webhooks": "No public roster/document/client webhook contract established. Proposed bounded refresh remains gated.",
+    "gps": "Separate consented journey source required; clock-in GPS and Mapbox routing do not establish continuous tracking.",
+    "productionClaim": "Diagram/coverage checks do not certify fourteen live automations or all undiscovered internal client procedures."
+  },
+  "notDeliveredDrafts": [
+    {
+      "specification": ".archify/workflow-ocd-automation-execution-20261008-223845/candidate.json",
+      "diagramType": "workflow",
+      "status": "unvalidated optional companion",
+      "failedReceipt": ".archify/workflow-ocd-automation-execution-20261008-223845/ocd-automation-execution.finalize.json",
+      "diagnostic": "workflow/explicit-pin-conflict on human-match: readable return-route feasibility with authored endpoint sides.",
+      "handling": "Retained under Archify’s bounded repair rule. No HTML delivered; excluded from passing counts. Shared execution/recovery is documented in the delivered cards and workflow guide."
+    }
+  ],
+  "verificationNotes": [
+    "Diagram source references are pinned to the committed revision; the new Markdown guide is a working-tree companion.",
+    "Effective HTML/specification hashes and capture hashes match final delivery receipts.",
+    "No new native ShiftCare write was performed by these checks.",
+    "No prototype runtime files changed; no commit, push or deployment was performed for this diagram request."
+  ]
+}

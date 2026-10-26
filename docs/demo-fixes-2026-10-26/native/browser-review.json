@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T02:09:14.240Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Shared workflow boundary",
+      "status": "pass",
+      "detail": "All 14 handlers are discoverable and no fictional browser cases were imported into server storage."
+    },
+    {
+      "name": "Shared case review and persistence",
+      "status": "pass",
+      "detail": "Office evidence was prepared, explicitly approved and completed as an application review; the same case remained after reload."
+    },
+    {
+      "name": "Native handoff and honest verification",
+      "status": "pass",
+      "detail": "Missing write adapters retained a checked human handoff. Manual verification was recorded as staff-manual, without any ShiftCare request."
+    },
+    {
+      "name": "Shared cancellation business closure",
+      "status": "pass",
+      "detail": "Checked travel before cancellation, preserved the verified action during handover, held closure for two separate communication outcomes, and required a final charge/pay check. No native adapter was used."
+    },
+    {
+      "name": "Stale submission",
+      "status": "pass",
+      "detail": "A stale case revision was rejected by the backend."
+    },
+    {
+      "name": "Original evidence import",
+      "status": "pass",
+      "detail": "Uploaded and extracted original text is retained in private server storage and appears with its source download in the existing case."
+    },
+    {
+      "name": "Verified service access boundary",
+      "status": "pass",
+      "detail": "The live service route requires independently configured identities and grants no access from a demo persona or office session."
+    },
+    {
+      "name": "Authenticated shared queue",
+      "status": "pass",
+      "detail": "After logout, server cases were unavailable and the screen required office sign-in."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/native-cancellation-follow-through.png",
+      "sha256": "5b90bb356afd33c8a63d2b4d48196965c18dcdaafb2d67b25cb42b80e2561c12",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/native-workflows-desktop.png",
+      "sha256": "a14541cd5a84295dc45ca5e566e41a79fc5466ec24065b6b9685455b3af8d0d5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/native-workflows-mobile.png",
+      "sha256": "6538d71b8e6ebecf11343a879726f17bff0b2642e7b7bff766b4edaf2c60d6a0",
+      "width": 390,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/native-workflows-small-mobile.png",
+      "sha256": "d064bd1762a71975de5fe8cc3b7e5f22b40c5153375ea3c18f72b2c0cb21b278",
+      "width": 320,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/native-original-evidence-desktop.png",
+      "sha256": "5837969ebefdd8f370b26c40c56f0428e073731408f5f08233e3bcbe1bf3bdea",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/native-original-evidence-mobile.png",
+      "sha256": "e9163d2cd35c17f9fb591d97f317f52496566355bd366bda0ae79c5230d96e6c",
+      "width": 390,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/native/verified-service-access-mobile.png",
+      "sha256": "c491d50aac9be25626fa850d0b21197fede637232b7fa0600467b3f4574a1057",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

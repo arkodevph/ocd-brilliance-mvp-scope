@@ -1,0 +1,955 @@
+{
+  "title": "OCD Brilliance Pain Points and Bottlenecks",
+  "date": "23 October 2026",
+  "status": "Draft for operations review",
+  "item_count": 96,
+  "groups": [
+    {
+      "title": "Intake and client records",
+      "introduction": "Onboarding and record maintenance require staff to assemble information before the next step can begin.",
+      "items": [
+        {
+          "title": "Repeated data entry",
+          "description": "Staff copy information from emailed forms and scanned assessments into participant and worker records in the relevant systems.",
+          "sources": [
+            "C05:A01",
+            "R14:M1-01",
+            "R14:M1-02"
+          ],
+          "id": "PP-001"
+        },
+        {
+          "title": "Scattered referral channels",
+          "description": "Website, email, telephone, coordinator and provider referrals require manual collection and processing.",
+          "sources": [
+            "C05:A01"
+          ],
+          "id": "PP-002"
+        },
+        {
+          "title": "Late serviceability checks",
+          "description": "People can complete intake paperwork before learning that OCD cannot serve their area.",
+          "sources": [
+            "C05:A02"
+          ],
+          "id": "PP-003"
+        },
+        {
+          "title": "Incomplete intake information",
+          "description": "Missing dates create clarification and follow-up work. The intended date field still needs confirmation.",
+          "sources": [
+            "C20:TR-31"
+          ],
+          "id": "PP-004"
+        },
+        {
+          "title": "Unclear client stages",
+          "description": "Staff search prospect and active-client lists; a consultation record was reportedly moved to active status prematurely.",
+          "sources": [
+            "R21:NEW-06"
+          ],
+          "id": "PP-005"
+        },
+        {
+          "title": "Finding agreed service hours",
+          "description": "Approved hours and service changes must be recovered from emails and notes, with uncertainty about whether a colleague recorded the update.",
+          "sources": [
+            "R14:M1-04"
+          ],
+          "id": "PP-006"
+        }
+      ]
+    },
+    {
+      "title": "Incoming work and communication",
+      "introduction": "Requests and updates cross several channels. Staff must establish ownership, context and the actual communication outcome.",
+      "items": [
+        {
+          "title": "Duplicated inbox attention",
+          "description": "Multiple administrators inspect the same messages while other enquiries remain unanswered.",
+          "sources": [
+            "C05:A03"
+          ],
+          "id": "PP-007"
+        },
+        {
+          "title": "Manual channel monitoring",
+          "description": "Staff repeatedly check Outlook, Dialpad, messages and voicemail while performing other work.",
+          "sources": [
+            "R14:M1-26",
+            "R21:NEW-07"
+          ],
+          "id": "PP-008"
+        },
+        {
+          "title": "Repetitive correspondence",
+          "description": "Similar emails and updates are prepared participant by participant.",
+          "sources": [
+            "R14:M1-03"
+          ],
+          "id": "PP-009"
+        },
+        {
+          "title": "Incomplete messages",
+          "description": "Messages can omit the person, service time, confirmed outcome or next action.",
+          "sources": [
+            "C20:TR-24",
+            "R21:NEW-18"
+          ],
+          "id": "PP-010"
+        },
+        {
+          "title": "Unverified communication outcomes",
+          "description": "Staff separately check whether people were notified, received the message or responded.",
+          "sources": [
+            "R14:M1-09",
+            "C20:TR-23",
+            "C05:A11"
+          ],
+          "id": "PP-011"
+        },
+        {
+          "title": "Scattered communication evidence",
+          "description": "Establishing what was communicated requires searching across channels, while protecting access to confidential information.",
+          "sources": [
+            "C05:A11",
+            "R14:M1-20"
+          ],
+          "id": "PP-012"
+        },
+        {
+          "title": "Manual prioritization",
+          "description": "Staff identify urgent requests, connect complaints to the relevant invoice or booking, and decide who should act.",
+          "sources": [
+            "C05:A03"
+          ],
+          "id": "PP-013"
+        },
+        {
+          "title": "Arrival enquiries",
+          "description": "Participants call the office to ask whether a worker is on the way or why the worker has not arrived, adding interruptions.",
+          "sources": [
+            "C05:A12"
+          ],
+          "id": "PP-014"
+        }
+      ]
+    },
+    {
+      "title": "Scheduling and travel",
+      "introduction": "Booking changes involve the roster, worker agreement, travel details and verification of the saved result.",
+      "items": [
+        {
+          "title": "Complex service capacity",
+          "description": "Coverage depends on location, worker hours, departures, preferences and actual capacity, rather than postcode alone.",
+          "sources": [
+            "C05:A02",
+            "C05:A05"
+          ],
+          "id": "PP-015"
+        },
+        {
+          "title": "Uncertain worker availability",
+          "description": "An empty calendar slot does not establish willingness or availability to accept work; worker confirmation is still required.",
+          "sources": [
+            "C05:A05"
+          ],
+          "id": "PP-016"
+        },
+        {
+          "title": "Manual booking creation",
+          "description": "Staff copy existing bookings and change dates, times, workers, service details and travel information.",
+          "sources": [
+            "R21:NEW-05"
+          ],
+          "id": "PP-017"
+        },
+        {
+          "title": "Recurring change ambiguity",
+          "description": "Staff clarify whether a change affects one occurrence or future bookings before editing.",
+          "sources": [
+            "R14:M1-05"
+          ],
+          "id": "PP-018"
+        },
+        {
+          "title": "Time entry errors",
+          "description": "AM/PM and service-time misunderstandings require clarification and correction.",
+          "sources": [
+            "R14:M1-08"
+          ],
+          "id": "PP-019"
+        },
+        {
+          "title": "Repeated save verification",
+          "description": "Staff reopen records and future occurrences to check that changes saved correctly. The cause of an apparent failed update was not established.",
+          "sources": [
+            "R14:M1-08"
+          ],
+          "id": "PP-020"
+        },
+        {
+          "title": "Manual travel checks",
+          "description": "Addresses, kilometres, travel duration and separate travel/service blocks require checking.",
+          "sources": [
+            "R14:M1-06",
+            "R14:M1-07",
+            "R21:NEW-03"
+          ],
+          "id": "PP-021"
+        },
+        {
+          "title": "Stale travel information",
+          "description": "Worker or booking changes can leave previous travel values in place.",
+          "sources": [
+            "R21:NEW-03"
+          ],
+          "id": "PP-022"
+        },
+        {
+          "title": "Recurring reassignment work",
+          "description": "A departing worker's bookings require reassignment, travel review and participant communication, even where future-shift updates are available.",
+          "sources": [
+            "R21:NEW-04"
+          ],
+          "id": "PP-023"
+        },
+        {
+          "title": "Unconfirmed service times",
+          "description": "Staff chase participants or families to establish when workers should attend.",
+          "sources": [
+            "R14:M1-10"
+          ],
+          "id": "PP-024"
+        },
+        {
+          "title": "Repeated instruction maintenance",
+          "description": "Staff inspect bookings individually and copy missing shift or timesheet instructions.",
+          "sources": [
+            "R21:NEW-01"
+          ],
+          "id": "PP-025"
+        },
+        {
+          "title": "Instruction version confusion",
+          "description": "Instructions are rewritten and formatted in separate tools, with manual before/after tracking.",
+          "sources": [
+            "R21:NEW-02"
+          ],
+          "id": "PP-026"
+        }
+      ]
+    },
+    {
+      "title": "Confirmations cancellations and replacement cover",
+      "introduction": "A response or worker absence can create several dependent updates, financial checks and participant decisions.",
+      "items": [
+        {
+          "title": "Daily confirmation checking",
+          "description": "Staff manually inspect reminder responses and determine the required action.",
+          "sources": [
+            "C05:A04"
+          ],
+          "id": "PP-027"
+        },
+        {
+          "title": "Incomplete cancellations",
+          "description": "A worker can be notified while the corresponding booking remains active.",
+          "sources": [
+            "C20:TR-23",
+            "R21:NEW-10"
+          ],
+          "id": "PP-028"
+        },
+        {
+          "title": "Cancellation travel corrections",
+          "description": "Provider travel and mileage require separate review and cleanup when travel did not occur.",
+          "sources": [
+            "C20:TR-19",
+            "R21:NEW-11"
+          ],
+          "id": "PP-029"
+        },
+        {
+          "title": "Different cancellation treatments",
+          "description": "Staff distinguish participant cancellations from provider inability to deliver, then establish the approved billing treatment.",
+          "sources": [
+            "R14:M1-16",
+            "C05:A04"
+          ],
+          "id": "PP-030"
+        },
+        {
+          "title": "Last minute absences",
+          "description": "Sickness and resignations trigger urgent coordination and roster changes.",
+          "sources": [
+            "C05:A06"
+          ],
+          "id": "PP-031"
+        },
+        {
+          "title": "Insufficient backup capacity",
+          "description": "Several simultaneous absences can exceed the available replacement pool.",
+          "sources": [
+            "R14:M1-13"
+          ],
+          "id": "PP-032"
+        },
+        {
+          "title": "Individual participant decisions",
+          "description": "Each affected participant may prefer replacement cover, rescheduling or skipping the visit, requiring individual confirmation.",
+          "sources": [
+            "R14:M1-14",
+            "C20:TR-30"
+          ],
+          "id": "PP-033"
+        },
+        {
+          "title": "Replacement suitability checks",
+          "description": "Staff consider geography, availability, continuity, introductions and participant agreement.",
+          "sources": [
+            "R14:M1-15"
+          ],
+          "id": "PP-034"
+        }
+      ]
+    },
+    {
+      "title": "Documents and compliance information",
+      "introduction": "Staff need to find the correct evidence, establish its meaning and keep native records reliable.",
+      "items": [
+        {
+          "title": "Fragmented document storage",
+          "description": "Files must be located across email, cloud storage and ShiftCare.",
+          "sources": [
+            "R21:NEW-08"
+          ],
+          "id": "PP-035"
+        },
+        {
+          "title": "Manual filing",
+          "description": "Received documents must be matched and placed under the correct person.",
+          "sources": [
+            "C05:A10",
+            "R21:NEW-08"
+          ],
+          "id": "PP-036"
+        },
+        {
+          "title": "Record by record completeness checks",
+          "description": "Staff open individual records to establish whether required paperwork is present. A missing native copy does not prove the agreement does not exist.",
+          "sources": [
+            "R21:NEW-08"
+          ],
+          "id": "PP-037"
+        },
+        {
+          "title": "Missing attachments",
+          "description": "Emails can refer to documents that were not attached, creating another follow-up.",
+          "sources": [
+            "R21:NEW-21"
+          ],
+          "id": "PP-038"
+        },
+        {
+          "title": "Unclear document dates",
+          "description": "Staff interpret date formats and distinguish plan dates from agreement dates; an initial expired-plan interpretation was corrected in the discussion.",
+          "sources": [
+            "R21:NEW-09"
+          ],
+          "id": "PP-039"
+        },
+        {
+          "title": "Coordinator follow-up",
+          "description": "Updated dates, funding information and supporting evidence require external clarification.",
+          "sources": [
+            "R21:NEW-09"
+          ],
+          "id": "PP-040"
+        },
+        {
+          "title": "Incorrect expiry alerts",
+          "description": "Non-expiring documents can appear expired because their metadata was entered incorrectly.",
+          "sources": [
+            "C05:A07"
+          ],
+          "id": "PP-041"
+        },
+        {
+          "title": "Renewal chasing",
+          "description": "Genuine missing or expiring worker documents require checking and follow-up.",
+          "sources": [
+            "C05:A07"
+          ],
+          "id": "PP-042"
+        },
+        {
+          "title": "Policy identification",
+          "description": "Staff locate the correct company policies and distinguish them from agency paperwork.",
+          "sources": [
+            "R14:M1-21"
+          ],
+          "id": "PP-043"
+        }
+      ]
+    },
+    {
+      "title": "Invoicing and payment follow-up",
+      "introduction": "Billing requires source review and client-specific decisions before external issue, correction and payment follow-up.",
+      "items": [
+        {
+          "title": "Service by service billing review",
+          "description": "Staff compare completed work, attendance, notes, agreed hours and billing details.",
+          "sources": [
+            "C05:A08",
+            "C05:A09"
+          ],
+          "id": "PP-044"
+        },
+        {
+          "title": "Incorrect service coding",
+          "description": "Cleaning/support categories and travel items can be mismatched and require correction.",
+          "sources": [
+            "C20:TR-01",
+            "C20:TR-20",
+            "R21:NEW-14"
+          ],
+          "id": "PP-045"
+        },
+        {
+          "title": "Client instructions held in memory",
+          "description": "Advance payments and special billing arrangements depend on notes and recollection.",
+          "sources": [
+            "C20:TR-02",
+            "R21:NEW-15"
+          ],
+          "id": "PP-046"
+        },
+        {
+          "title": "Manual tax setting checks",
+          "description": "Staff select and verify invoice tax and accounting settings against the approved instructions.",
+          "sources": [
+            "C20:TR-04",
+            "R21:NEW-15"
+          ],
+          "id": "PP-047"
+        },
+        {
+          "title": "Outdated billing recipients",
+          "description": "Plan-manager changes may not be communicated before invoices are issued.",
+          "sources": [
+            "C20:TR-05",
+            "R21:NEW-17"
+          ],
+          "id": "PP-048"
+        },
+        {
+          "title": "Returned invoice investigation",
+          "description": "Staff locate the rejected invoice, establish the reason and determine the correction.",
+          "sources": [
+            "C20:TR-05"
+          ],
+          "id": "PP-049"
+        },
+        {
+          "title": "Manual invoice chasing",
+          "description": "Calls, messages, resending and payment verification require staff follow-through.",
+          "sources": [
+            "C20:TR-25",
+            "R21:NEW-17"
+          ],
+          "id": "PP-050"
+        },
+        {
+          "title": "Unclear billing cadence",
+          "description": "Staff repeatedly clarify when completed services should be invoiced; the discussion did not establish one definitive new schedule.",
+          "sources": [
+            "R21:NEW-16"
+          ],
+          "id": "PP-051"
+        },
+        {
+          "title": "Exceptional invoices need senior review",
+          "description": "Unusual amounts or unclear instructions are handed to experienced staff; general escalation criteria remain to be agreed.",
+          "sources": [
+            "C20:TR-03"
+          ],
+          "id": "PP-052"
+        },
+        {
+          "title": "Occasional export discrepancies",
+          "description": "Rounding or export issues require correction; the client described these as lower priority.",
+          "sources": [
+            "C05:A09"
+          ],
+          "id": "PP-053"
+        },
+        {
+          "title": "Payment delays affect payroll planning",
+          "description": "Owners report concern that returned invoices delay the cash needed for wages.",
+          "sources": [
+            "R21:NEW-17",
+            "C20:TR-25"
+          ],
+          "id": "PP-054"
+        }
+      ]
+    },
+    {
+      "title": "Payroll preparation and completion",
+      "introduction": "Payroll combines source checks, worker-specific adjustments and entry into the external payroll process.",
+      "items": [
+        {
+          "title": "Manual pay run configuration",
+          "description": "Period dates, payment dates and payment methods require checking. Weekly/fortnightly wording in the transcript remains unclear.",
+          "sources": [
+            "C20:TR-06"
+          ],
+          "id": "PP-055"
+        },
+        {
+          "title": "Employee list cleanup",
+          "description": "Inactive workers can remain in payroll selection and need review.",
+          "sources": [
+            "C20:TR-07"
+          ],
+          "id": "PP-056"
+        },
+        {
+          "title": "New starter setup",
+          "description": "Adding an employee requires a separate payroll setup process whose complete steps were not supplied.",
+          "sources": [
+            "C20:TR-08"
+          ],
+          "id": "PP-057"
+        },
+        {
+          "title": "Previous run values",
+          "description": "Staff inspect and refresh information carried over from earlier payslips. The field described as a base rate needs verification.",
+          "sources": [
+            "C20:TR-09"
+          ],
+          "id": "PP-058"
+        },
+        {
+          "title": "Worker by worker reconciliation",
+          "description": "Staff compare ShiftCare hours and mileage with payroll inputs and manually enter the approved values.",
+          "sources": [
+            "C20:TR-10",
+            "R21:NEW-12"
+          ],
+          "id": "PP-059"
+        },
+        {
+          "title": "Missing timesheets",
+          "description": "Incomplete source records require investigation before payroll can proceed.",
+          "sources": [
+            "C20:TR-11"
+          ],
+          "id": "PP-060"
+        },
+        {
+          "title": "Adjustment tracking",
+          "description": "Hour changes and exceptions must be found in notes and applied to the correct period.",
+          "sources": [
+            "C20:TR-13",
+            "R21:NEW-13"
+          ],
+          "id": "PP-061"
+        },
+        {
+          "title": "Leave verification",
+          "description": "Staff check requests, supporting documents, balances and the applicable payroll treatment.",
+          "sources": [
+            "C20:TR-14",
+            "R14:M1-12"
+          ],
+          "id": "PP-062"
+        },
+        {
+          "title": "Back pay entry",
+          "description": "Corrections require calculations, approval, entry and explanatory notes.",
+          "sources": [
+            "C20:TR-16",
+            "R21:NEW-13"
+          ],
+          "id": "PP-063"
+        },
+        {
+          "title": "Mileage interpretation",
+          "description": "Kilometres, reimbursement amounts and payroll fields require careful distinction; the transcript does not establish a reimbursement rate.",
+          "sources": [
+            "C20:TR-15"
+          ],
+          "id": "PP-064"
+        },
+        {
+          "title": "Unconfirmed travel treatment",
+          "description": "Home-to-first-job changes need an approved decision and communication before application.",
+          "sources": [
+            "C20:TR-12"
+          ],
+          "id": "PP-065"
+        },
+        {
+          "title": "Manual payroll completion",
+          "description": "Staff save, finalize and email payslips employee by employee in the external payroll process.",
+          "sources": [
+            "C20:TR-17"
+          ],
+          "id": "PP-066"
+        }
+      ]
+    },
+    {
+      "title": "Service quality and case handling",
+      "introduction": "Reported service concerns need an owned response and enough evidence for a responsible person to make a decision.",
+      "items": [
+        {
+          "title": "Reported incomplete work",
+          "description": "Owners describe missed tasks, inconsistent cleaning and early departures requiring investigation; these are reported concerns about service delivery.",
+          "sources": [
+            "R14:M1-17"
+          ],
+          "id": "PP-067"
+        },
+        {
+          "title": "Important information buried in notes",
+          "description": "Significant events and extra time must be found among routine visit records, including restricted office notes.",
+          "sources": [
+            "C05:A08"
+          ],
+          "id": "PP-068"
+        },
+        {
+          "title": "Manual participant feedback",
+          "description": "Staff arrange calls to learn how services are going.",
+          "sources": [
+            "R14:M1-18"
+          ],
+          "id": "PP-069"
+        },
+        {
+          "title": "Reactive problem discovery",
+          "description": "The supervisor wants proactive feedback so concerns can be raised before relying on incoming complaints.",
+          "sources": [
+            "R14:M1-18"
+          ],
+          "id": "PP-070"
+        },
+        {
+          "title": "Fragmented complaint histories",
+          "description": "Relevant explanations and correspondence must be assembled from several sources.",
+          "sources": [
+            "R14:M1-19"
+          ],
+          "id": "PP-071"
+        },
+        {
+          "title": "Pending personnel cases",
+          "description": "Calls, voicemail, replies, management decisions and replacement arrangements must be coordinated.",
+          "sources": [
+            "R14:M1-20"
+          ],
+          "id": "PP-072"
+        },
+        {
+          "title": "Safety follow-up",
+          "description": "Reported household hazards require reviewed communication and coordinated action with the appropriate people.",
+          "sources": [
+            "R21:NEW-22"
+          ],
+          "id": "PP-073"
+        }
+      ]
+    },
+    {
+      "title": "People training and access",
+      "introduction": "Staff readiness depends on usable instructions, supervised practice, working tools and verified access.",
+      "items": [
+        {
+          "title": "Scattered procedural knowledge",
+          "description": "Staff rely on personal notes and long recordings to recover instructions.",
+          "sources": [
+            "R14:M1-24",
+            "C20:TR-21",
+            "R21:NEW-19"
+          ],
+          "id": "PP-074"
+        },
+        {
+          "title": "Repeated explanations",
+          "description": "Supervisors revisit procedures when knowledge has not been retained.",
+          "sources": [
+            "C20:TR-26",
+            "R21:NEW-19"
+          ],
+          "id": "PP-075"
+        },
+        {
+          "title": "Owner led training burden",
+          "description": "New staff require substantial direct instruction and supervision.",
+          "sources": [
+            "R14:M1-30"
+          ],
+          "id": "PP-076"
+        },
+        {
+          "title": "Telephone coaching",
+          "description": "Staff need observed practice, recording reviews, feedback and readiness checks.",
+          "sources": [
+            "C20:TR-22",
+            "C20:TR-26"
+          ],
+          "id": "PP-077"
+        },
+        {
+          "title": "Incomplete task sequencing",
+          "description": "Staff can move to another task before finishing the required updates and follow-ups.",
+          "sources": [
+            "C20:TR-23"
+          ],
+          "id": "PP-078"
+        },
+        {
+          "title": "Unverified policy understanding",
+          "description": "Supplying documents does not establish that staff read or understood them.",
+          "sources": [
+            "R14:M1-22"
+          ],
+          "id": "PP-079"
+        },
+        {
+          "title": "Delayed application access",
+          "description": "Missing invitations, permissions, credentials or instructions prevent independent work.",
+          "sources": [
+            "R14:M1-23",
+            "R21:NEW-20",
+            "C20:TR-29",
+            "C20:TR-34"
+          ],
+          "id": "PP-080"
+        },
+        {
+          "title": "Phone configuration work",
+          "description": "Office-number access, licences, caller identity, routing and voicemail require setup and confirmation of the actual account configuration.",
+          "sources": [
+            "C20:TR-28"
+          ],
+          "id": "PP-081"
+        },
+        {
+          "title": "Group administration",
+          "description": "Communication groups require membership, privacy boundaries and ownership decisions.",
+          "sources": [
+            "C20:TR-27"
+          ],
+          "id": "PP-082"
+        },
+        {
+          "title": "Audio faults",
+          "description": "Microphone and call settings interrupt participant communication and training.",
+          "sources": [
+            "R14:M1-33"
+          ],
+          "id": "PP-083"
+        },
+        {
+          "title": "Unclear meeting identities",
+          "description": "Generic accounts can make it difficult to establish who is present during sensitive discussions.",
+          "sources": [
+            "R14:M1-34"
+          ],
+          "id": "PP-084"
+        },
+        {
+          "title": "Manual absence history reconstruction",
+          "description": "Managers search communication and roster records to establish factual absence histories; interpretation requires human review.",
+          "sources": [
+            "R14:M1-11"
+          ],
+          "id": "PP-085"
+        },
+        {
+          "title": "Incomplete offboarding",
+          "description": "Former staff can remain on the website or payroll lists, requiring coordinated status and access review.",
+          "sources": [
+            "C20:TR-07",
+            "C20:TR-32",
+            "R21:NEW-23"
+          ],
+          "id": "PP-086"
+        }
+      ]
+    },
+    {
+      "title": "Business pressures and owner dependency",
+      "introduction": "These reported business constraints influence automation priorities and the operating changes needed alongside software.",
+      "items": [
+        {
+          "title": "Dependence on the owners",
+          "description": "Routine questions, exceptions, callbacks and approvals repeatedly return to the owners.",
+          "sources": [
+            "C05:B05",
+            "R14:M1-25"
+          ],
+          "id": "PP-087"
+        },
+        {
+          "title": "Difficulty stepping away",
+          "description": "Owners report that operations become less reliable when they are unavailable.",
+          "sources": [
+            "C05:B05"
+          ],
+          "id": "PP-088"
+        },
+        {
+          "title": "Recruitment and backup pool maintenance",
+          "description": "Applications require screening, practical assessment, availability checks and training; a reliable backup pool still needs people.",
+          "sources": [
+            "R14:M1-28",
+            "R14:M1-29",
+            "C05:B01"
+          ],
+          "id": "PP-089"
+        },
+        {
+          "title": "Lost service revenue",
+          "description": "Uncovered or cancelled services reduce revenue while recurring costs remain, according to the meeting discussion.",
+          "sources": [
+            "R14:BC-01",
+            "C05:B05"
+          ],
+          "id": "PP-090"
+        },
+        {
+          "title": "Pressure from administration and subscriptions",
+          "description": "Existing costs constrain decisions about adding support staff.",
+          "sources": [
+            "R14:BC-05",
+            "C05:B05"
+          ],
+          "id": "PP-091"
+        },
+        {
+          "title": "Limited marketing capacity",
+          "description": "Owners lack time or specialist knowledge to maintain consistent promotion.",
+          "sources": [
+            "R14:M1-31",
+            "C05:B03"
+          ],
+          "id": "PP-092"
+        },
+        {
+          "title": "Variable demand",
+          "description": "Holidays and uneven enquiry volumes complicate staffing and growth planning.",
+          "sources": [
+            "R14:BC-03"
+          ],
+          "id": "PP-093"
+        },
+        {
+          "title": "Supplier coordination",
+          "description": "Website changes, email licences, renewals and provider communication require management time.",
+          "sources": [
+            "R14:M1-32"
+          ],
+          "id": "PP-094"
+        },
+        {
+          "title": "Memory based planning",
+          "description": "Holiday closures and future follow-ups depend on notes and someone remembering to raise them.",
+          "sources": [
+            "R14:M1-27"
+          ],
+          "id": "PP-095"
+        },
+        {
+          "title": "Risk of adding duplicated work",
+          "description": "The client wants improvements around existing ShiftCare functions without creating another repetitive workflow.",
+          "sources": [
+            "C05:P02",
+            "C05:P03"
+          ],
+          "id": "PP-096"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "title": "Payroll calendar",
+      "text": "Resolve the weekly versus fortnightly wording and confirm the approved start/end dates, payment date and method.",
+      "sources": [
+        "C20:TR-06"
+      ]
+    },
+    {
+      "title": "Previous payslip field",
+      "text": "Verify the screen field described as base rate before defining a reset procedure. The text does not authorize zeroing a contractual wage rate.",
+      "sources": [
+        "C20:TR-09"
+      ]
+    },
+    {
+      "title": "Travel and mileage rules",
+      "text": "Confirm hour adjustments, mileage units and reimbursement treatment, plus any home-to-first-job policy and its communication/effective date.",
+      "sources": [
+        "C20:TR-12",
+        "C20:TR-13",
+        "C20:TR-15"
+      ]
+    },
+    {
+      "title": "Intake date",
+      "text": "Identify whether the missing field is a submission, service, consultation or other date before changing the form.",
+      "sources": [
+        "C20:TR-31"
+      ]
+    },
+    {
+      "title": "Certificate task",
+      "text": "Identify the certificate types, emailed request, filing destination and completion criteria. The brief reference does not establish the full workflow.",
+      "sources": [
+        "C20:TR-33"
+      ]
+    },
+    {
+      "title": "Report preparation",
+      "text": "Clarify the briefly mentioned report, its period, inputs, audience and due time.",
+      "sources": [
+        "C20:TR-18"
+      ]
+    },
+    {
+      "title": "Employee contract",
+      "text": "Clarify the contract fragment before defining any creation, signing or filing workflow.",
+      "sources": [
+        "C20:TR-35"
+      ]
+    }
+  ],
+  "sources": {
+    "C05": {
+      "label": "5 October client requirements",
+      "path": "docs/OCD_Automation_Requirements_Register.csv",
+      "context": "27-entry register grounded in the 5 October transcript; includes requests, constraints, proposals and broader business wants."
+    },
+    "R14": {
+      "label": "14 October meeting review",
+      "path": "docs/meeting-analysis/meeting-1-problems.csv",
+      "context": "34 grouped findings from an earlier transcript review. The original CSV is not in this repository; this is secondary analysis.",
+      "companion": "docs/meeting-analysis/OCD_Manual_Work_Problems_Meeting_1_2026-10-14.md"
+    },
+    "R21": {
+      "label": "21 October recording findings",
+      "path": "docs/meeting-analysis/new-recordings-2026-10-21-findings.csv",
+      "context": "23 findings from prior automated recording analysis. Recording dates are not established by the filenames; 21 October is the analysis date."
+    },
+    "C20": {
+      "label": "Supplied CSV transcript coverage",
+      "path": "docs/feature-study-2026-10-21/transcript-coverage.json",
+      "context": "35 work groups linked to the supplied Dialpad and elapsed-time CSVs. The Dialpad export is dated 20 October; the second CSV has no established meeting date."
+    }
+  }
+}

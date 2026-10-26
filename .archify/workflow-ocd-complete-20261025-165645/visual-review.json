@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-25",
+  "status": "inspected",
+  "method": "Actual browser captures viewed by the author after the final passing browser run",
+  "scope": {
+    "light_theme_views": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "dark_theme_views": [
+      1
+    ],
+    "mobile": "Initial header and navigation at 390 px; no full mobile diagram readability or accessibility audit"
+  },
+  "findings": [
+    "All 35 process nodes retain scope tags and clickable details.",
+    "No missing nodes, clipped node labels or return routes cutting unrelated filled nodes were found in the inspected final captures.",
+    "Dense cross-family views retain some edge-to-edge crossings. They are separate relationships, not branch junctions. Use the process selector or 100% control to read dense views."
+  ],
+  "captures": [
+    {
+      "path": "browser-evidence/view-1-light.png",
+      "sha256": "1d656ece9bd2361b55ad2ae167970bca7ce6194b229a6d0c9219b18a4491f02f"
+    },
+    {
+      "path": "browser-evidence/view-2-light.png",
+      "sha256": "7fcdca9b097c450cfbab969bea75e7be55d36d44df7d7a33cd1fa590a124f564"
+    },
+    {
+      "path": "browser-evidence/view-3-light.png",
+      "sha256": "d9766eb974077d51c39ce5268cf02a7a8b5b75a3d5bb3461fdeb5ce99bf45c6a"
+    },
+    {
+      "path": "browser-evidence/view-4-light.png",
+      "sha256": "4a87a7d268fd8bc45e3133963e512994df48c8c37b2d99a5b497b503b1f13641"
+    },
+    {
+      "path": "browser-evidence/view-5-light.png",
+      "sha256": "cdfa02a68926e83f0ab9360e4515335fe918b98df8c2ecede565daf61e16e9c0"
+    },
+    {
+      "path": "browser-evidence/view-1-dark.png",
+      "sha256": "bb504951223270cb34cc9264765bef9b7acd4359527d2ae49d2fc7fbc0bdda4e"
+    },
+    {
+      "path": "browser-evidence/mobile-390.png",
+      "sha256": "972f8e54b27e1fda7509aa02d0d7cb841c1b570a28594c562916379d342f3c02"
+    }
+  ],
+  "browser_artifact_sha256": "0a0b47a4f7762feafb0c3df725d03dc333aee825198e7b4b562b394bf6980106",
+  "not_claimed": [
+    "Archify showcase acceptance",
+    "Universal cross-browser or accessibility certification",
+    "Live integration or implementation acceptance"
+  ]
+}

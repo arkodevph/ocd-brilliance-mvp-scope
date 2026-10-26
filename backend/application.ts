@@ -1,3 +1,5 @@
+import { handleAutomation } from './automation/automation.handler';
+import { handlePortal } from './automation/portal.handler';
 import { Hono } from 'hono';
 import { getRequestListener, type HttpBindings } from '@hono/node-server';
 import { RESPONSE_ALREADY_SENT } from '@hono/node-server/utils/response';
@@ -11,6 +13,8 @@ import { createShiftCareHandler } from './shiftcare/shiftcare.handler';
 export const application = new Hono<{ Bindings: HttpBindings }>({ strict: false });
 
 const routes: Record<string, ApiHandler> = {
+  '/api/automation': handleAutomation,
+  '/api/portal': handlePortal,
   '/api/workflow': handleWorkflow,
   '/api/push': handlePush,
   '/api/shiftcare': createShiftCareHandler(),

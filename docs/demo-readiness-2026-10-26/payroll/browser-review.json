@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-25",
+  "reviewedAt": "2026-10-25T23:47:23.892Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Payroll preparation",
+      "status": "pass",
+      "detail": "Approved actual hours/mileage, dated adjustment, draft review/export, persistence, source-change detection, blocked stale export and refresh without duplicate drafts passed. Desktop/mobile checked."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-readiness-2026-10-26/payroll/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/payroll/payroll-preparation-desktop.png",
+      "sha256": "4dc2c732f309a538639d5cdc22be3a6dffab78ad1dd6b26d2392c071f060faf0",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/payroll/payroll-preparation-mobile.png",
+      "sha256": "f37c7c160be394ab9596fcf1090b7c3dea878423df388d32dce16916275cbc4c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/payroll/payroll-reviewed-desktop.png",
+      "sha256": "08588ba6c018ad2f0e76f1edd748963d3213c34d478289193fdd7f97d241152e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/payroll/payroll-reviewed-mobile.png",
+      "sha256": "34b66b82e0e065203d620b05a0dceaede69012c3830168b265d4b6c05850a391",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/payroll/payroll-stale-source-desktop.png",
+      "sha256": "8568536f7e1c7dd73f6e6a0c451802f71db23237e1803187656f62b71f7a807b",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

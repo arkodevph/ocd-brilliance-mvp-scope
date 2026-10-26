@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-25",
+  "reviewedAt": "2026-10-25T23:47:23.897Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Inbox tasks",
+      "status": "pass",
+      "detail": "Reviewed email becomes an owned task with deadline; edit/reload/work-queue visibility, duplicate import prevention, workflow completion and desktop/mobile layouts passed. No mailbox or native booking changes."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-tasks-desktop.png",
+      "sha256": "eb765dbf0bde7f05a76758843aeb8e8913d6191edff530b11938c2f6a7c1208d",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-messages-mobile.png",
+      "sha256": "448435f179e924df6bace7188b5a1f88a91fef960f0e53c2eae5939f2dd6514c",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-compose-desktop.png",
+      "sha256": "e68ec3a40cce922e724115798550ee63fddaa002d164a99242c88eac598e1126",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-review-desktop.png",
+      "sha256": "e5485255f3f83188865ea770b8bab47c20e8811f70280bcb94d7a01238f38ff5",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-review-mobile.png",
+      "sha256": "eeb3b62d9ec4bab7401ceb2a05f6ac38bb58a4ea4ef4645c0c223f7765d008fd",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-assignment-mobile.png",
+      "sha256": "718c5a0e00521490d0696e9bbff2f2f79a7736c79d98e5af0eecb9eb0ade7a7e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-assigned-desktop.png",
+      "sha256": "b166bacd953bd8ac35b6b11af623367ea0bf82fa73242302e24e4ca6053b1a45",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-task-detail-desktop.png",
+      "sha256": "e0f9b160dfbaab14ee007d63f3dce8f53e57224954c72333cf68deb036317874",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-task-detail-mobile.png",
+      "sha256": "3acb8c1ebf2048b90d4c92093d4c223d9c2a4f62c86c8b8b65eb8e973c3e9ff5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-completed-desktop.png",
+      "sha256": "70610a1702885a8d26c7caf289d8a0bab619b6eacefa8b63a39136ae14f232c3",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-completed-hover-desktop.png",
+      "sha256": "5a2137dd525c3dd53c7b8e429e16f851f88e7fbda2fe87f8c24e2aee861b43d2",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-completed-mobile.png",
+      "sha256": "83754cb1eb485fbf5cbe80f20613b039b2103811f9b62ddeec4076a05cee68c1",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-completed-narrow.png",
+      "sha256": "bcdf365ab7fb218492c489ec776acc21c0f53a59a848b78657366c1b0924f25d",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/inbox/inbox-tasks-mobile.png",
+      "sha256": "a39e4979cfed385ae60844c0969bbb6dbc759ab4434d1f140ff8c68ad30967bc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

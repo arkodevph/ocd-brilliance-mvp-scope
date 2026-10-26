@@ -1,0 +1,768 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "OCD + ShiftCare \u00b7 Automation execution and recovery",
+    "output": ".archify/workflow-ocd-automation-execution-20261008-223845/ocd-automation-execution.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "repository": {
+      "url": "https://github.com/arkodevph/ocd-brilliance-mvp-scope.git",
+      "revision": "db759d5febbec90ae01f0cef0f7471722410f959",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "lanes": [
+    {
+      "id": "capture",
+      "label": "Receive and prepare"
+    },
+    {
+      "id": "clarification",
+      "label": "Office clarification",
+      "variant": "exception"
+    },
+    {
+      "id": "review",
+      "label": "Human approval and method check"
+    },
+    {
+      "id": "execute",
+      "label": "Native action and independent evidence"
+    },
+    {
+      "id": "reconciliation",
+      "label": "Admin reconciliation",
+      "variant": "exception"
+    },
+    {
+      "id": "outcome",
+      "label": "Verified result, required handoffs and delivery"
+    },
+    {
+      "id": "delivery",
+      "label": "Communication recovery",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "trigger",
+    "dedup",
+    "match",
+    "proposal",
+    "approval",
+    "method",
+    "dispatch",
+    "readback",
+    "verified",
+    "handoff",
+    "notify",
+    "complete"
+  ],
+  "semanticChecks": {
+    "allowedRoots": [
+      "trigger"
+    ],
+    "allowedTerminals": [
+      "complete"
+    ],
+    "requiredEdges": [
+      {
+        "from": "approval",
+        "to": "method"
+      },
+      {
+        "from": "readback",
+        "to": "verified"
+      },
+      {
+        "from": "deliveryfailed",
+        "to": "notify"
+      }
+    ],
+    "requiredPaths": [
+      {
+        "from": "trigger",
+        "to": "complete"
+      },
+      {
+        "from": "dispatch",
+        "to": "reconcile"
+      },
+      {
+        "from": "reconcile",
+        "to": "approval"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "trigger",
+      "lane": "capture",
+      "col": 0,
+      "type": "external",
+      "label": "Workflow trigger",
+      "sublabel": "Message / cut-off / native record",
+      "tag": "W01\u2013W14 specific input",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 145,
+          "end_line": 158,
+          "label": "Fourteen triggers"
+        }
+      ],
+      "icon": "start"
+    },
+    {
+      "id": "dedup",
+      "lane": "capture",
+      "col": 1,
+      "type": "backend",
+      "label": "Capture and deduplicate",
+      "sublabel": "Source ID / account / timestamp",
+      "tag": "Retain original reference",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 60,
+          "end_line": 87,
+          "label": "Demo deduplication"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 188,
+          "end_line": 208,
+          "label": "Production safeguards"
+        }
+      ]
+    },
+    {
+      "id": "match",
+      "lane": "capture",
+      "col": 2,
+      "type": "backend",
+      "label": "Match and validate scope",
+      "sublabel": "Person / occurrence / source pages",
+      "tag": "Unknown stays unknown",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 160,
+          "end_line": 186,
+          "label": "Identity and data scope"
+        }
+      ]
+    },
+    {
+      "id": "proposal",
+      "lane": "capture",
+      "col": 3,
+      "type": "backend",
+      "label": "Prepare an owned proposal",
+      "sublabel": "Fields / findings / next action",
+      "tag": "Needs review",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 60,
+          "end_line": 77,
+          "label": "Owned review job"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 145,
+          "end_line": 158,
+          "label": "Workflow actions"
+        }
+      ]
+    },
+    {
+      "id": "approval",
+      "lane": "review",
+      "col": 3,
+      "type": "security",
+      "label": "Review exact action",
+      "sublabel": "Source / charge / scope / consent",
+      "tag": "Human approval",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 194,
+          "end_line": 255,
+          "label": "Approval prerequisites"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 160,
+          "end_line": 166,
+          "label": "Cancellation and assignment gates"
+        }
+      ]
+    },
+    {
+      "id": "method",
+      "lane": "review",
+      "col": 4,
+      "type": "security",
+      "label": "Check supported method",
+      "sublabel": "Permission / contract / fresh state",
+      "tag": "No guessed operation",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 59,
+          "end_line": 81,
+          "label": "Tool and native limits"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 188,
+          "end_line": 208,
+          "label": "State and permission failures"
+        }
+      ]
+    },
+    {
+      "id": "manual",
+      "lane": "execute",
+      "col": 5,
+      "type": "external",
+      "label": "Owned native action",
+      "sublabel": "Office performs supported UI step",
+      "tag": "Manual action required",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 139,
+          "end_line": 158,
+          "label": "Human and native handoffs"
+        }
+      ],
+      "icon": "person",
+      "yOffset": 130
+    },
+    {
+      "id": "dispatch",
+      "lane": "execute",
+      "col": 4,
+      "type": "backend",
+      "label": "Execute approved action",
+      "sublabel": "Native UI / supervised MCP",
+      "tag": "REST jobs remain gated",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 256,
+          "end_line": 297,
+          "label": "Fictional dispatch and failures"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 36,
+          "end_line": 47,
+          "label": "Integration methods"
+        }
+      ]
+    },
+    {
+      "id": "readback",
+      "lane": "execute",
+      "col": 5,
+      "type": "backend",
+      "label": "Independent native check",
+      "sublabel": "Read returned ID / expected fields",
+      "tag": "API, MCP or native evidence",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 333,
+          "end_line": 357,
+          "label": "Demo read-back"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Live_Demo_and_Verification.md",
+          "line": 8,
+          "end_line": 23,
+          "label": "Actual action read-back"
+        }
+      ]
+    },
+    {
+      "id": "verified",
+      "lane": "outcome",
+      "col": 5,
+      "type": "security",
+      "label": "Native result verified",
+      "sublabel": "Exact fields and scope match",
+      "tag": "Local badge is insufficient",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 333,
+          "end_line": 357,
+          "label": "Verification before completion"
+        }
+      ],
+      "icon": "success",
+      "yOffset": -210
+    },
+    {
+      "id": "handoff",
+      "lane": "outcome",
+      "col": 5,
+      "type": "external",
+      "label": "Check required handoffs",
+      "sublabel": "Acceptance / filing / accounting",
+      "tag": "Keep native ownership",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 359,
+          "end_line": 380,
+          "label": "Accounting and worker response"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 145,
+          "end_line": 158,
+          "label": "Workflow-specific completion"
+        }
+      ],
+      "yOffset": -70
+    },
+    {
+      "id": "notify",
+      "lane": "outcome",
+      "col": 5,
+      "type": "messagebus",
+      "label": "Approved recipient update",
+      "sublabel": "Channel / message / receipt",
+      "tag": "Separate delivery state",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 399,
+          "end_line": 413,
+          "label": "Simulated independent delivery"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 157,
+          "end_line": 158,
+          "label": "Communication boundary"
+        }
+      ],
+      "yOffset": 70
+    },
+    {
+      "id": "complete",
+      "lane": "outcome",
+      "col": 5,
+      "type": "database",
+      "label": "Record the outcome",
+      "sublabel": "Native reference / owner / times",
+      "tag": "Closed or next owned task",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 188,
+          "end_line": 208,
+          "label": "Evidence and human resolution"
+        }
+      ],
+      "icon": "success",
+      "yOffset": 210
+    },
+    {
+      "id": "human",
+      "lane": "clarification",
+      "col": 2,
+      "type": "security",
+      "label": "Clarify or re-review",
+      "sublabel": "Missing data / no cover / policy",
+      "tag": "Office / HR / bookkeeper",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 190,
+          "end_line": 205,
+          "label": "Assigned human recovery"
+        }
+      ],
+      "icon": "waiting"
+    },
+    {
+      "id": "deliveryfailed",
+      "lane": "delivery",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Delivery failure",
+      "sublabel": "Bounded retry or contact fallback",
+      "tag": "Do not repeat native action",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 404,
+          "end_line": 413,
+          "label": "Independent message failure"
+        },
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 157,
+          "end_line": 157,
+          "label": "Communication fallback"
+        }
+      ],
+      "icon": "failure"
+    },
+    {
+      "id": "reconcile",
+      "lane": "reconciliation",
+      "col": 4,
+      "type": "security",
+      "label": "Reconcile uncertain result",
+      "sublabel": "Read native state before repeat",
+      "tag": "Admin owns resolution",
+      "width": 182,
+      "height": 90,
+      "sources": [
+        {
+          "path": "docs/OCD_ShiftCare_Integration_and_Automation_Design.md",
+          "line": 193,
+          "end_line": 200,
+          "label": "Unknown writes and stale approval"
+        },
+        {
+          "path": "workspace/automation-engine.js",
+          "line": 280,
+          "end_line": 297,
+          "label": "Demo unknown outcome"
+        }
+      ],
+      "icon": "waiting"
+    }
+  ],
+  "edges": [
+    {
+      "id": "trigger-dedup",
+      "from": "trigger",
+      "to": "dedup",
+      "role": "main",
+      "variant": "default",
+      "label": "Source reference"
+    },
+    {
+      "id": "dedup-match",
+      "from": "dedup",
+      "to": "match",
+      "role": "main",
+      "variant": "default",
+      "label": "One request"
+    },
+    {
+      "id": "match-proposal",
+      "from": "match",
+      "to": "proposal",
+      "role": "main",
+      "variant": "default",
+      "label": "Unique, complete scope"
+    },
+    {
+      "id": "proposal-approval",
+      "from": "proposal",
+      "to": "approval",
+      "role": "main",
+      "variant": "security",
+      "label": "Needs review"
+    },
+    {
+      "id": "approval-method",
+      "from": "approval",
+      "to": "method",
+      "role": "main",
+      "variant": "security",
+      "label": "Exact approval"
+    },
+    {
+      "id": "method-dispatch",
+      "from": "method",
+      "to": "dispatch",
+      "role": "main",
+      "variant": "emphasis",
+      "label": "Supported and current"
+    },
+    {
+      "id": "dispatch-readback",
+      "from": "dispatch",
+      "to": "readback",
+      "role": "main",
+      "variant": "default",
+      "label": "Returned native ID"
+    },
+    {
+      "id": "readback-verified",
+      "from": "readback",
+      "to": "verified",
+      "role": "main",
+      "variant": "emphasis",
+      "label": "Exact fields match",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "verified-handoff",
+      "from": "verified",
+      "to": "handoff",
+      "role": "main",
+      "variant": "default",
+      "label": "Verified result",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "handoff-notify",
+      "from": "handoff",
+      "to": "notify",
+      "role": "main",
+      "variant": "default",
+      "label": "Required checks recorded",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "notify-complete",
+      "from": "notify",
+      "to": "complete",
+      "role": "main",
+      "variant": "default",
+      "label": "Receipt / checked contact",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "match-human",
+      "from": "match",
+      "to": "human",
+      "role": "error",
+      "variant": "security",
+      "label": "Ambiguous / partial",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "approval-human",
+      "from": "approval",
+      "to": "human",
+      "role": "error",
+      "variant": "security",
+      "label": "Missing / changed scope",
+      "toSide": "right"
+    },
+    {
+      "id": "human-match",
+      "from": "human",
+      "to": "match",
+      "role": "return",
+      "variant": "dashed",
+      "label": "Clarified source",
+      "fromSide": "left",
+      "toSide": "top"
+    },
+    {
+      "id": "method-manual",
+      "from": "method",
+      "to": "manual",
+      "role": "branch",
+      "variant": "dashed",
+      "label": "Unsupported connector",
+      "fromSide": "right",
+      "toSide": "right"
+    },
+    {
+      "id": "manual-readback",
+      "from": "manual",
+      "to": "readback",
+      "role": "branch",
+      "variant": "dashed",
+      "label": "Native reference",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "method-handoff",
+      "from": "method",
+      "to": "handoff",
+      "role": "branch",
+      "variant": "dashed",
+      "label": "Read / review only"
+    },
+    {
+      "id": "dispatch-reconcile",
+      "from": "dispatch",
+      "to": "reconcile",
+      "role": "error",
+      "variant": "security",
+      "label": "Timeout / unknown"
+    },
+    {
+      "id": "readback-reconcile",
+      "from": "readback",
+      "to": "reconcile",
+      "role": "error",
+      "variant": "security",
+      "label": "Missing / mismatch"
+    },
+    {
+      "id": "reconcile-readback",
+      "from": "reconcile",
+      "to": "readback",
+      "role": "return",
+      "variant": "dashed",
+      "label": "Found native result",
+      "fromSide": "right",
+      "toSide": "right"
+    },
+    {
+      "id": "reconcile-approval",
+      "from": "reconcile",
+      "to": "approval",
+      "role": "return",
+      "variant": "dashed",
+      "label": "No result / changed context"
+    },
+    {
+      "id": "handoff-human",
+      "from": "handoff",
+      "to": "human",
+      "role": "error",
+      "variant": "security",
+      "label": "No cover / evidence gap",
+      "toSide": "bottom"
+    },
+    {
+      "id": "notify-deliveryfailed",
+      "from": "notify",
+      "to": "deliveryfailed",
+      "role": "error",
+      "variant": "dashed",
+      "label": "Not delivered"
+    },
+    {
+      "id": "deliveryfailed-notify",
+      "from": "deliveryfailed",
+      "to": "notify",
+      "role": "return",
+      "variant": "dashed",
+      "label": "Retry message only"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "How this pattern applies to all fourteen workflows",
+      "items": [
+        "Each W01\u2013W14 has its own trigger and minimum completion evidence in the companion connection map. This flowchart is the shared proposed control pattern, not an already running job scheduler.",
+        "W01/W02/W06/W09/W10/W11 often prepare a finding, follow-up or checklist rather than mutate ShiftCare; the read/review-only branch keeps that distinction.",
+        "For W03/W04/W07/W08/W12, select only a supported, exactly reviewed action. W05 files natively. W13 needs verified delivery or a recorded human contact; W14 uses a separate consented journey.",
+        "Engine execution and sending remain fictional in the prototype. Trial MCP proof establishes only the specifically approved administrative action and its separate read-back."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Triggers and data entering the shared controls",
+      "items": [
+        "W01 new enquiry; W02 authorised message; W03 accepted intake/profile correction; W04 employee form; W05 returned agreement/file.",
+        "W06 native reminder reply/silence; W07 matched cancellation; W08 booking/change/sickness/decline/cover deadline.",
+        "W09 native visit evidence update; W10 agreed Tuesday cut-off; W11 agreed pay-period cut-off; W12 cleanup/expiry/new evidence.",
+        "W13 verified outcome/feedback/announcement; W14 current assignment plus assigned-worker consent and journey start.",
+        "Retain account, source ID/time, permitted person/shift/assignment IDs, local period/time zone, original evidence and scope completeness. Do not convert absent fields into confirmed facts."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Approval and method selection",
+      "items": [
+        "Office/intake/HR/bookkeeper reviews fields and the original, then exact target, scope, consent, reason and financial consequence where relevant.",
+        "W07: whole-shift with-charge cancellation cannot be used for one participant in a group; missing policy or financial lock requires native review.",
+        "W08: reviewed availability/suitability and native worker acceptance precede final assignment. Assignment arrays preserve all unaffected people; occurrence/series changes differ.",
+        "Unsupported upload, staff edit, message sending, worker acceptance or pricing configuration becomes a native task, not an invented API call.",
+        "Re-read current native context before dispatch; changed meaning invalidates approval. MCP tool exposure is not a REST write contract."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Independent result and workflow-specific completion",
+      "items": [
+        "Native action: returned remote ID and independently checked expected fields; original write response alone cannot prove completion.",
+        "W03/W04: profile plus separate accounting/payroll linking evidence. W05/W12: original evidence and checked native filing/metadata; never infer never-expires from a blank date.",
+        "W08 offer and final assignment are separate verified steps around native worker acceptance; no cover remains an owned exception.",
+        "W09/W10/W11: complete permitted source, reviewed exceptions and checked native finance/export/payroll references. No automatic clinical decision or pay release.",
+        "W13: own delivery/contact evidence. W14: permitted current booking, active consent and fresh journey data; arrival is not attendance."
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Failure routes and expected outcome",
+      "items": [
+        "Unclear match, incomplete read or missing prerequisites \u2192 clarify/re-review with the named owner; no guessed ID, charge or availability.",
+        "Permission/feature/connector unavailable \u2192 owned native action; preserve the request and show the blocked method.",
+        "Unknown write response \u2192 reconciliation. Search/read the target before any further dispatch; when context changes, return to fresh exact approval.",
+        "Read-back mismatch \u2192 verification pending and admin reconciliation; never mark completed merely because the queue or demo reports success.",
+        "No acceptance/cover, document uncertainty or accounting mismatch \u2192 appropriate human handoff and an explicit outcome, not a silent terminal success.",
+        "Delivery failure \u2192 bounded message retry or agreed contact fallback. It never reruns a cancellation, profile creation or assignment."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Data ownership and audit trail",
+      "items": [
+        "ShiftCare owns people, roster, original care/docs and service billing. Existing accounting/payroll systems retain financial release.",
+        "OCD owns source references, matching/proposals, job state, approvals, owned exceptions and sanitized operation/delivery receipts.",
+        "Use stable source/operation/target keys and durable job claims in production; app-level deduplication does not prove upstream idempotency.",
+        "Record approver, account/record IDs, allowed changes, source/read-back times, result, owner and next action. Protect clinical contents and server credentials."
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": "completion-evidence",
+      "label": "Required evidence is checked separately",
+      "lane": "outcome",
+      "fromCol": 5,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ]
+}

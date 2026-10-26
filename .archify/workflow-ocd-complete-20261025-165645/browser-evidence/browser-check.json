@@ -1,0 +1,223 @@
+{
+  "passed": true,
+  "date": "2026-10-25",
+  "browser": "Chrome/155.0.8059.39",
+  "artifact": "docs/OCD_Complete_Workflow_Flowchart.html",
+  "artifact_sha256": "0a0b47a4f7762feafb0c3df725d03dc333aee825198e7b4b562b394bf6980106",
+  "checks": [
+    {
+      "check": "Five complete views are available",
+      "passed": true,
+      "detail": {
+        "tabs": 5,
+        "views": 5,
+        "svgs": 5,
+        "nodes": 124,
+        "ops": 35,
+        "duplicateIds": [],
+        "external": [],
+        "viewport": 1440,
+        "scrollWidth": 1425
+      }
+    },
+    {
+      "check": "All authored nodes and all 35 numbered processes are present",
+      "passed": true
+    },
+    {
+      "check": "No duplicate DOM identifiers",
+      "passed": true
+    },
+    {
+      "check": "No external viewer assets",
+      "passed": true
+    },
+    {
+      "check": "Desktop document has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "check": "Tab and 35-process lookup interactions work",
+      "passed": true,
+      "detail": {
+        "tabs": 5,
+        "processes": 35,
+        "problems": [],
+        "nodeClick": true,
+        "zoom": true,
+        "natural": true,
+        "fit": true,
+        "dark": true
+      }
+    },
+    {
+      "check": "Node details, zoom, fit and theme controls work",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "check": "View 1: node text stays inside shape bounding boxes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 1: sampled edges avoid unrelated filled node shapes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 2: node text stays inside shape bounding boxes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 2: sampled edges avoid unrelated filled node shapes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 3: node text stays inside shape bounding boxes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 3: sampled edges avoid unrelated filled node shapes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 4: node text stays inside shape bounding boxes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 4: sampled edges avoid unrelated filled node shapes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 5: node text stays inside shape bounding boxes",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "check": "View 5: sampled edges avoid unrelated filled node shapes",
+      "detail": []
+    },
+    {
+      "check": "SVG, PNG, Mermaid and coverage exports download",
+      "passed": true,
+      "detail": [
+        "01-execution.png",
+        "01-execution.svg",
+        "OCD_Complete_Workflow_Flowcharts.md",
+        "OCD_Workflow_Coverage.json"
+      ]
+    },
+    {
+      "check": "PNG export has a valid PNG signature",
+      "passed": true
+    },
+    {
+      "check": "SVG download retains the exact standalone diagram",
+      "passed": true
+    },
+    {
+      "check": "Coverage export includes all 35 processes",
+      "passed": true
+    },
+    {
+      "check": "Mobile document has no horizontal overflow at fit width",
+      "passed": true,
+      "detail": {
+        "viewport": 390,
+        "scrollWidth": 390,
+        "tabs": 5
+      }
+    },
+    {
+      "check": "No page JavaScript exceptions",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Viewer works with HTTP and HTTPS requests blocked",
+      "passed": true,
+      "detail": [
+        "file:///home/rovic/Documents/projects/ocd/ocd-brilliance-mvp-scope/docs/OCD_Complete_Workflow_Flowchart.html",
+        "blob:null/1c75bf1b-bae3-470a-b943-8cd994491ba4"
+      ]
+    }
+  ],
+  "geometry": [
+    {
+      "view": "view-0",
+      "nodes": 23,
+      "textOverflow": [],
+      "edgeNodeCrossings": [],
+      "rect": {
+        "x": 41,
+        "y": 837.53125,
+        "width": 1343,
+        "height": 2296.171875
+      }
+    },
+    {
+      "view": "view-1",
+      "nodes": 24,
+      "textOverflow": [],
+      "edgeNodeCrossings": [],
+      "rect": {
+        "x": 41,
+        "y": 837.53125,
+        "width": 1343,
+        "height": 2087.515625
+      }
+    },
+    {
+      "view": "view-2",
+      "nodes": 33,
+      "textOverflow": [],
+      "edgeNodeCrossings": [],
+      "rect": {
+        "x": 41,
+        "y": 837.53125,
+        "width": 1343,
+        "height": 1505.234375
+      }
+    },
+    {
+      "view": "view-3",
+      "nodes": 25,
+      "textOverflow": [],
+      "edgeNodeCrossings": [],
+      "rect": {
+        "x": 41,
+        "y": 837.53125,
+        "width": 1343,
+        "height": 1424.421875
+      }
+    },
+    {
+      "view": "view-4",
+      "nodes": 19,
+      "textOverflow": [],
+      "edgeNodeCrossings": [],
+      "rect": {
+        "x": 41,
+        "y": 837.53125,
+        "width": 1343,
+        "height": 1569.421875
+      }
+    }
+  ],
+  "downloads": [
+    "01-execution.png",
+    "01-execution.svg",
+    "OCD_Complete_Workflow_Flowcharts.md",
+    "OCD_Workflow_Coverage.json"
+  ],
+  "network": "HTTP/HTTPS blocked; no external assets requested",
+  "visual_review": "Captures generated; perceptual inspection recorded separately.",
+  "archify_showcase": "Not claimed; this is the alternative Graphviz artifact browser check."
+}

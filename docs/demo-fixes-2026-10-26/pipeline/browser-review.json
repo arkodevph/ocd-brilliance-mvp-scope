@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T02:13:44.025Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Person-led automation pipeline",
+      "status": "pass",
+      "detail": "Person identities, unresolved identities, owner, search, inline expansion, approval, closing and desktop/mobile layouts were checked."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/pipeline/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/pipeline/person-pipeline-expanded-desktop.png",
+      "sha256": "dd107a1ed29da7ad2685b3c16673c0bf571a0bf434a30eef6819e4a59a0ae3d9",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".automation-case.selected"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/pipeline/person-pipeline-expanded-mobile.png",
+      "sha256": "c01adcd57b539e564a94bffd4cb29365d1818caca5ed6ccf5694193bdcd5622b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".automation-case.selected"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/pipeline/person-pipeline-desktop.png",
+      "sha256": "b4d22ee5ff4209fb78aef3b899e89b6ac70dbb03f7a6c35e49b1993be79df1df",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/pipeline/person-pipeline-mobile.png",
+      "sha256": "ed880d407975476354aed48c797e58f5825dd747cfaf930989deb1b6115ceb5f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/pipeline/employee-profile-portrait.png",
+      "sha256": "fea9ce96d2d1d36ddd9f503ba68294e4b3457bfd4e5792467775e35f96b461c5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

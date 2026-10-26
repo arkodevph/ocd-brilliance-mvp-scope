@@ -73,6 +73,10 @@ export function OfficeOverviewPage({ model }: { model: OfficeOverviewModel }) {
           eyebrow: 'Office workspace',
         }}
       >
+        <a className="btn cp-launch" href="#/office/presentation">
+          Demo guide
+          <ArrowRight size={16} />
+        </a>
         <a className="btn" href="#/office/schedule">
           <CalendarDays size={16} />
           Schedule

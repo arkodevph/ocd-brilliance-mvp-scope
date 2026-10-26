@@ -29,5 +29,6 @@ import './shared/controls/select/tokens.css';
 import './shared/controls/select/field.css';
 import './shared/controls/select/menu.css';
 import './solar-legacy';
+import './features/operations/styles.css';
 import './renderer';
 import '../workspace/app.js';

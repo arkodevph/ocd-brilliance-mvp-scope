@@ -1,0 +1,257 @@
+{
+  "review_date_local": "2026-10-26",
+  "timezone": "Asia/Manila",
+  "recorded_at_utc": "2026-10-26T00:05:00.622864+00:00",
+  "scope": "Existing working tree, including uncommitted prototype; review-only",
+  "verdict": "Priority workflow corrections required for affected journeys; conditional scripted fictional demo, not integrated/live system acceptance",
+  "source_integrity": {
+    "baseline": "source-baseline.json",
+    "files_compared": 218,
+    "changed_files": [],
+    "application_source_changed": false,
+    "git_head_at_start": "3f0716498b4b989f4d400c02b69cee5e955b7b66",
+    "baseline_comparison_to_previous_delivery": []
+  },
+  "unit_and_existing_automated_tests": {
+    "command": "npm test",
+    "total": 271,
+    "passed": 270,
+    "failed": 0,
+    "skipped": 1,
+    "skip_reason": "Local PostgreSQL initdb and pg_ctl unavailable",
+    "log": "tests.log"
+  },
+  "build": {
+    "command": "npm run build",
+    "result": "pass",
+    "log": "build.log"
+  },
+  "browser_profiles": [
+    {
+      "profile": "operations",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 14,
+      "captures": 17,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/operations/browser-check.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "native",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 8,
+      "captures": 7,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/native/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "intake",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 8,
+      "captures": 10,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/intake/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "inbox",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 2,
+      "captures": 15,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/inbox/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "financial",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 2,
+      "captures": 9,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/financial/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "payroll",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 2,
+      "captures": 6,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/payroll/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "cancellation",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 2,
+      "captures": 8,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/cancellation/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "travel",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 2,
+      "captures": 5,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/travel/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "pipeline",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 2,
+      "captures": 6,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/pipeline/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "booking",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 1,
+      "captures": 1,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/booking/browser-review.json",
+      "interpretation": "Dropdown smoke only"
+    },
+    {
+      "profile": "legacy",
+      "result": "fail",
+      "exit_code": 1,
+      "checks_recorded": 1,
+      "captures": 2,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/legacy/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "react",
+      "result": "fail",
+      "exit_code": 1,
+      "checks_recorded": 1,
+      "captures": 2,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/react/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "profiles",
+      "result": "fail",
+      "exit_code": 1,
+      "checks_recorded": 1,
+      "captures": 10,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/profiles/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "reviews",
+      "result": "fail",
+      "exit_code": 1,
+      "checks_recorded": 1,
+      "captures": 2,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/reviews/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "overview",
+      "result": "fail",
+      "exit_code": 1,
+      "checks_recorded": 1,
+      "captures": 2,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/overview/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "presentation",
+      "result": "fail",
+      "exit_code": 1,
+      "checks_recorded": 7,
+      "captures": 13,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/presentation/browser-review.json",
+      "interpretation": "See report for scope and stopped-check limitations"
+    },
+    {
+      "profile": "react_replay",
+      "result": "fail",
+      "exit_code": 1,
+      "checks_recorded": 2,
+      "captures": 4,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/react_replay/browser-review.json",
+      "interpretation": "Temporary locator replay; original repository script remains failing"
+    },
+    {
+      "profile": "reviews_replay",
+      "result": "pass",
+      "exit_code": 0,
+      "checks_recorded": 3,
+      "captures": 10,
+      "uncaught_application_errors": 0,
+      "receipt": "docs/demo-readiness-2026-10-26/reviews_replay/browser-review.json",
+      "interpretation": "Temporary locator replay; original repository script remains failing"
+    }
+  ],
+  "independent_probes": {
+    "status": "completed",
+    "reproduced_browser_defects": 4,
+    "exceptions": [],
+    "external_requests": [],
+    "receipt": "independent/audit-probes.json",
+    "model_receipts": [
+      "model-probes.json",
+      "additional-model-probes.json"
+    ]
+  },
+  "coverage": {
+    "opportunities": 35,
+    "scope_counts": {
+      "C1": 10,
+      "C2": 10,
+      "G": 5,
+      "L": 10
+    },
+    "pain_points": 96,
+    "pain_points_mapped_to_opportunities": 81,
+    "process_or_governance_dispositions": 15,
+    "coverage_is_not_automation_acceptance": true
+  },
+  "findings": "findings.json",
+  "visually_inspected_captures": [
+    "operations/01-operations-overview.png",
+    "operations/08-case-mobile.png",
+    "independent/r05-storage-failure-case-navigation.png",
+    "reviews/failure-current-state.png",
+    "financial/financial-queue-desktop.png",
+    "intake/intake-review-mobile.png",
+    "cancellation/cancellation-review-desktop.png"
+  ],
+  "compatibility_replay_notes": "compatibility-replay-notes.json",
+  "limits": [
+    "No source fixes, repository test edits, remote pull/merge, deployment or live integration changes",
+    "Browser runs use isolated server data and profiles, worker startup off and no live credentials supplied",
+    "Presentation profile reused an existing dated saved capture; it is not a fresh native account trial",
+    "Some original profiles stopped on obsolete expectations; remaining assertions were not assumed to pass",
+    "Booking-only profile is a dropdown smoke test, not booking workflow acceptance",
+    "35 modeled completion paths are fictional generic scenario coverage, not 35 implemented integrations",
+    "No full security, accessibility, load, disaster-recovery, live ETA or production database certification"
+  ],
+  "report_links_checked": true,
+  "report_missing_local_links": []
+}

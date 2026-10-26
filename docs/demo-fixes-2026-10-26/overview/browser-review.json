@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T00:34:58.736Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Chart overview",
+      "status": "pass",
+      "detail": "Current weekly totals/status breakdown, source-derived hours, tooltip keyboard behavior, week navigation, day drill-down, responsive layouts and empty datasets were verified."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/overview-chart-tooltip.png",
+      "sha256": "10371d658a6d3c6dff3421b18facd9fd94aac8e0b80be0b659ab585b90c26209",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/overview-charts-desktop.png",
+      "sha256": "5e5bd2b8fe4623267bb6cc12bbab4a7c828c3b9eb3b2040a561aad4b6221fbe8",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/overview-charts-wide.png",
+      "sha256": "063a3956cb3fc476f90fa716ac3e394b36e2706b8d33c66953b7499b3cf68838",
+      "width": 1920,
+      "height": 1080,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/overview-reflow.png",
+      "sha256": "33e23dc0201ef47ff06fd3a7bca4d84f896d5e09604f3b7ce93aca8ceeaf342d",
+      "width": 720,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/overview-charts-mobile.png",
+      "sha256": "df3aac905d639e42e52f4d21a415ec3a94635188943afcb31e616c336e4f5d2f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/overview-charts-small-mobile.png",
+      "sha256": "2f1d8857123ed88321140905fea64329518253012087f558e95f3e30e5a315fb",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/overview/overview-charts-empty.png",
+      "sha256": "564d382ebffcfe34eabae934f1ee4a7b69f592d9ed4992140d1ad562ad9fafa5",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

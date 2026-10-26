@@ -1,0 +1,834 @@
+{
+  "title": "OCD Automation Feasibility and Workflow Priorities",
+  "date": "25 October 2026",
+  "scope": "Custom supporting application for OCD internal operations and future branches",
+  "levels": {
+    "F": "Full automation of the stated bounded check, calculation, routing or report; the surrounding business process still has human decisions.",
+    "P": "Partial automation of preparation, execution after review, verification or coordination; retained decisions/steps are explicit.",
+    "N": "Use the native/manual business process; the application tracks the handoff only."
+  },
+  "selection": {
+    "C1": "First core batch of 10",
+    "C2": "Second core batch of 10",
+    "G": "Five additions after their individual acceptance gates",
+    "L": "Later or native/manual initial treatment"
+  },
+  "effort_note": "S, M and L are relative implementation complexity, not calendar or price estimates. Shared foundation and live acceptance are additional dependencies.",
+  "items": [
+    {
+      "number": 1,
+      "title": "Service area screening",
+      "problem": "People can complete full intake paperwork before learning that OCD cannot serve their location.",
+      "level": "F",
+      "technical_fit": "High",
+      "relative_effort": "S",
+      "selection": "C1",
+      "automated_scope": "Apply the approved coverage list before full intake and automatically route uncertain areas.",
+      "manual_boundary": "Confirm actual capacity and exceptional locations.",
+      "integration": "Application service-area configuration; no ShiftCare write is required.",
+      "prototype_foundation": "Public intake screening and W01 already exist.",
+      "remaining_work_or_gate": "Approve the list and routing rules; retain uncertainty rather than rejecting negotiable areas.",
+      "acceptance": "Covered, uncertain and unconfigured postcodes produce the correct recorded outcome.",
+      "workflow_families": [
+        "W01"
+      ],
+      "pain_points": [
+        "PP-003"
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Centralized enquiry collection",
+      "problem": "Website, email, telephone and coordinator referrals require separate monitoring and manual collection.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C1",
+      "automated_scope": "Collect website and authorized mailbox sources, preserve originals and deduplicate enquiries.",
+      "manual_boundary": "Log unsupported phone/voicemail sources and resolve uncertain identities.",
+      "integration": "Existing intake API and Microsoft Graph folder delta; ShiftCare client search supplies optional matches.",
+      "prototype_foundation": "Shared intake, Graph polling, immutable message IDs and attachment import exist.",
+      "remaining_work_or_gate": "Test actual mailbox notifications, expired cursors, folder scope, attachments and source replay.",
+      "acceptance": "Repeated or changed sources create the correct case/version without duplicate enquiries.",
+      "workflow_families": [
+        "W01",
+        "W02"
+      ],
+      "pain_points": [
+        "PP-002",
+        "PP-008"
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Enquiry ownership and prioritization",
+      "problem": "Several administrators can inspect the same message while another request remains unanswered or lacks an owner.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "S",
+      "selection": "C1",
+      "automated_scope": "Assign configured owners and deadlines, detect overdue requests and suggest urgency and routing.",
+      "manual_boundary": "Confirm urgency, sensitive routing and candidate invoice/booking identity.",
+      "integration": "Application cases; ShiftCare clients/shifts/invoices for record context where needed.",
+      "prototype_foundation": "W02 classification, real-owner validation and deadline marking exist.",
+      "remaining_work_or_gate": "Add approved assignment/escalation rules and notification outcomes; current classification is a suggestion.",
+      "acceptance": "Each request has one accountable next action; missed deadlines remain visible and owned.",
+      "workflow_families": [
+        "W01",
+        "W02"
+      ],
+      "pain_points": [
+        "PP-007",
+        "PP-013"
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Missing information detection",
+      "problem": "Incomplete forms, unclear dates and missing supporting documents create repeated clarification work.",
+      "level": "F",
+      "technical_fit": "High",
+      "relative_effort": "S",
+      "selection": "C1",
+      "automated_scope": "Run deterministic required-field, attachment and format checks and prepare missing-information tasks.",
+      "manual_boundary": "Resolve ambiguous dates, verify authenticity and provide missing answers.",
+      "integration": "Application forms and local extraction; no native mutation is needed for the checks.",
+      "prototype_foundation": "Intake rules, original evidence, PDF/OCR and missing-field checks exist.",
+      "remaining_work_or_gate": "Approve required fields and test representative forms. F applies to checking, not obtaining truthful answers.",
+      "acceptance": "Incomplete, unsupported and ambiguous sources are flagged without invented values.",
+      "workflow_families": [
+        "W02",
+        "W03",
+        "W04"
+      ],
+      "pain_points": [
+        "PP-004",
+        "PP-038"
+      ]
+    },
+    {
+      "number": 5,
+      "title": "Participant onboarding and profile updates",
+      "problem": "Staff copy information from forms and scans into participant records and must check for existing people.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C1",
+      "automated_scope": "Extract evidenced draft fields, show duplicate candidates and execute approved basic participant changes with read-back.",
+      "manual_boundary": "Approve identity, consent, field values and separate service/accounting readiness.",
+      "integration": "ShiftCare GET clients/client; POST or PUT clients using an explicit whitelist.",
+      "prototype_foundation": "W03 extraction, person mapping, gated create/update and read-back exist.",
+      "remaining_work_or_gate": "Validate native intake feature fit, actual forms, mapped fields and account writes; preserve prospects until activation is approved.",
+      "acceptance": "The source and exact approved fields link to one verified native identity; replay creates no duplicate.",
+      "workflow_families": [
+        "W03"
+      ],
+      "pain_points": [
+        "PP-001"
+      ]
+    },
+    {
+      "number": 6,
+      "title": "Worker onboarding coordination",
+      "problem": "Worker information is re-entered and separate qualifications, access and payroll setup require chasing.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C1",
+      "automated_scope": "Prepare worker fields, execute reviewed basic staff changes and track screening/access/payroll handoffs.",
+      "manual_boundary": "HR verifies qualifications, employment decisions and payroll readiness.",
+      "integration": "ShiftCare GET staff/qualifications; POST or PUT staff. Existing payroll setup stays separate.",
+      "prototype_foundation": "W04 staff adapters and a separate payroll checkpoint exist.",
+      "remaining_work_or_gate": "Test role/invitation behaviour and readiness checks. A recorded onboarding status does not itself establish sign-in permissions.",
+      "acceptance": "Approved basic staff data is verified and incomplete HR/payroll steps prevent readiness claims.",
+      "workflow_families": [
+        "W04"
+      ],
+      "pain_points": [
+        "PP-001",
+        "PP-057",
+        "PP-080"
+      ]
+    },
+    {
+      "number": 7,
+      "title": "Client stages and agreed service details",
+      "problem": "Staff search prospect and active lists and recover agreed hours or changes from emails and notes.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "G",
+      "automated_scope": "Track reviewed stage transitions and source-linked service hours/effective changes.",
+      "manual_boundary": "Approve activation, service hours, funding implications and effective dates.",
+      "integration": "Published clients PUT includes client_status; agreed hours also need native service/fund evidence and booking links.",
+      "prototype_foundation": "New client mapping defaults to prospect; intake references exist.",
+      "remaining_work_or_gate": "Extend the mapping whitelist for explicit stage transitions; define which native record owns agreed hours rather than creating a second editable agreement.",
+      "acceptance": "Only an approved transition changes the native stage; hours retain their authoritative source.",
+      "workflow_families": [
+        "W01",
+        "W03",
+        "W08"
+      ],
+      "pain_points": [
+        "PP-005",
+        "PP-006"
+      ]
+    },
+    {
+      "number": 8,
+      "title": "Correspondence preparation",
+      "problem": "Staff repeatedly write similar messages, sometimes omitting the person, service time, outcome or next action.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "S",
+      "selection": "C1",
+      "automated_scope": "Prepare approved templates, validate recipients/context/attachments and record the communication handoff.",
+      "manual_boundary": "Approve sensitive wording and send through the agreed channel.",
+      "integration": "Application templates and existing ShiftCare communication UI; Graph sending would require separate Mail.Send permission and implementation.",
+      "prototype_foundation": "W13 provides owned native handoffs, not automatic outgoing delivery.",
+      "remaining_work_or_gate": "Implement reusable templates and checks. Do not depend on an unverified ShiftCare SMS/chat send API.",
+      "acceptance": "A complete reviewed message reaches an owned handoff; no task is labelled as a delivered message.",
+      "workflow_families": [
+        "W13"
+      ],
+      "pain_points": [
+        "PP-009",
+        "PP-010"
+      ]
+    },
+    {
+      "number": 9,
+      "title": "Communication tracking and history",
+      "problem": "Communication evidence is scattered and staff must separately establish whether someone was notified or responded.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "M",
+      "selection": "G",
+      "automated_scope": "Link supported communication references and distinguish dispatch, failure, response and checked native history.",
+      "manual_boundary": "Resolve unsupported channels and verify actual acknowledgement when required.",
+      "integration": "Graph Inbox/Sent Items and authorized native references; ShiftCare shift events may corroborate specific service communications.",
+      "prototype_foundation": "W13 requires an actual communication reference; current Graph access is read-only Inbox ingestion.",
+      "remaining_work_or_gate": "Agree channel coverage and add permitted Sent Items/failure evidence. A Graph 202 response is not delivery proof; universal cross-channel read receipts are not promised.",
+      "acceptance": "Each status is backed by its own evidence, with unknown outcomes and failed delivery kept open.",
+      "workflow_families": [
+        "W02",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-011",
+        "PP-012"
+      ]
+    },
+    {
+      "number": 10,
+      "title": "Booking preparation and availability checks",
+      "problem": "Staff copy booking details, clarify times and assess capacity; a free calendar slot may be personal time.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Prepare one-off booking drafts and check dates, times, roster overlap, leave and available patterns.",
+      "manual_boundary": "Confirm suitability, worker willingness, participant agreement and native acceptance.",
+      "integration": "ShiftCare shifts/staff/leaves/qualifications; published availability_schedules and POST shifts can extend the adapter.",
+      "prototype_foundation": "W08 checks existing occurrences; the current adapter has no new-booking create operation.",
+      "remaining_work_or_gate": "Add a whitelisted one-off create adapter and explicit native IDs/defaults if API creation is included. Availability patterns need date expansion; free time is not willingness.",
+      "acceptance": "A reviewed one-off arrangement has a verified native result or an explicit native creation handoff.",
+      "workflow_families": [
+        "W01",
+        "W08"
+      ],
+      "pain_points": [
+        "PP-015",
+        "PP-016",
+        "PP-017",
+        "PP-019"
+      ]
+    },
+    {
+      "number": 11,
+      "title": "Booking change scope and verification",
+      "problem": "Staff clarify one-visit versus recurring changes and reopen bookings to check whether edits saved.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Preview change scope and verify a supported saved occurrence against approved fields.",
+      "manual_boundary": "Approve occurrence/series scope and resolve group or locked bookings.",
+      "integration": "ShiftCare GET/PUT shifts; published recurrence/shifts and recurrence/pattern operations need separately scoped adapters.",
+      "prototype_foundation": "Current snapshot, overlap and single-client/single-worker change/read-back controls exist.",
+      "remaining_work_or_gate": "Keep initial writes to accepted occurrence scope. Series operations are published but not implemented in the existing adapter.",
+      "acceptance": "Only the approved scope changes; native mismatch, stale data and locks leave an owned exception.",
+      "workflow_families": [
+        "W08"
+      ],
+      "pain_points": [
+        "PP-018",
+        "PP-020"
+      ]
+    },
+    {
+      "number": 12,
+      "title": "Travel checking and stale value detection",
+      "problem": "Travel distances, durations and blocks need manual checks and can remain outdated after booking or worker changes.",
+      "level": "F",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Calculate route estimates from verified inputs and automatically flag stale or infeasible travel.",
+      "manual_boundary": "Verify ambiguous addresses and approve actual claims or scheduling decisions.",
+      "integration": "ShiftCare roster/address reads plus existing Mapbox routing; no automatic km/pay write is required.",
+      "prototype_foundation": "Browser travel checking and route utilities exist.",
+      "remaining_work_or_gate": "Move dependency fingerprints/checks to shared server records. F covers estimates and stale-value checks, not mileage entitlement.",
+      "acceptance": "Changes to worker, address or preceding visit invalidate the estimate; no estimate becomes actual mileage.",
+      "workflow_families": [
+        "W08",
+        "W11"
+      ],
+      "pain_points": [
+        "PP-021",
+        "PP-022"
+      ]
+    },
+    {
+      "number": 13,
+      "title": "Shift instruction maintenance",
+      "problem": "Staff open bookings to copy missing instructions and track revised wording in separate tools.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "G",
+      "automated_scope": "Find missing instructions and apply an approved version to explicitly selected native bookings.",
+      "manual_boundary": "Approve wording, effective date and affected occurrences.",
+      "integration": "Published ShiftCare PUT shifts accepts description; recurrence/shifts also documents description.",
+      "prototype_foundation": "Prototype instruction examples exist; the production shift adapter only writes assignment/times.",
+      "remaining_work_or_gate": "Add a description-only adapter, version/hash checks and read-back. Validate series behaviour and locked/cancelled records before bulk changes.",
+      "acceptance": "Selected editable bookings match the approved instructions without changing unrelated fields.",
+      "workflow_families": [
+        "W08",
+        "W09"
+      ],
+      "pain_points": [
+        "PP-025",
+        "PP-026"
+      ]
+    },
+    {
+      "number": 14,
+      "title": "Participant confirmation monitoring",
+      "problem": "Staff inspect reminder replies daily and determine which visit and follow-up each response concerns.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Ingest native reminder replies, match exact occurrences and route confirmation/change/cancellation exceptions.",
+      "manual_boundary": "Resolve sender/occurrence ambiguity and approve any resulting service mutation.",
+      "integration": "Native reminders send SMS replies to admin email; Graph collects them. GET shift events provides an additional documented source.",
+      "prototype_foundation": "W02 reply candidates and W06 reviewed routing exist.",
+      "remaining_work_or_gate": "Test actual notification formats, mailbox routing, quoted replies and occurrence matching; add event reads if needed.",
+      "acceptance": "A clear reply routes once; ambiguous replies and silence never trigger automatic cancellation.",
+      "workflow_families": [
+        "W06",
+        "W07",
+        "W08"
+      ],
+      "pain_points": [
+        "PP-027"
+      ]
+    },
+    {
+      "number": 15,
+      "title": "Complete cancellation handling",
+      "problem": "A worker may be notified while the booking remains active, and travel charges require separate correction.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "L",
+      "selection": "G",
+      "automated_scope": "Execute reviewed cancellation steps with separate verified travel, charge and communication outcomes.",
+      "manual_boundary": "Approve cause, notice, actual travel and financial treatment; review locked or unsupported changes.",
+      "integration": "ShiftCare shift reads/updates/cancel plus invoice/timesheet or invoiceable evidence; native communication handoff.",
+      "prototype_foundation": "W07 persists dispatch and verifies cancellation, but performs no travel/mileage cleanup.",
+      "remaining_work_or_gate": "Add verified cleanup before cancellation where required. Cancelled shifts restrict later edits. Model cleanup-success/cancel-failure and block closure until required handoffs finish.",
+      "acceptance": "No untravelled charge remains incorrectly applied; partial or unknown outcomes stay open without duplicate dispatch.",
+      "workflow_families": [
+        "W07",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-028",
+        "PP-029",
+        "PP-030"
+      ]
+    },
+    {
+      "number": 16,
+      "title": "Absence and replacement cover coordination",
+      "problem": "Sickness and departures trigger urgent reassignment, travel review and individual participant decisions across affected services.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "List disrupted services, prepare candidates, track offers/acceptance and each participant outcome.",
+      "manual_boundary": "Choose suitable cover and confirm worker acceptance and participant preference.",
+      "integration": "ShiftCare shifts/staff/leaves/qualifications; native job board/offers. Published job_board_postings is a possible later adapter.",
+      "prototype_foundation": "W08 guards one-worker assignment; native matching/offers remain handoffs.",
+      "remaining_work_or_gate": "Add shared cover-case dependencies and affected-service tracking. Keep offer and acceptance native until their adapters are accepted.",
+      "acceptance": "Each affected service has a verified arrangement or owned no-cover outcome, with required communication.",
+      "workflow_families": [
+        "W08",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-023",
+        "PP-031",
+        "PP-032",
+        "PP-033",
+        "PP-034"
+      ]
+    },
+    {
+      "number": 17,
+      "title": "Factual absence histories",
+      "problem": "Managers search roster and communication records to reconstruct when a worker was absent and which services were affected.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "L",
+      "automated_scope": "Assemble factual absence dates, affected services and authorized references.",
+      "manual_boundary": "Management resolves disputed facts and all employment interpretation.",
+      "integration": "ShiftCare roster/leave/events plus approved staff-logged communication references.",
+      "prototype_foundation": "Generic evidence/cases exist; a complete absence-history view does not.",
+      "remaining_work_or_gate": "Defer dedicated HR history until core absence coordination is accepted; define restricted access and corrections.",
+      "acceptance": "A source-linked history is visible only to authorized reviewers; it makes no performance conclusion.",
+      "workflow_families": [
+        "W08"
+      ],
+      "pain_points": [
+        "PP-085"
+      ]
+    },
+    {
+      "number": 18,
+      "title": "Document matching and filing",
+      "problem": "Files must be found across email and storage, matched to the right person and placed in the correct native location.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C1",
+      "automated_scope": "Match reviewed originals and upload supported client documents with metadata and independent verification.",
+      "manual_boundary": "Confirm person, signature/version, category and permitted visibility.",
+      "integration": "ShiftCare client documents/type/download APIs; approved download hosts. Staff filing stays an explicit handoff initially.",
+      "prototype_foundation": "Document upload, metadata checks and native-byte hashing exist for client PDF/text files.",
+      "remaining_work_or_gate": "Validate actual document types, field/date formats and download hosts. Do not claim the adapter supports every staff file or image.",
+      "acceptance": "The correct original is verified under the correct native person, category and access setting.",
+      "workflow_families": [
+        "W05"
+      ],
+      "pain_points": [
+        "PP-035",
+        "PP-036"
+      ]
+    },
+    {
+      "number": 19,
+      "title": "Document completeness and attachment checks",
+      "problem": "Staff inspect records individually for paperwork and follow up emails referring to missing attachments.",
+      "level": "F",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C1",
+      "automated_scope": "Compare configured required documents/attachments with complete available metadata and create specific exceptions.",
+      "manual_boundary": "Assess signature, authenticity and documents held outside the visible sources.",
+      "integration": "Graph attachments; ShiftCare client documents, staff_files and qualifications; approved requirement rules.",
+      "prototype_foundation": "Evidence files, document reads and attachment checks exist.",
+      "remaining_work_or_gate": "Add requirement matrices and complete-scope results. F covers presence/metadata checks, not proof that a valid agreement exists or is absent everywhere.",
+      "acceptance": "Missing, present and unreadable/unknown evidence remain distinct and generate the right follow-up.",
+      "workflow_families": [
+        "W02",
+        "W05",
+        "W12"
+      ],
+      "pain_points": [
+        "PP-037",
+        "PP-038"
+      ]
+    },
+    {
+      "number": 20,
+      "title": "Document date and expiry correction",
+      "problem": "Plan and agreement dates can be confused, while incorrect metadata makes non-expiring documents appear expired.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "G",
+      "automated_scope": "Prepare reviewed date/expiry corrections and verify accepted native metadata updates.",
+      "manual_boundary": "Interpret document meaning and approve non-expiring classifications.",
+      "integration": "ShiftCare client document PUT and staff_qualifications PATCH; general staff-file edits need a supported method or native handoff.",
+      "prototype_foundation": "Client metadata and staff qualification expiry adapters exist.",
+      "remaining_work_or_gate": "Validate date/null/no-expiration response semantics. General staff-file expiry correction is not implemented in the current adapter.",
+      "acceptance": "Only evidence-backed corrections suppress false alerts; genuine expiries remain visible.",
+      "workflow_families": [
+        "W05",
+        "W12"
+      ],
+      "pain_points": [
+        "PP-039",
+        "PP-041"
+      ]
+    },
+    {
+      "number": 21,
+      "title": "Renewal and coordinator follow up",
+      "problem": "Genuine renewals and requests for updated dates, funding or supporting documents require repeated external chasing.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Detect genuine due/missing evidence, schedule owned renewal/coordinator tasks and retain responses.",
+      "manual_boundary": "Verify received documents, funding/date meaning and completion.",
+      "integration": "ShiftCare documents/qualifications/fund context and native expiry reminders; application schedules/Graph responses.",
+      "prototype_foundation": "W12 scoped staff collection and review schedules exist.",
+      "remaining_work_or_gate": "Reuse native reminder sending, repair metadata first, avoid duplicate alerts and implement missed-run recovery and escalation.",
+      "acceptance": "A due item creates one owned follow-up, remains open until checked and survives a missed schedule.",
+      "workflow_families": [
+        "W05",
+        "W12",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-040",
+        "PP-042"
+      ]
+    },
+    {
+      "number": 22,
+      "title": "Invoice preparation checks",
+      "problem": "Staff compare service records individually and resolve coding, travel, tax-setting and unusual-invoice questions.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Prepare period billing exceptions from actual attendance, notes and native invoiceable/invoice data.",
+      "manual_boundary": "Bookkeeper approves category, charge, tax and unusual treatment, then uses native export.",
+      "integration": "ShiftCare shifts/timesheets/progress_notes/invoices and published invoiceable_items; existing ShiftCare-Xero integration.",
+      "prototype_foundation": "W10 collects visit/invoice evidence; there is no invoiceable-items cursor adapter yet.",
+      "remaining_work_or_gate": "Add cursor-aware pre-invoice reads and agreed rules/cutoffs. Use native pricing rather than calculating care billing rates in the application.",
+      "acceptance": "Complete period evidence produces traceable exceptions; no duplicate invoice/export or false all-clear occurs.",
+      "workflow_families": [
+        "W09",
+        "W10"
+      ],
+      "pain_points": [
+        "PP-044",
+        "PP-045",
+        "PP-047",
+        "PP-051",
+        "PP-052",
+        "PP-053"
+      ]
+    },
+    {
+      "number": 23,
+      "title": "Special billing instructions and prepayments",
+      "problem": "Advance payments and special arrangements depend on staff memory and scattered notes.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "M",
+      "selection": "L",
+      "automated_scope": "Surface approved special instructions and verified Xero credit/prepayment references.",
+      "manual_boundary": "Bookkeeper applies balances and approves accounting treatment.",
+      "integration": "Xero OAuth and read permissions for accounting evidence, linked by organization/ContactID; native references in ShiftCare.",
+      "prototype_foundation": "Manual accounting references exist; no direct Xero connector exists.",
+      "remaining_work_or_gate": "Defer live balance integration until authorized Xero access and ID reconciliation are implemented. Do not create another ledger.",
+      "acceptance": "Current accounting evidence is linked without automatic credit allocation or balance invention.",
+      "workflow_families": [
+        "W10"
+      ],
+      "pain_points": [
+        "PP-046"
+      ]
+    },
+    {
+      "number": 24,
+      "title": "Billing recipient verification",
+      "problem": "Plan-manager or payer changes may not reach staff before invoices are issued.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "M",
+      "selection": "L",
+      "automated_scope": "Flag payer/contact changes and compare current recipient instructions with linked native records.",
+      "manual_boundary": "Staff verify authority and effective payer changes before updating billing.",
+      "integration": "ShiftCare client/contact/invoice context; Xero contacts for full cross-system comparison.",
+      "prototype_foundation": "Basic participant contact updates exist; a payer-specific reconciliation adapter does not.",
+      "remaining_work_or_gate": "Defer dedicated cross-system recipient automation; keep checks in existing onboarding/billing review until account mappings are verified.",
+      "acceptance": "A changed billing recipient has an authorized, effective instruction and verified native identity.",
+      "workflow_families": [
+        "W02",
+        "W10"
+      ],
+      "pain_points": [
+        "PP-048"
+      ]
+    },
+    {
+      "number": 25,
+      "title": "Returned invoice resolution",
+      "problem": "Staff locate rejected invoices, investigate reasons and coordinate corrections across records and conversations.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "M",
+      "selection": "L",
+      "automated_scope": "Collect rejection correspondence, invoice/source references and correction ownership.",
+      "manual_boundary": "Bookkeeper determines credit, correction or reissue and checks the result.",
+      "integration": "Graph/staff-logged rejection evidence and ShiftCare/Xero invoice IDs; rejection reason is not guaranteed by invoice status alone.",
+      "prototype_foundation": "Mail triage and W10 review cases can already carry the evidence.",
+      "remaining_work_or_gate": "Defer a dedicated correction/reissue automation; reuse #3/#22 cases and native accounting actions first.",
+      "acceptance": "The reason and corrected native outcome are linked without a duplicate invoice.",
+      "workflow_families": [
+        "W02",
+        "W10",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-049"
+      ]
+    },
+    {
+      "number": 26,
+      "title": "Payment follow up",
+      "problem": "Calls, resending and payment checks require chasing, while unresolved invoices affect owners' cash planning.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "L",
+      "automated_scope": "Build verified overdue/payment follow-up from the authoritative ledger and approved communication rules.",
+      "manual_boundary": "Bookkeeper approves disputes, escalation and any collection action.",
+      "integration": "Xero invoice/payment status via new OAuth adapter; native ShiftCare due reminders where suitable.",
+      "prototype_foundation": "Follow-up cases exist; live Xero status ingestion is absent.",
+      "remaining_work_or_gate": "Defer custom collection status until ledger IDs, tokens and reconciliation are accepted; do not treat a ShiftCare balance as verified Xero payment.",
+      "acceptance": "Paid invoices stop further chasing and ambiguous/reversed payment states stay reviewable.",
+      "workflow_families": [
+        "W10",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-050",
+        "PP-054"
+      ]
+    },
+    {
+      "number": 27,
+      "title": "Pay period and employee checks",
+      "problem": "Staff check run dates, employee lists and carried-over values; inactive workers or unexplained prior values need review.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "M",
+      "selection": "L",
+      "automated_scope": "Check run periods, verified employee population and unexplained carried-over fields.",
+      "manual_boundary": "Payroll confirms final-pay eligibility and the meaning of prior values.",
+      "integration": "ShiftCare staff/payroll fields plus the confirmed payroll platform API or approved export.",
+      "prototype_foundation": "Period review support exists; payroll vendor and employment-status source need confirmation.",
+      "remaining_work_or_gate": "Defer payroll-side automation until the actual vendor/field mappings are known. Inactive ShiftCare access does not establish zero pay.",
+      "acceptance": "Run dates/population reconcile and leavers needing final pay are retained.",
+      "workflow_families": [
+        "W04",
+        "W11"
+      ],
+      "pain_points": [
+        "PP-055",
+        "PP-056",
+        "PP-058"
+      ]
+    },
+    {
+      "number": 28,
+      "title": "Timesheet hours and mileage reconciliation",
+      "problem": "Staff compare workers' hours and mileage with payroll inputs and investigate missing source timesheets.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Check ShiftCare period completeness, actual hours and mileage units, then compare approved payroll input where available.",
+      "manual_boundary": "Payroll approves payable values and resolves discrepancies before native release.",
+      "integration": "ShiftCare timesheets/shifts/pay-item evidence; existing timesheet export and a confirmed payroll API/export for two-sided reconciliation.",
+      "prototype_foundation": "W11 and browser payroll review exist; a live payroll-system connector is not implemented.",
+      "remaining_work_or_gate": "First deliver source checks and reviewed handoff. Add two-sided comparison only against the real export/API; do not claim automated payroll reconciliation without it.",
+      "acceptance": "Missing timesheets never become zero pay; approved quantities and units trace to their source and period.",
+      "workflow_families": [
+        "W09",
+        "W11"
+      ],
+      "pain_points": [
+        "PP-059",
+        "PP-060",
+        "PP-064"
+      ]
+    },
+    {
+      "number": 29,
+      "title": "Payroll adjustment tracking",
+      "problem": "Adjustments, leave, back pay and first-job travel decisions must be recovered from notes and applied to the right period.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "L",
+      "selection": "L",
+      "automated_scope": "Retain adjustment evidence, period, original/corrected values, approver and explanatory notes.",
+      "manual_boundary": "Payroll calculates and approves leave, back pay and travel treatment in the established payroll process.",
+      "integration": "Approved payroll export/API, leave evidence and restricted application adjustment records.",
+      "prototype_foundation": "Browser adjustment worksheet exists; no production payroll calculation/write adapter exists.",
+      "remaining_work_or_gate": "Keep calculations and native entry manual initially; support evidence through #28 rather than building an award/payroll engine.",
+      "acceptance": "Each applied adjustment has the correct period, authorization and verified native result.",
+      "workflow_families": [
+        "W11"
+      ],
+      "pain_points": [
+        "PP-061",
+        "PP-062",
+        "PP-063",
+        "PP-065"
+      ]
+    },
+    {
+      "number": 30,
+      "title": "Payroll completion handoffs",
+      "problem": "Saving, finalizing and delivering payslips requires separate completion steps in the external payroll process.",
+      "level": "N",
+      "technical_fit": "Native",
+      "relative_effort": "S",
+      "selection": "L",
+      "automated_scope": "Track the preparation handoff and unresolved items in the supporting application.",
+      "manual_boundary": "Authorized payroll staff finalize the run, release payment and deliver payslips in the payroll platform.",
+      "integration": "Existing payroll process and native integration; no custom release connector is required.",
+      "prototype_foundation": "Checked handoff references and review/export demonstrations exist.",
+      "remaining_work_or_gate": "Retain finalization and money movement in the established platform; a duplicate release workflow adds little benefit and substantial risk.",
+      "acceptance": "Preparation is handed off with evidence; payroll completion retains its own native approval trail.",
+      "workflow_families": [
+        "W11"
+      ],
+      "pain_points": [
+        "PP-066"
+      ]
+    },
+    {
+      "number": 31,
+      "title": "Visit record and care exceptions",
+      "problem": "Missing notes, reported incomplete work, unusual durations and important events can be buried among routine records.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Detect factual missing/invalid attendance or notes, duration differences and source-defined significant events.",
+      "manual_boundary": "Supervisors investigate quality, care and employment concerns.",
+      "integration": "ShiftCare shifts/timesheets/progress_notes; care_plan_tasks reads can add validated task context.",
+      "prototype_foundation": "W09 visit collection and factual exception preparation exist.",
+      "remaining_work_or_gate": "Validate complete periods, staff-specific evidence and restricted access; task-specific completion comparisons need accepted source fields.",
+      "acceptance": "A factual exception cites its original record and owner without making a clinical or misconduct conclusion.",
+      "workflow_families": [
+        "W09"
+      ],
+      "pain_points": [
+        "PP-067",
+        "PP-068"
+      ]
+    },
+    {
+      "number": 32,
+      "title": "Feedback complaint and safety follow through",
+      "problem": "Feedback calls, complaint histories, pending responses and safety follow-up require coordination across several sources.",
+      "level": "P",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C2",
+      "automated_scope": "Schedule agreed feedback, retain authorized responses and track complaint/safety callbacks and corrective follow-up.",
+      "manual_boundary": "Managers handle safety, complaint outcomes and personnel decisions; urgent procedures remain active.",
+      "integration": "Staff-logged sources, Graph evidence and native record references; no automatic incident/complaint write is assumed.",
+      "prototype_foundation": "W09/W13 cases and handoffs provide a foundation; a feedback-specific shared case is additional work.",
+      "remaining_work_or_gate": "Add restricted case fields, owners, follow-up schedule and explicit urgent escalation; avoid automatic clinical triage.",
+      "acceptance": "Every response/action has an accountable outcome; restricted information stays within permitted access.",
+      "workflow_families": [
+        "W09",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-069",
+        "PP-070",
+        "PP-071",
+        "PP-072",
+        "PP-073"
+      ]
+    },
+    {
+      "number": 33,
+      "title": "Task completion handovers and escalation",
+      "problem": "Unconfirmed times, incomplete steps, routine questions and future plans depend on memory or return to the owners.",
+      "level": "F",
+      "technical_fit": "High",
+      "relative_effort": "M",
+      "selection": "C1",
+      "automated_scope": "Run configured assignment, deadline, handover and required-step completion checks automatically.",
+      "manual_boundary": "People perform tasks and management supplies delegated authority and actual coverage.",
+      "integration": "Shared application cases/actions/outbox; optional approved native action-item references.",
+      "prototype_foundation": "Owners, deadlines, dispatch records and individual follow-up jobs exist.",
+      "remaining_work_or_gate": "Add parent-case dependencies, external notification outcomes and catch-up. Current native jobs can complete before their separate communication follow-up.",
+      "acceptance": "A parent case cannot close while any mandatory child outcome remains incomplete or uncertain.",
+      "workflow_families": [
+        "W01",
+        "W02",
+        "W08",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-024",
+        "PP-078",
+        "PP-087",
+        "PP-088",
+        "PP-095"
+      ]
+    },
+    {
+      "number": 34,
+      "title": "Operational outcome reporting",
+      "problem": "Uncovered services, uneven demand, recurring costs and administration pressure complicate operating decisions.",
+      "level": "F",
+      "technical_fit": "High",
+      "relative_effort": "S",
+      "selection": "L",
+      "automated_scope": "Generate factual period reports from complete case, enquiry and native service evidence.",
+      "manual_boundary": "Management interprets staffing, cost and demand implications.",
+      "integration": "Read-only application/ShiftCare aggregates; use native financial reports unless ledger access is accepted.",
+      "prototype_foundation": "Basic workspace counts exist; a reconciled cross-source reporting job does not.",
+      "remaining_work_or_gate": "Keep baseline pilot measures in core instrumentation; defer a dedicated reporting workflow until daily work is stable. No forecast model is proposed.",
+      "acceptance": "Reports state period, source completeness and actual outcomes; they make no unsupported savings or revenue claim.",
+      "workflow_families": [
+        "W01",
+        "W08",
+        "W10"
+      ],
+      "pain_points": [
+        "PP-090",
+        "PP-091",
+        "PP-093"
+      ]
+    },
+    {
+      "number": 35,
+      "title": "Arrival visibility if the remaining gap is confirmed",
+      "problem": "Participants interrupt the office to ask whether their worker is on the way or delayed.",
+      "level": "P",
+      "technical_fit": "Medium",
+      "relative_effort": "L",
+      "selection": "L",
+      "automated_scope": "If a real native gap remains, show fresh consented ETA/status for the current assigned service.",
+      "manual_boundary": "Approve access/consent and validate actual devices and withdrawal behaviour.",
+      "integration": "ShiftCare current roster plus verified service identities, browser location and routing provider.",
+      "prototype_foundation": "W14 service identity, consent/freshness and ETA components exist.",
+      "remaining_work_or_gate": "Defer optional arrival work pending native-feature fit and device/privacy trials; continuous background tracking is not established.",
+      "acceptance": "Only permitted current service access sees fresh status; reassignment or stale updates withdraw it.",
+      "workflow_families": [
+        "W14"
+      ],
+      "pain_points": [
+        "PP-014"
+      ]
+    }
+  ]
+}

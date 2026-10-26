@@ -60,6 +60,8 @@ export async function migrate(client: Client, directory = migrationDirectory): P
 }
 
 async function main(): Promise<void> {
+  try { process.loadEnvFile(path.resolve(__dirname, '../../.env.local')); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   if (!process.env.DATABASE_URL)
     throw new Error('Set DATABASE_URL to the target PostgreSQL database.');
   const client = new Client({ connectionString: process.env.DATABASE_URL });

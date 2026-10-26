@@ -1,0 +1,100 @@
+{
+  "reviewedAt": "2026-10-25T23:58:31.015Z",
+  "status": "completed",
+  "scope": "Read-only source review with isolated fictional browser data; no app changes",
+  "checks": [
+    {
+      "name": "R01: follow-up assignment controls frozen",
+      "reproduced": true,
+      "ownerDisabled": true,
+      "deadlineDisabled": true,
+      "pendingOutcomes": 2
+    },
+    {
+      "name": "R02: changed coverage postcode reuses previous checked outcome",
+      "reproduced": true,
+      "postcode": "8888",
+      "outcomes": [
+        {
+          "id": "coverage-review",
+          "label": "Office confirms the coverage exception or an appropriate alternative",
+          "status": "done",
+          "reference": "DEMO-OUTCOME-101",
+          "note": "The required fictional native or communication outcome was checked by the responsible reviewer."
+        }
+      ],
+      "closeEnabled": true
+    },
+    {
+      "name": "R03: cancel reply closes as matched confirmation without cancellation handoff",
+      "reproduced": true,
+      "source": "Please cancel my 27 October 2026 visit from 09:00 to 11:00. This is a fictional review request.",
+      "response": "Please cancel this exact occurrence",
+      "effects": [
+        {
+          "id": "step-1",
+          "label": "Record the matched sample confirmation",
+          "phase": "verified",
+          "reference": "DEMO-OPS-1036-STEP-1",
+          "attempts": 1,
+          "proof": "demo-readback"
+        }
+      ],
+      "cancellationStatus": "needs-review",
+      "caseCount": 36
+    },
+    {
+      "name": "R04: broader React test stops on retired worker-home selector",
+      "oldUnreadSelector": false,
+      "oldReadAction": true,
+      "mainText": "Welcome back, Elena\n\nA little more organised. Ready for your day.\n\nView my visits\nYour work, in one place\nWhat would you like to check?\nMy visits\nYour assigned work\nAvailability\nPlan your week\nDocuments\nHours & records\nYour updates 3 unread\nFrom your office\nMy updates\nMy requests\nAll\nRoster\nAttendance\nTime off\nOCD Brilliance\nRoster · Office update\n"
+    },
+    {
+      "name": "R05: storage writes fail while old data remains readable",
+      "reproduced": true,
+      "route": "#/office/operations/case/OPS-1037",
+      "unavailable": true,
+      "memoryWarning": false,
+      "savedCaseCount": 36
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-readiness-2026-10-26/independent/r01-follow-up-owner-frozen.png",
+      "sha256": "5fb4b7e0638e3b9f78f5cc799bf0944208ee59db51673326ccd6f075cc8b3c51",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/independent/r02-new-postcode-old-checked-proof.png",
+      "sha256": "f29f857153e2d22203d559c12ab7e4894318f5ad68f5d1e16fa960e5363f8700",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/independent/r03-cancel-response-completed-as-confirmation.png",
+      "sha256": "1e05c71cd5ea932db62ff06e0e1bba683f2ddf8d1785af181c11bcbb6fddc54c",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/independent/r04-worker-home-current.png",
+      "sha256": "c050fa9b2266f14a847de09e7946dc642e17435757dd068343b9bd4f0b5e5a23",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/independent/r05-storage-failure-case-navigation.png",
+      "sha256": "e5878d6fa04fdf28d436ef11011993f380ee276f445720dca42d02ff6deb0f92",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    }
+  ],
+  "errors": [],
+  "externalRequests": []
+}

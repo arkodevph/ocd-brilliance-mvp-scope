@@ -8,6 +8,8 @@
     { "source": "/:page(funding|about|areas-we-serve|careers|intake|portal|login|contact|faq|participant-rights|complaints|privacy|terms)", "destination": "/index.html" }
   ],
   "functions": {
+    "api/automation.js": { "maxDuration": 60, "includeFiles": "{.backend/**,lib/**,node_modules/@tesseract.js-data/**}" },
+    "api/portal.js": { "maxDuration": 60, "includeFiles": "{.backend/**,lib/**}" },
     "api/journeys.js": { "maxDuration": 30, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" },
     "api/workflow.js": { "maxDuration": 30, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" },
     "api/push.js": { "maxDuration": 60, "includeFiles": "{.backend/**,workspace/data.js,lib/**}" },

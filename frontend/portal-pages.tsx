@@ -15,7 +15,12 @@ import {
   Users,
 } from './solar-icons';
 
-export type PageHeadingModel = { title: string; subtitle?: string; eyebrow?: string };
+export type PageHeadingModel = {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  avatarSrc?: string;
+};
 
 export function PageHeading({
   model,
@@ -28,7 +33,14 @@ export function PageHeading({
     <header className="page-header portal-page-heading">
       <div>
         {model.eyebrow && <span className="eyebrow">{model.eyebrow}</span>}
-        <h1>{model.title}</h1>
+        <h1>
+          {model.avatarSrc && (
+            <span className="avatar profile-image">
+              <img src={model.avatarSrc} alt="" width="80" height="80" />
+            </span>
+          )}
+          {model.title}
+        </h1>
         {model.subtitle && <p>{model.subtitle}</p>}
       </div>
       {children && <div className="header-actions">{children}</div>}

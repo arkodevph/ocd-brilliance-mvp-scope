@@ -3,6 +3,54 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const { build } = require('esbuild');
 const { JSDOM } = require('jsdom');
+const fs = require('node:fs');
+
+test('legacy disclosure enhancement preserves React-owned workflow controls during navigation', async () => {
+  const bundle = await build({
+    entryPoints: [path.join(__dirname, '../frontend/renderer.tsx')],
+    bundle: true,
+    write: false,
+    format: 'iife',
+    platform: 'browser',
+    jsx: 'automatic',
+    define: { 'process.env.NODE_ENV': '"production"' },
+  });
+  const dom = new JSDOM('<div id="app"></div><dialog id="modal"></dialog>', {
+    url: 'http://localhost/workspace/',
+    runScripts: 'outside-only',
+    pretendToBeVisual: true,
+  });
+  const { window } = dom;
+  const errors = [];
+  window.structuredClone = structuredClone;
+  window.matchMedia = () => ({ matches: true, addEventListener() {}, removeEventListener() {} });
+  window.addEventListener('error', (event) => errors.push(event.message));
+  try {
+    window.eval(bundle.outputFiles[0].text);
+    const markup = (id) =>
+      `<main><div data-react-operations="${JSON.stringify({ page: 'case', caseId: id }).replaceAll('"', '&quot;')}"></div></main>`;
+    window.OCD_REACT.render(markup('OPS-1005'));
+    assert.equal(
+      window.document.querySelectorAll('.ops-progress .is-done').length,
+      1,
+      'Reviewed evidence does not show an unapproved proposal as approved',
+    );
+    const original = window.document.querySelector('details.ops-scenarios');
+    assert.ok(original);
+    window.eval(fs.readFileSync(path.join(__dirname, '../workspace/ui-layout.js'), 'utf8'));
+    assert.equal(window.document.querySelector('details.ops-scenarios'), original);
+    assert.equal(window.document.querySelector('.ops-scenarios.expanded-details'), null);
+    window.OCD_REACT.render('<main><p>Existing workspace</p></main>');
+    window.OCD_REACT.render(markup('OPS-1018'));
+    window.OCD_REACT.render('<main><p>Returned to another page</p></main>');
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    assert.deepEqual(errors, []);
+    assert.match(window.document.getElementById('app').textContent, /Returned to another page/);
+    window.OCD_REACT.unmount();
+  } finally {
+    window.close();
+  }
+});
 
 test('React migration preserves form values, delegated actions and widget remounts', async () => {
   const bundle = await build({

@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T00:24:16.336Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "React employee flows",
+      "status": "pass",
+      "detail": "Notification state, leave submission, reload persistence and withdrawal work at desktop/mobile sizes."
+    },
+    {
+      "name": "React routes and dialogs",
+      "status": "pass",
+      "detail": "Office, worker, client and public routes, repeat booking selection, map lifecycle and keyboard-accessible search dialog render through the React entry."
+    },
+    {
+      "name": "Connected landing page",
+      "status": "pass",
+      "detail": "Native intake submits text and two chunked videos. Anonymous seeded employees and clients open directly, demo leave works without login, and private intake reads remain protected. Mobile layouts fit."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/react-employee-desktop.png",
+      "sha256": "1642280b5f4f74a76ab811f64b1e884c3704995880270198136ae8f4be5d7516",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/react-employee-mobile.png",
+      "sha256": "a90317e8c26ab8efc5fd7ab7107cd147c6171932018c964908ebd220e4797fc9",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/react-office-mobile.png",
+      "sha256": "d86a0302715bcb02e8b4d19a0fb39e1218ca0edee0b423dc43a0af637ee4f709",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/landing-desktop.png",
+      "sha256": "fb0d40a6d0d43552067598ab96ea89ca7be89b57cd846edd6cf46574d37e6149",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/landing-mobile.png",
+      "sha256": "951269e3e1443b65876d75afe5c6e5e9020ddac674cb6757d1dfdd8fc27bc6a3",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/landing-intake-mobile.png",
+      "sha256": "537a828a7849f7b2c180c3051eddf65f97dcbbbca0072659adfd063780326ffc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/react/landing-demo-accounts-mobile.png",
+      "sha256": "671b45cd6cfdea56fd88d9116ed9f118f52e492086096b002056a87b22a5821b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

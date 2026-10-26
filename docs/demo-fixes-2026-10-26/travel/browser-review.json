@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T02:13:44.032Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Travel checker",
+      "status": "pass",
+      "detail": "Legacy evidence review, worker/address change flags, work queue navigation, retained estimates, unchanged fees, responsive layout and persistence passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/travel/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/travel/travel-checker-worker-change-desktop.png",
+      "sha256": "1ff2cdc422193c581b5b656f748458e9401915207e57f039d2d195824e027c40",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/travel/travel-checker-worker-change-mobile.png",
+      "sha256": "6ce020111dd37cd00101bfe5891f05709af9c91c6afb19413b9d32175ce1c7cc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/travel/travel-checker-reviewed-desktop.png",
+      "sha256": "fcbde65e91686bfa595b1e2f988cc786ccdefe31758923c888a6bfe6ce532a53",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/travel/travel-checker-reviewed-mobile.png",
+      "sha256": "20a7035e8403419b8820100bfd300d95671140710530b272a4cf602943181efa",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".travel-checker"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}
