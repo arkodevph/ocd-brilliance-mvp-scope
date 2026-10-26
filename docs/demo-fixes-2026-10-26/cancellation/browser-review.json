@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T02:13:44.032Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Cancellation assistant",
+      "status": "pass",
+      "detail": "Travel and charge review, native read-back, two notifications, failed delivery, reload recovery, completion, recipient views and mobile layout passed."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/cancellation-review-desktop.png",
+      "sha256": "668d237c7f2cb8788e6d35f915ef9b1590261bc3dacfb06cef506c015f905091",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/cancellation-review-mobile.png",
+      "sha256": "9c5a143a29156a958266ca0ade5f48138f5a3fdf983aeb8b965a099653f3f663",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/cancellation-charges-desktop.png",
+      "sha256": "2bab721c0ad46db263d3285e4567d1878c0546ad1ef71278635ffbb5d7105e30",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/cancellation-charges-mobile.png",
+      "sha256": "171b06e9c5fe3692b7362609cdeaaf56ca5111893982284a36330b731b3866dd",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/cancellation-charges-with-charge-desktop.png",
+      "sha256": "084f646bbe409f8aa7369f88ed4893e89bfa691021c082c3c685686b79839756",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-group:last-of-type"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/cancellation-completed-mobile.png",
+      "sha256": "3e5e6b421f6c8cd5b539f3bac811207f3e4e640a9a816eae04adad0e18035e3f",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/cancellation/cancellation-completed-desktop.png",
+      "sha256": "84c629cdca7318ceed7ddf27a40552a49c72bfbe4a675b46af2aa753af3e5e5f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".cancellation-assistant"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

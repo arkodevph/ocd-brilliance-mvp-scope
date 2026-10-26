@@ -1,0 +1,654 @@
+{
+  "date": "2026-10-25",
+  "scope": "Proposed planning workflows; not a deployed implementation or live integration assertion",
+  "counts": {
+    "opportunities": 35,
+    "core": 20,
+    "gated": 5,
+    "later_native": 10,
+    "workflow_families": 14,
+    "views": 5
+  },
+  "items": [
+    {
+      "number": 1,
+      "title": "Service area screening",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "F",
+      "workflow_families": [
+        "W01"
+      ],
+      "pain_points": [
+        "PP-003"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Confirm actual capacity and exceptional locations.",
+      "integration_gate": "Approve the list and routing rules; retain uncertainty rather than rejecting negotiable areas."
+    },
+    {
+      "number": 2,
+      "title": "Centralized enquiry collection",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "P",
+      "workflow_families": [
+        "W01",
+        "W02"
+      ],
+      "pain_points": [
+        "PP-002",
+        "PP-008"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Log unsupported phone/voicemail sources and resolve uncertain identities.",
+      "integration_gate": "Test actual mailbox notifications, expired cursors, folder scope, attachments and source replay."
+    },
+    {
+      "number": 3,
+      "title": "Enquiry ownership and prioritization",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "P",
+      "workflow_families": [
+        "W01",
+        "W02"
+      ],
+      "pain_points": [
+        "PP-007",
+        "PP-013"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Confirm urgency, sensitive routing and candidate invoice/booking identity.",
+      "integration_gate": "Add approved assignment/escalation rules and notification outcomes; current classification is a suggestion."
+    },
+    {
+      "number": 4,
+      "title": "Missing information detection",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "F",
+      "workflow_families": [
+        "W02",
+        "W03",
+        "W04"
+      ],
+      "pain_points": [
+        "PP-004",
+        "PP-038"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Resolve ambiguous dates, verify authenticity and provide missing answers.",
+      "integration_gate": "Approve required fields and test representative forms. F applies to checking, not obtaining truthful answers."
+    },
+    {
+      "number": 5,
+      "title": "Participant onboarding and profile updates",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "P",
+      "workflow_families": [
+        "W03"
+      ],
+      "pain_points": [
+        "PP-001"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Approve identity, consent, field values and separate service/accounting readiness.",
+      "integration_gate": "Validate native intake feature fit, actual forms, mapped fields and account writes; preserve prospects until activation is approved."
+    },
+    {
+      "number": 6,
+      "title": "Worker onboarding coordination",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "P",
+      "workflow_families": [
+        "W04"
+      ],
+      "pain_points": [
+        "PP-001",
+        "PP-057",
+        "PP-080"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "HR verifies qualifications, employment decisions and payroll readiness.",
+      "integration_gate": "Test role/invitation behaviour and readiness checks. A recorded onboarding status does not itself establish sign-in permissions."
+    },
+    {
+      "number": 7,
+      "title": "Client stages and agreed service details",
+      "selection": "G",
+      "scope": "Gated addition",
+      "automation_level": "P",
+      "workflow_families": [
+        "W01",
+        "W03",
+        "W08"
+      ],
+      "pain_points": [
+        "PP-005",
+        "PP-006"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Approve activation, service hours, funding implications and effective dates.",
+      "integration_gate": "Extend the mapping whitelist for explicit stage transitions; define which native record owns agreed hours rather than creating a second editable agreement."
+    },
+    {
+      "number": 8,
+      "title": "Correspondence preparation",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "P",
+      "workflow_families": [
+        "W13"
+      ],
+      "pain_points": [
+        "PP-009",
+        "PP-010"
+      ],
+      "view": "05-care-comms-ownership",
+      "manual_boundary": "Approve sensitive wording and send through the agreed channel.",
+      "integration_gate": "Implement reusable templates and checks. Do not depend on an unverified ShiftCare SMS/chat send API."
+    },
+    {
+      "number": 9,
+      "title": "Communication tracking and history",
+      "selection": "G",
+      "scope": "Gated addition",
+      "automation_level": "P",
+      "workflow_families": [
+        "W02",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-011",
+        "PP-012"
+      ],
+      "view": "05-care-comms-ownership",
+      "manual_boundary": "Resolve unsupported channels and verify actual acknowledgement when required.",
+      "integration_gate": "Agree channel coverage and add permitted Sent Items/failure evidence. A Graph 202 response is not delivery proof; universal cross-channel read receipts are not promised."
+    },
+    {
+      "number": 10,
+      "title": "Booking preparation and availability checks",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W01",
+        "W08"
+      ],
+      "pain_points": [
+        "PP-015",
+        "PP-016",
+        "PP-017",
+        "PP-019"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Confirm suitability, worker willingness, participant agreement and native acceptance.",
+      "integration_gate": "Add a whitelisted one-off create adapter and explicit native IDs/defaults if API creation is included. Availability patterns need date expansion; free time is not willingness."
+    },
+    {
+      "number": 11,
+      "title": "Booking change scope and verification",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W08"
+      ],
+      "pain_points": [
+        "PP-018",
+        "PP-020"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Approve occurrence/series scope and resolve group or locked bookings.",
+      "integration_gate": "Keep initial writes to accepted occurrence scope. Series operations are published but not implemented in the existing adapter."
+    },
+    {
+      "number": 12,
+      "title": "Travel checking and stale value detection",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "F",
+      "workflow_families": [
+        "W08",
+        "W11"
+      ],
+      "pain_points": [
+        "PP-021",
+        "PP-022"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Verify ambiguous addresses and approve actual claims or scheduling decisions.",
+      "integration_gate": "Move dependency fingerprints/checks to shared server records. F covers estimates and stale-value checks, not mileage entitlement."
+    },
+    {
+      "number": 13,
+      "title": "Shift instruction maintenance",
+      "selection": "G",
+      "scope": "Gated addition",
+      "automation_level": "P",
+      "workflow_families": [
+        "W08",
+        "W09"
+      ],
+      "pain_points": [
+        "PP-025",
+        "PP-026"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Approve wording, effective date and affected occurrences.",
+      "integration_gate": "Add a description-only adapter, version/hash checks and read-back. Validate series behaviour and locked/cancelled records before bulk changes."
+    },
+    {
+      "number": 14,
+      "title": "Participant confirmation monitoring",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W06",
+        "W07",
+        "W08"
+      ],
+      "pain_points": [
+        "PP-027"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Resolve sender/occurrence ambiguity and approve any resulting service mutation.",
+      "integration_gate": "Test actual notification formats, mailbox routing, quoted replies and occurrence matching; add event reads if needed."
+    },
+    {
+      "number": 15,
+      "title": "Complete cancellation handling",
+      "selection": "G",
+      "scope": "Gated addition",
+      "automation_level": "P",
+      "workflow_families": [
+        "W07",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-028",
+        "PP-029",
+        "PP-030"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Approve cause, notice, actual travel and financial treatment; review locked or unsupported changes.",
+      "integration_gate": "Add verified cleanup before cancellation where required. Cancelled shifts restrict later edits. Model cleanup-success/cancel-failure and block closure until required handoffs finish."
+    },
+    {
+      "number": 16,
+      "title": "Absence and replacement cover coordination",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W08",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-023",
+        "PP-031",
+        "PP-032",
+        "PP-033",
+        "PP-034"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Choose suitable cover and confirm worker acceptance and participant preference.",
+      "integration_gate": "Add shared cover-case dependencies and affected-service tracking. Keep offer and acceptance native until their adapters are accepted."
+    },
+    {
+      "number": 17,
+      "title": "Factual absence histories",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W08"
+      ],
+      "pain_points": [
+        "PP-085"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Management resolves disputed facts and all employment interpretation.",
+      "integration_gate": "Defer dedicated HR history until core absence coordination is accepted; define restricted access and corrections."
+    },
+    {
+      "number": 18,
+      "title": "Document matching and filing",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "P",
+      "workflow_families": [
+        "W05"
+      ],
+      "pain_points": [
+        "PP-035",
+        "PP-036"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Confirm person, signature/version, category and permitted visibility.",
+      "integration_gate": "Validate actual document types, field/date formats and download hosts. Do not claim the adapter supports every staff file or image."
+    },
+    {
+      "number": 19,
+      "title": "Document completeness and attachment checks",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "F",
+      "workflow_families": [
+        "W02",
+        "W05",
+        "W12"
+      ],
+      "pain_points": [
+        "PP-037",
+        "PP-038"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Assess signature, authenticity and documents held outside the visible sources.",
+      "integration_gate": "Add requirement matrices and complete-scope results. F covers presence/metadata checks, not proof that a valid agreement exists or is absent everywhere."
+    },
+    {
+      "number": 20,
+      "title": "Document date and expiry correction",
+      "selection": "G",
+      "scope": "Gated addition",
+      "automation_level": "P",
+      "workflow_families": [
+        "W05",
+        "W12"
+      ],
+      "pain_points": [
+        "PP-039",
+        "PP-041"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Interpret document meaning and approve non-expiring classifications.",
+      "integration_gate": "Validate date/null/no-expiration response semantics. General staff-file expiry correction is not implemented in the current adapter."
+    },
+    {
+      "number": 21,
+      "title": "Renewal and coordinator follow up",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W05",
+        "W12",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-040",
+        "PP-042"
+      ],
+      "view": "02-intake-documents",
+      "manual_boundary": "Verify received documents, funding/date meaning and completion.",
+      "integration_gate": "Reuse native reminder sending, repair metadata first, avoid duplicate alerts and implement missed-run recovery and escalation."
+    },
+    {
+      "number": 22,
+      "title": "Invoice preparation checks",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W09",
+        "W10"
+      ],
+      "pain_points": [
+        "PP-044",
+        "PP-045",
+        "PP-047",
+        "PP-051",
+        "PP-052",
+        "PP-053"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Bookkeeper approves category, charge, tax and unusual treatment, then uses native export.",
+      "integration_gate": "Add cursor-aware pre-invoice reads and agreed rules/cutoffs. Use native pricing rather than calculating care billing rates in the application."
+    },
+    {
+      "number": 23,
+      "title": "Special billing instructions and prepayments",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W10"
+      ],
+      "pain_points": [
+        "PP-046"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Bookkeeper applies balances and approves accounting treatment.",
+      "integration_gate": "Defer live balance integration until authorized Xero access and ID reconciliation are implemented. Do not create another ledger."
+    },
+    {
+      "number": 24,
+      "title": "Billing recipient verification",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W02",
+        "W10"
+      ],
+      "pain_points": [
+        "PP-048"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Staff verify authority and effective payer changes before updating billing.",
+      "integration_gate": "Defer dedicated cross-system recipient automation; keep checks in existing onboarding/billing review until account mappings are verified."
+    },
+    {
+      "number": 25,
+      "title": "Returned invoice resolution",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W02",
+        "W10",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-049"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Bookkeeper determines credit, correction or reissue and checks the result.",
+      "integration_gate": "Defer a dedicated correction/reissue automation; reuse #3/#22 cases and native accounting actions first."
+    },
+    {
+      "number": 26,
+      "title": "Payment follow up",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W10",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-050",
+        "PP-054"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Bookkeeper approves disputes, escalation and any collection action.",
+      "integration_gate": "Defer custom collection status until ledger IDs, tokens and reconciliation are accepted; do not treat a ShiftCare balance as verified Xero payment."
+    },
+    {
+      "number": 27,
+      "title": "Pay period and employee checks",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W04",
+        "W11"
+      ],
+      "pain_points": [
+        "PP-055",
+        "PP-056",
+        "PP-058"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Payroll confirms final-pay eligibility and the meaning of prior values.",
+      "integration_gate": "Defer payroll-side automation until the actual vendor/field mappings are known. Inactive ShiftCare access does not establish zero pay."
+    },
+    {
+      "number": 28,
+      "title": "Timesheet hours and mileage reconciliation",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W09",
+        "W11"
+      ],
+      "pain_points": [
+        "PP-059",
+        "PP-060",
+        "PP-064"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Payroll approves payable values and resolves discrepancies before native release.",
+      "integration_gate": "First deliver source checks and reviewed handoff. Add two-sided comparison only against the real export/API; do not claim automated payroll reconciliation without it."
+    },
+    {
+      "number": 29,
+      "title": "Payroll adjustment tracking",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W11"
+      ],
+      "pain_points": [
+        "PP-061",
+        "PP-062",
+        "PP-063",
+        "PP-065"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Payroll calculates and approves leave, back pay and travel treatment in the established payroll process.",
+      "integration_gate": "Keep calculations and native entry manual initially; support evidence through #28 rather than building an award/payroll engine."
+    },
+    {
+      "number": 30,
+      "title": "Payroll completion handoffs",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "N",
+      "workflow_families": [
+        "W11"
+      ],
+      "pain_points": [
+        "PP-066"
+      ],
+      "view": "04-finance-payroll",
+      "manual_boundary": "Authorized payroll staff finalize the run, release payment and deliver payslips in the payroll platform.",
+      "integration_gate": "Retain finalization and money movement in the established platform; a duplicate release workflow adds little benefit and substantial risk."
+    },
+    {
+      "number": 31,
+      "title": "Visit record and care exceptions",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W09"
+      ],
+      "pain_points": [
+        "PP-067",
+        "PP-068"
+      ],
+      "view": "05-care-comms-ownership",
+      "manual_boundary": "Supervisors investigate quality, care and employment concerns.",
+      "integration_gate": "Validate complete periods, staff-specific evidence and restricted access; task-specific completion comparisons need accepted source fields."
+    },
+    {
+      "number": 32,
+      "title": "Feedback complaint and safety follow through",
+      "selection": "C2",
+      "scope": "Core 2",
+      "automation_level": "P",
+      "workflow_families": [
+        "W09",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-069",
+        "PP-070",
+        "PP-071",
+        "PP-072",
+        "PP-073"
+      ],
+      "view": "05-care-comms-ownership",
+      "manual_boundary": "Managers handle safety, complaint outcomes and personnel decisions; urgent procedures remain active.",
+      "integration_gate": "Add restricted case fields, owners, follow-up schedule and explicit urgent escalation; avoid automatic clinical triage."
+    },
+    {
+      "number": 33,
+      "title": "Task completion handovers and escalation",
+      "selection": "C1",
+      "scope": "Core 1",
+      "automation_level": "F",
+      "workflow_families": [
+        "W01",
+        "W02",
+        "W08",
+        "W13"
+      ],
+      "pain_points": [
+        "PP-024",
+        "PP-078",
+        "PP-087",
+        "PP-088",
+        "PP-095"
+      ],
+      "view": "05-care-comms-ownership",
+      "manual_boundary": "People perform tasks and management supplies delegated authority and actual coverage.",
+      "integration_gate": "Add parent-case dependencies, external notification outcomes and catch-up. Current native jobs can complete before their separate communication follow-up."
+    },
+    {
+      "number": 34,
+      "title": "Operational outcome reporting",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "F",
+      "workflow_families": [
+        "W01",
+        "W08",
+        "W10"
+      ],
+      "pain_points": [
+        "PP-090",
+        "PP-091",
+        "PP-093"
+      ],
+      "view": "05-care-comms-ownership",
+      "manual_boundary": "Management interprets staffing, cost and demand implications.",
+      "integration_gate": "Keep baseline pilot measures in core instrumentation; defer a dedicated reporting workflow until daily work is stable. No forecast model is proposed."
+    },
+    {
+      "number": 35,
+      "title": "Arrival visibility if the remaining gap is confirmed",
+      "selection": "L",
+      "scope": "Later / native",
+      "automation_level": "P",
+      "workflow_families": [
+        "W14"
+      ],
+      "pain_points": [
+        "PP-014"
+      ],
+      "view": "03-rostering",
+      "manual_boundary": "Approve access/consent and validate actual devices and withdrawal behaviour.",
+      "integration_gate": "Defer optional arrival work pending native-feature fit and device/privacy trials; continuous background tracking is not established."
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-const CACHE = 'ocd-brilliance-operations-v94';
+const CACHE = 'ocd-brilliance-operations-v98';
 const SHELL = [
   '/',
   '/workspace/',
@@ -27,6 +27,8 @@ const SHELL = [
   '/workspace/booking-rules.js',
   '/workspace/automation-engine.js',
   '/workspace/automation.js',
+  '/workspace/native-automation.js',
+  '/workspace/live-portal.js',
   '/workspace/automation.css',
   '/workspace/client-presentation.js',
   '/workspace/client-presentation.css',

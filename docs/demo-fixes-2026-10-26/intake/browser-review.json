@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T02:04:41.695Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Searchable staff ownership",
+      "status": "pass",
+      "detail": "Search filters configured staff, unknown names cannot be selected, and the selected account persists after save and reload."
+    },
+    {
+      "name": "Focused intake sections",
+      "status": "pass",
+      "detail": "Only one section is visible at a time; all five navigation buttons work and preserve unsaved review fields."
+    },
+    {
+      "name": "Intake navigation flow",
+      "status": "pass",
+      "detail": "Section navigation stays in document flow without overlapping the visible source/review section at desktop and mobile widths."
+    },
+    {
+      "name": "Digital PDF and scanned PDF",
+      "status": "pass",
+      "detail": "PDF.js extracted digital text; Tesseract processed an image-only PDF using local language assets; the original PDF persisted and appeared beside the draft after reload."
+    },
+    {
+      "name": "Reviewed intake and manual handoff",
+      "status": "pass",
+      "detail": "Original source, missing contact gate, staff review, ready status, per-field/full copying and clipboard denial fallback were exercised with fictional data."
+    },
+    {
+      "name": "Verification and persistence",
+      "status": "pass",
+      "detail": "Staff check and reference persisted after reload; completed fields were disabled and shared intake data stayed out of browser localStorage."
+    },
+    {
+      "name": "Duplicate recovery and responsive keyboard flow",
+      "status": "pass",
+      "detail": "Duplicate extraction linked to the existing intake and prevented another draft; desktop, 390px and 320px captures had no horizontal page overflow; keyboard focus and dialog Escape were checked."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-capture-desktop.png",
+      "sha256": "b7fea08ef7cb325b548c0f0250f0f997f85600e7ddb88183b6d846fe10dea9cd",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-tabs-scroll-1736.png",
+      "sha256": "25edda035f6ec340f9c358b9c0ab3c3ef435660e0dc64b7a99e02c8acbf83e1b",
+      "width": 1736,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".intake-section-nav"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-tabs-scroll-390.png",
+      "sha256": "a33cc3afb1b6ed846ee4eb855f5a9c46333c5033868f9ea83d8a8c149083af76",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".intake-section-nav"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-review-desktop.png",
+      "sha256": "d992615269f6cc3e9cacb0cfe38cd63757df09f5d6ca2c3b7641c771a695f16e",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-review-mobile.png",
+      "sha256": "4ca202f9e4ad393262e800b9a35519218a491c3f1ad76feb085d93bb6daad344",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-handoff-mobile.png",
+      "sha256": "ae3b2bedcb16fb33fa1199bbe949e4e7e02b29c5e5f8170d743e2bc4ab8b2877",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".intake-followup"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-verified-desktop.png",
+      "sha256": "784642d3557b0432d2e513d2e2dc3d653ff2e11500702d8da4a2804c7cea61ed",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-duplicate-mobile.png",
+      "sha256": "90cdbf32a32dc6c67765718e69474c6dd4f40606e395915f4548630c393a1e85",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/intake/intake-original-document-desktop.png",
+      "sha256": "7cb3776c64dba2ecad7fc94d48d4a9fe3d46f3b4fdfed31fdc8b81cfa297e94a",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-25",
+  "reviewedAt": "2026-10-25T23:56:11.521Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Client employee profiles and reviews",
+      "status": "pass",
+      "detail": "Real employee links, matching office ratings, all review pages, unavailable employees and mobile layout checked."
+    },
+    {
+      "name": "Employee own reviews",
+      "status": "pass",
+      "detail": "My reviews navigation, matching office feedback, pagination and worker switch reset checked."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/client-employee-reviews-desktop.png",
+      "sha256": "5996be6be96c4508d79d258321d24f4c5425b32e700c7d01c456b99595f7eab8",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/client-employee-reviews-mobile.png",
+      "sha256": "a71bc30822724aef7c9866ad4a1bd26de9772b83e5969eb9a2674a92f2de1030",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/client-employee-reviews-small-mobile.png",
+      "sha256": "0b59f84d9e3d15cf9ab31557590abb5c6e42310180051e72e7dda7f73d596a33",
+      "width": 320,
+      "height": 800,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/client-worker-directory-desktop.png",
+      "sha256": "0dfaa707784ecada9844cb4fcf2a27a6e350bf5fe16a44bd4bf46d3640937b89",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/client-worker-directory-wide.png",
+      "sha256": "b74e5802a813a04665ff897b651eb0dd673a5d707f04c45be667a0d14ea760c7",
+      "width": 1920,
+      "height": 1080,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/client-worker-directory-mobile.png",
+      "sha256": "0344e6317d64dc52a4cec183987664208f99cd74b17d77a376df269d69a8d60e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/client-worker-directory-small-mobile.png",
+      "sha256": "e6a43b54329ccf3c500d4d1c84246e6bedf916245b1257aa745023b0edbb2f52",
+      "width": 320,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/employee-my-reviews-mobile.png",
+      "sha256": "ecaa048828f31ce4edc8aa91c0956a39c0fe0613727653e2ee8ac237ecc4ca24",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/reviews_replay/employee-my-reviews-desktop.png",
+      "sha256": "ad1f26b2af28f2c901b5775e52c89cc3c2ea20f565fc577c477aedeb482a48f4",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

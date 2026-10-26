@@ -1,0 +1,315 @@
+{
+  "date": "2026-10-25",
+  "structural_checks": [
+    {
+      "check": "All 35 opportunities occur in one business view each",
+      "passed": true
+    },
+    {
+      "check": "Scope remains 20 core / five gated / ten later-native",
+      "passed": true
+    },
+    {
+      "check": "All 14 workflow families are covered",
+      "passed": true
+    },
+    {
+      "check": "Five selected bounded automatic functions remain correctly classified",
+      "passed": true
+    },
+    {
+      "check": "01-execution: node IDs unique",
+      "passed": true
+    },
+    {
+      "check": "01-execution: all relationship endpoints exist",
+      "passed": true
+    },
+    {
+      "check": "01-execution: only intended source roots",
+      "passed": true
+    },
+    {
+      "check": "01-execution: only intended terminals",
+      "passed": true
+    },
+    {
+      "check": "01-execution: required dispatch \u2192 native",
+      "passed": true
+    },
+    {
+      "check": "01-execution: required children \u2192 done",
+      "passed": true
+    },
+    {
+      "check": "01-execution: reachable trigger \u2192 done",
+      "passed": true
+    },
+    {
+      "check": "01-execution: reachable verify \u2192 reconcile",
+      "passed": true
+    },
+    {
+      "check": "01-execution: reachable reconcile \u2192 verify",
+      "passed": true
+    },
+    {
+      "check": "01-execution: no unreachable process nodes",
+      "passed": true
+    },
+    {
+      "check": "01-execution: SVG contains every authored node",
+      "passed": true
+    },
+    {
+      "check": "01-execution: SVG contains every authored relationship",
+      "passed": true
+    },
+    {
+      "check": "01-execution: every numbered process is visibly rendered once",
+      "passed": true
+    },
+    {
+      "check": "01-execution: SVG requires no scripts or remote images",
+      "passed": true
+    },
+    {
+      "check": "01-execution: no overlapping node bounding boxes",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: node IDs unique",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: all relationship endpoints exist",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: only intended source roots",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: only intended terminals",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: reachable source \u2192 next",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: reachable op20 \u2192 op19",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: reachable op21 \u2192 op18",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: no unreachable process nodes",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: SVG contains every authored node",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: SVG contains every authored relationship",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: every numbered process is visibly rendered once",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: SVG requires no scripts or remote images",
+      "passed": true
+    },
+    {
+      "check": "02-intake-documents: no overlapping node bounding boxes",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: node IDs unique",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: all relationship endpoints exist",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: only intended source roots",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: only intended terminals",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: required cleanup \u2192 cancelNative",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: required cancelNative \u2192 cancelVerify",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: reachable op16 \u2192 current",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: reachable op15 \u2192 comms",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: no unreachable process nodes",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: SVG contains every authored node",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: SVG contains every authored relationship",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: every numbered process is visibly rendered once",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: SVG requires no scripts or remote images",
+      "passed": true
+    },
+    {
+      "check": "03-rostering: no overlapping node bounding boxes",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: node IDs unique",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: all relationship endpoints exist",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: only intended source roots",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: only intended terminals",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: reachable op22 \u2192 invoiceVerify",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: reachable op28 \u2192 handoff",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: reachable op28 \u2192 payrollVerify",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: no unreachable process nodes",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: SVG contains every authored node",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: SVG contains every authored relationship",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: every numbered process is visibly rendered once",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: SVG requires no scripts or remote images",
+      "passed": true
+    },
+    {
+      "check": "04-finance-payroll: no overlapping node bounding boxes",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: node IDs unique",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: all relationship endpoints exist",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: only intended source roots",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: only intended terminals",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: required children \u2192 close",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: reachable source \u2192 close",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: reachable children \u2192 work",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: reachable work \u2192 children",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: no unreachable process nodes",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: SVG contains every authored node",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: SVG contains every authored relationship",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: every numbered process is visibly rendered once",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: SVG requires no scripts or remote images",
+      "passed": true
+    },
+    {
+      "check": "05-care-comms-ownership: no overlapping node bounding boxes",
+      "passed": true
+    },
+    {
+      "check": "All HTML template slots populated",
+      "passed": true
+    },
+    {
+      "check": "All 210 application-source files match the existing planning baseline",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "application_source_files_unchanged": 210,
+  "source_manifest": "source-manifest.json",
+  "coverage": "coverage.json",
+  "browser_status": "24 checks passed",
+  "visual_review": "inspected; see visual-review.json",
+  "limits": [
+    "Alternative Graphviz output; no Archify showcase acceptance is claimed.",
+    "These checks validate the planning artifact, not business rules, live integrations or application security."
+  ]
+}

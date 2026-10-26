@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T02:09:14.240Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Staged fictional workflow fixtures and duplicate replay",
+      "status": "pass",
+      "detail": "Test-only fixture import prepared eight original engine sources once; replay preserved ten cases. Current Add message and reviewed assignment are tested separately in the inbox profile."
+    },
+    {
+      "name": "Intake, unknown outcome and accounting",
+      "status": "pass",
+      "detail": "Missing DOB prevented approval; lost response preserved the proposal; reconciliation and a separate Xero check were required before closure."
+    },
+    {
+      "name": "Employee onboarding",
+      "status": "pass",
+      "detail": "Staff profile read-back and separate payroll reference were required; screening approval was not granted."
+    },
+    {
+      "name": "Returned agreement filing",
+      "status": "pass",
+      "detail": "Signed status followed checked native filing and read-back, without an upload API."
+    },
+    {
+      "name": "Cancellation and recipient delivery",
+      "status": "pass",
+      "detail": "Single occurrence remained unchanged until verification. Failed delivery stayed separate from the write and delivered once after retry."
+    },
+    {
+      "name": "Cross-workspace replacement cover",
+      "status": "pass",
+      "detail": "Office posted and verified a native offer; selected Worker accepted; assignment changed only after office review and read-back."
+    },
+    {
+      "name": "Non-expiring document correction",
+      "status": "pass",
+      "detail": "Explicit evidence and date clearing followed the native review/read-back path."
+    },
+    {
+      "name": "Native care and financial checks",
+      "status": "pass",
+      "detail": "Worker care evidence reached office review. Financial checks identified source discrepancies without financial release."
+    },
+    {
+      "name": "Consent, privacy and stale arrival",
+      "status": "pass",
+      "detail": "Only Worker started a consented estimate. Client had no playback control/route request or other participant bookings; stale ETA was withdrawn in Arrival, reachable from Home, and sharing could stop. Mapbox network fallback was used."
+    },
+    {
+      "name": "Reload persistence and responsive layout",
+      "status": "pass",
+      "detail": "Browser case state and audit persisted after reload; captured desktop/mobile viewports had no horizontal overflow."
+    },
+    {
+      "name": "Workspace navigation",
+      "status": "pass",
+      "detail": "Twenty-two office, worker and participant sections rendered headings without mobile page overflow; persona selectors remain explicitly a demo rather than separate user permissions."
+    },
+    {
+      "name": "Public intake to office handoff",
+      "status": "pass",
+      "detail": "An unauthenticated requester was gated by postcode, submitted consented fictional details to the isolated server, and appeared in the office queue after a fresh sign-in preserving its route. Capacity and the final ShiftCare handoff remain office decisions."
+    },
+    {
+      "name": "Runtime and integration boundary",
+      "status": "pass",
+      "detail": "No uncaught browser exception; no live ShiftCare mutation or external financial/message operation."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/automation-desktop.png",
+      "sha256": "483f9b93f2a47bf008d998c038135e2db4ef8d737a6e3261d46bd26dc358fdcb",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/intake-mapping-desktop.png",
+      "sha256": "4da92342258337cc1b70e7e865b7834960c82249410f01f42905a8178c168878",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".automation-next"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/unknown-outcome-desktop.png",
+      "sha256": "2ddd94d7adf3b3db808100879088117c938d598ae1a9f9cd265cf9acfe8d83a2",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": ".automation-case-detail"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/financial-checks-desktop.png",
+      "sha256": "5a7aa4556bc51f180d4cf720b64b8da9451ef6d9602cfe1e7ef3ee10c77e5551",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/participant-map-mobile.png",
+      "sha256": "20f07dd56023fd705382fdb8f9dca301a00f6b67ef105f10a2b807c063c0f3f4",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/stale-arrival-mobile.png",
+      "sha256": "48d258f72a1e814f51fdf3c9c735c1e8084061114eeb54924a7f882ac9d80ede",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "[data-map-detail]"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/stale-arrival-from-home-mobile.png",
+      "sha256": "48d258f72a1e814f51fdf3c9c735c1e8084061114eeb54924a7f882ac9d80ede",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "[data-map-detail]"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/automation-mobile.png",
+      "sha256": "09fe7b5f5dff2390b09be0822aeacfaeafcf4d6e78a4396d483234de964fe9d6",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/completed-case-mobile.png",
+      "sha256": "bfda426b4cb95f663dd6e8861d02085607a20bf1bc513356a81fa0d2d546c007",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".automation-case-detail"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/office-home-mobile.png",
+      "sha256": "f89123678854db7a921bb885d21fb50c7c132294e8c11f3bdfc37a421db34528",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/worker-visits-mobile.png",
+      "sha256": "1019c2ba3e4219b406f750b616210137fd2439501689a04887ec1eb4b0056acc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/participant-home-mobile.png",
+      "sha256": "523b3c639a8dcc3367f28724bbb142dbb308c0b295b18a7aa0a346deae395181",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/participant-bookings-mobile.png",
+      "sha256": "c68b14a8f78caa18d81543d22fed21d6e8cfa7bf6d6b237f1d5548697053b1ec",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/public-intake-mobile.png",
+      "sha256": "43dd0c50678e96aa2f64ea55aa3f48cb8cd66131503f247cc626c677627c7e04",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/legacy/server-intake-office-mobile.png",
+      "sha256": "a7d93f9eeb118e8dfbc508d4375d984972d87d12d59a17c3c16e5cca87c617c9",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

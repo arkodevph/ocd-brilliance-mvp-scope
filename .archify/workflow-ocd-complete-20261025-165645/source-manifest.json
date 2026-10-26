@@ -1,0 +1,53 @@
+{
+  "snapshot_type": "local-planning-description-not-HEAD-provenance",
+  "date": "2026-10-25",
+  "precedence": "The 25 October feasibility and implementation plan govern the selected scope. Earlier workflow descriptions are context, not proof of implemented methods.",
+  "sources": [
+    {
+      "path": "docs/OCD_Custom_System_Implementation_Plan.md",
+      "sha256": "6ef2d199c19536cce570b926f74633e2249fef9a39b1ddecd43e1adf1d7f707a",
+      "lines": 206,
+      "used_for": "Current proposed execution blueprint and release scope"
+    },
+    {
+      "path": "docs/implementation-plan-2026-10-25/architecture-and-data-design.md",
+      "sha256": "2f217818e81784da1eaf20b4c457027d99a166e9a71986d546d33a384691965d",
+      "lines": 140,
+      "used_for": "Shared execution, ownership, durable work and recovery"
+    },
+    {
+      "path": "docs/implementation-plan-2026-10-25/plan-data.json",
+      "sha256": "0e80ffac8fa532f64613b1be65c432ebb0b024240cdd18ac16555298e06cb7ca",
+      "lines": 9939,
+      "used_for": "Task, risk, question, test and traceability registers"
+    },
+    {
+      "path": "docs/automation-feasibility-2026-10-25/feasibility.json",
+      "sha256": "533872b8cc75c388a70f2ffd09602f23238d062946689312c3b461cbf2e2baf0",
+      "lines": 834,
+      "used_for": "All 35 numbered opportunities, level, integration, staff boundary and gate"
+    },
+    {
+      "path": "docs/automation-opportunities-2026-10-24/opportunities.json",
+      "sha256": "5d34fefcae72068fe8bacfcfa2c6c4b1675bbb47aa400a5aac731afc9c50f9e0",
+      "lines": 398,
+      "used_for": "Original numbered opportunity and pain-point register"
+    },
+    {
+      "path": "docs/OCD_Workflow_Use_Cases.md",
+      "sha256": "72dce3d9a2c2e8e68f97f2c26acc7fcddb8acbee64cc989d006e69f5ae5c1402",
+      "lines": 966,
+      "used_for": "W01–W14 operating context; current scope follows the newer feasibility and implementation plan"
+    },
+    {
+      "path": "docs/implementation-plan-2026-10-25/source-baseline.json",
+      "sha256": "9d07e1663053bfc7fbfb3157a88d710db159f6e8c326ba5be003e542e09c402d",
+      "lines": 217,
+      "used_for": "Reference snapshot used only to confirm no application implementation changes"
+    }
+  ],
+  "renderer": "@viz-js/viz 3.31.0 / Graphviz 16.1.0",
+  "renderer_documentation": "https://viz-js.com/api/",
+  "archify_status": "The original shared-flow Archify attempt failed its showcase route/corridor gate. No Archify showcase acceptance or Archify browser evidence is claimed for the alternative Graphviz-rendered atlas.",
+  "live_validation": "No client account, API, application, security or production acceptance tests were run for this diagram task."
+}

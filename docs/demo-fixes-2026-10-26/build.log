@@ -1,0 +1,13 @@
+
+> build
+> npm run build:backend && npm run build:frontend && node scripts/build-vercel.cjs
+
+
+> build:backend
+> node scripts/build-backend.cjs
+
+
+> build:frontend
+> tsc -p tsconfig.frontend.json && node scripts/build-frontend.cjs
+
+Built the operations workspace in dist.

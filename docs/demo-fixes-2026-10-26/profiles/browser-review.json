@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T00:39:41.748Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Profile images for all users",
+      "status": "pass",
+      "detail": "All staff cards and profiles, participant list and detail, schedule, worker account and client portal display consistent local portraits."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/discovery-call-profiles-desktop.png",
+      "sha256": "335bd867d5bc0ad59368dd8b9093d2db9da1e0ecd6d64a005d8f98746766f657",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/discovery-call-profiles-mobile.png",
+      "sha256": "10d8ae9ce6ae623acc9c394e4f1632e5897b68fd00c6dc203518915a9c88654e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/work-queue-profiles-desktop.png",
+      "sha256": "204c352c6c6928e8ce17ea28f62b31864ca98ac035728fe25590843e2dabaf5d",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/work-queue-profiles-mobile.png",
+      "sha256": "b95decefcbcac36b0047c33b8f45e9a3e43660c6370abe2295952b38e2a86833",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/saved-intake-profiles-desktop.png",
+      "sha256": "a98c657b681e6d7f95665b4619a0afd29a0e3cb97654ff6c999cecbc2a924b47",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/saved-intake-profiles-mobile.png",
+      "sha256": "5b739229f8e288d0bd1ef98ea3686ebedd6ce0e469cb54c0e1956a21e905f7d1",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/all-staff-profiles-desktop.png",
+      "sha256": "976fce0665a02bd1851626390e52ea8e58c5988a0936d8e05bf1942fdf137cfc",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/profiles/all-staff-profiles-mobile.png",
+      "sha256": "c18adfe9f50586c31a4bf3a47b004a7153721dd8ff9c44d76a571d97be967f56",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

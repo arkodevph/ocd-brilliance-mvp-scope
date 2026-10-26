@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewedAt": "2026-10-26T00:39:41.758Z",
+  "status": "pass",
+  "sourceMode": "Client presentation; fictional operational cases and dated authenticated trial capture; isolated local server",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Business scope and practical benefits",
+      "status": "pass",
+      "detail": "Five presentation sections show seven core areas, thirteen operational workflows plus booking/arrival W14, specific triggers, staff/native responsibilities and measures."
+    },
+    {
+      "name": "Guided sample and working case links",
+      "status": "pass",
+      "detail": "Guide navigation changes no operational state. Preparation deduplicates fictional sources, preserves history, and links intake and cover to the actual interactive cases."
+    },
+    {
+      "name": "Presentation mode and operational navigation",
+      "status": "pass",
+      "detail": "Presentation mode hides navigation, persists between its sections, exits with Escape, and always restores the operational shell on another route."
+    },
+    {
+      "name": "Capacity assumptions and pilot scorecard",
+      "status": "pass",
+      "detail": "The calculator starts unknown, keeps blanks distinct from zero, labels examples, exposes additional effort, and compares effort and cover in their correct favourable directions."
+    },
+    {
+      "name": "Dated native evidence and matching check run",
+      "status": "pass",
+      "detail": "The presentation shows actual saved authenticated read counts and one independently checked trial task. Only the matching local check run contributes six review signals; native IDs are not stored in browser localStorage."
+    },
+    {
+      "name": "Markdown export and missing-evidence honesty",
+      "status": "pass",
+      "detail": "The report includes labelled assumptions, entered observations and dated proof, omits record contents and credentials, and withdraws native proof when account evidence is unavailable."
+    },
+    {
+      "name": "Responsive presentation and runtime boundary",
+      "status": "pass",
+      "detail": "Every presentation section and the scorecard were checked at 390px without horizontal page overflow. The office launch link is present; no uncaught exception or native ShiftCare mutation occurred."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-overview-desktop.png",
+      "sha256": "d7492b80efdef1a5d74a9fb11736c49a98cfa015d8d21fdf84a79b82eebe2cc9",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-use-cases-desktop.png",
+      "sha256": "e690ecfb63f2c1f0723d3808eb3e80c5222d9e26488f2a7717ab2145fe938626",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-intake-guide-desktop.png",
+      "sha256": "fe0e6923ea496a678da687093b8dfb22e6427624754d44f173f69e9918ce5195",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-value-desktop.png",
+      "sha256": "067d870f154ace5a9ba461d8645551ce770659cdedf7617dd2d9ada8ea53e7e4",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-pilot-proof-desktop.png",
+      "sha256": "e809823d140b59dbf601a04a6cb3d97349373f69af254feda35fbbdadbd8bc42",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-overview-mobile.png",
+      "sha256": "2e27b075a1341f09b70519dee7250e726f40b5a79fc75cbe9aa6d882271fdb13",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-use-cases-mobile.png",
+      "sha256": "d2d6ac7945d8f2308f737c325ba1f606861ee77f43ac41296be47efc138ad02b",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-walkthrough-mobile.png",
+      "sha256": "7587d470ac667aa583ebf6fe74e4ddf51ac4a33e0db2b7f162084b61cdd14984",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-value-mobile.png",
+      "sha256": "cc35b06870c0facb4118a938605cee57830e34dfadda3641127ec46af31fd9ba",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-pilot-mobile.png",
+      "sha256": "678d71b901b533736300f9804e4f2661715eb62b99057dcbbc60168224b76b73",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-fixes-2026-10-26/presentation/client-scorecard-mobile.png",
+      "sha256": "fd64674ec9ecda871e574a13883dabef66149de167b07ac4b81a2c3008388013",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": ".cp-score-wrap"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "Not exercised in this review.",
+  "productionLimit": "Business benefits are expected or illustrative, not measured client outcomes. Native evidence is historical and separate from sample workflow operations. No new native write, live ingestion, delivery, background automation, real identities or device GPS certified."
+}

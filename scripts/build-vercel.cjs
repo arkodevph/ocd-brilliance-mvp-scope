@@ -82,6 +82,8 @@ async function build() {
     'invoices.js',
     'automation-engine.js',
     'automation.js',
+    'native-automation.js',
+    'live-portal.js',
     'automation.css',
     'integration-proof.js',
     'integration-proof.css',

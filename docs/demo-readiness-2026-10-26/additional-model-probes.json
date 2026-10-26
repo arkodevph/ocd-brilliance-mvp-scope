@@ -1,0 +1,173 @@
+{
+  "reviewedAt": "2026-10-25T23:58:10.988Z",
+  "results": [
+    {
+      "probe": "confirmation_cancel_branch",
+      "case": {
+        "id": "OPS-1036",
+        "opportunity": 14,
+        "subject": "Cancel my exact 27 October morning visit",
+        "person": "Olivia Hart",
+        "branch": "Perth North · sample",
+        "owner": "Roster team",
+        "dueDate": "2026-10-25",
+        "priority": "Normal",
+        "status": "completed",
+        "source": "Please cancel my 27 October 2026 visit from 09:00 to 11:00. This is a fictional review request.",
+        "channel": "Captured sample request",
+        "sourceRevision": 3,
+        "fields": [
+          {
+            "key": "sender",
+            "label": "Sender match",
+            "before": "Not matched",
+            "value": "Olivia Hart · known fictional contact"
+          },
+          {
+            "key": "occurrence",
+            "label": "Exact occurrence",
+            "before": "Not matched",
+            "value": "2026-10-27 · 09:00–11:00"
+          },
+          {
+            "key": "response",
+            "label": "Reviewed response",
+            "before": "Unclassified",
+            "value": "Please cancel this exact occurrence"
+          }
+        ],
+        "checks": [
+          {
+            "id": "check-1",
+            "label": "The sender is confidently matched",
+            "done": true
+          },
+          {
+            "id": "check-2",
+            "label": "One exact occurrence is identified",
+            "done": true
+          },
+          {
+            "id": "check-3",
+            "label": "The reply meaning is confirmed by the office",
+            "done": true
+          }
+        ],
+        "effects": [
+          {
+            "id": "step-1",
+            "label": "Record the matched sample confirmation",
+            "phase": "verified",
+            "reference": "DEMO-OPS-1036-STEP-1",
+            "attempts": 1,
+            "proof": "demo-readback"
+          }
+        ],
+        "outcomes": [],
+        "previewEnabled": false,
+        "approval": {
+          "snapshot": "[14,3,\"Please cancel my 27 October 2026 visit from 09:00 to 11:00. This is a fictional review request.\",\"Perth North · sample\",\"Roster team\",\"2026-10-25\",[[\"sender\",\"Olivia Hart · known fictional contact\"],[\"occurrence\",\"2026-10-27 · 09:00–11:00\"],[\"response\",\"Please cancel this exact occurrence\"]],[[\"check-1\",true],[\"check-2\",true],[\"check-3\",true]]]",
+          "by": "Demo office reviewer",
+          "at": "2026-10-26T03:00:00.000Z"
+        },
+        "mode": "internal",
+        "route": "office/automation",
+        "createdAt": "2026-10-26T03:00:00.000Z",
+        "updatedAt": "2026-10-26T03:00:00.000Z",
+        "history": [
+          {
+            "id": "event-2b780985-027f-442d-9d66-9d6e61ea3ac6",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "Sample request captured once with its original source."
+          },
+          {
+            "id": "event-685210a6-0e9d-4a24-9eab-983c025f158d",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "Sample proposal, evidence or assignment updated."
+          },
+          {
+            "id": "event-fefa91a2-b8df-41b7-8fcc-a170e7b49b3c",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "Sample proposal, evidence or assignment updated."
+          },
+          {
+            "id": "event-5273f9f0-1346-4f44-b655-d41dc18cd60a",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "Loaded the explicitly pre-reviewed fictional evidence example."
+          },
+          {
+            "id": "event-6e94e708-7e59-4384-8358-84027ec4dfc4",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "The exact displayed proposal and evidence snapshot were approved for this browser-only demonstration."
+          },
+          {
+            "id": "event-eb894e2f-73cc-4656-bfe2-688ce592d395",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "Demo step saved once: Record the matched sample confirmation. Independent demo read-back is still required."
+          },
+          {
+            "id": "event-b477b3a2-94e1-444f-9d23-bd1c87af8e37",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "Independent demo read-back matched DEMO-OPS-1036-STEP-1. Required follow-through is checked separately."
+          },
+          {
+            "id": "event-1fcb068d-68af-42cc-b287-385421161a02",
+            "caseId": "OPS-1036",
+            "at": "2026-10-26T03:00:00.000Z",
+            "actor": "Demo office reviewer",
+            "event": "Parent case closed after every required demo outcome was checked. Native financial release retains its own authority."
+          }
+        ]
+      },
+      "existing_cancel_case_status": "needs-review",
+      "total_cases": 36,
+      "note": "Normal field edits and actions only. Check whether the response creates or links a reviewed cancellation case rather than closing as confirmation."
+    },
+    {
+      "probe": "shared_parent_child_completion",
+      "parent": {
+        "workflow": "W07",
+        "status": "completed",
+        "receipt": {
+          "method": "staff-manual",
+          "reference": "123",
+          "details": {
+            "accountingReference": "",
+            "note": ""
+          },
+          "checkedBy": "review@example.test",
+          "at": "2026-10-26T03:00:00.000Z"
+        }
+      },
+      "children": [
+        {
+          "workflow": "W13",
+          "status": "queued",
+          "payload": {
+            "evidenceReference": "staff-manual:123",
+            "outcomeJobId": "a4a70ef0-f099-445b-ad85-71b24975a11b",
+            "outcomeVerified": true,
+            "recipient": "ShiftCare client 789",
+            "channel": "native",
+            "message": "An update to your service has been checked by the office. Please contact us if you have questions."
+          }
+        }
+      ],
+      "external_operation_registry": "empty; no HTTP adapters supplied"
+    }
+  ]
+}

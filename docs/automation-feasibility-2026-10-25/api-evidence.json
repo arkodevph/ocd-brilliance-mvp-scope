@@ -1,0 +1,2697 @@
+{
+  "review_date": "2026-10-25",
+  "source_url": "https://app.shiftcare.com/api/v3/swagger_doc",
+  "swagger": "2.0",
+  "host": "api.shiftcare.com",
+  "base_path": "/api/",
+  "public_schema_snapshot_sha256": "d8e1e9e4e159d093a976b56c5e95a9c832c47f9a855260156df7cab0083ff7d3",
+  "scope": "Unauthenticated public specification only; no OCD account permission or behaviour is established by this snapshot.",
+  "operations": [
+    {
+      "path": "/v3/clients",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_external_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "filter_by_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "filter_by_name",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "filter_by_team_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "sort_by",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "sort_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Clients"
+        }
+      }
+    },
+    {
+      "path": "/v3/clients",
+      "method": "POST",
+      "parameters": [
+        {
+          "name": "first_name",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "dob",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "salutation",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "middle_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "family_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "display_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "gender",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address_unit_no",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "general_information",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "phone_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "mobile_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "marital_status",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "nationality",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "languages",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "ndis_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "age_care_recipient_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "nhs_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "reference_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "purchase_order_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "custom_field_1",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "notes",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "medicaid_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "preferred_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "person_alias",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "suffix",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_identifier",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "sex",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "place_of_birth",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "ethnicity",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "religion",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "sexuality",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "client_status",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address_label",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address_unit_no",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "secondary_email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "preferred_contact_method",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "joined_date",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "next_review_date",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "team_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "postal_code",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address_postal_code",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "disability_support_need_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "medicare_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "aboriginal_torres_strait_islander",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "national_insurance_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "ssn",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "federal_medicaid_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "health_card_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "social_insurance_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "client_type",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "default_pricebook_id",
+          "in": "formData",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "201": {
+          "$ref": "#/definitions/Client"
+        }
+      }
+    },
+    {
+      "path": "/v3/clients",
+      "method": "PUT",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "salutation",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "first_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "middle_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "family_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "display_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "gender",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "dob",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address_unit_no",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "general_information",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "phone_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "mobile_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "marital_status",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "nationality",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "languages",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "ndis_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "age_care_recipient_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "nhs_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "reference_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "purchase_order_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "custom_field_1",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "notes",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "preferred_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "person_alias",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "suffix",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_identifier",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "sex",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "place_of_birth",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "ethnicity",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "religion",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "sexuality",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "client_status",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address_label",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address_unit_no",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "secondary_email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "preferred_contact_method",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "joined_date",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "next_review_date",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "team_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "postal_code",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "other_address_postal_code",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "disability_support_need_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "medicare_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "aboriginal_torres_strait_islander",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "national_insurance_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "ssn",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "federal_medicaid_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "health_card_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "social_insurance_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Client"
+        }
+      }
+    },
+    {
+      "path": "/v3/clients/{id}",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "include_external_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Client"
+        }
+      }
+    },
+    {
+      "path": "/v3/staff",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "include_external_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "filter_by_name",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "filter_by_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "filter_by_service",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "filter_by_organization_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_dummy",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "sort_by",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "sort_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Staffs"
+        }
+      }
+    },
+    {
+      "path": "/v3/staff",
+      "method": "POST",
+      "parameters": [
+        {
+          "name": "name",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "email",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "salutation",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "first_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "family_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "role",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "gender",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "dob",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "phone_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "mobile_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "employment_type",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "languages",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_relationship",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_phone_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "onboarding_status",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[payroll_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[adp_file_number]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[province_of_employment]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[cost_centre_area_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[pay_frequency]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[vacation_pay_percent]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[vacation_pay_treatment]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "send_invitation",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "send_sms_invitation",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "201": {
+          "$ref": "#/definitions/Staff"
+        }
+      }
+    },
+    {
+      "path": "/v3/staff",
+      "method": "PUT",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "salutation",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "first_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "family_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "role",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "gender",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "dob",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "phone_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "mobile_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "employment_type",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "languages",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_name",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_relationship",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "kin_phone_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_email",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "onboarding_status",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "social_security_number",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[payroll_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[adp_file_number]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[province_of_employment]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[cost_centre_area_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[pay_frequency]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[vacation_pay_percent]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "payroll_details[vacation_pay_treatment]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Staff"
+        }
+      }
+    },
+    {
+      "path": "/v3/staff/{id}",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "include_external_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Staff"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "client_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "staff_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "program_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "from_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "to_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "shift_types",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "ndis_enabled",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_clients",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_staff",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "approved_from_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "approved_to_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "billable",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Shifts"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts",
+      "method": "POST",
+      "parameters": [
+        {
+          "name": "area_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "price_book_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "start_at",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "end_at",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "shift_type",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "description",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "suburb_address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "break_time",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "km",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "published",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "sleepover",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "live_in",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "account_location_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "facility_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "allowance_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "shift_template_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "notify",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "clients[client_id]",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "clients[price_book_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "clients[fund_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "clients[invoice_travel_mileage]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "staff[staff_id]",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "staff[pay_group_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[title]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[description]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[mandatory]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[completed_at]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[intended_time_kind]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[intended_part_of_day]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[intended_time]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[frequency]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[days]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[requires_note]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[note_heading]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[min_words]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "tasks[client_ids]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[client_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[price_book_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[start_at]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[end_at]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[ratio]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[fund_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "recurrence[unit]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "recurrence[repeat_every]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "recurrence[week_days]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "recurrence[monthly_day]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "recurrence[end_at]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "201": {
+          "$ref": "#/definitions/Shift"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts/{id}",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Shift"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts/{id}",
+      "method": "PUT",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "start_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "end_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "shift_type",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "description",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "suburb_address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "break_time",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "km",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "published",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "sleepover",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "live_in",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "account_location_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "facility_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "allowance_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "cancelled_reason",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "notify",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "clients[client_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "clients[price_book_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "clients[fund_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "clients[invoice_travel_mileage]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "staff[staff_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "staff[pay_group_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[client_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[price_book_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[start_at]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[end_at]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[ratio]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "additional_charges[fund_id]",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Shift"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts/{id}/recurrence/shifts",
+      "method": "PUT",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "until_date",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "start_time",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "end_time",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "start_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "end_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "description",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "suburb_address",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "unit_no",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "km",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "break_time",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "shift_type",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "sleepover",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "facility_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "account_location_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "allowance_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "published",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "confirmation",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "can_be_declined_by_staff",
+          "in": "formData",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Shift"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts/{id}/recurrence/pattern",
+      "method": "PUT",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "recurrence_unit",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "recurrence_repeat_every",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "recurrence_end_date",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "recurrence_week_days",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "recurrence_day_of_month",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "published",
+          "in": "formData",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {}
+      }
+    },
+    {
+      "path": "/v3/shifts/{id}/cancel",
+      "method": "POST",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "cancel_type",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "cancel_reason",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "absent_reason",
+          "in": "formData",
+          "required": true
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Shift"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts/{shift_id}/events",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "shift_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "start_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "end_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/ShiftEvents"
+        }
+      }
+    },
+    {
+      "path": "/v3/shifts/{shift_id}/care_plan_tasks",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "shift_id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ShiftCarePlanTask"
+          }
+        }
+      }
+    },
+    {
+      "path": "/v3/availability_schedules",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "user_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "availability_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/AvailabilitySchedules"
+        }
+      }
+    },
+    {
+      "path": "/v3/job_board_postings",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "from_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "shift_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/JobBoardPostings"
+        }
+      }
+    },
+    {
+      "path": "/v3/job_board_postings",
+      "method": "POST",
+      "parameters": [
+        {
+          "name": "shift_id",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "start_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "end_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "has_waitlist_enabled",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "max_distance_km",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "team_segment_ids",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "qualification_matching",
+          "in": "formData",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "201": {
+          "$ref": "#/definitions/JobBoardPosting"
+        }
+      }
+    },
+    {
+      "path": "/v3/leaves",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_external_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "approved_only",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "from",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "to",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "user_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Leaves"
+        }
+      }
+    },
+    {
+      "path": "/v3/timesheets",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "from",
+          "in": "query",
+          "required": true
+        },
+        {
+          "name": "to",
+          "in": "query",
+          "required": true
+        },
+        {
+          "name": "user_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "approved_only",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_staff",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_payable_external_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "split_pay_segments",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "account_location_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Timesheets"
+        }
+      }
+    },
+    {
+      "path": "/v3/progress_notes",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "shift_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "staff_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "client_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "category",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "created_from",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "created_to",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "shift_date_from",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "shift_date_to",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "sort_by",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "sort_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/ProgressNotes"
+        }
+      }
+    },
+    {
+      "path": "/v3/invoices",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "client_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "payment_status",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "client_types",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "payment_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "start_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "end_date",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_client",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "period_filter_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_external_references",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_urls",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Invoices"
+        }
+      }
+    },
+    {
+      "path": "/v3/invoiceable_items",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "client_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "start_date_in_account_time_zone",
+          "in": "query",
+          "required": true
+        },
+        {
+          "name": "end_date_in_account_time_zone",
+          "in": "query",
+          "required": true
+        },
+        {
+          "name": "account_location_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "facility_ids",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "area_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "fund_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "payment_type",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "fund_names",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "line_types",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "group_by",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/InvoiceableItems"
+        }
+      }
+    },
+    {
+      "path": "/v3/clients/{client_id}/documents",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/ClientDocuments"
+        }
+      }
+    },
+    {
+      "path": "/v3/clients/{client_id}/documents",
+      "method": "POST",
+      "parameters": [
+        {
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "file",
+          "in": "formData",
+          "required": true
+        },
+        {
+          "name": "document_type_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "staff_visible",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "expires_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "no_expiration",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "formData",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "201": {
+          "$ref": "#/definitions/ClientDocument"
+        }
+      }
+    },
+    {
+      "path": "/v3/clients/{client_id}/documents/{id}",
+      "method": "PUT",
+      "parameters": [
+        {
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "document_type_id",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "staff_visible",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "expires_at",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "no_expiration",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "time_zone",
+          "in": "formData",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/ClientDocument"
+        }
+      }
+    },
+    {
+      "path": "/v3/clients/{client_id}/documents/{id}/download",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "time_zone",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/ClientDocumentDownloadLink"
+        }
+      }
+    },
+    {
+      "path": "/v3/staff_files",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "user_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "category",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Documents"
+        }
+      }
+    },
+    {
+      "path": "/v3/staff_qualifications/{id}",
+      "method": "PATCH",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "document",
+          "in": "formData",
+          "required": false
+        },
+        {
+          "name": "expires_at",
+          "in": "formData",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/StaffQualification"
+        }
+      }
+    },
+    {
+      "path": "/v3/staffs/{staff_id}/qualifications",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "staff_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "user_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "qualification_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "document_id",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "expires_at",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "verified_at",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "created_at",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "updated_at",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "include_external_ids",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StaffQualification"
+          }
+        }
+      }
+    },
+    {
+      "path": "/v3/qualifications",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "qualifications",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/Qualification"
+        }
+      }
+    },
+    {
+      "path": "/v3/document_types",
+      "method": "GET",
+      "parameters": [
+        {
+          "name": "include_metadata",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "success_response_models": {
+        "200": {
+          "$ref": "#/definitions/DocumentTypes"
+        }
+      }
+    }
+  ],
+  "material_contract_findings": [
+    "Shift updates accept description and km, with invoiced/cancelled state restrictions.",
+    "Recurrence operations are documented, but are not implemented by the current occurrence-only adapter.",
+    "Client update accepts client_status.",
+    "Recurring availability is a pattern, not proof of availability or willingness on a given day.",
+    "Invoiceable-item account sweeps use cursor pagination.",
+    "Staff onboarding_status records a status; it does not itself grant or revoke sign-in access."
+  ]
+}

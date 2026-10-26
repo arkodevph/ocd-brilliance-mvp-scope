@@ -1,0 +1,660 @@
+{
+  "reviewedAt": "2026-10-25T11:54:40.320Z",
+  "status": "pass",
+  "scope": "Fictional frontend prototype only; not live API, security or production acceptance",
+  "checks": [
+    {
+      "name": "Operations hub is integrated with 35 fictional cases and derived dashboard counts",
+      "status": "pass"
+    },
+    {
+      "name": "Dashboard counters open the matching filtered work queue",
+      "status": "pass"
+    },
+    {
+      "name": "Seven operational areas and activity views open without replacing existing screens",
+      "status": "pass"
+    },
+    {
+      "name": "Queue search, empty state and sample-branch filtering work",
+      "status": "pass"
+    },
+    {
+      "name": "All 35 opportunities preserve the 20-core / five-gated / ten-native-later scope",
+      "status": "pass"
+    },
+    {
+      "name": "Gated cancellation verifies cleanup first, preserves partial success, recovers without resend, and requires all three outcomes before closure",
+      "status": "pass"
+    },
+    {
+      "name": "A changed source invalidates approval before a reviewed occurrence change",
+      "status": "pass"
+    },
+    {
+      "name": "Missing information stays blocked until the fictional answer and source checks are supplied",
+      "status": "pass"
+    },
+    {
+      "name": "Payroll remains a staff-checked handoff and never produces an API or payment result",
+      "status": "pass"
+    },
+    {
+      "name": "New sources persist, render as text and deduplicate without altering earlier workspace records",
+      "status": "pass"
+    },
+    {
+      "name": "Overview and case review fit the mobile document width",
+      "status": "pass"
+    },
+    {
+      "name": "Existing office, participant, staff, roster, finance, payroll and inbox workspaces still render",
+      "status": "pass"
+    },
+    {
+      "name": "Checked outcomes and captured sources survive a full reload",
+      "status": "pass"
+    },
+    {
+      "name": "No external service requests, API mutations or page JavaScript exceptions occurred",
+      "status": "pass"
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/prototype-operations-2026-10-25/01-operations-overview.png",
+      "sha256": "39974d75a95de078dcd7ca2a6479546524069b7ea49df8df9969f0076b998987",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/initial-mobile-layout.png",
+      "sha256": "b19e17f838885813f9a9098c2157755eba93b77ee9920546d5ec82fa32115c5d",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/area-intake.png",
+      "sha256": "2293b6f88c88154e2b7e2aafe7524a33e9d403b007eb50734e941350c54e4cea",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/area-documents.png",
+      "sha256": "8b63b27d158d6131d1dccecdfc96c515f9b44fc747856d224d01cd67eaa74123",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/area-rostering.png",
+      "sha256": "3266893eab22f37fefc1a210a06f85618bf5455a2baa3882063efbef4a8bb970",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/area-finance.png",
+      "sha256": "31e824fea225d3afff8b5c1be3a7808d8c5315dd41b5d5272a177550f2fe9cdb",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/area-care.png",
+      "sha256": "24e7bb72382d4a8d1a0fcb51a354241a6eb6634f4528b5573f9cfd11da0a410b",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/area-communications.png",
+      "sha256": "abda2b179b8d41aecf6b79ec34124ef4f6bc2a80e19c64718b758e36bc3553c5",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/area-activity.png",
+      "sha256": "5f478133988d1cfe7726d2ea0286f81c51b2cfe894756f90512e5ca703181a4d",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/02-workflow-library.png",
+      "sha256": "1b166b44ed9b52eadd262cd5a1a9b69b33cafbf704005ff416bc8d4308e4eaf7",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/03-cancellation-approved.png",
+      "sha256": "3f0ccff51a22773bfa9703344593c484fb17f2b9180871a472682f516de33947",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/04-cancellation-partial.png",
+      "sha256": "da4552c08e1e9ece7a56d40ae1eeb9dba2c614605aa48cfb0b7644cdfc2aeacb",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/05-unknown-result-recovery.png",
+      "sha256": "fa517e9857ad7ab83c0af4de2ece8b142de93a45d246d6afab2fe85ea2fceffc",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/06-native-payroll-handoff.png",
+      "sha256": "a2886d6716844883af010e32f75fec9ff5b26034f85ab221b75991f50e424bc9",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/07-overview-mobile.png",
+      "sha256": "fdd0d130be1c0f8dcc33a02b84805e8283eeb67c7657fc9e4d886c80c222948b",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/08-case-mobile.png",
+      "sha256": "d7aa4228f8250171776b612bd45c0d955b0c1c30f85c3ace6da6f938bd0e67ce",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false
+    },
+    {
+      "path": "docs/prototype-operations-2026-10-25/09-participant-review.png",
+      "sha256": "bc249c15490ca33359674c358f0757273e463adb70db23e517283f2f4cdf2c41",
+      "width": 1440,
+      "height": 1050,
+      "horizontalOverflow": false
+    }
+  ],
+  "errors": [],
+  "networkRequests": [
+    {
+      "method": "GET",
+      "path": "/workspace/"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/maps.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/pwa.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/integration-proof.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/client-presentation.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/styles.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/crm.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/employee-portal.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/generated/frontend.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/data.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/map-config.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/journey-api.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/maps.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/pwa.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/shiftcare.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/integration-proof.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/booking-rules.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation-engine.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/native-automation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/live-portal.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/client-presentation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/transcript.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/invoices.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/ui-layout.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/employee-portal.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/generated/frontend.js"
+    },
+    {
+      "method": "GET",
+      "path": "/vendor/tesseract.js/dist/tesseract.min.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/intake-documents.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/arko-preview.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/manifest.webmanifest"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workflow"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/ocd-brilliance-logo.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/ocd-brilliance-logo.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/profiles/profile-3.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/app-icon-192.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/ocd-brilliance-logo.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/profiles/profile-3.svg"
+    },
+    {
+      "method": "GET",
+      "path": "image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4="
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/maps.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/pwa.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/integration-proof.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/client-presentation.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/styles.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/crm.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/employee-portal.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/generated/frontend.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/data.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/map-config.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/journey-api.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/maps.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/pwa.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/shiftcare.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/integration-proof.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/booking-rules.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation-engine.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/native-automation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/live-portal.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/client-presentation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/transcript.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/invoices.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/ui-layout.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/employee-portal.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/generated/frontend.js"
+    },
+    {
+      "method": "GET",
+      "path": "/vendor/tesseract.js/dist/tesseract.min.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/intake-documents.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/arko-preview.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/manifest.webmanifest"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workflow"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/ocd-brilliance-logo.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/ocd-brilliance-logo.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/app-icon-192.png"
+    },
+    {
+      "method": "GET",
+      "path": "image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4="
+    },
+    {
+      "method": "GET",
+      "path": "/assets/profiles/profile-3.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/profiles/profile-4.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/profiles/profile-5.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/profiles/profile-2.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/maps.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/pwa.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/integration-proof.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/client-presentation.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/styles.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/crm.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/employee-portal.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/generated/frontend.css"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/data.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/map-config.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/journey-api.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/maps.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/pwa.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/shiftcare.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/integration-proof.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/booking-rules.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation-engine.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/automation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/native-automation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/live-portal.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/client-presentation.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/transcript.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/invoices.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/ui-layout.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/employee-portal.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/generated/frontend.js"
+    },
+    {
+      "method": "GET",
+      "path": "/vendor/tesseract.js/dist/tesseract.min.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/intake-documents.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/arko-preview.js"
+    },
+    {
+      "method": "GET",
+      "path": "/workspace/manifest.webmanifest"
+    },
+    {
+      "method": "GET",
+      "path": "/api/workflow"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/ocd-brilliance-logo.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/ocd-brilliance-logo.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/app-icon-192.png"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/profiles/profile-3.svg"
+    }
+  ],
+  "visualReview": "Captures require separate author inspection."
+}

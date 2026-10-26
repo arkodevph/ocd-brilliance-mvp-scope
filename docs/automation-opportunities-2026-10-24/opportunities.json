@@ -1,0 +1,398 @@
+{
+  "title": "35 Automation Opportunities for OCD",
+  "date": "24 October 2026",
+  "status": "Proposed operating requirements",
+  "introduction": "OCD can reduce repeated entry, searching, chasing and manual checks by coordinating work through its custom supporting application. The 35 opportunities below address the recorded operational bottlenecks while keeping ShiftCare and Xero central to daily operations.",
+  "scope": "The scope is OCD's internal operations and future branches. The application coordinates sources, reviewed actions, outstanding work and verified results. Staff retain identity, staffing, financial, employment and care decisions. Arrival visibility in item 35 remains optional.",
+  "groups": [
+    {"title": "Enquiries and participant onboarding", "first": 1, "last": 5},
+    {"title": "Worker onboarding communications and bookings", "first": 6, "last": 10},
+    {"title": "Booking changes confirmations and cancellations", "first": 11, "last": 15},
+    {"title": "Absences and document management", "first": 16, "last": 20},
+    {"title": "Renewals and invoice preparation", "first": 21, "last": 25},
+    {"title": "Payments and payroll", "first": 26, "last": 30},
+    {"title": "Care follow through and operational visibility", "first": 31, "last": 35}
+  ],
+  "items": [
+    {
+      "number": 1,
+      "title": "Service area screening",
+      "problem": "People can complete full intake paperwork before learning that OCD cannot serve their location.",
+      "automation": "Check the approved service area before full intake and route uncertain locations to an owned review task.",
+      "review": "The office confirms uncertain areas and actual capacity; postcode coverage does not reserve a worker.",
+      "completion": "The enquiry has a recorded area decision and an appropriate next action.",
+      "pain_points": ["PP-003"],
+      "workflows": ["W01"]
+    },
+    {
+      "number": 2,
+      "title": "Centralized enquiry collection",
+      "problem": "Website, email, telephone and coordinator referrals require separate monitoring and manual collection.",
+      "automation": "Collect authorized forms and emails into one queue. Let staff log telephone, voicemail and unsupported channel references, retaining original sources and preventing duplicate cases.",
+      "review": "Staff confirm uncertain identities and supply context that cannot be collected through a supported connection.",
+      "completion": "Each source links to one enquiry with an owner and next action.",
+      "pain_points": ["PP-002", "PP-008"],
+      "workflows": ["W01", "W02"]
+    },
+    {
+      "number": 3,
+      "title": "Enquiry ownership and prioritization",
+      "problem": "Several administrators can inspect the same message while another request remains unanswered or lacks an owner.",
+      "automation": "Assign owners, deadlines and response status. Suggest category and urgency, and retrieve candidate booking or invoice references for review.",
+      "review": "Staff confirm urgency, sensitive routing and the correct person, booking or invoice.",
+      "completion": "The request has an accountable owner, confirmed context and a visible next action.",
+      "pain_points": ["PP-007", "PP-013"],
+      "workflows": ["W01", "W02"]
+    },
+    {
+      "number": 4,
+      "title": "Missing information detection",
+      "problem": "Incomplete forms, unclear dates and missing supporting documents create repeated clarification work.",
+      "automation": "Check agreed required fields and documents. Prepare clarification requests, assign follow-up and retain received answers beside the original source.",
+      "review": "The office defines the intended date fields and resolves ambiguous answers before they populate native records.",
+      "completion": "Required information is verified or the unresolved request remains visibly owned.",
+      "pain_points": ["PP-004", "PP-038"],
+      "workflows": ["W02", "W03", "W04"]
+    },
+    {
+      "number": 5,
+      "title": "Participant onboarding and profile updates",
+      "problem": "Staff copy information from forms and scans into participant records and must check for existing people.",
+      "automation": "Extract draft fields with source evidence, present duplicate candidates, prepare exact approved changes and verify the native result. Preserve the original file and record links.",
+      "review": "Staff approve identity and fields. Service readiness and accounting setup remain separate checks.",
+      "completion": "The original source, approved fields and verified participant record are linked.",
+      "pain_points": ["PP-001"],
+      "workflows": ["W03"]
+    },
+    {
+      "number": 6,
+      "title": "Worker onboarding coordination",
+      "problem": "Worker information is re-entered and separate qualifications, access and payroll setup require chasing.",
+      "automation": "Prepare reviewed worker fields and track outstanding screening, documents, access and the existing payroll handoff in one onboarding case.",
+      "review": "HR verifies identity, qualifications and employment settings. Creating a profile does not establish readiness for work.",
+      "completion": "The verified worker profile and distinct readiness checks have accountable outcomes.",
+      "pain_points": ["PP-001", "PP-057", "PP-080"],
+      "workflows": ["W04"]
+    },
+    {
+      "number": 7,
+      "title": "Client stages and agreed service details",
+      "problem": "Staff search prospect and active lists and recover agreed hours or changes from emails and notes.",
+      "automation": "Track enquiry, consultation and active stages with transition checks. Link approved service hours and changes to their evidence, effective dates and affected bookings.",
+      "review": "The office confirms activation and approved service arrangements against current native records.",
+      "completion": "The current stage and service arrangement have a checked source and clear effective date.",
+      "pain_points": ["PP-005", "PP-006"],
+      "workflows": ["W01", "W03", "W08"]
+    },
+    {
+      "number": 8,
+      "title": "Correspondence preparation",
+      "problem": "Staff repeatedly write similar messages, sometimes omitting the person, service time, outcome or next action.",
+      "automation": "Prepare messages from approved templates and check recipient, person, date, time, confirmed outcome and next action before approval.",
+      "review": "Staff approve wording, recipients and sensitive content. Delivery uses the agreed provider or checked staff handoff.",
+      "completion": "The approved message is complete and its dispatch or handoff is traceable.",
+      "pain_points": ["PP-009", "PP-010"],
+      "workflows": ["W13"]
+    },
+    {
+      "number": 9,
+      "title": "Communication tracking and history",
+      "problem": "Communication evidence is scattered and staff must separately establish whether someone was notified or responded.",
+      "automation": "Link authorized references to the person and case. Track approval, dispatch, delivery, response and failed delivery as distinct outcomes, with follow-up ownership.",
+      "review": "Restrict confidential evidence to permitted staff. A task or sent message does not establish receipt or acknowledgement.",
+      "completion": "Required communication has evidence or a visible unresolved delivery or response task.",
+      "pain_points": ["PP-011", "PP-012"],
+      "workflows": ["W02", "W13"]
+    },
+    {
+      "number": 10,
+      "title": "Booking preparation and availability checks",
+      "problem": "Staff copy booking details, clarify times and assess capacity; a free calendar slot may be personal time.",
+      "automation": "Prepare booking drafts and check explicit dates, times, service details, roster overlaps, leave and available capacity evidence.",
+      "review": "Rostering confirms suitability, actual willingness, worker acceptance and participant agreement before confirming the arrangement.",
+      "completion": "A supported native booking is verified or an explicit native booking task remains owned.",
+      "pain_points": ["PP-015", "PP-016", "PP-017", "PP-019"],
+      "workflows": ["W01", "W08"]
+    },
+    {
+      "number": 11,
+      "title": "Booking change scope and verification",
+      "problem": "Staff clarify one-visit versus recurring changes and reopen bookings to check whether edits saved.",
+      "automation": "Preview affected occurrences, retain the approved scope and compare saved native fields with the intended change before reporting success.",
+      "review": "Staff approve recurrence scope. Unsupported series or group changes remain checked native actions.",
+      "completion": "The intended records match the approved change and verification covers the agreed scope.",
+      "pain_points": ["PP-018", "PP-020"],
+      "workflows": ["W08"]
+    },
+    {
+      "number": 12,
+      "title": "Travel checking and stale value detection",
+      "problem": "Travel distances, durations and blocks need manual checks and can remain outdated after booking or worker changes.",
+      "automation": "Prepare estimates from confirmed addresses, compare travel and service blocks, and flag estimates invalidated by changed workers, locations or preceding visits.",
+      "review": "Staff verify route inputs and scheduling feasibility. Estimates are separate from actual mileage and payable entitlements.",
+      "completion": "Travel is checked against current booking inputs or remains an explicit exception.",
+      "pain_points": ["PP-021", "PP-022"],
+      "workflows": ["W08", "W11"]
+    },
+    {
+      "number": 13,
+      "title": "Shift instruction maintenance",
+      "problem": "Staff open bookings to copy missing instructions and track revised wording in separate tools.",
+      "automation": "Find missing instructions and preview approved versions for selected bookings. Retain effective dates and change history alongside the intended booking scope.",
+      "review": "Staff approve content and scope; use a checked native handoff where the required update is unsupported.",
+      "completion": "Selected instructions match the approved version or an owned native update remains open.",
+      "pain_points": ["PP-025", "PP-026"],
+      "workflows": ["W08", "W09"]
+    },
+    {
+      "number": 14,
+      "title": "Participant confirmation monitoring",
+      "problem": "Staff inspect reminder replies daily and determine which visit and follow-up each response concerns.",
+      "automation": "Match replies to exact occurrences and route confirmations, cancellations, changes, unclear replies and outstanding responses to their appropriate cases.",
+      "review": "Staff resolve identity and threading ambiguity. No response is not a cancellation, and participant confirmation is separate from worker acceptance.",
+      "completion": "The response and occurrence are matched, with the next required action assigned.",
+      "pain_points": ["PP-027"],
+      "workflows": ["W06", "W07", "W08"]
+    },
+    {
+      "number": 15,
+      "title": "Complete cancellation handling",
+      "problem": "A worker may be notified while the booking remains active, and travel charges require separate correction.",
+      "automation": "Coordinate the exact occurrence, cause, notice, approved charge treatment, native cancellation, required travel/mileage corrections and participant/worker updates. Verify all required outcomes before closure.",
+      "review": "Staff approve policy and actual-travel treatment. Unsupported or financially locked changes require a checked native step.",
+      "completion": "Booking, financial/travel handoffs and required communications have verified outcomes.",
+      "pain_points": ["PP-028", "PP-029", "PP-030"],
+      "workflows": ["W07", "W13"]
+    },
+    {
+      "number": 16,
+      "title": "Absence and replacement cover coordination",
+      "problem": "Sickness and departures trigger urgent reassignment, travel review and individual participant decisions across affected services.",
+      "automation": "List affected bookings, assign cover deadlines, present suitability evidence and track offers, acceptance and each participant's replacement, reschedule or skip decision.",
+      "review": "Coordinators and participants choose suitable arrangements. Insufficient backup workers remain a staffing constraint.",
+      "completion": "Every affected service has a verified arrangement or an owned no-cover outcome and communication.",
+      "pain_points": ["PP-023", "PP-031", "PP-032", "PP-033", "PP-034"],
+      "workflows": ["W08", "W13"]
+    },
+    {
+      "number": 17,
+      "title": "Factual absence histories",
+      "problem": "Managers search roster and communication records to reconstruct when a worker was absent and which services were affected.",
+      "automation": "Link factual absence dates, affected bookings, source evidence and authorized communication references in a restricted history.",
+      "review": "Management verifies disputed facts and retains employment interpretation and decisions.",
+      "completion": "The history is traceable to evidence and accessible only to permitted reviewers.",
+      "pain_points": ["PP-085"],
+      "workflows": ["W08"]
+    },
+    {
+      "number": 18,
+      "title": "Document matching and filing",
+      "problem": "Files must be found across email and storage, matched to the right person and placed in the correct native location.",
+      "automation": "Index original locations, match person/type/version/visibility and prepare supported filing. Link the original to the verified native result or checked filing handoff.",
+      "review": "Staff resolve uncertain matches, signature/version questions and access restrictions.",
+      "completion": "The correct document is traceably filed under the correct person with permitted visibility.",
+      "pain_points": ["PP-035", "PP-036"],
+      "workflows": ["W05"]
+    },
+    {
+      "number": 19,
+      "title": "Document completeness and attachment checks",
+      "problem": "Staff inspect records individually for paperwork and follow up emails referring to missing attachments.",
+      "automation": "Compare agreed document requirements with available evidence, identify missing attachments and create owned clarification or filing tasks.",
+      "review": "Staff verify uncertain evidence. A missing native copy does not establish that an agreement does not exist elsewhere.",
+      "completion": "Required evidence is checked or a specific outstanding document task remains assigned.",
+      "pain_points": ["PP-037", "PP-038"],
+      "workflows": ["W02", "W05", "W12"]
+    },
+    {
+      "number": 20,
+      "title": "Document date and expiry correction",
+      "problem": "Plan and agreement dates can be confused, while incorrect metadata makes non-expiring documents appear expired.",
+      "automation": "Present date candidates with original text, distinguish their meaning and prepare evidence-based corrections to native expiry metadata.",
+      "review": "Staff confirm actual date meaning and whether the document genuinely expires before approving correction.",
+      "completion": "Native metadata matches the reviewed evidence and genuine expiry warnings remain visible.",
+      "pain_points": ["PP-039", "PP-041"],
+      "workflows": ["W05", "W12"]
+    },
+    {
+      "number": 21,
+      "title": "Renewal and coordinator follow up",
+      "problem": "Genuine renewals and requests for updated dates, funding or supporting documents require repeated external chasing.",
+      "automation": "Schedule scoped checks, assign requests and renewal work, retain responses and track deadlines until required evidence is reviewed.",
+      "review": "Staff agree requirements and verify received evidence before updating status.",
+      "completion": "The reviewed renewal or update is linked, or the unresolved request remains owned and visible.",
+      "pain_points": ["PP-040", "PP-042"],
+      "workflows": ["W05", "W12", "W13"]
+    },
+    {
+      "number": 22,
+      "title": "Invoice preparation checks",
+      "problem": "Staff compare service records individually and resolve coding, travel, tax-setting and unusual-invoice questions.",
+      "automation": "Assemble scheduled/actual time, attendance, notes, agreements and invoice lines into specific exceptions. Check approved category mappings and review cutoffs, reusing native accounting settings.",
+      "review": "The bookkeeper approves billing treatment and escalation rules. Rare export/rounding issues stay in native reconciliation initially.",
+      "completion": "Exceptions are resolved or assigned before the existing approval/export process proceeds.",
+      "pain_points": ["PP-044", "PP-045", "PP-047", "PP-051", "PP-052", "PP-053"],
+      "workflows": ["W09", "W10"]
+    },
+    {
+      "number": 23,
+      "title": "Special billing instructions and prepayments",
+      "problem": "Advance payments and special arrangements depend on staff memory and scattered notes.",
+      "automation": "Show approved instructions beside the relevant person and verified Xero credit/prepayment references, using stable native record links.",
+      "review": "The bookkeeper verifies current balances and treatment in Xero; the application does not maintain a parallel editable ledger.",
+      "completion": "The reviewer can trace the applicable instruction and accounting evidence for the invoice.",
+      "pain_points": ["PP-046"],
+      "workflows": ["W10"]
+    },
+    {
+      "number": 24,
+      "title": "Billing recipient verification",
+      "problem": "Plan-manager or payer changes may not reach staff before invoices are issued.",
+      "automation": "Flag changed payer/contact evidence and track verified recipient details, verification dates and linked ShiftCare/Xero identities.",
+      "review": "Staff confirm the authorized recipient and effective change before the native billing record is updated.",
+      "completion": "The invoice's recipient has a checked identity and current instruction reference.",
+      "pain_points": ["PP-048"],
+      "workflows": ["W02", "W10"]
+    },
+    {
+      "number": 25,
+      "title": "Returned invoice resolution",
+      "problem": "Staff locate rejected invoices, investigate reasons and coordinate corrections across records and conversations.",
+      "automation": "Link the external invoice, rejection, supporting service records, correction history, owner and next action in one case.",
+      "review": "The bookkeeper approves correction, credit or reissue and checks the native accounting result.",
+      "completion": "The correction outcome is verified without creating a duplicate invoice.",
+      "pain_points": ["PP-049"],
+      "workflows": ["W02", "W10", "W13"]
+    },
+    {
+      "number": 26,
+      "title": "Payment follow up",
+      "problem": "Calls, resending and payment checks require chasing, while unresolved invoices affect owners' cash planning.",
+      "automation": "Use authorized, verified accounting status to prepare overdue/returned invoice tasks, approved contact actions and visible unresolved collection work.",
+      "review": "The bookkeeper verifies payment and escalation. Sending an invoice does not establish acceptance or payment.",
+      "completion": "Payment is verified or a current follow-up remains assigned with its outcome recorded.",
+      "pain_points": ["PP-050", "PP-054"],
+      "workflows": ["W10", "W13"]
+    },
+    {
+      "number": 27,
+      "title": "Pay period and employee checks",
+      "problem": "Staff check run dates, employee lists and carried-over values; inactive workers or unexplained prior values need review.",
+      "automation": "Check the approved period, payment dates and run population. Surface starter/leaver exceptions and compare the confirmed carried-over field with current inputs.",
+      "review": "Payroll confirms the vendor, calendar and field meaning. A leaver can still need final pay.",
+      "completion": "Period, population and unexplained carried values have checked dispositions.",
+      "pain_points": ["PP-055", "PP-056", "PP-058"],
+      "workflows": ["W04", "W11"]
+    },
+    {
+      "number": 28,
+      "title": "Timesheet hours and mileage reconciliation",
+      "problem": "Staff compare workers' hours and mileage with payroll inputs and investigate missing source timesheets.",
+      "automation": "Check source completeness, compare approved values and flag differences. Keep hours, kilometres and currency distinct, reusing the native timesheet transfer where applicable.",
+      "review": "Payroll approves quantities and reimbursement rules. Missing evidence is not zero pay; route estimates are not actual mileage.",
+      "completion": "Approved period inputs reconcile or each discrepancy remains assigned before payroll completion.",
+      "pain_points": ["PP-059", "PP-060", "PP-064"],
+      "workflows": ["W09", "W11"]
+    },
+    {
+      "number": 29,
+      "title": "Payroll adjustment tracking",
+      "problem": "Adjustments, leave, back pay and first-job travel decisions must be recovered from notes and applied to the right period.",
+      "automation": "Retain affected period, original and corrected values, supporting evidence, calculation reference, approval and explanatory note for each adjustment.",
+      "review": "Payroll approves treatment and calculations. First-job travel changes require an approved rule, effective date and communication.",
+      "completion": "Each applied adjustment traces to the correct period and approved evidence.",
+      "pain_points": ["PP-061", "PP-062", "PP-063", "PP-065"],
+      "workflows": ["W11"]
+    },
+    {
+      "number": 30,
+      "title": "Payroll completion handoffs",
+      "problem": "Saving, finalizing and delivering payslips requires separate completion steps in the external payroll process.",
+      "automation": "Show unresolved preparation checks and track the checked handoff to the payroll administrator, including references for required completion steps.",
+      "review": "Keep final calculation, approval, payment release and payslip delivery within the established authorized payroll process.",
+      "completion": "The preparation handoff is checked; native payroll completion retains its own evidence.",
+      "pain_points": ["PP-066"],
+      "workflows": ["W11"]
+    },
+    {
+      "number": 31,
+      "title": "Visit record and care exceptions",
+      "problem": "Missing notes, reported incomplete work, unusual durations and important events can be buried among routine records.",
+      "automation": "Surface factual attendance, task, note and duration exceptions with original evidence and an assigned supervisor. Restrict sensitive care information.",
+      "review": "Supervisors investigate facts and retain care, safety and personnel judgments; a flag is not a finding of misconduct.",
+      "completion": "The exception has a reviewed outcome or an accountable next action.",
+      "pain_points": ["PP-067", "PP-068"],
+      "workflows": ["W09"]
+    },
+    {
+      "number": 32,
+      "title": "Feedback complaint and safety follow through",
+      "problem": "Feedback calls, complaint histories, pending responses and safety follow-up require coordination across several sources.",
+      "automation": "Schedule agreed feedback tasks, retain responses and link restricted complaint or hazard evidence to callbacks, decisions, deadlines and resulting actions.",
+      "review": "Managers own personnel and safety decisions. Urgent matters continue through existing incident procedures.",
+      "completion": "Required follow-up is checked or an unresolved response, action or coverage dependency stays owned.",
+      "pain_points": ["PP-069", "PP-070", "PP-071", "PP-072", "PP-073"],
+      "workflows": ["W09", "W13"]
+    },
+    {
+      "number": 33,
+      "title": "Task completion handovers and escalation",
+      "problem": "Unconfirmed times, incomplete steps, routine questions and future plans depend on memory or return to the owners.",
+      "automation": "Maintain owners, next actions, deadlines and required completion steps. Show shared handovers, escalate overdue work and schedule agreed closure decisions and follow-ups.",
+      "review": "Management delegates authority and provides real coverage; staff approve closure dates and unresolved decisions.",
+      "completion": "Open work remains visible and a case closes only after its required outcomes.",
+      "pain_points": ["PP-024", "PP-078", "PP-087", "PP-088", "PP-095"],
+      "workflows": ["W01", "W02", "W08", "W13"]
+    },
+    {
+      "number": 34,
+      "title": "Operational outcome reporting",
+      "problem": "Uncovered services, uneven demand, recurring costs and administration pressure complicate operating decisions.",
+      "automation": "Report actual uncovered/cancelled services, enquiry and booking history, unresolved invoices, overdue tasks and processing delays. Measure staff handling and recovery effort alongside operating costs.",
+      "review": "Management interprets results and makes staffing and funding decisions; basic reports do not supply missing capacity or cash.",
+      "completion": "Reports identify period, source completeness and accountable operational follow-up.",
+      "pain_points": ["PP-090", "PP-091", "PP-093"],
+      "workflows": ["W01", "W08", "W10"]
+    },
+    {
+      "number": 35,
+      "title": "Arrival visibility if the remaining gap is confirmed",
+      "problem": "Participants interrupt the office to ask whether their worker is on the way or delayed.",
+      "automation": "Assess native visibility first. For a demonstrated remaining gap, provide a fresh, consented arrival estimate tied to the current assignment and withdraw stale information.",
+      "review": "This remains optional W14 work, subject to device, access, privacy and location-freshness acceptance.",
+      "completion": "Only the authorized participant can view current permitted arrival information.",
+      "pain_points": ["PP-014"],
+      "workflows": ["W14"]
+    }
+  ],
+  "supporting_actions": [
+    {"title": "Training and procedural knowledge", "text": "Provide current procedure links, relevant recording timestamps, training checklists and policy-version records. Named supervisors assess practice, telephone readiness and understanding.", "pain_points": ["PP-043", "PP-074", "PP-075", "PP-076", "PP-077", "PP-079"]},
+    {"title": "Access and application setup", "text": "Track invitations, permissions, account ownership and successful access checks. Authorized administrators configure the accounts and correct access problems.", "pain_points": ["PP-080"]},
+    {"title": "Telephone audio and meeting setup", "text": "Use setup and support checklists for routing, licences, caller identity, microphones and identifiable meeting accounts. Administrators and IT resolve the actual configuration or equipment faults.", "pain_points": ["PP-081", "PP-083", "PP-084"]},
+    {"title": "Communication groups", "text": "Record each group's purpose, membership, privacy boundary and owner. Authorized administrators manage membership and access.", "pain_points": ["PP-082"]},
+    {"title": "Offboarding", "text": "Coordinate website, access, payroll and roster steps with distinct owners and checked completion. Retain records needed for final pay and other legitimate native processes.", "pain_points": ["PP-086"]},
+    {"title": "Recruitment and backup capacity", "text": "Expose uncovered services and available worker-readiness evidence. Recruitment, assessment, training and a sufficient backup pool still require people and existing HR processes.", "pain_points": ["PP-032", "PP-089"]},
+    {"title": "Owner dependence", "text": "Combine shared cases and handovers with delegated authority and real staff coverage. Management decides who can resolve exceptions while an owner is away.", "pain_points": ["PP-087", "PP-088"]},
+    {"title": "Marketing suppliers and renewals", "text": "Retain agreed tasks, licence/renewal reminders and supplier follow-up in existing tools. No additional marketing, recruitment, training or forecasting product is included.", "pain_points": ["PP-092", "PP-094"]}
+  ],
+  "principle": {
+    "title": "Reuse existing native capabilities",
+    "text": "ShiftCare retains authoritative operational records; Xero retains accounting and the confirmed payroll platform retains payroll. Reuse native reminders, worker acceptance and existing financial exports. The custom application stores coordination, source links, approvals and verified outcomes, with only the evidence needed for its work.",
+    "pain_points": ["PP-096"]
+  },
+  "clarifications": [
+    {"title": "Intake dates", "text": "Confirm the intended date field and how incomplete or ambiguous answers are resolved.", "pain_points": ["PP-004"]},
+    {"title": "Cancellation and travel treatment", "text": "Approve cause, notice, charges and cleanup of untravelled provider-travel or mileage items.", "pain_points": ["PP-029", "PP-030"]},
+    {"title": "Document dates", "text": "Distinguish plan dates, agreement dates, actual expiry and evidence of non-expiring documents.", "pain_points": ["PP-039", "PP-041"]},
+    {"title": "Billing cadence and escalation", "text": "Agree cutoffs, review periods and the conditions requiring senior or bookkeeper review.", "pain_points": ["PP-051", "PP-052"]},
+    {"title": "Payroll periods and carried values", "text": "Confirm the payroll vendor, calendar and the field described unclearly in the transcript.", "pain_points": ["PP-055", "PP-058"]},
+    {"title": "Mileage units and first job travel", "text": "Approve distance/time/currency interpretation, reimbursement rules and the effective date of any travel change.", "pain_points": ["PP-064", "PP-065"]}
+  ],
+  "sources": [
+    {"label": "96 item pain point inventory", "path": "docs/pain-points-2026-10-23/pain-points.json"},
+    {"label": "Complete pain point treatment matrix", "path": "docs/automation-assessment-2026-10-24/opportunity-matrix.csv"},
+    {"label": "Existing 14 workflow use cases", "path": "docs/OCD_Workflow_Use_Cases.md"},
+    {"label": "Custom application implementation direction", "path": "docs/OCD_Native_Automation_Implementation.md"},
+    {"label": "Detailed automation architecture assessment", "path": "docs/OCD_Automation_Architecture_Assessment_2026-10-24.pdf"}
+  ]
+}

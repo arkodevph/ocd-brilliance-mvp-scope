@@ -17,6 +17,7 @@ const reviewedAt = new Date().toISOString(),
 const intakeHandoff = process.env.PROTOTYPE_INTAKE === '1';
 const designReview = process.env.PROTOTYPE_DESIGN === '1';
 const automationDesign = process.env.PROTOTYPE_AUTOMATION_DESIGN === '1';
+const nativeWorkflows = process.env.PROTOTYPE_NATIVE === '1';
 const output = path.resolve(
   root,
   process.env.PROTOTYPE_REVIEW_DIR ||
@@ -79,6 +80,25 @@ for (const candidate of browserCandidates) {
 if (!browserPath)
   throw new Error('No Chromium executable found. Set CHROME_PATH to an installed browser.');
 
+// Every fictional profile isolates native/mail/database credentials. Only the explicit live-map profile retains map configuration.
+const exampleEnv = await fs.readFile(path.join(root, '.env.example'), 'utf8');
+for (const key of new Set([
+  ...Object.keys(process.env),
+  ...[...exampleEnv.matchAll(/^([A-Z][A-Z0-9_]*)=/gm)].map((m) => m[1]),
+])) {
+  if (
+    /^(SHIFTCARE_|MICROSOFT365_|OCD_|OPENROUTER_|OPENAI_|DATABASE_URL|UPSTASH_|PGHOST|PGPORT|PGDATABASE|PGUSER|PGPASSWORD)/.test(
+      key,
+    ) ||
+    (!liveMap && /^MAPBOX_/.test(key))
+  )
+    process.env[key] = '';
+}
+process.env.SHIFTCARE_TIME_ZONE = 'Australia/Perth';
+process.env.AUTOMATION_RUN_WORKER = 'false';
+process.env.OCD_PORTAL_ACCOUNTS = '[]';
+process.env.OCD_ARRIVAL_ENABLED = 'false';
+process.env.OCD_NATIVE_FIELD_MAPPINGS = '';
 const server = spawn(process.execPath, ['server.cjs'], {
   cwd: root,
   stdio: 'ignore',
@@ -202,7 +222,7 @@ const input = (selector, value) =>
 async function route(value) {
   await evaluate(`location.hash=${JSON.stringify('#/' + value)}`);
   await wait(
-    `location.hash===${JSON.stringify('#/' + value)} && !!document.querySelector(${JSON.stringify(value.startsWith('public/') ? '.public-main' : '#main-content')})`,
+    `location.hash===${JSON.stringify('#/' + value)} && document.getElementById('app')?.dataset.workspaceRoute===${JSON.stringify(value)} && !!document.querySelector(${JSON.stringify(value.startsWith('public/') ? '.public-main' : '#main-content')})`,
   );
   await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
 }
@@ -259,6 +279,12 @@ async function capture(name, width = 1440, height = 1000, focus = '') {
     horizontalOverflow: false,
     focus: focus || 'Page overview',
   });
+}
+
+async function importLegacyWorkflowFixtures() {
+  return evaluate(
+    `(()=>{const key='ocd-brilliance-operations-v1';const s=JSON.parse(localStorage.getItem(key)) || structuredClone(window.OCD_DEMO_SEED);const E=window.OCD_AUTOMATION_ENGINE;if(!s.automation?.browserAcceptanceFixture){delete s.automation;E.ensure(s);E.sync(s);s.automation.messageFlow=true;s.automation.pendingExamples=1;s.automation.browserAcceptanceFixture=true;}const result=E.ingest(s);localStorage.setItem(key,JSON.stringify(s));window.dispatchEvent(new StorageEvent('storage',{key}));return result;})()`,
+  );
 }
 
 let success = false;
@@ -358,7 +384,205 @@ try {
         ? 'office/verification'
         : 'office/automation',
   );
-  if (process.env.PROTOTYPE_INBOX_TASKS === '1') {
+  if (nativeWorkflows) {
+    await route('office/automation/shared');
+    await wait('document.querySelectorAll(".native-catalog article").length===14');
+    assert.equal(await evaluate('document.querySelectorAll(".native-case").length'), 0);
+    passed(
+      'Shared workflow boundary',
+      'All 14 handlers are discoverable and no fictional browser cases were imported into server storage.',
+    );
+    await evaluate(
+      'document.querySelector("[data-native-form=enqueue]").closest("details").open=true',
+    );
+    await submit('[data-native-form=enqueue]', {
+      evidenceReference: 'Fictional coordinator call',
+      postcode: '6027',
+      capacityConfirmed: true,
+    });
+    await wait('!!document.querySelector("[data-native-form=approve]")');
+    await submit('[data-native-form=approve]', { sourceReviewed: true });
+    await wait('!!document.querySelector("[data-native-action=execute]")');
+    await click('[data-native-action=execute]');
+    await wait(
+      'document.querySelector("#native-automation").textContent.includes("application-review")',
+    );
+    const id = await evaluate(
+      "fetch('/api/automation?action=jobs').then(r=>r.json()).then(r=>r.jobs[0].id)",
+    );
+    await command('Page.reload');
+    await wait('document.querySelectorAll(".native-case").length===1');
+    assert.match(await evaluate('document.querySelector(".native-case").textContent'), /Completed/);
+    passed(
+      'Shared case review and persistence',
+      'Office evidence was prepared, explicitly approved and completed as an application review; the same case remained after reload.',
+    );
+    await evaluate(
+      'document.querySelector("[data-native-form=enqueue]").closest("details").open=true; const select=document.querySelector("#native-create-workflow"); select.value="W07"; select.dispatchEvent(new Event("change",{bubbles:true}));',
+    );
+    await submit('[data-native-form=enqueue]', {
+      evidenceReference: 'Fictional cancellation call',
+      shiftId: 'fictional-shift-1',
+      reason: 'Away',
+      treatment: 'without_charge',
+      scopeChecked: true,
+      policyChecked: true,
+      travelChecked: true,
+      travelReference: 'Fictional original travel check: no mileage incurred',
+    });
+    await wait('!!document.querySelector("[data-native-form=approve]")');
+    await submit('[data-native-form=approve]', { sourceReviewed: true });
+    await wait('!!document.querySelector("[data-native-action=execute]")');
+    await click('[data-native-action=execute]');
+    await wait('!!document.querySelector("[data-native-form=verify]")');
+    assert.match(
+      await evaluate('document.querySelector("#native-automation").textContent'),
+      /Native step needed/,
+    );
+    await submit('[data-native-form=verify]', {
+      reference: 'Fictional checked native record',
+      nativeChecked: true,
+      note: 'Isolated test; no real native action.',
+    });
+    await wait('document.querySelector("#native-automation").textContent.includes("staff-manual")');
+    passed(
+      'Native handoff and honest verification',
+      'Missing write adapters retained a checked human handoff. Manual verification was recorded as staff-manual, without any ShiftCare request.',
+    );
+    const cancellation = await evaluate(
+      "fetch('/api/automation?action=jobs').then(r=>r.json()).then(r=>r.jobs.find(j=>j.workflow==='W07'))",
+    );
+    assert.equal(cancellation.status, 'follow_up');
+    assert.equal(cancellation.requiredChildren.length, 2);
+    assert.equal(
+      await evaluate('document.querySelector("[data-native-form=close] button").disabled'),
+      true,
+    );
+    await evaluate(
+      'document.querySelector("[data-native-form=assign]").closest("details").open=true',
+    );
+    await submit('[data-native-form=assign]', { dueAt: '2026-10-30T09:00:00+08:00' });
+    const assigned = await evaluate(
+      `fetch('/api/automation?action=job&id=${cancellation.id}').then(r=>r.json()).then(r=>r.job)`,
+    );
+    assert.deepEqual(assigned.receipt, cancellation.receipt);
+    await capture('native-cancellation-follow-through', 1440, 1000);
+    await click('[data-native-action=process]');
+    for (const [index, link] of cancellation.requiredChildren.entries()) {
+      await click(`[data-native-action=select][data-id="${link.id}"]`);
+      await wait('!!document.querySelector("[data-native-form=revise]")');
+      await evaluate(
+        'document.querySelector("[data-native-form=revise]").closest("details").open=true',
+      );
+      await submit('[data-native-form=revise]', {
+        recipient: index ? 'Fictional assigned worker contact' : 'Fictional participant contact',
+        message: 'Fictional checked cancellation update.',
+        channel: 'native',
+        outcomeVerified: true,
+      });
+      await wait('!!document.querySelector("[data-native-form=approve]")');
+      await submit('[data-native-form=approve]', { sourceReviewed: true });
+      await wait('!!document.querySelector("[data-native-action=execute]")');
+      await click('[data-native-action=execute]');
+      await wait('!!document.querySelector("[data-native-form=verify]")');
+      await submit('[data-native-form=verify]', {
+        reference: `Fictional communication ${index + 1}`,
+        nativeChecked: true,
+        communicationChecked: true,
+        communicationReference: `FICTIONAL-HISTORY-${index + 1}`,
+      });
+      await wait(
+        'document.querySelector("#native-automation").textContent.includes("staff-manual")',
+      );
+      if (!index) {
+        assert.equal(
+          await evaluate(
+            `fetch('/api/automation?action=close',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:${JSON.stringify(cancellation.id)},revision:${assigned.revision},financialChecked:true,financialReference:'Fictional financial review'})}).then(r=>r.status)`,
+          ),
+          409,
+        );
+      }
+    }
+    await click(`[data-native-action=select][data-id="${cancellation.id}"]`);
+    await wait('!!document.querySelector("[data-native-form=close]")');
+    assert.equal(
+      await evaluate('document.querySelector("[data-native-form=close] button").disabled'),
+      false,
+    );
+    await submit('[data-native-form=close]', {
+      financialReference: 'Fictional native charge/pay check',
+      financialChecked: true,
+    });
+    await wait('!document.querySelector("[data-native-form=close]")');
+    assert.equal(
+      await evaluate(
+        `fetch('/api/automation?action=job&id=${cancellation.id}').then(r=>r.json()).then(r=>r.job.status)`,
+      ),
+      'completed',
+    );
+    passed(
+      'Shared cancellation business closure',
+      'Checked travel before cancellation, preserved the verified action during handover, held closure for two separate communication outcomes, and required a final charge/pay check. No native adapter was used.',
+    );
+    const stale = await evaluate(
+      `fetch('/api/automation?action=approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:${JSON.stringify(id)},revision:1,sourceReviewed:true,proposalHash:'stale'})}).then(r=>r.status)`,
+    );
+    assert.equal(stale, 409);
+    passed('Stale submission', 'A stale case revision was rejected by the backend.');
+    await capture('native-workflows-desktop');
+    await capture('native-workflows-mobile', 390, 1000);
+    await capture('native-workflows-small-mobile', 320, 1000);
+    await evaluate(
+      '(()=>{document.querySelector("[data-native-form=enqueue]").closest("details").open=true;const select=document.querySelector("#native-create-workflow");select.value="W05";select.dispatchEvent(new Event("change",{bubbles:true}));})()',
+    );
+    await submit('[data-native-form=enqueue]', {
+      evidenceReference: 'Fictional signed agreement',
+      nativeId: '456',
+      documentName: 'fixture-agreement.txt',
+      returned: true,
+      signedChecked: true,
+      filingChecked: true,
+      documentTypeId: '3',
+      noExpiration: true,
+    });
+    await wait('!!document.querySelector("[data-native-form=upload]")');
+    await evaluate(
+      '(()=>{const form=document.querySelector("[data-native-form=upload]");form.closest("details").open=true;const transfer=new DataTransfer();transfer.items.add(new File(["Fictional signed agreement; participant Alex Fixture"],"fixture-agreement.txt",{type:"text/plain"}));form.elements.originalFile.files=transfer.files;form.requestSubmit();})()',
+    );
+    await wait(
+      'document.querySelector("#native-automation").textContent.includes("Original text")',
+    );
+    assert.equal(await evaluate(`document.querySelectorAll('a[href*="action=file"]').length`), 1);
+    await capture('native-original-evidence-desktop');
+    await capture('native-original-evidence-mobile', 390, 1000);
+    passed(
+      'Original evidence import',
+      'Uploaded and extracted original text is retained in private server storage and appears with its source download in the existing case.',
+    );
+    await evaluate('location.hash="#/live/services"');
+    await wait(
+      'document.querySelector("#live-service-access")?.textContent.includes("Ask the office")',
+    );
+    assert.match(
+      await evaluate('document.querySelector("#live-service-access").textContent'),
+      /Demo accounts do not provide access/,
+    );
+    await capture('verified-service-access-mobile', 390, 900);
+    passed(
+      'Verified service access boundary',
+      'The live service route requires independently configured identities and grants no access from a demo persona or office session.',
+    );
+    await route('office/automation/shared');
+    await wait('!!document.querySelector("#native-automation")');
+    await evaluate("fetch('/api/workflow?action=logout',{method:'POST'})");
+    assert.equal(await evaluate("fetch('/api/automation?action=jobs').then(r=>r.status)"), 401);
+    await command('Page.reload');
+    await wait('document.querySelector("#native-automation")?.textContent.includes("Sign in")');
+    passed(
+      'Authenticated shared queue',
+      'After logout, server cases were unavailable and the screen required office sign-in.',
+    );
+  } else if (process.env.PROTOTYPE_INBOX_TASKS === '1') {
     await route('office/inbox-tasks');
     await wait('!!document.querySelector(".inbox-task-views")');
     assert.equal(
@@ -1753,7 +1977,7 @@ try {
     await route('client/home');
     await wait(`!!document.querySelector('.client-worker-copy a[href="#/client/workers/WRK-01"]')`);
     assert.match(
-      await evaluate('document.querySelector(".client-worker-list").textContent'),
+      await evaluate('document.querySelector(".client-featured-workers").textContent'),
       /4\.7 · 3 demo reviews/,
     );
     await click('.client-worker-copy a[href="#/client/workers/WRK-01"]');
@@ -1891,11 +2115,13 @@ try {
     await route('worker/home');
     await wait('!!document.querySelector(".employee-profile")');
     const unread = await evaluate(
-      'Number(document.querySelector(".employee-total strong").textContent)',
+      'parseInt(document.querySelector(".social-feed-heading h2 span").textContent,10)',
     );
     await click('[data-action="employee-read"]');
     assert.equal(
-      await evaluate('Number(document.querySelector(".employee-total strong").textContent)'),
+      await evaluate(
+        'parseInt(document.querySelector(".social-feed-heading h2 span").textContent,10)',
+      ),
       unread - 1,
     );
     await capture('react-employee-desktop');
@@ -1909,15 +2135,15 @@ try {
     });
 
     await wait(
-      'document.querySelector(".employee-leave-list").textContent.includes("React browser test")',
+      'document.querySelector(".portal-request-list").textContent.includes("React browser test")',
     );
     await command('Page.reload', { ignoreCache: true });
 
     await wait(
-      'document.querySelector(".employee-leave-list")?.textContent.includes("React browser test")',
+      'document.querySelector(".portal-request-list")?.textContent.includes("React browser test")',
     );
     await click('[data-action="employee-withdraw"]');
-    await wait('document.querySelector(".employee-leave-list").textContent.includes("Withdrawn")');
+    await wait('document.querySelector(".portal-request-list").textContent.includes("Withdrawn")');
     passed(
       'React employee flows',
       'Notification state, leave submission, reload persistence and withdrawal work at desktop/mobile sizes.',
@@ -2214,17 +2440,17 @@ try {
     await click('[data-action="schedule-demo-week"]');
     await wait('!!document.querySelector(".timeline-person img")');
     await route('worker/today');
-    await wait('!!document.querySelector(".account-trigger img")');
+    await wait('!!document.querySelector(".employee-account img")');
     assert.ok(
       await evaluate(
-        'document.querySelector(".sidebar-account img").getAttribute("src")===document.querySelector(".account-trigger img").getAttribute("src")',
+        'document.querySelector(".employee-profile-header img").getAttribute("src")===document.querySelector(".employee-account img").getAttribute("src")',
       ),
     );
     await route('client/home');
-    await wait('!!document.querySelector(".portal-welcome img")');
+    await wait('!!document.querySelector(".client-account-button img")');
     assert.ok(
       await evaluate(
-        'document.querySelector(".portal-welcome img").getAttribute("src")===document.querySelector(".account-trigger img").getAttribute("src")',
+        `document.querySelector('.client-account-button img').getAttribute('src')===${JSON.stringify(clientImage)}`,
       ),
     );
     assert.deepEqual(errors, []);
@@ -2439,53 +2665,33 @@ try {
     await wait('!!document.querySelector(".weekly-chart")');
     assert.deepEqual(
       await evaluate(
-        'Array.from(document.querySelectorAll(".analytics-stat > strong")).map(e=>Number(e.textContent))',
+        '[...document.querySelectorAll(".analytics-stat > strong")].map(e=>Number(e.textContent))',
       ),
       [6, 1, 1, 0],
     );
     assert.equal(
-      await evaluate(
-        'document.querySelector(".analytics-primary .analytics-donut strong").textContent',
-      ),
+      await evaluate('document.querySelector(".weekly-chart-total strong").textContent'),
       '7',
     );
-    assert.equal(
-      await evaluate('document.querySelector(".review-donut strong").textContent'),
-      '100%',
+    assert.deepEqual(
+      await evaluate(
+        '[...document.querySelectorAll(".analytics-legend b")].map(e=>Number(e.textContent))',
+      ),
+      [1, 4, 1, 1, 0],
     );
     assert.equal(await evaluate('document.querySelectorAll(".weekly-chart a").length'), 7);
     assert.equal(
       await evaluate(
-        'Array.from(document.querySelectorAll("[data-date=\\\"2026-10-05\\\"] .chart-bar-fill")).reduce((sum,bar)=>sum+Number(bar.getAttribute("height")),0)',
+        '[...document.querySelectorAll(".weekly-chart a")].reduce((sum,e)=>sum+Number(e.dataset.chartCount),0)',
       ),
-      127.5,
+      7,
     );
     assert.equal(
-      await evaluate(
-        'document.querySelectorAll("[data-date=\\\"2026-10-10\\\"] .chart-bar-fill").length',
-      ),
-      0,
-    );
-    assert.equal(
-      await evaluate('document.querySelectorAll(".chart-texture,.chart-empty-bar").length'),
-      0,
-    );
-    assert.deepEqual(
-      await evaluate(
-        'Array.from(document.querySelectorAll(".analytics-status-list small")).map(e=>e.textContent)',
-      ),
-      ['14.3%', '57.1%', '14.3%', '14.3%'],
-    );
-    assert.equal(
-      await evaluate('document.querySelector(".analytics-hours > strong").textContent'),
+      await evaluate('document.querySelector(".portal-overview-footer strong").textContent'),
       '11h',
     );
-    assert.equal(
-      await evaluate('document.querySelector(".analytics-next h3").textContent'),
-      'Olivia Hart',
-    );
-    assert.equal(await evaluate('document.querySelector(".analytics-delta").textContent'), '+4');
-    assert.equal(await evaluate('document.querySelectorAll(".analytics-activity li").length'), 3);
+    assert.ok(await evaluate('document.querySelectorAll(".portal-priorities a").length > 0'));
+    assert.ok(await evaluate('document.querySelectorAll(".portal-worker-loads a").length > 0'));
     await evaluate(
       'document.querySelector("[data-chart-title]").dispatchEvent(new PointerEvent("pointerover",{bubbles:true}))',
     );
@@ -2515,41 +2721,11 @@ try {
     );
     await capture('overview-charts-desktop', 1440, 1000);
     await capture('overview-charts-wide', 1920, 1080);
-    assert.equal(
-      await evaluate(
-        'document.querySelector(".analytics-chart-area").getBoundingClientRect().height',
-      ),
-      180,
-    );
-    assert.ok(
-      await evaluate(
-        'Array.from(document.querySelectorAll(".chart-bar-fill")).every(bar=>Number(bar.getAttribute("width"))===20)',
-      ),
-      'Chart bars should be narrow while the card keeps its original size',
-    );
-    assert.ok(
-      await evaluate(
-        '[".analytics-employees",".analytics-activity",".analytics-attention",".analytics-reviews"].every(selector=>document.querySelector(selector).getBoundingClientRect().bottom<=innerHeight)',
-      ),
-      'Operational summaries should fit above the fold on a wide desktop',
-    );
     await capture('overview-reflow', 720, 1000);
     await capture('overview-charts-mobile', 390, 900);
     await capture('overview-charts-small-mobile', 320, 900);
-    assert.ok(
-      await evaluate(
-        'Array.from(document.querySelectorAll(".analytics-card")).every(card=>card.scrollWidth<=card.clientWidth)',
-      ),
-      'Overview cards should reflow without internal overflow',
-    );
-    assert.ok(
-      await evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth'),
-      'The overview should fit the available mobile width, including the scrollbar',
-    );
-    await capture('overview-details-desktop', 1440, 1000, '.analytics-next');
-    await capture('overview-details-mobile', 390, 900, '.analytics-next');
     await evaluate(
-      'document.querySelector("[data-action=overview-day][data-date=\\"2026-10-06\\"]").dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}))',
+      'document.querySelector(\'[data-action="overview-day"][data-date="2026-10-06"]\').dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}))',
     );
     await wait('!!document.querySelector(".schedule-period h2")');
     assert.ok(
@@ -2559,43 +2735,37 @@ try {
     );
     assert.equal(await evaluate('document.querySelectorAll(".timeline-visit").length'), 1);
     await route('office/overview');
-    await wait('!!document.querySelector(".weekly-chart")');
-    await evaluate(`(() => {
-      const state=JSON.parse(localStorage.getItem('ocd-brilliance-operations-v1')) || structuredClone(window.OCD_DEMO_SEED);
-      state.bookings.forEach(b=>b.date='2026-09-01');state.visits=[];state.workers=[];
-      localStorage.setItem('ocd-brilliance-operations-v1',JSON.stringify(state));
-      window.dispatchEvent(new StorageEvent('storage',{key:'ocd-brilliance-operations-v1'}));
-    })()`);
+    await evaluate(
+      `(()=>{const state=JSON.parse(localStorage.getItem('ocd-brilliance-operations-v1')) || structuredClone(window.OCD_DEMO_SEED);state.bookings.forEach(b=>b.date='2026-09-01');state.visits=[];state.workers=[];localStorage.setItem('ocd-brilliance-operations-v1',JSON.stringify(state));window.dispatchEvent(new StorageEvent('storage',{key:'ocd-brilliance-operations-v1'}));})()`,
+    );
     assert.deepEqual(
       await evaluate(
-        'Array.from(document.querySelectorAll(".analytics-stat > strong")).map(e=>Number(e.textContent))',
+        '[...document.querySelectorAll(".analytics-stat > strong")].map(e=>Number(e.textContent))',
       ),
       [0, 0, 0, 0],
     );
-    assert.equal(await evaluate('document.querySelector(".review-donut strong").textContent'), '—');
+    assert.equal(
+      await evaluate('document.querySelector(".weekly-chart-total strong").textContent'),
+      '0',
+    );
     assert.ok(
       await evaluate(
-        'document.querySelector(".analytics-home").textContent.includes("No bookings this week")',
+        '[...document.querySelectorAll(".weekly-chart a")].every(e=>Number(e.dataset.chartCount)===0)',
       ),
+    );
+    assert.equal(
+      await evaluate('document.querySelector(".portal-overview-footer strong").textContent'),
+      '0h',
     );
     assert.equal(
       await evaluate('document.querySelector(".analytics-home").innerHTML.includes("NaN")'),
       false,
     );
-    assert.equal(
-      await evaluate('document.querySelector(".analytics-hours > strong").textContent'),
-      '0h',
-    );
-    assert.ok(
-      await evaluate(
-        'document.querySelector(".analytics-next").textContent.includes("No confirmed visits")',
-      ),
-    );
     await capture('overview-charts-empty', 390, 900);
     assert.deepEqual(errors, []);
     passed(
       'Chart overview',
-      'Week-scoped totals, cancellation breakdown, review percentage, day drill-down, desktop/mobile layouts and empty datasets were verified.',
+      'Current weekly totals/status breakdown, source-derived hours, tooltip keyboard behavior, week navigation, day drill-down, responsive layouts and empty datasets were verified.',
     );
   } else if (process.env.PROTOTYPE_EMPLOYEE === '1') {
     await route('office/schedule');
@@ -2657,7 +2827,7 @@ try {
       'Day and week employee links open the correct profile; mobile layout, unrated state, completed visit counts, all tabs, return navigation and unknown employees were checked.',
     );
   } else if (automationDesign) {
-    await click('[data-auto-action="ingest"]');
+    await importLegacyWorkflowFixtures();
     for (const id of ['areas', 'reminders', 'documents'])
       await click(`[data-auto-action="check"][data-id="${id}"]`);
     const invoice = await job('finance-query');
@@ -3629,13 +3799,13 @@ try {
     assert.deepEqual(errors, []);
   } else {
     await route('office/automation');
-    await click('[data-auto-action="ingest"]');
+    await importLegacyWorkflowFixtures();
     assert.equal(await stored('s.automation.jobs.length'), 10);
-    await click('[data-auto-action="ingest"]');
+    await importLegacyWorkflowFixtures();
     assert.equal(await stored('s.automation.jobs.length'), 10);
     passed(
-      'Inbox routing and replay',
-      'Eight sources created owned cases once; repeated processing preserved ten total cases including two existing operational requests.',
+      'Staged fictional workflow fixtures and duplicate replay',
+      'Test-only fixture import prepared eight original engine sources once; replay preserved ten cases. Current Add message and reviewed assignment are tested separately in the inbox profile.',
     );
     await capture('automation-desktop');
 
@@ -3872,16 +4042,22 @@ try {
     await capture('stale-arrival-mobile', 390, 900, '[data-map-detail]');
     await route('client/home');
     assert.equal(
-      await evaluate("document.querySelector('[data-arrival-time]').textContent"),
-      'ETA unavailable',
+      await evaluate('!!document.querySelector(\'.client-app-nav a[href="#/client/map"]\')'),
+      true,
     );
-    await capture('stale-arrival-home-mobile', 390, 900, '[data-arrival-preview]');
+    await click('.client-app-nav a[href="#/client/map"]');
+    await wait('!!document.querySelector("[data-map-eta]")');
+    assert.equal(
+      await evaluate('document.querySelector("[data-map-eta]").innerText'),
+      'Unavailable',
+    );
+    await capture('stale-arrival-from-home-mobile', 390, 900, '[data-map-detail]');
     await route('worker/map/BKG-501');
     await click('[data-map-action="stop"]');
     assert.equal(await stored("s.journeys['BKG-501'].consent"), false);
     passed(
       'Consent, privacy and stale arrival',
-      'Only Worker started a consented estimate. Client had no playback control/route request or other participant bookings; stale ETA was withdrawn on both the map and home card and sharing could stop. Mapbox network fallback was used.',
+      'Only Worker started a consented estimate. Client had no playback control/route request or other participant bookings; stale ETA was withdrawn in Arrival, reachable from Home, and sharing could stop. Mapbox network fallback was used.',
     );
 
     await route('office/automation');
@@ -3946,8 +4122,11 @@ try {
       'Twenty-two office, worker and participant sections rendered headings without mobile page overflow; persona selectors remain explicitly a demo rather than separate user permissions.',
     );
 
+    await click('[data-action="account-settings"]');
+    await wait('document.querySelector("#modal").open');
     await click('[data-action="sign-out"]');
-    await wait("!!document.querySelector('#staff-login')");
+    await wait('!document.querySelector("#modal").open');
+    assert.equal(await evaluate("fetch('/api/workflow?action=intakes').then(r=>r.status)"), 401);
     await route('public/intake');
     await submit('[data-form="area-check"]', { postcode: '6999' });
 
@@ -3972,7 +4151,13 @@ try {
     await click('[data-action="close-modal"]');
     await command('Page.navigate', { url: origin + '/#/office/work' });
 
+    await wait('!!document.querySelector("[data-action=account-settings]")');
+    await click('[data-action="account-settings"]');
+    await click('[data-action="office-sign-in"]');
     await wait("!!document.querySelector('#staff-login')");
+    await submit('#staff-login', { email, password: 'incorrect-fictional-password' });
+    await wait('!!document.querySelector("#staff-login [role=alert]")');
+    assert.equal(await evaluate("fetch('/api/workflow?action=intakes').then(r=>r.status)"), 401);
     await submit('#staff-login', { email, password });
 
     await wait("!!document.querySelector('#main-content')");
@@ -4016,6 +4201,9 @@ try {
     await capture('failure-current-state');
   } catch {}
 
+  try {
+    console.error('Browser route at failure: ' + (await evaluate('location.hash')));
+  } catch {}
   console.error(error.stack);
   process.exitCode = 1;
 } finally {

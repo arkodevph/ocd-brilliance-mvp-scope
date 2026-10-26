@@ -589,7 +589,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   }
 
   function routeParts() {
-    return (location.hash.replace(/^#\/?/, '') || 'office/overview').split('/').filter(Boolean);
+    return (location.hash.replace(/^#\/?/, '') || 'office/start').split('/').filter(Boolean);
   }
 
   function help(text, label = 'Help') {
@@ -597,8 +597,8 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   }
 
   function pageHeader(eyebrow, title, subtitle = '', actions = '') {
-    const [, , detail] = routeParts();
-    const model = { title, subtitle, eyebrow: detail ? eyebrow : '' };
+    const [area, section, detail] = routeParts();
+    const model = { title, subtitle, eyebrow: detail ? eyebrow : '', ...(area === 'office' && section === 'participants' && participant(detail) ? { avatarSrc: window.OCD_AUTOMATION.profileSource(participant(detail).name) } : {}) };
 
     return `<div data-react-page-heading="${attr(JSON.stringify(model))}">${actions}</div>`;
   }
@@ -612,9 +612,10 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     if (area === 'public' || !detail || (section === 'intake' && detail === 'new')) return '';
     const sectionLabel = nav[area]?.find((item) => item[0] === section)?.[1] || 'Workspace';
     const home =
-      area === 'office' ? 'office/overview' : area === 'worker' ? 'worker/today' : 'client/home';
-    const homeLabel = area === 'office' ? 'Home' : area === 'worker' ? 'My visits' : 'Home';
+      area === 'office' ? 'office/start' : area === 'worker' ? 'worker/today' : 'client/home';
+    const homeLabel = area === 'office' ? 'Start here' : area === 'worker' ? 'My visits' : 'Home';
     const detailNames = {
+      operations: { start: 'Start here', guide: 'Guided demo', overview: 'Demo dashboard', queue: 'Work queue', intake: 'Intake & people', documents: 'Documents', rostering: 'Rostering', finance: 'Finance & payroll', care: 'Care & feedback', communications: 'Communications', library: 'Explore workflows', activity: 'Activity', case: 'Case review' }[detail],
       finance: 'Review check',
       enquiries: find(state.enquiries, detail)?.name,
       participants: participant(detail)?.name,
@@ -738,7 +739,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
   const nav = {
     office: [
-      ['overview', 'Home', 'home'],
+      ['overview', 'Office overview', 'home'],
       ['schedule', 'Team schedule', 'calendar'],
       ['work', 'Work queue', 'layers'],
       ['calendar', 'Calendar', 'calendar'],
@@ -773,6 +774,8 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   };
 
   nav.office.push(['shiftcare', 'ShiftCare', 'layers']);
+  nav.office.unshift(['start', 'Start here', 'home']);
+  nav.office.splice(1, 0, ['operations', 'Operations hub', 'layers']);
   nav.office.splice(3, 0, ['automation', 'Automation', 'activity']);
   nav.office.push(['inbox-tasks', 'Inbox tasks', 'inbox']);
   nav.office.push(['finance', 'Financial checks', 'file']);
@@ -781,8 +784,9 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
   nav.office.push(['payroll', 'Payroll preparation', 'file']);
   nav.office.push(['verification', 'Integration proof', 'shield']);
   nav.office.push(['intake', 'Intake', 'inbox']);
+  nav.office.push(['presentation', 'Demo guide', 'overview']);
   const officeNavGroups = [
-    ['Daily work', ['overview', 'work', 'inbox-tasks', 'automation']],
+    ['Office tools', ['overview', 'work', 'inbox-tasks', 'automation', 'presentation']],
     ['Clients & intake', ['enquiries', 'intake', 'participants', 'calls', 'agreements']],
     ['Scheduling', ['schedule', 'calendar', 'visits', 'map']],
     ['Team & finance', ['staff', 'invoices', 'finance', 'payroll', 'fees', 'proposed-fees']],
@@ -807,9 +811,9 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
     const navigationIcon = (glyph, count = 0) =>
       `<span class="nav-icon">${icon(glyph)}${count ? '<i class="nav-notification" aria-hidden="true"></i>' : ''}</span>`;
-    const primaryMobile = ['overview', 'intake', 'work', 'participants'];
+    const primaryMobile = ['start', 'operations', 'work', 'participants'];
     const navLink = ([path, label, glyph]) =>
-      `<a class="nav-link ${section === path ? 'active' : ''} ${area === 'office' && !primaryMobile.includes(path) ? 'mobile-extra' : ''}" ${section === path ? 'aria-current="page"' : ''} title="${attr(label)}${counts[path] ? ` · ${counts[path]} need attention` : ''}" aria-label="${attr(label)}${counts[path] ? `, ${counts[path]} need attention` : ''}" href="#/${area}/${path}">${navigationIcon(glyph, counts[path])}<span class="nav-label">${area === 'office' ? `<span class="mobile-label">${esc({ overview: 'Home', intake: 'Intake', work: 'Work', participants: 'Clients' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : area === 'client' ? `<span class="mobile-label">${esc({ home: 'Home', bookings: 'Bookings', map: 'Arrival', documents: 'Docs', intake: 'Details' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : esc(label)}</span></a>`;
+      `<a class="nav-link ${section === path ? 'active' : ''} ${area === 'office' && !primaryMobile.includes(path) ? 'mobile-extra' : ''}" ${section === path ? 'aria-current="page"' : ''} title="${attr(label)}${counts[path] ? ` · ${counts[path]} need attention` : ''}" aria-label="${attr(label)}${counts[path] ? `, ${counts[path]} need attention` : ''}" href="#/${area}/${path}">${navigationIcon(glyph, counts[path])}<span class="nav-label">${area === 'office' ? `<span class="mobile-label">${esc({ start: 'Start', operations: 'Demo', intake: 'Intake', work: 'Work', participants: 'Clients' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : area === 'client' ? `<span class="mobile-label">${esc({ home: 'Home', bookings: 'Bookings', map: 'Arrival', documents: 'Docs', intake: 'Details' }[path] || label)}</span><span class="desktop-label">${esc(label)}</span>` : esc(label)}</span></a>`;
     const groupLinks = (groups) =>
       groups
         .map(
@@ -819,20 +823,17 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         .join('');
     const activeGroup =
       officeNavGroups.find(([, paths]) => paths.includes(section)) || officeNavGroups[0];
-    const groupIcons = ['home', 'people', 'calendar', 'file', 'layers'];
+    const groupIcons = ['layers', 'people', 'calendar', 'file', 'layers'];
     const links =
       area === 'office'
-        ? `<div class="workspace-areas">${officeNavGroups
+        ? `<div class="workspace-areas demo-primary-navigation">${['start', 'operations'].map((path) => navLink(nav.office.find((item) => item[0] === path))).join('')}</div><div class="workspace-context demo-tool-navigation"><p class="nav-group-label">Explore tools</p>${officeNavGroups
             .map(
               ([label, paths], index) =>
-                `<a class="nav-link workspace-area ${activeGroup[0] === label ? 'active' : ''}" href="#/office/${paths[0]}" ${activeGroup[0] === label ? 'aria-current="true"' : ''} title="${attr(label)}" aria-label="${attr(label)}">${navigationIcon(
-                  groupIcons[index],
-                  paths.reduce((total, path) => total + (counts[path] || 0), 0),
-                )}<span class="nav-label">${esc(label)}</span></a>`,
+                `<details class="demo-nav-group" ${paths.includes(section) ? 'open' : ''}><summary title="${attr(label)}">${navigationIcon(groupIcons[index])}<span class="nav-label">${esc(label)}</span><span class="demo-nav-chevron" aria-hidden="true">›</span></summary><div>${paths.map((path) => navLink(nav.office.find((item) => item[0] === path))).join('')}</div></details>`,
             )
             .join(
               '',
-            )}</div><div class="workspace-context"><p class="nav-group-label">${esc(activeGroup[0])}</p>${activeGroup[1].map((path) => navLink(nav.office.find((item) => item[0] === path))).join('')}</div><div class="mobile-primary">${primaryMobile.map((path) => navLink(nav.office.find((item) => item[0] === path))).join('')}</div>`
+            )}</div><div class="mobile-primary">${primaryMobile.map((path) => navLink(nav.office.find((item) => item[0] === path))).join('')}</div>`
         : nav[area].map(navLink).join('');
     const more =
       area === 'office'
@@ -856,7 +857,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
         ? `<div class="automation-persona"><span>Demo worker</span><select id="worker-persona" aria-label="Choose a demo worker">${state.workers.map((w) => `<option value="${attr(w.id)}" ${w.id === ui.workerId ? 'selected' : ''}>${esc(w.name)}</option>`).join('')}</select><span class="status gray">Demo</span></div>`
         : '';
     const [, , detail] = routeParts();
-    return `<a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><div class="app-shell crm-shell ${area}-portal ${section === 'calendar' ? 'calendar-shell' : area === 'office' && section === 'schedule' && !detail ? 'schedule-shell' : ''}"><aside class="sidebar"><div class="brand"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></div><span class="sidebar-brand-mark" aria-hidden="true">OCD</span><span class="brand-caption">Operations platform</span><button class="sidebar-search" data-action="workspace-search" type="button" aria-label="Search pages and records" title="Search pages and records">${icon('search')}<span>Search</span></button>${area === 'office' ? '' : `<p class="nav-section-label">${area === 'worker' ? 'Worker workspace' : 'Client portal'}</p>`}<nav class="nav-list" aria-label="Main navigation">${links}${more}</nav><div class="sidebar-bottom"><a href="#/office/shiftcare" title="ShiftCare connection" aria-label="ShiftCare connection">${icon('layers')}<span class="nav-label">ShiftCare connection</span></a><small>Intake checks run automatically</small><button class="sidebar-account" data-action="account-settings" type="button" title="Account and workspace view" aria-label="Account and workspace view">${profileImage(avatarName)}<span class="sidebar-account-label"><strong>${esc(avatarName)}</strong><small>Account settings</small></span></button></div></aside><div class="workspace"><header class="topbar"><div class="topbar-left"><span class="topbar-workspace">${esc(area === 'office' ? activeGroup[0] : area === 'worker' ? 'Worker workspace' : 'Client portal')}</span><span class="topbar-divider">/</span><span class="topbar-title">${esc(title)}</span></div><div class="topbar-actions"><button class="workspace-search-trigger" data-action="workspace-search" type="button">${icon('search')}<span>Find a page or record</span></button>${appToolsButton()}<button class="account-trigger" data-action="account-settings" type="button" aria-label="Account and workspace view">${profileImage(avatarName)}<span>Account</span></button></div></header>${portalAccount}${workerAccount}<main class="page" id="main-content" tabindex="-1">${routeBreadcrumbs(area, section, detail)}${content}</main></div></div>`;
+    return `<a class="skip-link" data-action="skip-main" href="#main-content">Skip to main content</a><div class="app-shell crm-shell ${area}-portal ${section === 'calendar' ? 'calendar-shell' : area === 'office' && section === 'schedule' && !detail ? 'schedule-shell' : ''}"><aside class="sidebar"><div class="brand"><img src="/assets/ocd-brilliance-logo.png" alt="OCD Brilliance"></div><span class="sidebar-brand-mark" aria-hidden="true">OCD</span><span class="brand-caption">Operations platform</span><button class="sidebar-search" data-action="workspace-search" type="button" aria-label="Search pages and records" title="Search pages and records">${icon('search')}<span>Search</span></button>${area === 'office' ? '' : `<p class="nav-section-label">${area === 'worker' ? 'Worker workspace' : 'Client portal'}</p>`}<nav class="nav-list" aria-label="Main navigation">${links}${more}</nav><div class="sidebar-bottom"><a href="#/office/shiftcare" title="ShiftCare connection" aria-label="ShiftCare connection">${icon('layers')}<span class="nav-label">ShiftCare connection</span></a><small>Intake checks run automatically</small><button class="sidebar-account" data-action="account-settings" type="button" title="Account and workspace view" aria-label="Account and workspace view">${profileImage(avatarName)}<span class="sidebar-account-label"><strong>${esc(avatarName)}</strong><small>Account settings</small></span></button></div></aside><div class="workspace"><header class="topbar"><div class="topbar-left"><span class="topbar-workspace">${esc(area === 'office' ? ['start', 'operations'].includes(section) ? 'Demo workspace' : activeGroup[0] : area === 'worker' ? 'Worker workspace' : 'Client portal')}</span><span class="topbar-divider">/</span><span class="topbar-title">${esc(title)}</span></div><div class="topbar-actions"><button class="workspace-search-trigger" data-action="workspace-search" type="button">${icon('search')}<span>Find a page or record</span></button>${appToolsButton()}<button class="account-trigger" data-action="account-settings" type="button" aria-label="Account and workspace view">${profileImage(avatarName)}<span>Account</span></button></div></header>${portalAccount}${workerAccount}<main class="page" id="main-content" tabindex="-1">${routeBreadcrumbs(area, section, detail)}${content}</main></div></div>`;
   }
 
   function publicShell(section, content) {
@@ -940,6 +941,8 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     window.OCD_SHIFTCARE.unmount();
     window.OCD_INTEGRATION_PROOF.unmount();
     window.OCD_CLIENT_PRESENTATION.unmount();
+    window.OCD_NATIVE_AUTOMATION.unmount();
+    window.OCD_LIVE_PORTAL?.unmount();
     const [area, section, detail] = routeParts();
     const feesRoute = area === 'office' && section === 'fees' ? detail : '';
     if (feesRoute && feesRoute !== ui.feesRoute && booking(feesRoute)) {
@@ -948,6 +951,12 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       ui.feeTab = 'Routes';
     }
     ui.feesRoute = feesRoute;
+    if (area === 'live') {
+      window.OCD_REACT.render('<main id="live-service-access" class="native-live-portal" aria-live="polite"></main>');
+      document.title = 'Your services · OCD Brilliance';
+      window.OCD_LIVE_PORTAL.mount(document.getElementById('live-service-access'));
+      return;
+    }
     window.OCD_ALERTS?.setWorker(area === 'worker' ? ui.workerId : null);
     const pages = {
       office: {
@@ -1001,7 +1010,11 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     pages.worker.personal = () => window.OCD_EMPLOYEE.personal(employeeContext());
     pages.worker.leave = () => window.OCD_EMPLOYEE.leave(employeeContext());
     pages.office.shiftcare = shiftCarePage;
-    pages.office.automation = () => window.OCD_AUTOMATION.page(automationContext(), detail);
+    pages.office.start = () => `<div data-react-operations="${attr(JSON.stringify({ page: 'start' }))}"></div>`;
+    pages.office.operations = () => `<div data-react-operations="${attr(JSON.stringify({ page: detail || 'overview', caseId: routeParts()[3] || '' }))}"></div>`;
+    pages.office.automation = () => detail === 'shared'
+      ? '<section id="native-automation" aria-live="polite"></section>'
+      : window.OCD_AUTOMATION.page(automationContext(), detail);
     pages.office['inbox-tasks'] = () => {
       window.OCD_AUTOMATION_ENGINE.ensure(state);
       return inboxTasksPage({ state, detail, today: todayPerth(), pageHeader });
@@ -1062,6 +1075,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
           ? clientShell(actualSection, content)
           : shell(actualArea, actualSection, content),
     );
+    app.dataset.workspaceRoute = [actualArea, actualSection, ...routeParts().slice(2)].join('/');
     window.OCD_SOLAR_REFRESH?.();
     window.OCD_REACT.renderCompanion(
       COMPANION_ENABLED && actualArea === 'office'
@@ -1132,6 +1146,8 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     window.OCD_MAPS.mount(mapContext(actualArea, actualSection === 'map' ? detail : ''));
     if (actualArea === 'office' && actualSection === 'shiftcare')
       window.OCD_SHIFTCARE.mount(document.getElementById('shiftcare-connection'));
+    if (actualArea === 'office' && actualSection === 'automation' && detail === 'shared')
+      window.OCD_NATIVE_AUTOMATION.mount(document.getElementById('native-automation'), automationContext());
     if (actualArea === 'office' && actualSection === 'verification')
       window.OCD_INTEGRATION_PROOF.mount(document.getElementById('integration-proof-dashboard'));
     if (actualArea === 'office' && actualSection === 'presentation')
@@ -2035,7 +2051,7 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
       main = `<section class="panel"><div class="section-heading"><h2>Agreement</h2>${a ? `<a href="#/office/agreements/${attr(a.id)}">Open agreement</a>` : `<button class="btn small primary" data-action="generate-agreement" data-id="${attr(p.id)}" type="button">Generate agreement</button>`}</div>${a ? `<div class="document-item">${icon('file')}<span class="body"><strong>${esc(a.service)} service agreement</strong><small>${esc(a.id)} · ${esc(a.template)}</small></span>${pill(a.status)}</div>` : empty('No agreement generated', 'A reviewed agreement is required before activation.')}<div class="content-section"><h3>Shared with client portal</h3><div class="document-list">${p.sharedDocs.length ? p.sharedDocs.map((d) => `<div class="document-item">${icon('file')}<span class="body"><strong>${esc(d.name)}</strong><small>Shared ${dateLabel(d.date)}</small></span></div>`).join('') : `<p class="muted tiny">No other shared documents.</p>`}</div></div></section>`;
     if (tab === 'Requests')
       main = `<section class="panel"><div class="section-heading"><h2>Portal requests</h2><span class="muted tiny">Requests do not change confirmed bookings automatically.</span></div>${requests.length ? requests.map((r) => `<div class="visit-row"><span class="priority-icon">${icon('inbox')}</span><span class="body"><strong>${esc(r.type)}</strong><small>${esc(r.message)} · ${dateLabel(r.created)}</small>${r.bookingId ? `<small><a href="#/office/schedule/${attr(r.bookingId)}">Open ${esc(r.bookingId)}</a></small>` : ''}</span>${pill(r.status)}${r.status === 'Pending' ? `<button class="btn small" data-action="review-request" data-id="${attr(r.id)}" type="button">Record outcome</button>` : ''}</div>`).join('') : empty('No portal requests', 'New booking requests and feedback appear here.')}</section>`;
-    return `${crumb(p.name, 'office/participants', 'Participants')}${pageHeader(p.id, p.name, `${p.service} · ${p.suburb}`, `${pill(p.status)}${p.status === 'Onboarding' && a?.status === 'Signed' ? `<button class="btn small primary" data-action="activate-participant" data-id="${attr(p.id)}" type="button">Mark active</button>` : ''}`).replace('<h1>', `<h1>${profileImage(p.name)}`)}<div class="tabs" role="tablist">${['Overview', 'Bookings', 'Documents', 'Requests'].map((t) => `<button class="tab ${t === tab ? 'active' : ''}" data-action="participant-tab" data-value="${t}" type="button">${t}${t === 'Requests' && requests.some((r) => r.status === 'Pending') ? ` · ${requests.filter((r) => r.status === 'Pending').length}` : ''}</button>`).join('')}</div>${main}`;
+    return `${crumb(p.name, 'office/participants', 'Participants')}${pageHeader(p.id, p.name, `${p.service} · ${p.suburb}`, `${pill(p.status)}${p.status === 'Onboarding' && a?.status === 'Signed' ? `<button class="btn small primary" data-action="activate-participant" data-id="${attr(p.id)}" type="button">Mark active</button>` : ''}`)}<div class="tabs" role="tablist">${['Overview', 'Bookings', 'Documents', 'Requests'].map((t) => `<button class="tab ${t === tab ? 'active' : ''}" data-action="participant-tab" data-value="${t}" type="button">${t}${t === 'Requests' && requests.some((r) => r.status === 'Pending') ? ` · ${requests.filter((r) => r.status === 'Pending').length}` : ''}</button>`).join('')}</div>${main}`;
   }
 
   function agreementsPage() {
@@ -3420,10 +3436,30 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
 
     if (action === 'account-settings')
       return openModal(
-        'Demo account',
-        'Fictional prototype accounts · no login required',
-        `${viewSelect(routeParts()[0])}<div class="form-actions"><a class="btn primary" href="/portal">Switch seeded account</a></div>`,
+        'Account and workspace',
+        sessionEmail ? `Office session: ${sessionEmail}` : 'Fictional prototype accounts · office records require sign-in',
+        `${viewSelect(routeParts()[0])}<div class="form-actions"><a class="btn" href="/portal">Switch seeded account</a>${sessionEmail ? '<button class="btn" data-action="sign-out" type="button">Sign out of office</button>' : '<button class="btn primary" data-action="office-sign-in" type="button">Office sign-in</button>'}</div>`,
       );
+    if (action === 'office-sign-in')
+      return openModal(
+        'Office sign-in',
+        'Use your configured office account to access shared requests and workflows.',
+        '<form id="staff-login" data-form="office-login"><label>Email or username<input name="email" autocomplete="username" required maxlength="254"></label><label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="1000"></label><div class="form-actions"><button class="btn primary" type="submit">Sign in to office</button></div></form>',
+      );
+    if (action === 'sign-out') {
+      button.disabled = true;
+      try {
+        await intakeRequest('logout', 'POST', {});
+        closeModal();
+        window.dispatchEvent(new Event('ocd-session-expired'));
+        toast('Signed out of office. Fictional demo examples remain available.');
+      } catch (error) {
+        toast(error.message || 'Office sign-out failed. Please try again.');
+      } finally {
+        button.disabled = false;
+      }
+      return;
+    }
     if (action === 'sample-intake') {
       intakeDocument = null;
       documentGeneration++;
@@ -4379,6 +4415,25 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     const kind = form.dataset.form;
     const itemId = form.dataset.id;
     let message = '';
+    if (kind === 'office-login') {
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      try {
+        const result = await intakeRequest('login', 'POST', { email: val(form, 'email'), password: form.elements.password.value });
+        sessionEmail = result.email;
+        let refreshWarning = '';
+        try { await syncServerIntakes(); } catch (_) { refreshWarning = 'Office sign-in succeeded. Shared requests could not refresh; retry from the office workspace.'; }
+        closeModal();
+        render();
+        toast(refreshWarning || 'Office sign-in complete.');
+      } catch (error) {
+        form.elements.password.value = '';
+        formError(form, error.message || 'Office sign-in failed. Please try again.');
+      } finally {
+        submitButton.disabled = false;
+      }
+      return;
+    }
     if (kind === 'employee-leave') {
       if (routeParts()[0] !== 'worker') return;
       try {
@@ -6157,6 +6212,9 @@ import { demoIntakeRequest, demoIntakeRules, readDemoIntakes } from './demo-inta
     state.enquiries = state.enquiries.filter((enquiry) => !enquiry.serverRecord);
     intakeQueue = [];
     intakeOwners = [];
+    intakeText = '';
+    intakeDocument = null;
+    intakePreview = null;
     render();
   });
 

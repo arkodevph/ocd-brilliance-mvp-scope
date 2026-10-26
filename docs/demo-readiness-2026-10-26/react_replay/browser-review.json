@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-25",
+  "reviewedAt": "2026-10-25T23:57:33.132Z",
+  "status": "fail",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "React employee flows",
+      "status": "pass",
+      "detail": "Notification state, leave submission, reload persistence and withdrawal work at desktop/mobile sizes."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-readiness-2026-10-26/react_replay/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/react_replay/react-employee-desktop.png",
+      "sha256": "1642280b5f4f74a76ab811f64b1e884c3704995880270198136ae8f4be5d7516",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/react_replay/react-employee-mobile.png",
+      "sha256": "a90317e8c26ab8efc5fd7ab7107cd147c6171932018c964908ebd220e4797fc9",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/react_replay/failure-current-state.png",
+      "sha256": "296373dd9da76bcaa105c48de4c8c52f05bee218b478de87f601cd3805391179",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

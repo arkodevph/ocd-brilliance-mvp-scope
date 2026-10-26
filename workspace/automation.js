@@ -46,7 +46,7 @@
     `<button class="btn ${primary ? 'primary' : ''}" data-auto-action="${action}" data-id="${esc(id)}" type="button">${esc(label)}</button>`;
   const guard = `<label class="checkbox"><input type="checkbox" name="sourceReviewed" required><span>I checked the original evidence, person, fields and effect of this proposal.</span></label>`;
   function boundary() {
-    return `<div class="automation-boundary"><span class="status blue">Prototype</span><p>Messages and tasks save in this browser · Gmail is not connected.</p><a href="#/office/shiftcare">Live read connection</a></div>`;
+    return `<div class="automation-boundary"><span class="status blue">Prototype</span><p>These demo messages and tasks save in this browser.</p><a href="#/office/automation/shared">Shared application workflows</a><a href="#/office/shiftcare">Live read connection</a></div>`;
   }
 
   function header(title, subtitle) {
@@ -104,11 +104,14 @@
     return `${person.name} ${person.email} ${person.detail} ${job.title} ${job.id} ${job.owner} ${job.source.body}`.toLowerCase();
   }
 
+  function profileSource(name) {
+    const hash = [...name].reduce((value, char) => (value * 31 + char.codePointAt(0)) >>> 0, 0);
+    return `/assets/profiles/profile-${(hash % 6) + 1}.svg`;
+  }
   function profileImage(name, className = 'automation-source-avatar') {
     if (!name || ['Person needs confirmation', 'Unassigned'].includes(name))
       return `<span class="${esc(className)}" aria-hidden="true">?</span>`;
-    const hash = [...name].reduce((value, char) => (value * 31 + char.codePointAt(0)) >>> 0, 0);
-    return `<span class="${esc(className)} profile-image"><img src="/assets/profiles/profile-${(hash % 6) + 1}.svg" alt="" width="80" height="80" loading="lazy"></span>`;
+    return `<span class="${esc(className)} profile-image"><img src="${profileSource(name)}" alt="" width="80" height="80" loading="lazy"></span>`;
   }
 
   function caseCard(c, job, selected, matches) {
@@ -162,7 +165,7 @@
       ui.page =
         selectedIndex >= 0 ? Math.floor(selectedIndex / pageSize) + 1 : Math.min(ui.page, pages);
       const visible = matching.slice((ui.page - 1) * pageSize, ui.page * pageSize);
-      return `<div class="automation-desk automation-pipeline"><header class="automation-desk-header"><div><h1>Automation</h1><span class="status blue">Prototype workspace</span></div><a class="btn small" href="#/office/finance">Financial checks →</a></header><nav class="automation-tabs" aria-label="Automation workspace">${[
+      return `<div class="automation-desk automation-pipeline"><header class="automation-desk-header"><div><h1>Automation</h1><span class="status blue">Prototype workspace</span></div><div class="button-row"><a class="btn small primary" href="#/office/automation/shared">Shared workflows →</a><a class="btn small" href="#/office/finance">Financial checks →</a></div></header><nav class="automation-tabs" aria-label="Automation workspace">${[
         ['cases', 'Cases'],
         ['inbox', 'Email review'],
         ['readiness', 'Connection status'],
@@ -578,5 +581,6 @@
     click,
     submit,
     profileImage,
+    profileSource,
   };
 })();

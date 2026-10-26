@@ -7,11 +7,13 @@ export default function DemoAccounts() {
   const [worker, setWorker] = useState('WRK-01');
   const [client, setClient] = useState('PAR-101');
   const seed = window.OCD_DEMO_SEED;
-  const href = `/workspace/?demoWorker=${encodeURIComponent(worker)}&demoClient=${encodeURIComponent(client)}#/${role}/${role === 'office' ? 'overview' : 'home'}`;
+  const href = `/workspace/?demoWorker=${encodeURIComponent(worker)}&demoClient=${encodeURIComponent(client)}#/${role}/${role === 'office' ? 'start' : 'home'}`;
   return (
     <>
-      <PageHero eyebrow="Prototype access" title="Choose your" accent="workspace.">
-        <p>Explore the system with fictional seeded accounts. No login is needed.</p>
+      <PageHero eyebrow="Interactive demo" title="Take a look" accent="around.">
+        <p>
+          New here? Start with the office demo. A short guided example will show you what to do.
+        </p>
       </PageHero>
       <section className="section">
         <div className="container landing-form-layout">
@@ -19,7 +21,7 @@ export default function DemoAccounts() {
             <label>
               Workspace
               <select value={role} onChange={(event) => setRole(event.target.value)}>
-                <option value="office">Office · Mia Roberts</option>
+                <option value="office">Office · recommended first</option>
                 <option value="worker">Employee</option>
                 <option value="client">Client</option>
               </select>
@@ -49,16 +51,17 @@ export default function DemoAccounts() {
               </label>
             )}
             <a className="button" href={href}>
-              Open workspace
+              {role === 'office' ? 'Start office demo' : 'Open workspace'}
             </a>
           </div>
           <aside className="contact-card">
-            <h2>Ready to explore</h2>
+            <h2>{role === 'office' ? 'A clear place to start' : 'Try a different perspective'}</h2>
             <p>
-              Switch accounts from Account inside the workspace. Demo changes are saved in this
-              browser.
+              {role === 'office'
+                ? 'Follow one fictional request, step by step. Then explore intake, scheduling and finance when you are ready.'
+                : 'The employee and client workspaces use separate fictional examples. Switch roles from Account inside the workspace.'}
             </p>
-            <p>Private intake records and connected services require authorized backend access.</p>
+            <p>No login is needed for these examples. Demo changes are saved in this browser.</p>
           </aside>
         </div>
       </section>

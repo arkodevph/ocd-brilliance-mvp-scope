@@ -26,6 +26,7 @@ import {
 
 import { OfficeOverviewPage, type OfficeOverviewModel } from './office-overview';
 import { OfficeCompanion, type CompanionModel } from './office-companion';
+import { OperationsPrototype, type OperationsModel } from './features/operations/operations';
 
 // Native booking-map components share the existing portal and office layouts.
 const parserOptions: HTMLReactParserOptions = {
@@ -33,6 +34,12 @@ const parserOptions: HTMLReactParserOptions = {
     if (!(node instanceof Element)) return;
     const children = () =>
       domToReact(node.children as Parameters<typeof domToReact>[0], parserOptions);
+    if (node.attribs['data-react-operations'])
+      return (
+        <OperationsPrototype
+          {...(JSON.parse(node.attribs['data-react-operations']) as OperationsModel)}
+        />
+      );
     if (node.attribs['data-react-worker-rating'])
       return (
         <WorkerRating

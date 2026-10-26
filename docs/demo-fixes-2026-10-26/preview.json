@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-26",
+  "port": 8035,
+  "pid": 239039,
+  "previous_pid": 83797,
+  "ready": true,
+  "worker": "disabled",
+  "dotenv_loading": "disabled",
+  "data_directory_preserved": true,
+  "stored_files_unchanged": true,
+  "office_auth_configured": true,
+  "live_actions_executed": false,
+  "url": "http://localhost:8035/workspace/#/office/operations/overview"
+}

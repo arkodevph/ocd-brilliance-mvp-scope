@@ -9,6 +9,9 @@
     "build:backend": "node scripts/build-backend.cjs",
     "build:frontend": "tsc -p tsconfig.frontend.json && node scripts/build-frontend.cjs",
     "db:migrate": "npm run build:backend && node .backend/database/migrate.js",
+    "automation:worker": "npm run build:backend && node scripts/automation-worker.cjs",
+    "automation:tick": "npm run build:backend && node scripts/automation-worker.cjs --once",
+    "portal:account": "node scripts/portal-account.cjs",
     "build": "npm run build:backend && npm run build:frontend && node scripts/build-vercel.cjs",
     "pretest": "npm run build:backend && npm run build:frontend",
     "test": "node --test",
@@ -16,12 +19,15 @@
     "verify:react": "PROTOTYPE_REACT=1 node scripts/prototype-browser-check.mjs",
     "verify:intake": "PROTOTYPE_INTAKE=1 node scripts/prototype-browser-check.mjs",
     "format": "prettier --write \"{api,backend,frontend,lib,scripts,tests,workspace}/**/*.{js,jsx,cjs,mjs,ts,tsx}\" server.cjs",
-    "format:check": "prettier --check \"{api,backend,frontend,lib,scripts,tests,workspace}/**/*.{js,jsx,cjs,mjs,ts,tsx}\" server.cjs"
+    "format:check": "prettier --check \"{api,backend,frontend,lib,scripts,tests,workspace}/**/*.{js,jsx,cjs,mjs,ts,tsx}\" server.cjs",
+    "verify:native": "PROTOTYPE_NATIVE=1 node scripts/prototype-browser-check.mjs",
+    "verify:operations": "node scripts/operations-prototype-browser-check.mjs"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@fontsource-variable/fraunces": "^5.3.0",
     "@hono/node-server": "^2.1.5",
+    "@napi-rs/canvas": "^1.0.10",
     "@solar-icons/js": "^2.3.1",
     "@solar-icons/react": "^2.3.1",
     "@tesseract.js-data/eng": "^1.0.0",

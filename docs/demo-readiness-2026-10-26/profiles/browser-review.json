@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-25",
+  "reviewedAt": "2026-10-25T23:54:48.084Z",
+  "status": "fail",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/discovery-call-profiles-desktop.png",
+      "sha256": "335bd867d5bc0ad59368dd8b9093d2db9da1e0ecd6d64a005d8f98746766f657",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/discovery-call-profiles-mobile.png",
+      "sha256": "10d8ae9ce6ae623acc9c394e4f1632e5897b68fd00c6dc203518915a9c88654e",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/work-queue-profiles-desktop.png",
+      "sha256": "dc216827dd0d4be2d70f91706f6c1092b356fdc813e5d5c06bddd8dbe0ccd6f2",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/work-queue-profiles-mobile.png",
+      "sha256": "b95decefcbcac36b0047c33b8f45e9a3e43660c6370abe2295952b38e2a86833",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/saved-intake-profiles-desktop.png",
+      "sha256": "80c0dd86cc187c36627dbaa4cdaa1f7d8eb0f6c86695b0a4af08abe67e7d397f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/saved-intake-profiles-mobile.png",
+      "sha256": "07ecc7c1e192eaf502138f0b29780650c532c77d9c7add0fd3aae81acd64e697",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/all-staff-profiles-desktop.png",
+      "sha256": "976fce0665a02bd1851626390e52ea8e58c5988a0936d8e05bf1942fdf137cfc",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/all-staff-profiles-mobile.png",
+      "sha256": "c18adfe9f50586c31a4bf3a47b004a7153721dd8ff9c44d76a571d97be967f56",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/profiles/failure-current-state.png",
+      "sha256": "fbf8ce3bd60c48b0790bdaf512ce4b04e0b2f67c8314544709b1593539b59b84",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

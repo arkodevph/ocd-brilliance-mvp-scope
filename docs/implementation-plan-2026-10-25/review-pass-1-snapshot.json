@@ -1,0 +1,16 @@
+{
+  "review_pass": 1,
+  "status": "Draft captured before separate critical review revisions",
+  "sha256": {
+    "docs/OCD_Custom_System_Implementation_Plan.md": "0280de6ddbacbdd89dca01a4494e80954b37b0c05a90dc05b9d4a877f15b02af",
+    "docs/implementation-plan-2026-10-25/architecture-and-data-design.md": "8e2ece67b233e50839646518e55159190471e69853e41dbbdfe0728c343d5a6d",
+    "docs/implementation-plan-2026-10-25/deployment-and-operations.md": "9fcdda58ee5585fa2fa1d0fe098f0b783f1e6a4df0ea2d953ee104e0e07a4c5e",
+    "docs/implementation-plan-2026-10-25/discovery-and-decisions.md": "ac72bb2b48d83d93108d596ed7ea1d159898128375e7307d2fdf0eb25be0c839",
+    "docs/implementation-plan-2026-10-25/requirements-traceability.md": "c5d8b730b721cfa9e69a2106f1defdfb5e7315543b32adac874820feb367efda",
+    "docs/implementation-plan-2026-10-25/roadmap.md": "5ddf7e60b1dfe8e168321a96cc340d724d948f5a9aa6a0a66c3d278850ff4458",
+    "docs/implementation-plan-2026-10-25/security-and-risk-register.md": "a1b6c0fe1f87cb0499babad5a4b90e4c8132b8778d182776487a688a14feb9ea",
+    "docs/implementation-plan-2026-10-25/testing-and-validation.md": "90e8371a39a8dc591f164f46e728833ab165cefdf5526408c1297c5a08c846b8",
+    "docs/implementation-plan-2026-10-25/plan-data.json": "fe72d8df81c6fd01eb8877a3b6621b49a0d2328a01e7fcf5fb71275cd71e361f",
+    "docs/implementation-plan-2026-10-25/validation-results.json": "81dc07158bbbc840f073ce9b5d3ffe4fb61c56cef0e457e55accce5abc9452d3"
+  }
+}

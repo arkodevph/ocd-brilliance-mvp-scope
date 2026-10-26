@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-26",
+  "implementation_changed": false,
+  "results": [
+    {
+      "probe": "owner_after_primary",
+      "reproduced": true,
+      "case_id": "OPS-1008",
+      "status": "follow-up",
+      "remaining_outcomes": 2,
+      "requested_owner": "HR / admin",
+      "error": "A saved or uncertain result already exists. Verify or reconcile it before changing the source; use a new case for a correction."
+    },
+    {
+      "probe": "stale_coverage_evidence",
+      "reproduced": true,
+      "new_postcode": "8888",
+      "retained_proof": {
+        "id": "coverage-review",
+        "label": "Office confirms the coverage exception or an appropriate alternative",
+        "status": "done",
+        "reference": "REVIEW-FOR-9999-ONLY",
+        "note": "The office checked only the fictional 9999 service location."
+      },
+      "status_after_new_check": "follow-up",
+      "closed_without_new_location_review": true
+    },
+    {
+      "probe": "ownership_check_scope",
+      "note": "Directly altered fixture for missing-owner/deadline diagnostics; not a production authorization test",
+      "result": "Checked 32 other open sample cases: 30 mandatory follow-through outcomes still need evidence. These linked business cases remain open; this bounded check does not complete their work.",
+      "previous": "Checked 32 other open sample cases: 30 mandatory follow-through outcomes still need evidence. These linked business cases remain open; this bounded check does not complete their work.",
+      "contains_missing_owner_or_overdue": false
+    },
+    {
+      "probe": "forwarded_source_dedup",
+      "case_increase": 1,
+      "note": "Existing deduplication promises exact matches only; source-identity/thread version deduplication is an implementation gap rather than a failed exact-match guarantee."
+    },
+    {
+      "probe": "new_request_proposal_defaults",
+      "id": "OPS-1036",
+      "source": "Please move only my 2 November service to 14:00.",
+      "person": "Different fictional participant",
+      "fields": [
+        {
+          "key": "occurrence",
+          "label": "Exact occurrence",
+          "before": "27 October · one visit",
+          "value": "27 October · one visit"
+        },
+        {
+          "key": "time",
+          "label": "Visit time",
+          "before": "09:00–11:00",
+          "value": "10:00–12:00"
+        }
+      ],
+      "note": "Guide explicitly documents sample defaults requiring review; free-form capture is not extraction or native matching."
+    },
+    {
+      "probe": "stored_route_guard",
+      "accepted_missing_route": true,
+      "note": "Resilience-only check of malformed browser-local data; not an authorization vulnerability."
+    }
+  ]
+}

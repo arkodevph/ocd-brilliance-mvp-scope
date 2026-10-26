@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-25",
+  "reviewedAt": "2026-10-25T23:43:28.273Z",
+  "status": "pass",
+  "sourceMode": "fictional and isolated",
+  "checks": [
+    {
+      "name": "Native booking selection",
+      "status": "pass",
+      "detail": "Booking selection uses a compact real dropdown, preserves change handling and fits the mobile viewport."
+    },
+    {
+      "name": "Shared workflow boundary",
+      "status": "pass",
+      "detail": "All 14 handlers are discoverable and no fictional browser cases were imported into server storage."
+    },
+    {
+      "name": "Shared case review and persistence",
+      "status": "pass",
+      "detail": "Office evidence was prepared, explicitly approved and completed as an application review; the same case remained after reload."
+    },
+    {
+      "name": "Native handoff and honest verification",
+      "status": "pass",
+      "detail": "Missing write adapters retained a checked human handoff. Manual verification was recorded as staff-manual, without any ShiftCare request."
+    },
+    {
+      "name": "Stale submission",
+      "status": "pass",
+      "detail": "A stale case revision was rejected by the backend."
+    },
+    {
+      "name": "Original evidence import",
+      "status": "pass",
+      "detail": "Uploaded and extracted original text is retained in private server storage and appears with its source download in the existing case."
+    },
+    {
+      "name": "Verified service access boundary",
+      "status": "pass",
+      "detail": "The live service route requires independently configured identities and grants no access from a demo persona or office session."
+    },
+    {
+      "name": "Authenticated shared queue",
+      "status": "pass",
+      "detail": "After logout, server cases were unavailable and the screen required office sign-in."
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/demo-readiness-2026-10-26/native/booking-dropdown.png",
+      "sha256": "6d35f20eda0b913e45abe49d30960fdef61c7962724157ee559e7d79fda531fc",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/native/native-workflows-desktop.png",
+      "sha256": "3ad0856a682d267eb28fcbb871f966e0938fa53151c71354b3d23db87aa15e5f",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/native/native-workflows-mobile.png",
+      "sha256": "6b590abf6de47cd0fafe530ec32342479612621451977f1008621e8c22df7eb3",
+      "width": 390,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/native/native-workflows-small-mobile.png",
+      "sha256": "261e1eafff07ae191c64e2ace653e9163cfd507cd1e1f8d0a8e16d2c8cec48d0",
+      "width": 320,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/native/native-original-evidence-desktop.png",
+      "sha256": "79ca475cce6007992198a44eb0942a3e9c91da259ade312bd755ff29cae6ef2c",
+      "width": 1440,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/native/native-original-evidence-mobile.png",
+      "sha256": "9b59c78a403ccb4ccb369403cabbc035d6ea4905e087a6e5b493eee3748aa28b",
+      "width": 390,
+      "height": 1000,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    },
+    {
+      "path": "docs/demo-readiness-2026-10-26/native/verified-service-access-mobile.png",
+      "sha256": "c491d50aac9be25626fa850d0b21197fede637232b7fa0600467b3f4574a1057",
+      "width": 390,
+      "height": 900,
+      "horizontalOverflow": false,
+      "focus": "Page overview"
+    }
+  ],
+  "uncaughtErrors": [],
+  "visualReview": "pending image inspection",
+  "mapbox": "External calls blocked deliberately; fallback, privacy and ETA state verified.",
+  "productionLimit": "No real mailbox/OCR, ShiftCare writes, background jobs, payroll release, secure worker/client identities or device GPS certified."
+}

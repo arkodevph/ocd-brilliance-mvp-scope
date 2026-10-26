@@ -1,0 +1,272 @@
+{
+  "date": "2026-10-25",
+  "status": "complete",
+  "scope": "Comprehensive frontend prototype; production backend and live integration work remains in the implementation plan",
+  "counts": {
+    "registered_processes": 35,
+    "core": 20,
+    "gated": 5,
+    "later_native": 10,
+    "workflow_families": 14,
+    "hub_sections": 10,
+    "starting_cases": 35
+  },
+  "validation": {
+    "npm_test": {
+      "passed": 270,
+      "failed": 0,
+      "skipped": 1,
+      "skip_reason": "Existing PostgreSQL migration test requires local initdb/pg_ctl binaries"
+    },
+    "npm_run_build": "passed",
+    "npm_run_verify_operations": {
+      "passed": 14,
+      "failed": 0,
+      "page_javascript_errors": 0,
+      "external_requests": 0,
+      "api_mutations": 0
+    },
+    "targeted_format_check": "passed",
+    "git_diff_check": "passed"
+  },
+  "visual_review": {
+    "status": "inspected",
+    "method": "Author viewed all 17 final browser captures",
+    "scope": "Desktop initial viewports, key case states, and 390 px mobile overview/case entry; not a whole-page, device or accessibility certification",
+    "captures": [
+      {
+        "path": "docs/prototype-operations-2026-10-25/01-operations-overview.png",
+        "sha256": "39974d75a95de078dcd7ca2a6479546524069b7ea49df8df9969f0076b998987",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/initial-mobile-layout.png",
+        "sha256": "b19e17f838885813f9a9098c2157755eba93b77ee9920546d5ec82fa32115c5d",
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/area-intake.png",
+        "sha256": "2293b6f88c88154e2b7e2aafe7524a33e9d403b007eb50734e941350c54e4cea",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/area-documents.png",
+        "sha256": "8b63b27d158d6131d1dccecdfc96c515f9b44fc747856d224d01cd67eaa74123",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/area-rostering.png",
+        "sha256": "3266893eab22f37fefc1a210a06f85618bf5455a2baa3882063efbef4a8bb970",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/area-finance.png",
+        "sha256": "31e824fea225d3afff8b5c1be3a7808d8c5315dd41b5d5272a177550f2fe9cdb",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/area-care.png",
+        "sha256": "24e7bb72382d4a8d1a0fcb51a354241a6eb6634f4528b5573f9cfd11da0a410b",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/area-communications.png",
+        "sha256": "abda2b179b8d41aecf6b79ec34124ef4f6bc2a80e19c64718b758e36bc3553c5",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/area-activity.png",
+        "sha256": "5f478133988d1cfe7726d2ea0286f81c51b2cfe894756f90512e5ca703181a4d",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/02-workflow-library.png",
+        "sha256": "1b166b44ed9b52eadd262cd5a1a9b69b33cafbf704005ff416bc8d4308e4eaf7",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/03-cancellation-approved.png",
+        "sha256": "3f0ccff51a22773bfa9703344593c484fb17f2b9180871a472682f516de33947",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/04-cancellation-partial.png",
+        "sha256": "da4552c08e1e9ece7a56d40ae1eeb9dba2c614605aa48cfb0b7644cdfc2aeacb",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/05-unknown-result-recovery.png",
+        "sha256": "fa517e9857ad7ab83c0af4de2ece8b142de93a45d246d6afab2fe85ea2fceffc",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/06-native-payroll-handoff.png",
+        "sha256": "a2886d6716844883af010e32f75fec9ff5b26034f85ab221b75991f50e424bc9",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/07-overview-mobile.png",
+        "sha256": "fdd0d130be1c0f8dcc33a02b84805e8283eeb67c7657fc9e4d886c80c222948b",
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/08-case-mobile.png",
+        "sha256": "d7aa4228f8250171776b612bd45c0d955b0c1c30f85c3ace6da6f938bd0e67ce",
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false
+      },
+      {
+        "path": "docs/prototype-operations-2026-10-25/09-participant-review.png",
+        "sha256": "bc249c15490ca33359674c358f0757273e463adb70db23e517283f2f4cdf2c41",
+        "width": 1440,
+        "height": 1050,
+        "horizontalOverflow": false
+      }
+    ]
+  },
+  "preview": {
+    "url": "http://127.0.0.1:8035/workspace/#/office/operations/overview",
+    "worker": "disabled",
+    "data": "isolated temporary demo directory",
+    "live_credentials": "not supplied"
+  },
+  "source_snapshots": [
+    {
+      "path": "frontend/features/operations/catalogue.ts",
+      "sha256": "6a8d9a46e25d94b45142e4e30802edc0a46a4baf1ca3243f66ef8da081c2a97a"
+    },
+    {
+      "path": "frontend/features/operations/scenarios.ts",
+      "sha256": "ff5827f04b7617c8908c5fc795190339b508deb8a26021c4b80c412ae0058442"
+    },
+    {
+      "path": "frontend/features/operations/model.ts",
+      "sha256": "0af33a26be7b4441f80f7854b7604e6354a4d0c24aeaba2faeced3f7d01b0c60"
+    },
+    {
+      "path": "frontend/features/operations/operations.tsx",
+      "sha256": "262a06c612b42dcdac30a0c4edab5656375e8ae9e6a86ac9e81384391e34b79a"
+    },
+    {
+      "path": "frontend/features/operations/styles.css",
+      "sha256": "1433d3de119f86dadc463e4ef86fa344c921bbbcbf80802bf66d518b64c3969e"
+    },
+    {
+      "path": "frontend/main.tsx",
+      "sha256": "46602f64f62226eb4a2aca600e83a9b8c6f655f832dab5641f00c39674a7bdd7"
+    },
+    {
+      "path": "frontend/renderer.tsx",
+      "sha256": "567523c2d00e92383c580604ed2a34a9fa7d6fb42717c93300095bd29cd01ce7"
+    },
+    {
+      "path": "workspace/app.js",
+      "sha256": "d139cb1e576c577cdbd0807dd86568e48110aea33c58cf0afc9d9aefee527ab7"
+    },
+    {
+      "path": "workspace/ui-layout.js",
+      "sha256": "97c8c1a646eb91adcff350cd1a00041a988ff9540fa43ae541600354af53fc32"
+    },
+    {
+      "path": "workspace/sw.js",
+      "sha256": "fec7fe4fc78fbd41b435302c18da61a1028bd33d51096fae82363e883125cbdb"
+    },
+    {
+      "path": "package.json",
+      "sha256": "3a270358fb06a0ec108d1a77fb01dfbc19b82c024bc46d2127c6f843ae652130"
+    },
+    {
+      "path": "tests/operations-prototype.test.cjs",
+      "sha256": "18a3ddeebaf67b89dcb5f9b2a0b2385a8e06bc6e972a7f49eb266c6931332970"
+    },
+    {
+      "path": "tests/react-frontend.test.cjs",
+      "sha256": "de4c2addcf3876a52f6111dd03d967576f1bbe0efc09e0fa652b7da4f858d8f5"
+    },
+    {
+      "path": "scripts/operations-prototype-browser-check.mjs",
+      "sha256": "2de47940b257adc67792674270de182eb10c220f20314c7b16814cac9c2f1148"
+    },
+    {
+      "path": "docs/OCD_Comprehensive_Prototype_Guide.md",
+      "sha256": "2117c32ef8a497d73de2d3d9d491af80e8af66d673c7e957133eec139260daac"
+    },
+    {
+      "path": "README.md",
+      "sha256": "82e0f36be8437eda193da40abab7fcc62697a48d20aebfdb31b3144ec72be555"
+    },
+    {
+      "path": "docs/automation-feasibility-2026-10-25/feasibility.json",
+      "sha256": "533872b8cc75c388a70f2ffd09602f23238d062946689312c3b461cbf2e2baf0"
+    }
+  ],
+  "built_assets": [
+    {
+      "path": "workspace/generated/frontend.js",
+      "sha256": "5381eb5ae97558471daa841a5f252c30e87650e28d933f0c0fe06de4902453ac"
+    },
+    {
+      "path": "workspace/generated/frontend.css",
+      "sha256": "f5ab91bbfd88480e2db2e739f389447520a4b80e3da7c98905e0e38145e2b7a8"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "browser-check.json",
+      "sha256": "a4e054d599fe4fa7c084b258928c0f10a8ccfe3e66ffc2095a3a44ba5bdd6ccd"
+    },
+    {
+      "path": "coverage.json",
+      "sha256": "50808b23cc55f58911f591bc226bb73c7e854cba64e9452bf253316255754d8e"
+    },
+    {
+      "path": "test-output.txt",
+      "sha256": "a68deb309744246a584d170df509078d97d0ddf76b754bac7e717a395c7747c9"
+    },
+    {
+      "path": "build-output.txt",
+      "sha256": "f6999552eb8f006b4b9c9c7debdf858746af595b71ab8e1e1686c4323ed840d6"
+    },
+    {
+      "path": "review.md",
+      "sha256": "5c292a8c81f0dbb68c036947a42df5bd62c52ba198898c0fdb2018e17fdc0d45"
+    }
+  ],
+  "limits": [
+    "Hub examples and older workspace sample datasets are separate; no automatic synchronization is claimed.",
+    "Browser storage, sample reviewer and branch filters do not provide production authentication, authorization, durable audit or multi-user concurrency.",
+    "All 35 modeled paths are tested; no 35 unattended production integrations are claimed.",
+    "Gated previews do not enable live release policy; native payroll/accounting and human decisions retain their authority."
+  ]
+}

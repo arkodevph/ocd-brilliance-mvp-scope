@@ -114,6 +114,10 @@ seedLocalStaff()
         console.log(
           `Local office sign-in: ${account.email} / ${account.password} (saved in ${account.file})`,
         );
+      if (process.env.AUTOMATION_RUN_WORKER === 'true' || (process.env.AUTOMATION_RUN_WORKER !== 'false' && process.env.NODE_ENV !== 'production')) {
+        const stop = require('./scripts/automation-worker.cjs').startEmbeddedWorker();
+        server.once('close', () => { stop().catch(() => {}); });
+      }
     });
   })
   .catch((error) => {
